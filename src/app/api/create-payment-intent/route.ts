@@ -9,6 +9,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export async function POST(request: NextRequest) {
   try {
     const { weddingId, userId, email } = await request.json()
+    
+    // Debug log to verify we're using test keys
+    console.log('Stripe key type:', process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_') ? 'TEST' : 'LIVE')
 
     // Create a payment intent
     const paymentIntent = await stripe.paymentIntents.create({

@@ -6,6 +6,17 @@ import { useAuth } from '@/contexts/AuthContext'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Wedding } from '@/types/wedding'
+
+// Extended interface to support old wedding data structure
+interface ExtendedWedding extends Partial<Wedding> {
+  id: string
+  coupleName1?: string
+  coupleName2?: string
+  weddingDate: any // Can be Timestamp or string
+  coupleNames?: string[]
+  owners: string[]
+  paymentStatus?: string
+}
 import PaymentForm from '@/components/PaymentForm'
 import { Heart, Music, Check, ArrowLeft, Lock } from 'lucide-react'
 import Link from 'next/link'
@@ -13,7 +24,7 @@ import { STRIPE_CONFIG } from '@/lib/stripe'
 
 export default function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: weddingId } = use(params)
-  const [wedding, setWedding] = useState<Wedding | null>(null)
+  const [wedding, setWedding] = useState<ExtendedWedding | null>(null)
   const [clientSecret, setClientSecret] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -38,7 +49,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
         return
       }
 
-      const weddingData = { id: weddingDoc.id, ...weddingDoc.data() } as Wedding
+      const weddingData = { id: weddingDoc.id, ...weddingDoc.data() } as ExtendedWedding
       
       // Check if user is owner
       if (!weddingData.owners.includes(user?.uid || '')) {
@@ -182,10 +193,16 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
             <div className="text-center mb-8">
               <p className="text-white/60 mb-2">Payment for:</p>
               <h2 className="text-xl font-semibold gradient-text">
-                {wedding.coupleNames.join(' & ')}&apos;s Wedding
+                {wedding.coupleNames 
+                  ? wedding.coupleNames.join(' & ') 
+                  : `${wedding.coupleName1} & ${wedding.coupleName2}`
+                }&apos;s Wedding
               </h2>
               <p className="text-white/60 text-sm">
-                {new Date(wedding.weddingDate.toDate()).toLocaleDateString()}
+                {wedding.weddingDate?.toDate 
+                  ? new Date(wedding.weddingDate.toDate()).toLocaleDateString()
+                  : new Date(wedding.weddingDate).toLocaleDateString()
+                }
               </p>
             </div>
           )}

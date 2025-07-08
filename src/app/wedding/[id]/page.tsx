@@ -72,7 +72,7 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
           return
         }
         
-        // Check payment status
+        // Check payment status - redirect to payment if not paid
         if (weddingData.paymentStatus !== 'paid') {
           router.push(`/wedding/${weddingId}/payment`)
           return
@@ -139,12 +139,10 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-wedding-pink-50 via-white to-wedding-purple-50 flex items-center justify-center">
+      <div className="min-h-screen dark-gradient flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 bg-wedding-gradient rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <Music className="w-8 h-8 text-white" />
-          </div>
-          <p className="text-wedding-neutral-600">Loading your wedding...</p>
+          <div className="w-16 h-16 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white/60">Loading your wedding...</p>
         </div>
       </div>
     )
@@ -152,13 +150,13 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-wedding-pink-50 via-white to-wedding-purple-50 flex items-center justify-center">
+      <div className="min-h-screen dark-gradient flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-serif font-bold text-wedding-neutral-900 mb-4">
+          <h2 className="text-2xl font-serif font-bold text-white mb-4">
             Oops! Something went wrong
           </h2>
-          <p className="text-wedding-neutral-600 mb-8">{error}</p>
-          <Link href="/" className="bg-wedding-gradient text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300">
+          <p className="text-white/60 mb-8">{error}</p>
+          <Link href="/" className="btn-primary">
             Go Home
           </Link>
         </div>
@@ -171,31 +169,37 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
   const daysUntilWedding = getDaysUntilWedding()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-wedding-pink-50 via-white to-wedding-purple-50">
+    <div className="min-h-screen dark-gradient relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="orb orb-purple w-96 h-96 -top-48 -right-48"></div>
+        <div className="orb orb-blue w-96 h-96 -bottom-48 -left-48"></div>
+      </div>
+
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-wedding-neutral-100">
+      <header className="glass border-b border-white/10 relative z-10">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-wedding-gradient rounded-full flex items-center justify-center">
+            <Link href="/dashboard" className="flex items-center space-x-2">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
                 <Music className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-wedding-neutral-900">UpTune</h1>
-                <p className="text-sm text-wedding-pink-600 font-medium">for Weddings</p>
+                <h1 className="text-xl font-bold text-white">UpTune</h1>
+                <p className="text-sm gradient-text font-medium">for Weddings</p>
               </div>
             </Link>
             
             <div className="flex items-center space-x-4">
-              <button className="flex items-center gap-2 px-4 py-2 border border-wedding-neutral-200 rounded-full hover:bg-wedding-neutral-50 transition-colors">
+              <button className="btn-glass">
                 <Share2 className="w-4 h-4" />
                 <span className="hidden sm:inline">Share</span>
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 border border-wedding-neutral-200 rounded-full hover:bg-wedding-neutral-50 transition-colors">
+              <button className="btn-glass">
                 <Download className="w-4 h-4" />
                 <span className="hidden sm:inline">Export</span>
               </button>
-              <Link href={`/wedding/${weddingId}/settings`} className="flex items-center gap-2 px-4 py-2 border border-wedding-neutral-200 rounded-full hover:bg-wedding-neutral-50 transition-colors">
+              <Link href={`/wedding/${weddingId}/settings`} className="btn-glass">
                 <Settings className="w-4 h-4" />
                 <span className="hidden sm:inline">Settings</span>
               </Link>
@@ -205,17 +209,17 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
       </header>
 
       {/* Wedding Info Banner */}
-      <div className="bg-wedding-gradient text-white py-12">
+      <div className="glass-darker py-12 relative z-10">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <Heart className="w-8 h-8" />
-              <h2 className="text-4xl font-serif font-bold">
+              <Heart className="w-8 h-8 text-pink-400" />
+              <h2 className="text-4xl font-serif font-bold text-white">
                 {wedding.coupleName1} & {wedding.coupleName2}
               </h2>
             </div>
             
-            <div className="flex flex-wrap items-center justify-center gap-6 text-lg opacity-90">
+            <div className="flex flex-wrap items-center justify-center gap-6 text-lg text-white/80">
               <div className="flex items-center gap-2">
                 <Calendar className="w-5 h-5" />
                 {formatDate(wedding.weddingDate)}
@@ -233,15 +237,15 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
             {daysUntilWedding !== null && (
               <div className="mt-6 text-center">
                 {daysUntilWedding > 0 ? (
-                  <p className="text-2xl font-bold">
+                  <p className="text-2xl font-bold gradient-text">
                     {daysUntilWedding} day{daysUntilWedding !== 1 ? 's' : ''} until your special day! 🎉
                   </p>
                 ) : daysUntilWedding === 0 ? (
-                  <p className="text-2xl font-bold">
+                  <p className="text-2xl font-bold gradient-text">
                     Today is your wedding day! 🎊
                   </p>
                 ) : (
-                  <p className="text-2xl font-bold">
+                  <p className="text-2xl font-bold gradient-text">
                     Hope you had an amazing wedding! 💕
                   </p>
                 )}
@@ -252,15 +256,15 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-12">
+      <main className="max-w-7xl mx-auto px-4 py-12 relative z-10">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Playlists Section */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-3xl font-serif font-bold text-wedding-neutral-900">
+              <h3 className="text-3xl font-serif font-bold text-white">
                 Your Musical Moments
               </h3>
-              <Link href={`/wedding/${weddingId}/music-library`} className="bg-wedding-gradient text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2">
+              <Link href={`/wedding/${weddingId}/music-library`} className="btn-primary">
                 <Plus className="w-5 h-5" />
                 Add Songs
               </Link>

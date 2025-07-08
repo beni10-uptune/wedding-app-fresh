@@ -141,7 +141,10 @@ export default function Dashboard() {
                 Welcome back, {userName}! 🎵
               </h2>
               <p className="text-xl text-white/70 mb-8">
-                Ready to create musical magic for your special day?
+                {weddings.some(w => w.paymentStatus !== 'paid') 
+                  ? 'You have weddings waiting to be completed! Complete setup to start building your perfect playlists.' 
+                  : 'Ready to create musical magic for your special day?'
+                }
               </p>
               
               {weddings.length === 0 ? (
@@ -201,6 +204,27 @@ export default function Dashboard() {
         </div>
       </section>
 
+      {/* Incomplete Weddings Alert */}
+      {weddings.some(w => w.paymentStatus !== 'paid') && (
+        <section className="px-4 py-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-2xl p-6 border border-yellow-500/30">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Heart className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-white mb-1">Complete Your Wedding Setup</h3>
+                  <p className="text-white/70">
+                    You're just one step away from creating the perfect soundtrack for your special day!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Your Weddings */}
       {weddings.length > 0 && (
         <section className="px-4 py-12 relative z-10">
@@ -227,8 +251,8 @@ export default function Dashboard() {
                     className="card hover:scale-105 transform transition-all duration-300 group relative"
                   >
                     {!isPaid && (
-                      <div className="absolute -top-2 -right-2 bg-yellow-500 text-slate-900 text-xs font-bold px-3 py-1 rounded-full z-10">
-                        Payment Required
+                      <div className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-lg animate-pulse">
+                        Complete Setup
                       </div>
                     )}
                     <div className="flex items-start justify-between mb-4">
@@ -266,7 +290,7 @@ export default function Dashboard() {
                         href={isPaid ? `/wedding/${wedding.id}` : `/wedding/${wedding.id}/payment`}
                         className={`font-semibold text-sm ${isPaid ? 'text-purple-400' : 'text-yellow-400'}`}
                       >
-                        {isPaid ? 'Manage →' : 'Complete Payment →'}
+                        {isPaid ? 'Manage →' : 'Complete Setup →'}
                       </Link>
                     </div>
                   </div>

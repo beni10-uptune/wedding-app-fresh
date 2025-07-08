@@ -233,52 +233,52 @@ export default function CreateWeddingPage() {
             {currentStep === 2 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <div className="w-16 h-16 bg-wedding-gradient rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <MapPin className="w-8 h-8 text-white" />
                   </div>
-                  <h2 className="text-3xl font-serif font-bold text-wedding-neutral-900 mb-2">
+                  <h2 className="text-3xl font-serif font-bold text-white mb-2">
                     Where's the Magic Happening?
                   </h2>
-                  <p className="text-wedding-neutral-600">
+                  <p className="text-white/60">
                     Tell us about your venue and guest count
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-wedding-neutral-700 mb-2">
+                  <label className="block text-sm font-medium text-white mb-2">
                     Venue Name
                   </label>
                   <input
                     type="text"
                     value={weddingData.venue}
                     onChange={(e) => handleInputChange('venue', e.target.value)}
-                    className="w-full px-4 py-3 border border-wedding-neutral-200 rounded-lg focus:ring-2 focus:ring-wedding-pink-500 focus:border-transparent"
+                    className="input"
                     placeholder="The Grand Ballroom, City Hall, etc."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-wedding-neutral-700 mb-2">
+                  <label className="block text-sm font-medium text-white mb-2">
                     City
                   </label>
                   <input
                     type="text"
                     value={weddingData.city}
                     onChange={(e) => handleInputChange('city', e.target.value)}
-                    className="w-full px-4 py-3 border border-wedding-neutral-200 rounded-lg focus:ring-2 focus:ring-wedding-pink-500 focus:border-transparent"
+                    className="input"
                     placeholder="London, Manchester, etc."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-wedding-neutral-700 mb-2">
+                  <label className="block text-sm font-medium text-white mb-2">
                     Expected Guest Count
                   </label>
                   <input
                     type="number"
                     value={weddingData.guestCount}
                     onChange={(e) => handleInputChange('guestCount', parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-wedding-neutral-200 rounded-lg focus:ring-2 focus:ring-wedding-pink-500 focus:border-transparent"
+                    className="input"
                     min="1"
                     max="1000"
                   />
@@ -290,13 +290,13 @@ export default function CreateWeddingPage() {
             {currentStep === 3 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <div className="w-16 h-16 bg-wedding-gradient rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Crown className="w-8 h-8 text-white" />
                   </div>
-                  <h2 className="text-3xl font-serif font-bold text-wedding-neutral-900 mb-2">
+                  <h2 className="text-3xl font-serif font-bold text-white mb-2">
                     What's Your Wedding Style?
                   </h2>
-                  <p className="text-wedding-neutral-600">
+                  <p className="text-white/60">
                     This helps us curate the perfect music for your vibe
                   </p>
                 </div>
@@ -308,11 +308,11 @@ export default function CreateWeddingPage() {
                       onClick={() => handleInputChange('weddingStyle', style)}
                       className={`p-4 rounded-lg border-2 transition-all text-left ${
                         weddingData.weddingStyle === style
-                          ? 'border-wedding-pink-500 bg-wedding-pink-50'
-                          : 'border-wedding-neutral-200 hover:border-wedding-pink-300'
+                          ? 'border-purple-500 bg-purple-500/20 glass'
+                          : 'border-white/20 hover:border-purple-400 glass'
                       }`}
                     >
-                      <div className="font-semibold text-wedding-neutral-900">{style}</div>
+                      <div className="font-semibold text-white">{style}</div>
                     </button>
                   ))}
                 </div>
@@ -323,13 +323,13 @@ export default function CreateWeddingPage() {
             {currentStep === 4 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <div className="w-16 h-16 bg-wedding-gradient rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Users className="w-8 h-8 text-white" />
                   </div>
-                  <h2 className="text-3xl font-serif font-bold text-wedding-neutral-900 mb-2">
+                  <h2 className="text-3xl font-serif font-bold text-white mb-2">
                     Choose Your Musical Moments
                   </h2>
-                  <p className="text-wedding-neutral-600">
+                  <p className="text-white/60">
                     Select the parts of your wedding that need music
                   </p>
                 </div>
@@ -340,18 +340,18 @@ export default function CreateWeddingPage() {
                       key={moment.id}
                       className={`p-4 rounded-lg border-2 transition-all cursor-pointer ${
                         weddingData.moments.includes(moment.id)
-                          ? 'border-wedding-pink-500 bg-wedding-pink-50'
-                          : 'border-wedding-neutral-200 hover:border-wedding-pink-300'
+                          ? 'border-purple-500 bg-purple-500/20 glass'
+                          : 'border-white/20 hover:border-purple-400 glass'
                       }`}
                       onClick={() => handleMomentToggle(moment.id)}
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="font-semibold text-wedding-neutral-900">{moment.label}</div>
-                          <div className="text-sm text-wedding-neutral-600">{moment.description}</div>
+                          <div className="font-semibold text-white">{moment.label}</div>
+                          <div className="text-sm text-white/60">{moment.description}</div>
                         </div>
                         {weddingData.moments.includes(moment.id) && (
-                          <CheckCircle className="w-5 h-5 text-wedding-pink-500" />
+                          <CheckCircle className="w-5 h-5 text-purple-500" />
                         )}
                       </div>
                     </div>
@@ -361,11 +361,11 @@ export default function CreateWeddingPage() {
             )}
 
             {/* Navigation */}
-            <div className="flex justify-between items-center mt-8 pt-6 border-t border-wedding-neutral-200">
+            <div className="flex justify-between items-center mt-8 pt-6 border-t border-white/20">
               <button
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className="flex items-center gap-2 px-6 py-3 text-wedding-neutral-600 hover:text-wedding-pink-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-6 py-3 text-white/60 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ArrowLeft className="w-5 h-5" />
                 Back
@@ -375,7 +375,7 @@ export default function CreateWeddingPage() {
                 <button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="bg-wedding-gradient text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? 'Creating...' : 'Create Wedding'}
                   <ArrowRight className="w-5 h-5" />
@@ -383,7 +383,7 @@ export default function CreateWeddingPage() {
               ) : (
                 <button
                   onClick={nextStep}
-                  className="bg-wedding-gradient text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+                  className="btn-primary flex items-center gap-2"
                 >
                   Continue
                   <ArrowRight className="w-5 h-5" />

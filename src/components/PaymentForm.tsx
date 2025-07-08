@@ -51,15 +51,7 @@ function CheckoutForm({ onSuccess, onError }: Omit<PaymentFormProps, 'clientSecr
       <div className="glass-darker rounded-xl p-6 border border-white/20">
         <PaymentElement 
           options={{
-            style: {
-              base: {
-                fontSize: '16px',
-                color: '#ffffff',
-                '::placeholder': {
-                  color: '#ffffff60',
-                },
-              },
-            },
+            layout: 'tabs'
           }}
         />
       </div>

@@ -34,7 +34,7 @@ export async function searchSpotifyTracks(query: string, limit = 10) {
   if (!client) return []
 
   try {
-    const results = await client.search(query, ['track'], 'US', limit)
+    const results = await client.search(query, ['track'], 'US', limit as 10)
     return results.tracks.items.map(track => ({
       id: track.id,
       name: track.name,

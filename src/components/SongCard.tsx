@@ -59,7 +59,7 @@ export default function SongCard({
       const data = await getSpotifyTrack(spotifyId)
       if (data) {
         setSpotifyData({
-          preview_url: data.preview_url,
+          preview_url: data.preview_url || undefined,
           image: data.image,
           external_urls: data.external_urls,
           duration_ms: data.duration_ms

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SpotifyApi } from '@spotify/web-api-ts-sdk'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 
 export async function POST(request: NextRequest) {
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     const profile = await spotifyClient.currentUser.profile()
 
     // Create playlist
-    const playlist = await spotifyClient.playlists.create(
+    const playlist = await spotifyClient.playlists.createPlaylist(
       profile.id,
       {
         name: playlistName,

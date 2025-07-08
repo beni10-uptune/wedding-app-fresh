@@ -22,6 +22,7 @@ interface Wedding {
   ownerId: string
   owners: string[]
   status: string
+  paymentStatus: 'pending' | 'paid' | 'refunded'
   createdAt: any
 }
 

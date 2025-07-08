@@ -33,7 +33,7 @@ export default function MusicPlayer({
   const [volume, setVolume] = useState(0.5)
   const [isMuted, setIsMuted] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
-  const progressInterval = useRef<NodeJS.Timeout>()
+  const progressInterval = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const audio = audioRef.current

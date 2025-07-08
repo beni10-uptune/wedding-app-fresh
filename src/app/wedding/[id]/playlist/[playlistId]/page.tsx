@@ -136,11 +136,13 @@ export default function PlaylistBuilderPage({ params }: { params: Promise<{ id: 
         genre: 'Various',
         mood: 'Happy',
         energy: 'medium',
-        weddingMoment: suggestion.suggestedFor,
+        moments: [suggestion.suggestedFor],
+        popularity: 0,
         duration: 0,
         addedBy: suggestion.suggestedBy,
         addedAt: new Date(),
-        order: playlist.songs.length
+        order: playlist.songs.length,
+        spotify_id: suggestion.spotifyId
       }
 
       await updateDoc(doc(db, 'weddings', weddingId, 'playlists', playlistId), {

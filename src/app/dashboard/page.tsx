@@ -263,18 +263,18 @@ export default function Dashboard() {
                       <Timer className="w-12 h-12 text-pink-400" />
                       <div>
                         <p className="text-white/70 text-sm mb-1">
-                          {activeWedding.coupleName1} & {activeWedding.coupleName2}'s Wedding
+                          {activeWedding?.coupleName1 || 'Your'} & {activeWedding?.coupleName2 || 'Partner'}'s Wedding
                         </p>
                         <p className="text-3xl font-bold text-white">
-                          {getDaysUntilWedding(activeWedding.weddingDate)} days to go!
+                          {activeWedding?.weddingDate ? getDaysUntilWedding(activeWedding.weddingDate) : 0} days to go!
                         </p>
                         <p className="text-white/60 text-sm mt-1">
-                          {new Date(activeWedding.weddingDate).toLocaleDateString('en-US', { 
+                          {activeWedding?.weddingDate ? new Date(activeWedding.weddingDate).toLocaleDateString('en-US', { 
                             weekday: 'long', 
                             year: 'numeric', 
                             month: 'long', 
                             day: 'numeric' 
-                          })}
+                          }) : ''}
                         </p>
                       </div>
                     </div>
@@ -286,7 +286,7 @@ export default function Dashboard() {
                       <div className="flex items-center justify-between mb-2">
                         <Music className="w-8 h-8 text-purple-400" />
                         <span className="text-3xl font-bold text-white">
-                          {activeWedding.songCount || 0}
+                          {activeWedding?.songCount || 0}
                         </span>
                       </div>
                       <p className="text-white font-medium">Songs Collected</p>
@@ -313,7 +313,7 @@ export default function Dashboard() {
                       <div className="flex items-center justify-between mb-2">
                         <Users className="w-8 h-8 text-pink-400" />
                         <span className="text-3xl font-bold text-white">
-                          {activeWedding.guestCount || 0}
+                          {activeWedding?.guestCount || 0}
                         </span>
                       </div>
                       <p className="text-white font-medium">Guest Contributors</p>
@@ -324,7 +324,7 @@ export default function Dashboard() {
                       <div className="flex items-center justify-between mb-2">
                         <Headphones className="w-8 h-8 text-indigo-400" />
                         <span className="text-3xl font-bold text-white">
-                          {activeWedding.playlistCount || 0}
+                          {activeWedding?.playlistCount || 0}
                         </span>
                       </div>
                       <p className="text-white font-medium">Playlists Created</p>

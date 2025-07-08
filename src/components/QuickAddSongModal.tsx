@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { X, Search, Plus, Play, Pause } from 'lucide-react'
-import { searchSpotifyTracks } from '@/lib/spotify'
+// Removed direct Spotify import - will use API route instead
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useAuth } from '@/contexts/AuthContext'
@@ -60,10 +60,18 @@ export default function QuickAddSongModal({
     
     setLoading(true)
     try {
-      const results = await searchSpotifyTracks(searchQuery)
-      setSearchResults(results)
+      const response = await fetch(`/api/spotify/search?q=${encodeURIComponent(searchQuery)}&limit=20`)
+      const data = await response.json()
+      
+      if (data.tracks) {
+        setSearchResults(data.tracks)
+      } else {
+        console.error('No tracks in response:', data)
+        setSearchResults([])
+      }
     } catch (error) {
       console.error('Search error:', error)
+      setSearchResults([])
     } finally {
       setLoading(false)
     }

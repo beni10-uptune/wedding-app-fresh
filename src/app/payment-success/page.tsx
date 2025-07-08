@@ -12,13 +12,26 @@ function PaymentSuccessContent() {
   const [countdown, setCountdown] = useState(5)
 
   useEffect(() => {
-    // Trigger confetti
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ['#a855f7', '#ec4899', '#8b5cf6']
-    })
+    try {
+      // Check if we have Stripe redirect parameters
+      const paymentIntentSecret = searchParams.get('payment_intent_client_secret')
+      
+      // Only trigger confetti if we have a valid payment redirect or no params at all
+      // (no params means it was a direct navigation after successful payment)
+      if (!paymentIntentSecret || paymentIntentSecret.length > 0) {
+        // Trigger confetti only on client side
+        if (typeof window !== 'undefined' && confetti) {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#a855f7', '#ec4899', '#8b5cf6']
+          })
+        }
+      }
+    } catch (error) {
+      console.error('Error in payment success page:', error)
+    }
 
     // Countdown redirect
     const timer = setInterval(() => {
@@ -33,7 +46,7 @@ function PaymentSuccessContent() {
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [router])
+  }, [router, searchParams])
 
   return (
     <div className="min-h-screen dark-gradient relative overflow-hidden flex items-center justify-center">

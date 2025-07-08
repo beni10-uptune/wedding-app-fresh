@@ -8,14 +8,16 @@ import { db } from '@/lib/firebase'
 import { Wedding } from '@/types/wedding'
 
 // Extended interface to support old wedding data structure
-interface ExtendedWedding extends Partial<Wedding> {
+interface ExtendedWedding {
   id: string
   coupleName1?: string
   coupleName2?: string
   weddingDate: any // Can be Timestamp or string
   coupleNames?: string[]
   owners: string[]
-  paymentStatus?: string
+  paymentStatus?: 'pending' | 'paid' | 'refunded'
+  venue?: string
+  title?: string
 }
 import PaymentForm from '@/components/PaymentForm'
 import { Heart, Music, Check, ArrowLeft, Lock } from 'lucide-react'

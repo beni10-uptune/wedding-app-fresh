@@ -1,0 +1,69 @@
+[debug] [2025-07-08T10:01:32.932Z] ----------------------------------------------------------------------
+[debug] [2025-07-08T10:01:32.935Z] Command:       /usr/local/bin/node /Users/bensmith/Desktop/wedding-app-fresh/node_modules/.bin/firebase projects:list
+[debug] [2025-07-08T10:01:32.935Z] CLI Version:   14.9.0
+[debug] [2025-07-08T10:01:32.935Z] Platform:      darwin
+[debug] [2025-07-08T10:01:32.935Z] Node Version:  v22.17.0
+[debug] [2025-07-08T10:01:32.935Z] Time:          Tue Jul 08 2025 12:01:32 GMT+0200 (Central European Summer Time)
+[debug] [2025-07-08T10:01:32.935Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-07-08T10:01:32.937Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2025-07-08T10:01:33.053Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-08T10:01:33.054Z] > authorizing via signed-in user (ben@mindsparkdigitallabs.com)
+[debug] [2025-07-08T10:01:33.055Z] Checked if tokens are valid: false, expires at: 1751831530556
+[debug] [2025-07-08T10:01:33.055Z] Checked if tokens are valid: false, expires at: 1751831530556
+[debug] [2025-07-08T10:01:33.055Z] > refreshing access token with scopes: []
+[debug] [2025-07-08T10:01:33.056Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-07-08T10:01:33.056Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-08T10:01:33.180Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2025-07-08T10:01:33.180Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2025-07-08T10:01:33.181Z] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2025-07-08T10:01:33.225Z] FirebaseError: Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+    at invalidCredentialError (/Users/bensmith/Desktop/wedding-app-fresh/node_modules/firebase-tools/lib/auth.js:167:12)
+    at refreshTokens (/Users/bensmith/Desktop/wedding-app-fresh/node_modules/firebase-tools/lib/auth.js:556:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getAccessToken (/Users/bensmith/Desktop/wedding-app-fresh/node_modules/firebase-tools/lib/apiv2.js:42:18)
+    at async Client.addAuthHeader (/Users/bensmith/Desktop/wedding-app-fresh/node_modules/firebase-tools/lib/apiv2.js:169:21)
+    at async Client.request (/Users/bensmith/Desktop/wedding-app-fresh/node_modules/firebase-tools/lib/apiv2.js:120:34)
+    at async getProjectPage (/Users/bensmith/Desktop/wedding-app-fresh/node_modules/firebase-tools/lib/management/projects.js:267:17)
+    at async getFirebaseProjectPage (/Users/bensmith/Desktop/wedding-app-fresh/node_modules/firebase-tools/lib/management/projects.js:284:23)
+    at async listFirebaseProjects (/Users/bensmith/Desktop/wedding-app-fresh/node_modules/firebase-tools/lib/management/projects.js:315:29)
+    at async Command.actionFn (/Users/bensmith/Desktop/wedding-app-fresh/node_modules/firebase-tools/lib/commands/projects-list.js:51:20)
+[error] 
+[error] Error: Failed to list Firebase projects. See firebase-debug.log for more info.
+[debug] [2025-07-08T10:01:33.348Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2025-07-08T10:01:33.348Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2025-07-08T10:01:40.117Z] ----------------------------------------------------------------------
+[debug] [2025-07-08T10:01:40.118Z] Command:       /usr/local/bin/node /Users/bensmith/Desktop/wedding-app-fresh/node_modules/.bin/firebase login --reauth --no-localhost
+[debug] [2025-07-08T10:01:40.119Z] CLI Version:   14.9.0
+[debug] [2025-07-08T10:01:40.119Z] Platform:      darwin
+[debug] [2025-07-08T10:01:40.119Z] Node Version:  v22.17.0
+[debug] [2025-07-08T10:01:40.119Z] Time:          Tue Jul 08 2025 12:01:40 GMT+0200 (Central European Summer Time)
+[debug] [2025-07-08T10:01:40.119Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-07-08T10:01:40.216Z] >>> [apiv2][query] POST https://auth.firebase.tools/attest [none]
+[debug] [2025-07-08T10:01:40.216Z] >>> [apiv2][body] POST https://auth.firebase.tools/attest {"session_id":"9d4dddf2-fde0-402e-91ec-e85562e60f24"}
+[debug] [2025-07-08T10:01:40.600Z] <<< [apiv2][status] POST https://auth.firebase.tools/attest 200
+[debug] [2025-07-08T10:01:40.600Z] <<< [apiv2][body] POST https://auth.firebase.tools/attest {"token":"udbDMdlK_XUm3myNTJ0J9pxhgnn5aiIeNkwLgVkRNPQ"}
+[info] 
+[info] To sign in to the Firebase CLI:
+[info] 
+[info] 1. Take note of your session ID:
+[info] 
+[info]    9D4DD
+[info] 
+[info] 2. Visit the URL below on any device and follow the instructions to get your code:
+[info] 
+[info]    https://auth.firebase.tools/login?code_challenge=3TYfh5cmG-lXM0K_eDSH-1HCMZC-ii4M3cLsQGgUzgw&session=9d4dddf2-fde0-402e-91ec-e85562e60f24&attest=udbDMdlK_XUm3myNTJ0J9pxhgnn5aiIeNkwLgVkRNPQ
+[info] 
+[info] 3. Paste or enter the authorization code below once you have it:
+[info] 

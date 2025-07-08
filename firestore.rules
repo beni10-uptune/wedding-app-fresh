@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can read and write their own user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Wedding documents - only authenticated users can create
+    match /weddings/{weddingId} {
+      // Wedding owners (couple) can read/write their wedding
+      allow read, write: if request.auth != null && 
+        (request.auth.uid in resource.data.owners || 
+         request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners);
+      
+      // Allow creation if user is authenticated
+      allow create: if request.auth != null;
+      
+      // Collaborators (guests) can read and suggest songs
+      match /collaborators/{collaboratorId} {
+        allow read: if request.auth != null;
+        allow write: if request.auth != null && request.auth.uid == collaboratorId;
+      }
+      
+      // Song suggestions - authenticated users can create, owners can approve
+      match /suggestions/{suggestionId} {
+        allow read: if request.auth != null;
+        allow create: if request.auth != null;
+        allow update, delete: if request.auth != null && 
+          (request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners ||
+           request.auth.uid == resource.data.suggestedBy);
+      }
+      
+      // Playlists - owners can manage, collaborators can read
+      match /playlists/{playlistId} {
+        allow read: if request.auth != null;
+        allow write: if request.auth != null && 
+          request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners;
+      }
+      
+      // Votes - authenticated users can vote
+      match /votes/{voteId} {
+        allow read: if request.auth != null;
+        allow create, update: if request.auth != null && request.auth.uid == resource.data.userId;
+        allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
+      }
+    }
+    
+    // Curated music library - read-only for authenticated users
+    match /musicLibrary/{songId} {
+      allow read: if request.auth != null;
+      allow write: if false; // Only admins can write (handled via admin SDK)
+    }
+    
+    // Payment records - only the user can read their own payments
+    match /payments/{paymentId} {
+      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow write: if false; // Only backend can write payments
+    }
+  }
+} 

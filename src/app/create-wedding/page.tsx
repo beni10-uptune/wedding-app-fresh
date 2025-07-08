@@ -76,18 +76,16 @@ export default function CreateWeddingPage() {
     try {
       // Create wedding document
       const weddingRef = await addDoc(collection(db, 'weddings'), {
-        ...weddingData,
-        coupleName: `${weddingData.coupleName1} & ${weddingData.coupleName2}`,
-        ownerId: user.uid,
+        title: `${weddingData.coupleName1} & ${weddingData.coupleName2}'s Wedding`,
+        coupleNames: [weddingData.coupleName1, weddingData.coupleName2],
+        weddingDate: new Date(weddingData.weddingDate),
+        venue: weddingData.venue,
         owners: [user.uid],
         collaborators: [],
-        guests: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
         status: 'planning',
         paymentStatus: 'pending',
-        playlistCount: weddingData.moments.length,
-        guestCount: 0
+        createdAt: new Date(),
+        updatedAt: new Date()
       })
 
       // Create default playlists for selected moments

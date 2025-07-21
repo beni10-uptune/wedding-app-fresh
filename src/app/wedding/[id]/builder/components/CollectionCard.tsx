@@ -120,7 +120,7 @@ export default function CollectionCard({
           <div className="max-h-64 overflow-y-auto">
             {songs.map((song, index) => (
               <div 
-                key={song.id}
+                key={song?.id || `song-${index}`}
                 className="px-4 py-3 hover:bg-white/5 transition-colors flex items-center justify-between group"
               >
                 <div className="flex items-center gap-3 flex-1">
@@ -128,18 +128,18 @@ export default function CollectionCard({
                     onClick={(e) => handlePlayPause(song, e)}
                     className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
                   >
-                    {playingId === song.id ? (
+                    {playingId === song?.id ? (
                       <Pause className="w-4 h-4 text-white" />
                     ) : (
                       <Play className="w-4 h-4 text-white ml-0.5" />
                     )}
                   </button>
                   <div className="flex-1">
-                    <p className="text-sm text-white">{song.title}</p>
-                    <p className="text-xs text-white/60">{song.artist}</p>
+                    <p className="text-sm text-white">{song?.title || 'Unknown Title'}</p>
+                    <p className="text-xs text-white/60">{song?.artist || 'Unknown Artist'}</p>
                   </div>
                   <div className="text-xs text-white/40">
-                    {Math.floor(song.duration / 60)}:{(song.duration % 60).toString().padStart(2, '0')}
+                    {song ? `${Math.floor(song.duration / 60)}:${(song.duration % 60).toString().padStart(2, '0')}` : '0:00'}
                   </div>
                 </div>
                 <button

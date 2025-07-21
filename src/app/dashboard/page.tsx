@@ -68,7 +68,7 @@ export default function Dashboard() {
 
   // Get playlist completion percentage
   const getPlaylistProgress = (playlist: Playlist) => {
-    const currentSongs = playlist.songs?.length || 0
+    const currentSongs = Array.isArray(playlist.songs) ? playlist.songs.length : 0
     const targetSongs = playlist.targetSongCount || 20
     return Math.min((currentSongs / targetSongs) * 100, 100)
   }
@@ -143,7 +143,7 @@ export default function Dashboard() {
       setPlaylists(playlistData)
       
       // Calculate total song count
-      const totalSongs = playlistData.reduce((acc, playlist) => acc + (playlist.songs?.length || 0), 0)
+      const totalSongs = playlistData.reduce((acc, playlist) => acc + (Array.isArray(playlist.songs) ? playlist.songs.length : 0), 0)
       setActiveWedding(prev => prev ? { ...prev, songCount: totalSongs } : null)
     } catch (error) {
       console.error('Error loading playlists:', error)
@@ -401,7 +401,7 @@ export default function Dashboard() {
                             <div className="flex items-center justify-between mb-2">
                               <h4 className="text-xl font-bold text-white">{playlist.name}</h4>
                               <span className="text-sm text-white/60">
-                                {playlist.songs?.length || 0} / {playlist.targetSongCount || 20} songs
+                                {Array.isArray(playlist.songs) ? playlist.songs.length : 0} / {playlist.targetSongCount || 20} songs
                               </span>
                             </div>
                             <p className="text-white/70 text-sm mb-3">{playlist.description}</p>

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { SpotifyApi } from '@spotify/web-api-ts-sdk'
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
@@ -46,23 +45,34 @@ export async function GET(request: NextRequest) {
       throw new Error('Failed to get Spotify access token')
     }
 
-    // Create Spotify client with the token
-    const client = SpotifyApi.withAccessToken(
-      process.env.SPOTIFY_CLIENT_ID!,
-      tokenData.access_token
+
+    // Search for tracks using direct API call instead of SDK
+    const searchResponse = await fetch(
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=${limit}&market=US`,
+      {
+        headers: {
+          'Authorization': `Bearer ${tokenData.access_token}`
+        }
+      }
     )
 
-    // Search for tracks
-    const results = await client.search(query, ['track'], 'US', limit as any)
+    if (!searchResponse.ok) {
+      const errorText = await searchResponse.text()
+      console.error('Spotify search API error:', searchResponse.status, errorText)
+      throw new Error(`Spotify search failed: ${searchResponse.status}`)
+    }
+
+    const searchData = await searchResponse.json()
     
-    const tracks = results.tracks.items.map(track => ({
+    const tracks = searchData.tracks.items.map((track: any) => ({
       id: track.id,
       name: track.name,
-      artist: track.artists.map(a => a.name).join(', '),
+      artist: track.artists.map((a: any) => a.name).join(', '),
       album: track.album.name,
       duration_ms: track.duration_ms,
       preview_url: track.preview_url,
-      image: track.album.images[0]?.url
+      image: track.album.images[0]?.url,
+      explicit: track.explicit
     }))
 
     return NextResponse.json({ tracks })

@@ -264,9 +264,9 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
               <h3 className="text-3xl font-serif font-bold text-white">
                 Your Musical Moments
               </h3>
-              <Link href={`/wedding/${weddingId}/music-library`} className="btn-primary">
+              <Link href={`/wedding/${weddingId}/builder`} className="btn-primary">
                 <Plus className="w-5 h-5" />
-                Add Songs
+                Music Builder
               </Link>
             </div>
 
@@ -311,13 +311,13 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
             <div className="card">
               <h4 className="text-xl font-bold gradient-text mb-4">Quick Actions</h4>
               <div className="space-y-3">
-                <Link href={`/wedding/${weddingId}/music-library`} className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors">
+                <Link href={`/wedding/${weddingId}/builder`} className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors">
                   <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
                     <Music className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <div className="font-medium text-white">Browse Music</div>
-                    <div className="text-sm text-white/60">Discover 500+ curated songs</div>
+                    <div className="font-medium text-white">Music Builder</div>
+                    <div className="text-sm text-white/60">Create your perfect timeline</div>
                   </div>
                 </Link>
                 

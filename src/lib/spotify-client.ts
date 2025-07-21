@@ -12,7 +12,10 @@ export async function searchSpotifyTracks(query: string, limit = 10) {
     const data = await response.json()
     
     if (data.error) {
-      console.error('Search error:', data.error)
+      console.error('Search error:', data.error, data.details)
+      if (data.credentials) {
+        console.log('Credential check:', data.credentials)
+      }
       throw new Error(data.error)
     }
     

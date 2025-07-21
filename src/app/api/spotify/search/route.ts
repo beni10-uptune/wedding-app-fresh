@@ -33,9 +33,16 @@ export async function GET(request: NextRequest) {
       body: 'grant_type=client_credentials'
     })
 
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text()
+      console.error('Spotify token error:', tokenResponse.status, errorText)
+      throw new Error(`Failed to get Spotify token: ${tokenResponse.status}`)
+    }
+
     const tokenData = await tokenResponse.json()
 
     if (!tokenData.access_token) {
+      console.error('No access token in response:', tokenData)
       throw new Error('Failed to get Spotify access token')
     }
 
@@ -61,8 +68,16 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ tracks })
   } catch (error) {
     console.error('Spotify search error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(
-      { error: 'Failed to search Spotify' },
+      { 
+        error: 'Failed to search Spotify',
+        details: errorMessage,
+        credentials: {
+          hasClientId: !!process.env.SPOTIFY_CLIENT_ID,
+          hasClientSecret: !!process.env.SPOTIFY_CLIENT_SECRET
+        }
+      },
       { status: 500 }
     )
   }

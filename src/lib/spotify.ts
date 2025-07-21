@@ -2,6 +2,7 @@ import { SpotifyApi } from '@spotify/web-api-ts-sdk'
 
 // Client credentials flow for public data (searching, previews)
 let spotifyClient: SpotifyApi | null = null
+let isDemoMode = false
 
 export async function getSpotifyClient() {
   if (spotifyClient) return spotifyClient
@@ -11,7 +12,13 @@ export async function getSpotifyClient() {
     const response = await fetch('/api/spotify/token')
     const data = await response.json()
     
-    if (data.access_token) {
+    if (data.demo_mode) {
+      console.log('Running in Spotify demo mode')
+      isDemoMode = true
+      return null
+    }
+    
+    if (data.access_token && data.access_token !== 'demo_token') {
       // Use the client ID from the response or environment variable
       const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID || data.client_id || 'your-spotify-client-id'
       
@@ -23,6 +30,7 @@ export async function getSpotifyClient() {
     }
   } catch (error) {
     console.error('Failed to initialize Spotify client:', error)
+    isDemoMode = true
   }
   
   return null
@@ -31,7 +39,11 @@ export async function getSpotifyClient() {
 // Search for tracks
 export async function searchSpotifyTracks(query: string, limit = 10) {
   const client = await getSpotifyClient()
-  if (!client) return []
+  
+  // Demo mode - return mock results
+  if (!client) {
+    return getMockSearchResults(query, limit)
+  }
 
   try {
     const results = await client.search(query, ['track'], 'US', limit as 10)
@@ -44,12 +56,126 @@ export async function searchSpotifyTracks(query: string, limit = 10) {
       preview_url: track.preview_url,
       external_urls: track.external_urls,
       uri: track.uri,
-      image: track.album.images[0]?.url
+      image: track.album.images[0]?.url,
+      explicit: track.explicit
     }))
   } catch (error) {
     console.error('Spotify search error:', error)
-    return []
+    return getMockSearchResults(query, limit)
   }
+}
+
+// Mock search results for demo mode
+function getMockSearchResults(query: string, limit: number) {
+  const mockTracks = [
+    {
+      id: 'demo1',
+      name: 'Perfect',
+      artist: 'Ed Sheeran',
+      album: '÷ (Divide)',
+      duration_ms: 263000,
+      preview_url: null,
+      external_urls: { spotify: '#' },
+      uri: 'spotify:track:demo1',
+      image: '/api/placeholder/300/300',
+      explicit: false
+    },
+    {
+      id: 'demo2',
+      name: 'Thinking Out Loud',
+      artist: 'Ed Sheeran',
+      album: 'x',
+      duration_ms: 281000,
+      preview_url: null,
+      external_urls: { spotify: '#' },
+      uri: 'spotify:track:demo2',
+      image: '/api/placeholder/300/300',
+      explicit: false
+    },
+    {
+      id: 'demo3',
+      name: 'All of Me',
+      artist: 'John Legend',
+      album: 'Love in the Future',
+      duration_ms: 269000,
+      preview_url: null,
+      external_urls: { spotify: '#' },
+      uri: 'spotify:track:demo3',
+      image: '/api/placeholder/300/300',
+      explicit: false
+    },
+    {
+      id: 'demo4',
+      name: 'A Thousand Years',
+      artist: 'Christina Perri',
+      album: 'The Twilight Saga',
+      duration_ms: 295000,
+      preview_url: null,
+      external_urls: { spotify: '#' },
+      uri: 'spotify:track:demo4',
+      image: '/api/placeholder/300/300',
+      explicit: false
+    },
+    {
+      id: 'demo5',
+      name: 'Marry You',
+      artist: 'Bruno Mars',
+      album: 'Doo-Wops & Hooligans',
+      duration_ms: 230000,
+      preview_url: null,
+      external_urls: { spotify: '#' },
+      uri: 'spotify:track:demo5',
+      image: '/api/placeholder/300/300',
+      explicit: false
+    },
+    {
+      id: 'demo6',
+      name: 'Can\'t Help Falling in Love',
+      artist: 'Elvis Presley',
+      album: 'Blue Hawaii',
+      duration_ms: 181000,
+      preview_url: null,
+      external_urls: { spotify: '#' },
+      uri: 'spotify:track:demo6',
+      image: '/api/placeholder/300/300',
+      explicit: false
+    },
+    {
+      id: 'demo7',
+      name: 'Uptown Funk',
+      artist: 'Mark Ronson ft. Bruno Mars',
+      album: 'Uptown Special',
+      duration_ms: 270000,
+      preview_url: null,
+      external_urls: { spotify: '#' },
+      uri: 'spotify:track:demo7',
+      image: '/api/placeholder/300/300',
+      explicit: false
+    },
+    {
+      id: 'demo8',
+      name: 'I Wanna Dance with Somebody',
+      artist: 'Whitney Houston',
+      album: 'Whitney',
+      duration_ms: 295000,
+      preview_url: null,
+      external_urls: { spotify: '#' },
+      uri: 'spotify:track:demo8',
+      image: '/api/placeholder/300/300',
+      explicit: false
+    }
+  ]
+
+  // Simple search matching
+  const filtered = mockTracks.filter(track => 
+    track.name.toLowerCase().includes(query.toLowerCase()) ||
+    track.artist.toLowerCase().includes(query.toLowerCase()) ||
+    track.album.toLowerCase().includes(query.toLowerCase())
+  )
+
+  const results = filtered.length > 0 ? filtered : mockTracks
+
+  return results.slice(0, limit)
 }
 
 // Get track by ID

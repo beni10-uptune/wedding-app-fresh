@@ -4,12 +4,24 @@ import { NextResponse } from 'next/server'
 let tokenCache: { access_token: string; expires_at: number } | null = null
 
 export async function GET() {
+  const clientId = process.env.SPOTIFY_CLIENT_ID
+  const clientSecret = process.env.SPOTIFY_CLIENT_SECRET
+
+  // Check if credentials are configured
+  if (!clientId || !clientSecret || clientId === 'your_spotify_client_id') {
+    return NextResponse.json({ 
+      access_token: 'demo_token',
+      client_id: 'demo',
+      demo_mode: true
+    })
+  }
+
   try {
     // Check if we have a valid cached token
     if (tokenCache && tokenCache.expires_at > Date.now()) {
       return NextResponse.json({ 
         access_token: tokenCache.access_token,
-        client_id: process.env.SPOTIFY_CLIENT_ID 
+        client_id: clientId 
       })
     }
 
@@ -19,14 +31,19 @@ export async function GET() {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Basic ' + Buffer.from(
-          `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
+          `${clientId}:${clientSecret}`
         ).toString('base64')
       },
       body: 'grant_type=client_credentials'
     })
 
     if (!response.ok) {
-      throw new Error('Failed to get Spotify token')
+      console.error('Spotify API error:', response.status, response.statusText)
+      return NextResponse.json({ 
+        access_token: 'demo_token',
+        client_id: 'demo',
+        demo_mode: true
+      })
     }
 
     const data = await response.json()
@@ -39,13 +56,14 @@ export async function GET() {
 
     return NextResponse.json({ 
       access_token: data.access_token,
-      client_id: process.env.SPOTIFY_CLIENT_ID 
+      client_id: clientId 
     })
   } catch (error) {
     console.error('Spotify token error:', error)
-    return NextResponse.json(
-      { error: 'Failed to get Spotify access token' },
-      { status: 500 }
-    )
+    return NextResponse.json({ 
+      access_token: 'demo_token',
+      client_id: 'demo',
+      demo_mode: true
+    })
   }
 }

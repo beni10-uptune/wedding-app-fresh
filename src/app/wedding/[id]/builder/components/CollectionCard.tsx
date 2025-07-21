@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { SongCollection, Song } from '@/types/wedding-v2'
 import { ChevronDown, ChevronUp, Plus, Play, Pause } from 'lucide-react'
 import { getSongsInCollection } from '@/data/curatedCollections'
@@ -18,12 +18,55 @@ export default function CollectionCard({
 }: CollectionCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [playingId, setPlayingId] = useState<string | null>(null)
+  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null)
   const songs = getSongsInCollection(collection.id)
 
-  const handlePlayPause = (songId: string, e: React.MouseEvent) => {
+  // Cleanup audio on unmount
+  React.useEffect(() => {
+    return () => {
+      if (audioElement) {
+        audioElement.pause()
+        audioElement.src = ''
+      }
+    }
+  }, [audioElement])
+
+  const handlePlayPause = (song: Song, e: React.MouseEvent) => {
     e.stopPropagation()
-    setPlayingId(playingId === songId ? null : songId)
-    // In a real app, this would control actual audio playback
+    
+    if (playingId === song.id) {
+      // Stop playing
+      if (audioElement) {
+        audioElement.pause()
+        audioElement.src = ''
+      }
+      setPlayingId(null)
+    } else {
+      // Start playing
+      if (audioElement) {
+        audioElement.pause()
+      }
+
+      // For demo mode, we'll simulate preview functionality
+      if (song.previewUrl) {
+        const audio = new Audio(song.previewUrl)
+        audio.volume = 0.5
+        audio.play().catch(err => {
+          console.error('Failed to play preview:', err)
+        })
+
+        audio.addEventListener('ended', () => {
+          setPlayingId(null)
+        })
+
+        setAudioElement(audio)
+        setPlayingId(song.id)
+      } else {
+        // In demo mode, just toggle the visual state
+        setPlayingId(song.id)
+        setTimeout(() => setPlayingId(null), 3000) // Simulate 3 second preview
+      }
+    }
   }
 
   const handleAddSong = (song: Song, e: React.MouseEvent) => {
@@ -82,7 +125,7 @@ export default function CollectionCard({
               >
                 <div className="flex items-center gap-3 flex-1">
                   <button
-                    onClick={(e) => handlePlayPause(song.id, e)}
+                    onClick={(e) => handlePlayPause(song, e)}
                     className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
                   >
                     {playingId === song.id ? (

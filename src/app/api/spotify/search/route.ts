@@ -10,6 +10,16 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Query parameter required' }, { status: 400 })
   }
 
+  // Check if credentials are available
+  if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET) {
+    console.log('Spotify credentials not configured')
+    return NextResponse.json({ 
+      tracks: [],
+      demo: true,
+      message: 'Spotify credentials not configured' 
+    })
+  }
+
   try {
     // Get access token using client credentials
     const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {

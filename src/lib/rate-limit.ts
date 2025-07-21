@@ -54,7 +54,9 @@ export async function rateLimit(
     return { success: true }
   }
 
-  const ip = request.ip ?? request.headers.get('x-forwarded-for') ?? 'anonymous'
+  const forwardedFor = request.headers.get('x-forwarded-for')
+  const realIp = request.headers.get('x-real-ip')
+  const ip = forwardedFor?.split(',')[0] ?? realIp ?? 'anonymous'
   
   try {
     const { success, limit, reset, remaining } = await rateLimiters[limiter].limit(ip)

@@ -125,6 +125,11 @@ export default function Dashboard() {
         
         // Load playlists for this wedding
         await loadPlaylists(weddingDoc.id)
+        
+        // If user has a paid wedding, redirect to builder for better experience
+        if (weddingData.paymentStatus === 'paid') {
+          router.push(`/wedding/${weddingDoc.id}/builder`)
+        }
       }
     } catch (error) {
       console.error('Error loading wedding:', error)

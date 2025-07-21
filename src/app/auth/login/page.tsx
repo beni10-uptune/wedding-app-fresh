@@ -7,6 +7,7 @@ import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 
 import { auth, db } from '@/lib/firebase'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
+import { getSmartRedirectPath } from '@/lib/auth-helpers'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -22,14 +23,8 @@ export default function LoginPage() {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      const weddingsQuery = query(collection(db, 'weddings'), where('owners', 'array-contains', userCredential.user.uid))
-      const weddingsSnapshot = await getDocs(weddingsQuery)
-      
-      if (weddingsSnapshot.empty) {
-        router.push('/create-wedding')
-      } else {
-        router.push('/dashboard')
-      }
+      const redirectPath = await getSmartRedirectPath(userCredential.user)
+      router.push(redirectPath)
     } catch (err) {
       setError((err as Error).message || 'Failed to sign in')
     } finally {
@@ -44,15 +39,8 @@ export default function LoginPage() {
     try {
       const provider = new GoogleAuthProvider()
       const userCredential = await signInWithPopup(auth, provider)
-      
-      const weddingsQuery = query(collection(db, 'weddings'), where('owners', 'array-contains', userCredential.user.uid))
-      const weddingsSnapshot = await getDocs(weddingsQuery)
-      
-      if (weddingsSnapshot.empty) {
-        router.push('/create-wedding')
-      } else {
-        router.push('/dashboard')
-      }
+      const redirectPath = await getSmartRedirectPath(userCredential.user)
+      router.push(redirectPath)
     } catch (err) {
       setError((err as Error).message || 'Failed to sign in with Google')
     } finally {

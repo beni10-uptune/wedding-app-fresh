@@ -2,10 +2,10 @@ import { SpotifyApi } from '@spotify/web-api-ts-sdk'
 
 // Client credentials flow for public data (searching, previews)
 let spotifyClient: SpotifyApi | null = null
-let isDemoMode = false
 
 export async function getSpotifyClient() {
-  if (spotifyClient) return spotifyClient
+  // Always get a fresh client to avoid caching issues
+  spotifyClient = null
 
   try {
     // For client credentials flow (server-side)
@@ -14,7 +14,6 @@ export async function getSpotifyClient() {
     
     if (data.demo_mode) {
       console.log('Running in Spotify demo mode')
-      isDemoMode = true
       return null
     }
     
@@ -30,7 +29,6 @@ export async function getSpotifyClient() {
     }
   } catch (error) {
     console.error('Failed to initialize Spotify client:', error)
-    isDemoMode = true
   }
   
   return null
@@ -38,15 +36,19 @@ export async function getSpotifyClient() {
 
 // Search for tracks
 export async function searchSpotifyTracks(query: string, limit = 10) {
-  const client = await getSpotifyClient()
-  
-  // Demo mode - return mock results
-  if (!client) {
-    return getMockSearchResults(query, limit)
-  }
-
   try {
+    const client = await getSpotifyClient()
+    
+    // Demo mode - return mock results
+    if (!client) {
+      console.log('No Spotify client available, using mock results')
+      return getMockSearchResults(query, limit)
+    }
+
+    console.log('Searching Spotify for:', query)
     const results = await client.search(query, ['track'], 'US', limit as 10)
+    console.log('Spotify search returned', results.tracks.items.length, 'results')
+    
     return results.tracks.items.map(track => ({
       id: track.id,
       name: track.name,

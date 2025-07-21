@@ -9,6 +9,7 @@ export async function GET() {
 
   // Check if credentials are configured
   if (!clientId || !clientSecret || clientId === 'your_spotify_client_id') {
+    console.log('Spotify credentials not configured, using demo mode')
     return NextResponse.json({ 
       access_token: 'demo_token',
       client_id: 'demo',

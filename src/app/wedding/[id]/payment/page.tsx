@@ -4,7 +4,7 @@ import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+import { db, auth } from '@/lib/firebase'
 import { Wedding } from '@/types/wedding'
 
 // Extended interface to support old wedding data structure
@@ -67,13 +67,18 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
 
       setWedding(weddingData)
       
+      // Get auth token
+      const token = await auth.currentUser?.getIdToken()
+      
       // Create payment intent
       const response = await fetch('/api/create-payment-intent', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({
           weddingId,
-          userId: user?.uid,
           email: user?.email
         })
       })

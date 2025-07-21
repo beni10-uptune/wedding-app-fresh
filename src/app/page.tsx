@@ -21,15 +21,24 @@ export default function Home() {
         <div className="container-max">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
-                <Music className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold">UpTune</h1>
-                <p className="text-xs text-purple-400">for Weddings</p>
-              </div>
-            </Link>
+            <div className="flex items-center gap-6">
+              <Link href="/" className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                  <Music className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold">UpTune</h1>
+                  <p className="text-xs text-purple-400">for Weddings</p>
+                </div>
+              </Link>
+              <a 
+                href="https://uptune.xyz" 
+                className="hidden sm:flex items-center gap-1 text-sm text-white/60 hover:text-white transition-colors"
+              >
+                <ArrowRight className="w-4 h-4 rotate-180" />
+                Back to UpTune
+              </a>
+            </div>
             
             {/* Desktop Nav */}
             <nav className="hidden md:flex items-center gap-8">

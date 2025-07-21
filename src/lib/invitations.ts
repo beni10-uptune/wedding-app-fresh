@@ -25,21 +25,25 @@ export function generateInviteCode(): string {
 
 // Create an invitation
 export async function createInvitation(
-  weddingId: string,
-  email: string,
-  role: Invitation['role'],
-  invitedBy: string
+  inviteData: {
+    weddingId: string
+    email: string
+    role: Invitation['role']
+    userId: string
+    personalizedPrompt?: string
+  }
 ): Promise<Invitation> {
   const inviteCode = generateInviteCode()
   const invitationData: Omit<Invitation, 'id'> = {
-    weddingId,
-    email,
-    role,
+    weddingId: inviteData.weddingId,
+    email: inviteData.email,
+    role: inviteData.role,
     inviteCode,
-    invitedBy,
+    invitedBy: inviteData.userId,
     invitedAt: Timestamp.now(),
     expiresAt: Timestamp.fromDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)), // 7 days
-    status: 'pending'
+    status: 'pending',
+    personalizedPrompt: inviteData.personalizedPrompt
   }
 
   const invitationRef = doc(collection(db, 'invitations'))

@@ -8,7 +8,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Wedding, Invitation } from '@/types/wedding'
 import Link from 'next/link'
-import { ArrowLeft, Mail, Copy, Users, Check, X, Clock } from 'lucide-react'
+import { ArrowLeft, Mail, Copy, Users, Check, X, Clock, HeartHandshake } from 'lucide-react'
 
 export default function GuestsManagementPage({ params }: { params: Promise<{ id: string }> }) {
   const [wedding, setWedding] = useState<Wedding | null>(null)
@@ -24,6 +24,9 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
   // Invite form state
   const [email, setEmail] = useState('')
   const [role, setRole] = useState<Invitation['role']>('guest')
+  const [useCustomPrompt, setUseCustomPrompt] = useState(false)
+  const [personalizedPrompt, setPersonalizedPrompt] = useState('')
+  const [selectedPromptTemplate, setSelectedPromptTemplate] = useState('')
 
   useEffect(() => {
     params.then(({ id }) => {
@@ -77,18 +80,43 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
 
     setInviting(true)
     try {
-      await createInvitation(weddingId, email, role, user.uid)
+      const inviteData = {
+        weddingId,
+        email,
+        role,
+        userId: user.uid,
+        personalizedPrompt: useCustomPrompt ? personalizedPrompt : getPromptByTemplate(selectedPromptTemplate)
+      }
+      
+      await createInvitation(inviteData)
       await loadInvitations()
       
       // Reset form
       setEmail('')
       setRole('guest')
+      setUseCustomPrompt(false)
+      setPersonalizedPrompt('')
+      setSelectedPromptTemplate('')
       setShowInviteForm(false)
     } catch (err) {
       console.error('Error creating invitation:', err)
     } finally {
       setInviting(false)
     }
+  }
+
+  const getPromptByTemplate = (template: string) => {
+    const prompts: { [key: string]: string } = {
+      'dance': 'What songs always get you on the dance floor? Share 3-5 party favorites!',
+      'romantic': 'What are the most romantic songs you know? Help us set the mood!',
+      'dinner': 'What songs create the perfect dinner ambiance? Share your favorites!',
+      'ceremony': 'What songs would make our ceremony even more special?',
+      '80s': "We love your taste in 80's music! Give us your top 3 throwback hits!",
+      '90s': "You're our 90's music expert! What are your must-play classics?",
+      'rock': 'We need some rock energy! What are your favorite rock anthems?',
+      'country': 'Help us add some country charm! What are your favorite country songs?'
+    }
+    return prompts[template] || ''
   }
 
   const copyInviteLink = (invitation: Invitation) => {
@@ -166,6 +194,25 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
 
       {/* Main content */}
       <main className="relative z-10 max-w-7xl mx-auto px-4 py-8">
+        {/* Partner Collaboration Notice */}
+        {wedding?.paymentStatus === 'paid' && (
+          <div className="glass-gradient rounded-xl p-6 mb-8 border border-purple-500/30">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <HeartHandshake className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white mb-2">
+                  Ready to collaborate with your partner! 💑
+                </h3>
+                <p className="text-white/80">
+                  You can now invite your partner as a co-owner to collaborate on playlists, manage guests, and prepare for your special day together.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {/* Stats */}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
           <div className="card">
@@ -289,7 +336,7 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
                 />
               </div>
 
-              <div className="mb-6">
+              <div className="mb-4">
                 <label className="block text-sm font-medium text-white/80 mb-1">
                   Role
                 </label>
@@ -298,12 +345,98 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
                   onChange={(e) => setRole(e.target.value as Invitation['role'])}
                   className="input"
                 >
-                  <option value="partner">Partner (Co-owner)</option>
+                  {wedding?.paymentStatus === 'paid' && (
+                    <option value="partner">Partner (Co-owner)</option>
+                  )}
                   <option value="guest">Guest</option>
                   <option value="family">Family</option>
                   <option value="friend">Friend</option>
                   <option value="wedding-party">Wedding Party</option>
                 </select>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-white/80 mb-2">
+                  Song Request Prompt
+                </label>
+                
+                {!useCustomPrompt ? (
+                  <>
+                    <div className="grid grid-cols-2 gap-2 mb-3">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPromptTemplate('dance')}
+                        className={`p-3 rounded-lg border text-sm text-left transition-all ${
+                          selectedPromptTemplate === 'dance' 
+                            ? 'border-purple-500 bg-purple-500/20 text-white' 
+                            : 'border-white/20 text-white/70 hover:border-purple-400'
+                        }`}
+                      >
+                        💃 Dance Floor Hits
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPromptTemplate('romantic')}
+                        className={`p-3 rounded-lg border text-sm text-left transition-all ${
+                          selectedPromptTemplate === 'romantic' 
+                            ? 'border-purple-500 bg-purple-500/20 text-white' 
+                            : 'border-white/20 text-white/70 hover:border-purple-400'
+                        }`}
+                      >
+                        💕 Romantic Vibes
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPromptTemplate('80s')}
+                        className={`p-3 rounded-lg border text-sm text-left transition-all ${
+                          selectedPromptTemplate === '80s' 
+                            ? 'border-purple-500 bg-purple-500/20 text-white' 
+                            : 'border-white/20 text-white/70 hover:border-purple-400'
+                        }`}
+                      >
+                        🎸 80's Classics
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPromptTemplate('ceremony')}
+                        className={`p-3 rounded-lg border text-sm text-left transition-all ${
+                          selectedPromptTemplate === 'ceremony' 
+                            ? 'border-purple-500 bg-purple-500/20 text-white' 
+                            : 'border-white/20 text-white/70 hover:border-purple-400'
+                        }`}
+                      >
+                        💒 Ceremony Songs
+                      </button>
+                    </div>
+                    
+                    <button
+                      type="button"
+                      onClick={() => setUseCustomPrompt(true)}
+                      className="text-sm text-purple-400 hover:text-purple-300"
+                    >
+                      Write custom prompt →
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <textarea
+                      value={personalizedPrompt}
+                      onChange={(e) => setPersonalizedPrompt(e.target.value)}
+                      className="input min-h-[80px]"
+                      placeholder="E.g., 'We love your taste in jazz! Please suggest 3-5 smooth jazz songs for our cocktail hour.'"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUseCustomPrompt(false)
+                        setPersonalizedPrompt('')
+                      }}
+                      className="text-sm text-purple-400 hover:text-purple-300 mt-2"
+                    >
+                      ← Use template instead
+                    </button>
+                  </>
+                )}
               </div>
 
               <div className="flex gap-3 justify-end">

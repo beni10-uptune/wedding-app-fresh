@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowRight, ArrowLeft, Music, Heart, MapPin, Users, Crown, CheckCircle } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Music, Heart, MapPin, Users, Crown, CheckCircle, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { db } from '@/lib/firebase'
 import { collection, addDoc } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
+import { playlistTemplates } from '@/data/playlistTemplates'
 
 interface WeddingData {
   coupleName1: string
@@ -17,6 +18,7 @@ interface WeddingData {
   guestCount: number
   weddingStyle: string
   moments: string[]
+  playlistTemplate?: string
 }
 
 export default function CreateWeddingPage() {
@@ -31,7 +33,8 @@ export default function CreateWeddingPage() {
     city: '',
     guestCount: 50,
     weddingStyle: '',
-    moments: ['ceremony', 'cocktail', 'dinner', 'dancing']
+    moments: ['ceremony', 'cocktail', 'dinner', 'dancing'],
+    playlistTemplate: ''
   })
   const router = useRouter()
 
@@ -88,19 +91,44 @@ export default function CreateWeddingPage() {
         updatedAt: new Date()
       })
 
-      // Create default playlists for selected moments
-      const playlistPromises = weddingData.moments.map(momentId => {
-        const moment = weddingMoments.find(m => m.id === momentId)
-        return addDoc(collection(db, 'weddings', weddingRef.id, 'playlists'), {
-          name: moment?.label || momentId,
-          description: moment?.description || '',
-          moment: momentId,
-          songs: [],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          createdBy: user.uid
+      // Create playlists based on template or custom selection
+      let playlistPromises: Promise<any>[] = []
+      
+      if (weddingData.playlistTemplate && weddingData.playlistTemplate !== 'custom') {
+        // Use template playlists
+        const template = playlistTemplates.find(t => t.id === weddingData.playlistTemplate)
+        if (template) {
+          playlistPromises = template.playlists.map(playlist => {
+            return addDoc(collection(db, 'weddings', weddingRef.id, 'playlists'), {
+              name: playlist.name,
+              description: playlist.description,
+              moment: playlist.moment,
+              targetSongCount: playlist.targetSongCount,
+              suggestedGenres: playlist.suggestedGenres || [],
+              suggestedMood: playlist.suggestedMood || [],
+              songs: [],
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              createdBy: user.uid
+            })
+          })
+        }
+      } else {
+        // Create default playlists for selected moments
+        playlistPromises = weddingData.moments.map(momentId => {
+          const moment = weddingMoments.find(m => m.id === momentId)
+          return addDoc(collection(db, 'weddings', weddingRef.id, 'playlists'), {
+            name: moment?.label || momentId,
+            description: moment?.description || '',
+            moment: momentId,
+            targetSongCount: 20, // Default target
+            songs: [],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            createdBy: user.uid
+          })
         })
-      })
+      }
 
       await Promise.all(playlistPromises)
 
@@ -113,7 +141,7 @@ export default function CreateWeddingPage() {
     }
   }
 
-  const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 4))
+  const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 5))
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1))
 
   if (!user) {
@@ -153,7 +181,7 @@ export default function CreateWeddingPage() {
               Step {currentStep} of 4
             </div>
             <div className="flex space-x-2">
-              {[1, 2, 3, 4].map(step => (
+              {[1, 2, 3, 4, 5].map(step => (
                 <div
                   key={step}
                   className={`w-3 h-3 rounded-full ${
@@ -358,6 +386,77 @@ export default function CreateWeddingPage() {
               </div>
             )}
 
+            {/* Step 5: Playlist Template */}
+            {currentStep === 5 && (
+              <div className="space-y-6">
+                <div className="text-center mb-8">
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Sparkles className="w-8 h-8 text-white" />
+                  </div>
+                  <h2 className="text-3xl font-serif font-bold text-white mb-2">
+                    Choose Your Musical Style
+                  </h2>
+                  <p className="text-white/60">
+                    Start with a curated template or build from scratch
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <div
+                    className={`p-4 rounded-lg border-2 transition-all cursor-pointer ${
+                      weddingData.playlistTemplate === 'custom'
+                        ? 'border-purple-500 bg-purple-500/20 glass'
+                        : 'border-white/20 hover:border-purple-400 glass'
+                    }`}
+                    onClick={() => handleInputChange('playlistTemplate', 'custom')}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl">✨</span>
+                          <div className="font-semibold text-white">Start from Scratch</div>
+                        </div>
+                        <div className="text-sm text-white/60 mt-1">
+                          Create your own unique playlists
+                        </div>
+                      </div>
+                      {weddingData.playlistTemplate === 'custom' && (
+                        <CheckCircle className="w-5 h-5 text-purple-500" />
+                      )}
+                    </div>
+                  </div>
+
+                  {playlistTemplates.map(template => (
+                    <div
+                      key={template.id}
+                      className={`p-4 rounded-lg border-2 transition-all cursor-pointer ${
+                        weddingData.playlistTemplate === template.id
+                          ? 'border-purple-500 bg-purple-500/20 glass'
+                          : 'border-white/20 hover:border-purple-400 glass'
+                      }`}
+                      onClick={() => handleInputChange('playlistTemplate', template.id)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-2xl">{template.icon}</span>
+                            <div className="font-semibold text-white">{template.name}</div>
+                          </div>
+                          <div className="text-sm text-white/60">{template.description}</div>
+                          <div className="text-xs text-purple-400 mt-2">
+                            {template.playlists.length} playlists • {template.style}
+                          </div>
+                        </div>
+                        {weddingData.playlistTemplate === template.id && (
+                          <CheckCircle className="w-5 h-5 text-purple-500" />
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Navigation */}
             <div className="flex justify-between items-center mt-8 pt-6 border-t border-white/20">
               <button
@@ -369,7 +468,7 @@ export default function CreateWeddingPage() {
                 Back
               </button>
 
-              {currentStep === 4 ? (
+              {currentStep === 5 ? (
                 <button
                   onClick={handleSubmit}
                   disabled={loading}

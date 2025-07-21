@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import QuickAddSongModal from '@/components/QuickAddSongModal'
+import { DashboardSkeleton } from '@/components/LoadingSkeleton'
 
 interface Wedding {
   id: string
@@ -180,13 +181,29 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen dark-gradient flex items-center justify-center">
-        <div className="text-center">
-          <div className="relative">
-            <div className="w-20 h-20 border-4 border-purple-400/30 rounded-full animate-pulse"></div>
-            <div className="w-20 h-20 border-4 border-pink-400 border-t-transparent rounded-full animate-spin absolute inset-0"></div>
+      <div className="min-h-screen dark-gradient relative overflow-hidden">
+        {/* Header skeleton */}
+        <header className="glass sticky top-0 z-50 border-b border-white/10">
+          <div className="max-w-7xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-white/10 rounded-full animate-pulse"></div>
+                <div>
+                  <div className="h-5 bg-white/10 rounded w-20 mb-1"></div>
+                  <div className="h-3 bg-white/10 rounded w-24"></div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="w-20 h-8 bg-white/10 rounded animate-pulse"></div>
+              </div>
+            </div>
           </div>
-          <p className="text-white/60 mt-6 text-lg">Loading your love story...</p>
+        </header>
+        
+        <div className="px-4 py-12">
+          <div className="max-w-7xl mx-auto">
+            <DashboardSkeleton />
+          </div>
         </div>
       </div>
     )
@@ -345,7 +362,7 @@ export default function Dashboard() {
                       href={`/wedding/${activeWedding.id}/guests`}
                       className="btn-secondary"
                     >
-                      <Share2 className="w-5 h-5" />
+                      <Users className="w-5 h-5" />
                       Invite Guests
                     </Link>
                   </div>
@@ -469,6 +486,39 @@ export default function Dashboard() {
                 <Plus className="w-6 h-6" />
                 Start Your Musical Journey
               </Link>
+              
+              {/* Template Showcase */}
+              <div className="mt-12 text-left">
+                <h3 className="text-lg font-bold text-white mb-4 text-center">
+                  🎵 Start with a template that matches your style
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="glass-darker rounded-lg p-4 text-center">
+                    <span className="text-2xl mb-2 block">🎩</span>
+                    <p className="text-sm text-white/80 font-medium">Classic & Elegant</p>
+                  </div>
+                  <div className="glass-darker rounded-lg p-4 text-center">
+                    <span className="text-2xl mb-2 block">🎉</span>
+                    <p className="text-sm text-white/80 font-medium">Modern Party</p>
+                  </div>
+                  <div className="glass-darker rounded-lg p-4 text-center">
+                    <span className="text-2xl mb-2 block">🌻</span>
+                    <p className="text-sm text-white/80 font-medium">Rustic & Folk</p>
+                  </div>
+                  <div className="glass-darker rounded-lg p-4 text-center">
+                    <span className="text-2xl mb-2 block">🌍</span>
+                    <p className="text-sm text-white/80 font-medium">Cultural Fusion</p>
+                  </div>
+                  <div className="glass-darker rounded-lg p-4 text-center">
+                    <span className="text-2xl mb-2 block">📻</span>
+                    <p className="text-sm text-white/80 font-medium">Vintage & Retro</p>
+                  </div>
+                  <div className="glass-darker rounded-lg p-4 text-center">
+                    <span className="text-2xl mb-2 block">🕯️</span>
+                    <p className="text-sm text-white/80 font-medium">Intimate & Minimal</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>

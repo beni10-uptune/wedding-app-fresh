@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { Analytics } from "@vercel/analytics/next";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -45,9 +47,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${dancing.variable}`}>
       <body className={`${inter.className} antialiased`}>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            {children}
+            <Analytics />
+          </AuthProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

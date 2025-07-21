@@ -191,14 +191,14 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
             </Link>
             
             <div className="flex items-center space-x-4">
-              <button className="btn-glass">
-                <Share2 className="w-4 h-4" />
-                <span className="hidden sm:inline">Share</span>
-              </button>
-              <button className="btn-glass">
+              <Link href={`/wedding/${weddingId}/guests`} className="btn-glass">
+                <Users className="w-4 h-4" />
+                <span className="hidden sm:inline">Invite Guests</span>
+              </Link>
+              <Link href={`/wedding/${weddingId}/export`} className="btn-glass">
                 <Download className="w-4 h-4" />
                 <span className="hidden sm:inline">Export</span>
-              </button>
+              </Link>
               <Link href={`/wedding/${weddingId}/settings`} className="btn-glass">
                 <Settings className="w-4 h-4" />
                 <span className="hidden sm:inline">Settings</span>

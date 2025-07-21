@@ -6,6 +6,7 @@ import { X, Search, Plus, Play, Pause } from 'lucide-react'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useAuth } from '@/contexts/AuthContext'
+import { checkDuplicateSong, validateSongData } from '@/lib/song-utils'
 import Image from 'next/image'
 
 interface QuickAddSongModalProps {
@@ -102,6 +103,28 @@ export default function QuickAddSongModal({
     
     setAddingTrack(track.id)
     try {
+      // Check for duplicates
+      const isDuplicate = await checkDuplicateSong(weddingId, selectedPlaylist, track.id)
+      if (isDuplicate) {
+        alert('This song is already in the playlist!')
+        setAddingTrack(null)
+        return
+      }
+
+      // Validate song data
+      const validationError = validateSongData({
+        spotify_id: track.id,
+        title: track.name,
+        artist: track.artist,
+        duration_ms: track.duration_ms
+      })
+      
+      if (validationError) {
+        alert(validationError)
+        setAddingTrack(null)
+        return
+      }
+
       // Add song to the selected playlist
       const playlistRef = collection(db, 'weddings', weddingId, 'playlists', selectedPlaylist, 'songs')
       await addDoc(playlistRef, {
@@ -126,6 +149,7 @@ export default function QuickAddSongModal({
       
     } catch (error) {
       console.error('Error adding song:', error)
+      alert('Failed to add song. Please try again.')
       setAddingTrack(null)
     }
   }

@@ -126,6 +126,16 @@ export interface Invitation {
   expiresAt: Timestamp
   status: 'pending' | 'accepted' | 'declined' | 'expired'
   userId?: string // Populated when invitation is accepted
+  personalizedPrompt?: string // Custom song request prompt
+  songQuestions?: SongQuestion[] // Specific song requests
+}
+
+export interface SongQuestion {
+  id: string
+  question: string
+  moment?: WeddingMoment
+  count?: number // How many songs to suggest
+  genre?: string // Specific genre request
 }
 
 // Collaboration types

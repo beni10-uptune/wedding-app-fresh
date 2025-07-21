@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Heart, CheckCircle, Music } from 'lucide-react'
 import Link from 'next/link'
 import confetti from 'canvas-confetti'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 function PaymentSuccessContent() {
   const router = useRouter()
@@ -15,18 +16,22 @@ function PaymentSuccessContent() {
     try {
       // Check if we have Stripe redirect parameters
       const paymentIntentSecret = searchParams.get('payment_intent_client_secret')
+      const paymentIntent = searchParams.get('payment_intent')
       
-      // Only trigger confetti if we have a valid payment redirect or no params at all
-      // (no params means it was a direct navigation after successful payment)
-      if (!paymentIntentSecret || paymentIntentSecret.length > 0) {
+      // Only trigger confetti if we have a valid payment redirect
+      if (paymentIntentSecret || paymentIntent) {
         // Trigger confetti only on client side
-        if (typeof window !== 'undefined' && confetti) {
-          confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ['#a855f7', '#ec4899', '#8b5cf6']
-          })
+        if (typeof window !== 'undefined' && typeof confetti === 'function') {
+          try {
+            confetti({
+              particleCount: 100,
+              spread: 70,
+              origin: { y: 0.6 },
+              colors: ['#a855f7', '#ec4899', '#8b5cf6']
+            })
+          } catch (confettiError) {
+            console.error('Confetti error:', confettiError)
+          }
         }
       }
     } catch (error) {
@@ -99,15 +104,17 @@ function PaymentSuccessContent() {
 
 export default function PaymentSuccessPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen dark-gradient flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white/60">Loading...</p>
+    <ErrorBoundary>
+      <Suspense fallback={
+        <div className="min-h-screen dark-gradient flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-white/60">Loading...</p>
+          </div>
         </div>
-      </div>
-    }>
-      <PaymentSuccessContent />
-    </Suspense>
+      }>
+        <PaymentSuccessContent />
+      </Suspense>
+    </ErrorBoundary>
   )
 }

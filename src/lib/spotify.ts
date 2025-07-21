@@ -19,8 +19,8 @@ export async function getSpotifyClient() {
     }
     
     if (data.access_token && data.access_token !== 'demo_token') {
-      // Use the client ID from the response or environment variable
-      const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID || data.client_id || 'your-spotify-client-id'
+      // Use the client ID from the response
+      const clientId = data.client_id || 'your-spotify-client-id'
       
       spotifyClient = SpotifyApi.withAccessToken(
         clientId,
@@ -212,9 +212,9 @@ export function getSpotifyAuthUrl(state: string) {
   ]
 
   const params = new URLSearchParams({
-    client_id: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID!,
+    client_id: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID || '',
     response_type: 'code',
-    redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL}/api/spotify/callback`,
+    redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/api/spotify/callback`,
     state: state,
     scope: scopes.join(' ')
   })

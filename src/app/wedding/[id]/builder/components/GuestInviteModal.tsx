@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { X, Mail, Users, Send, Copy, Check } from 'lucide-react'
+import { X, Mail, Send, Copy, Check } from 'lucide-react'
 import { collection, addDoc, Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { generateInviteToken } from '@/lib/utils'

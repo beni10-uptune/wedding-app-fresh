@@ -7,7 +7,6 @@ import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, up
 import { auth, db } from '@/lib/firebase'
 import { doc, setDoc } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
-import { getSmartRedirectPath } from '@/lib/auth-helpers'
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('')

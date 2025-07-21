@@ -8,7 +8,7 @@ import {
 import { db } from '@/lib/firebase'
 import { GuestSubmission } from '@/types/wedding-v2'
 import { 
-  Users, Check, X, MessageSquare, 
+  Users, Check, X, 
   TrendingUp, Music, AlertCircle 
 } from 'lucide-react'
 

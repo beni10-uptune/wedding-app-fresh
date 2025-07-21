@@ -6,10 +6,10 @@ import { auth, db } from '@/lib/firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { collection, query, where, getDocs, doc, getDoc, orderBy, limit } from 'firebase/firestore'
 import { 
-  Music, Plus, Users, Calendar, Clock, 
+  Music, Plus, Users, 
   LogOut, Settings, ChevronRight, Heart, 
-  Sparkles, Gift, TrendingUp, Share2,
-  CheckCircle2, Circle, Zap, PartyPopper,
+  Sparkles, Gift,
+  CheckCircle2, Zap, PartyPopper,
   HeartHandshake, Headphones, Timer
 } from 'lucide-react'
 import Link from 'next/link'
@@ -41,7 +41,7 @@ interface Playlist {
 }
 
 export default function Dashboard() {
-  const [user, setUser] = useState<any>(null)
+  const [, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [activeWedding, setActiveWedding] = useState<Wedding | null>(null)
   const [playlists, setPlaylists] = useState<Playlist[]>([])

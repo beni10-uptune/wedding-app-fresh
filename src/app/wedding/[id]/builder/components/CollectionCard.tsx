@@ -118,7 +118,7 @@ export default function CollectionCard({
       {isExpanded && (
         <div className="border-t border-white/10">
           <div className="max-h-64 overflow-y-auto">
-            {songs.map((song, index) => {
+            {songs.map((song) => {
               if (!song) return null;
               return (
               <div 

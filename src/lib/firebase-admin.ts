@@ -9,9 +9,9 @@ const firebaseAdminConfig = {
 }
 
 // Initialize Firebase Admin
-const app = admin.apps.length === 0 
-  ? admin.initializeApp(firebaseAdminConfig) 
-  : admin.apps[0]
+if (admin.apps.length === 0) {
+  admin.initializeApp(firebaseAdminConfig)
+}
 
 export const auth = admin.auth()
 export const adminDb = admin.firestore()

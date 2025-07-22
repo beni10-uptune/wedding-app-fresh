@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { ArrowLeft, Search, Filter, Plus, Heart, Clock, Star, Music, Lock } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
-import { musicLibrary, getFilteredSongs, getGenres, getMoods, getEnergyLevels, Song, weddingMoments } from '@/data/musicLibrary'
+import { musicLibrary, getGenres, getMoods, getEnergyLevels, Song, weddingMoments } from '@/data/musicLibrary'
 import MusicPlayer from '@/components/MusicPlayer'
 import { searchSpotifyTracks, getSpotifyTrack } from '@/lib/spotify'
 import Image from 'next/image'
@@ -69,12 +69,12 @@ export default function MusicLibraryPage({ params }: { params: Promise<{ id: str
         
         // Check if user has access to curated library
         const tier = getUserTier(weddingData.paymentStatus)
-        const hasLibraryAccess = tier.features.curatedLibrary
+        const hasLibraryAccess = weddingData.paymentStatus === 'paid'
         setHasAccess(hasLibraryAccess)
         
         // Set songs based on access
         if (hasLibraryAccess) {
-          setSongs(getFilteredSongs(musicLibrary, filters))
+          setSongs(musicLibrary)
         } else {
           setSongs([])
           setShowUpgradeModal(true)
@@ -95,7 +95,27 @@ export default function MusicLibraryPage({ params }: { params: Promise<{ id: str
   }, [weddingId])
 
   useEffect(() => {
-    const filtered = getFilteredSongs(filters)
+    // Apply filters to the songs
+    let filtered = hasAccess ? musicLibrary : []
+    
+    if (filters.search) {
+      filtered = filtered.filter(song => 
+        song.title.toLowerCase().includes(filters.search.toLowerCase()) ||
+        song.artist.toLowerCase().includes(filters.search.toLowerCase())
+      )
+    }
+    if (filters.moment) {
+      filtered = filtered.filter(song => song.moment === filters.moment)
+    }
+    if (filters.genre) {
+      filtered = filtered.filter(song => song.genre === filters.genre)
+    }
+    if (filters.mood) {
+      filtered = filtered.filter(song => song.mood.includes(filters.mood))
+    }
+    if (filters.energy) {
+      filtered = filtered.filter(song => song.energyLevel === filters.energy)
+    }
     setSongs(filtered)
   }, [filters])
 
@@ -152,7 +172,7 @@ export default function MusicLibraryPage({ params }: { params: Promise<{ id: str
   // Update songs when filters change
   useEffect(() => {
     if (hasAccess) {
-      setSongs(getFilteredSongs(musicLibrary, filters))
+      fetchPlaylists()
     }
   }, [filters, hasAccess])
 

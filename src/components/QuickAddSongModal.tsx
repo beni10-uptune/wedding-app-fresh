@@ -7,7 +7,7 @@ import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useAuth } from '@/contexts/AuthContext'
 import { validateSongData } from '@/lib/song-utils'
-import { SUBSCRIPTION_TIERS, getUserTier } from '@/lib/subscription-tiers'
+import { getUserTier } from '@/lib/subscription-tiers'
 import UpgradeModal from './UpgradeModal'
 import Image from 'next/image'
 
@@ -44,7 +44,7 @@ export default function QuickAddSongModal({
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<SpotifyTrack[]>([])
   const [selectedMoment, setSelectedMoment] = useState('first-dance')
-  const [availableMoments, setAvailableMoments] = useState<string[]>(['first-dance', 'ceremony', 'cocktail', 'dinner', 'party'])
+  const [availableMoments] = useState<string[]>(['first-dance', 'ceremony', 'cocktail', 'dinner', 'party'])
   const [loading, setLoading] = useState(false)
   const [addingTrack, setAddingTrack] = useState<string | null>(null)
   const [playingTrack, setPlayingTrack] = useState<string | null>(null)

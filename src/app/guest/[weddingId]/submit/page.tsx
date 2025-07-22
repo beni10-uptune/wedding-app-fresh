@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, use } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { 
   Heart, Send, Check, 
   AlertCircle 
@@ -41,7 +41,6 @@ export default function GuestSubmitPage({ params }: { params: Promise<{ weddingI
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const searchParams = useSearchParams()
-  const router = useRouter()
   const token = searchParams.get('token')
 
   useEffect(() => {

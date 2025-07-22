@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowLeft, Music, Users, Download, CreditCard, Mail, MessageCircle } from 'lucide-react'
+import { ArrowLeft, Music, Mail, MessageCircle } from 'lucide-react'
 
 export default function HelpPage() {
   const faqs = [

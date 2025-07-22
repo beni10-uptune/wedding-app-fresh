@@ -13,12 +13,11 @@ import {
   Sparkles, Gift,
   CheckCircle2, Zap, PartyPopper,
   HeartHandshake, Timer,
-  Calendar, UserCheck, Share2, Play, Lock, Download,
+  Calendar, UserCheck, Share2, Play,
   AlertCircle, RefreshCw, Crown
 } from 'lucide-react'
 import Link from 'next/link'
 import { DashboardSkeleton } from '@/components/LoadingSkeleton'
-import { getUserTier, SUBSCRIPTION_TIERS } from '@/lib/subscription-tiers'
 
 interface Wedding {
   id: string
@@ -78,7 +77,6 @@ export default function Dashboard() {
 
   // Get moment completion percentage
   const getMomentProgress = (moment: any) => {
-    const currentSongs = moment.songs?.length || 0
     const targetDuration = moment.duration * 60 // Convert minutes to seconds
     const currentDuration = moment.songs?.reduce((sum: number, song: any) => sum + (song.duration || 0), 0) || 0
     return Math.min((currentDuration / targetDuration) * 100, 100)

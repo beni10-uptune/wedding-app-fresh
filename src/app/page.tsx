@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowRight, Heart, Music, Users, CheckCircle, Play, Sparkles, Download, Zap, Shield, Star, Gift, Calendar, PartyPopper, ChevronRight, Menu, X } from 'lucide-react'
+import { ArrowRight, Heart, Music, Users, CheckCircle, Play, Sparkles, Download, Shield, Star, Calendar, Menu, X } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 

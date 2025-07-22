@@ -5,7 +5,7 @@
 
 import { db } from '@/lib/firebase'
 import { doc, getDoc, collection, getDocs, query, where } from 'firebase/firestore'
-import { SUBSCRIPTION_TIERS, getUserTier } from './subscription-tiers'
+import { getUserTier } from './subscription-tiers'
 
 export interface TierCheckResult {
   allowed: boolean

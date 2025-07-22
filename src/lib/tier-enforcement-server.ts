@@ -5,8 +5,8 @@
 
 import { db } from '@/lib/firebase'
 import { adminDb } from '@/lib/firebase-admin'
-import { doc, getDoc, collection, getDocs } from 'firebase/firestore'
-import { SUBSCRIPTION_TIERS, getUserTier } from './subscription-tiers'
+import { doc, getDoc, collection, getDocs, query, where } from 'firebase/firestore'
+import { getUserTier } from './subscription-tiers'
 
 export interface TierCheckResult {
   allowed: boolean
@@ -20,21 +20,26 @@ export interface TierCheckResult {
  */
 export async function canAddSong(weddingId: string): Promise<TierCheckResult> {
   try {
-    // Use admin SDK if available for server-side
-    const database = adminDb || db
-    
     // Get wedding document
-    const weddingRef = adminDb 
-      ? adminDb.collection('weddings').doc(weddingId)
-      : doc(db, 'weddings', weddingId)
+    let weddingData: any
+    let exists = false
     
-    const weddingDoc = await (adminDb ? weddingRef.get() : getDoc(weddingRef))
+    if (adminDb) {
+      const weddingRef = adminDb.collection('weddings').doc(weddingId)
+      const weddingDoc = await weddingRef.get()
+      exists = weddingDoc.exists
+      weddingData = weddingDoc.data()
+    } else {
+      const weddingRef = doc(db, 'weddings', weddingId)
+      const weddingDoc = await getDoc(weddingRef)
+      exists = weddingDoc.exists()
+      weddingData = weddingDoc.data()
+    }
     
-    if (!weddingDoc.exists()) {
+    if (!exists) {
       return { allowed: false, reason: 'Wedding not found' }
     }
     
-    const weddingData = weddingDoc.data()
     const paymentStatus = weddingData?.paymentStatus || 'pending'
     const tier = getUserTier(paymentStatus)
     
@@ -79,20 +84,26 @@ export async function canAddSong(weddingId: string): Promise<TierCheckResult> {
  */
 export async function canInviteGuest(weddingId: string): Promise<TierCheckResult> {
   try {
-    const database = adminDb || db
-    
     // Get wedding document
-    const weddingRef = adminDb 
-      ? adminDb.collection('weddings').doc(weddingId)
-      : doc(db, 'weddings', weddingId)
+    let weddingData: any
+    let exists = false
     
-    const weddingDoc = await (adminDb ? weddingRef.get() : getDoc(weddingRef))
+    if (adminDb) {
+      const weddingRef = adminDb.collection('weddings').doc(weddingId)
+      const weddingDoc = await weddingRef.get()
+      exists = weddingDoc.exists
+      weddingData = weddingDoc.data()
+    } else {
+      const weddingRef = doc(db, 'weddings', weddingId)
+      const weddingDoc = await getDoc(weddingRef)
+      exists = weddingDoc.exists()
+      weddingData = weddingDoc.data()
+    }
     
-    if (!weddingDoc.exists()) {
+    if (!exists) {
       return { allowed: false, reason: 'Wedding not found' }
     }
     
-    const weddingData = weddingDoc.data()
     const paymentStatus = weddingData?.paymentStatus || 'pending'
     const tier = getUserTier(paymentStatus)
     
@@ -102,18 +113,24 @@ export async function canInviteGuest(weddingId: string): Promise<TierCheckResult
     }
     
     // Count current invitations
-    const invitationsRef = adminDb
-      ? adminDb.collection('invitations').where('weddingId', '==', weddingId)
-      : collection(db, 'invitations')
+    let guestInvitations: any[] = []
     
-    const invitationsSnapshot = await (adminDb
-      ? invitationsRef.get()
-      : getDocs(invitationsRef))
-    
-    const guestInvitations = invitationsSnapshot.docs.filter(doc => {
-      const data = doc.data()
-      return data.type === 'guest' && data.weddingId === weddingId
-    })
+    if (adminDb) {
+      const invitationsSnapshot = await adminDb
+        .collection('invitations')
+        .where('weddingId', '==', weddingId)
+        .where('type', '==', 'guest')
+        .get()
+      guestInvitations = invitationsSnapshot.docs
+    } else {
+      const invitationsQuery = query(
+        collection(db, 'invitations'),
+        where('weddingId', '==', weddingId),
+        where('type', '==', 'guest')
+      )
+      const invitationsSnapshot = await getDocs(invitationsQuery)
+      guestInvitations = invitationsSnapshot.docs
+    }
     
     const currentGuestCount = guestInvitations.length
     
@@ -143,20 +160,26 @@ export async function canInviteGuest(weddingId: string): Promise<TierCheckResult
  */
 export async function canExport(weddingId: string): Promise<TierCheckResult> {
   try {
-    const database = adminDb || db
-    
     // Get wedding document
-    const weddingRef = adminDb 
-      ? adminDb.collection('weddings').doc(weddingId)
-      : doc(db, 'weddings', weddingId)
+    let weddingData: any
+    let exists = false
     
-    const weddingDoc = await (adminDb ? weddingRef.get() : getDoc(weddingRef))
+    if (adminDb) {
+      const weddingRef = adminDb.collection('weddings').doc(weddingId)
+      const weddingDoc = await weddingRef.get()
+      exists = weddingDoc.exists
+      weddingData = weddingDoc.data()
+    } else {
+      const weddingRef = doc(db, 'weddings', weddingId)
+      const weddingDoc = await getDoc(weddingRef)
+      exists = weddingDoc.exists()
+      weddingData = weddingDoc.data()
+    }
     
-    if (!weddingDoc.exists()) {
+    if (!exists) {
       return { allowed: false, reason: 'Wedding not found' }
     }
     
-    const weddingData = weddingDoc.data()
     const paymentStatus = weddingData?.paymentStatus || 'pending'
     const tier = getUserTier(paymentStatus)
     
@@ -181,20 +204,26 @@ export async function canExport(weddingId: string): Promise<TierCheckResult> {
  */
 export async function canAddCoOwner(weddingId: string): Promise<TierCheckResult> {
   try {
-    const database = adminDb || db
-    
     // Get wedding document
-    const weddingRef = adminDb 
-      ? adminDb.collection('weddings').doc(weddingId)
-      : doc(db, 'weddings', weddingId)
+    let weddingData: any
+    let exists = false
     
-    const weddingDoc = await (adminDb ? weddingRef.get() : getDoc(weddingRef))
+    if (adminDb) {
+      const weddingRef = adminDb.collection('weddings').doc(weddingId)
+      const weddingDoc = await weddingRef.get()
+      exists = weddingDoc.exists
+      weddingData = weddingDoc.data()
+    } else {
+      const weddingRef = doc(db, 'weddings', weddingId)
+      const weddingDoc = await getDoc(weddingRef)
+      exists = weddingDoc.exists()
+      weddingData = weddingDoc.data()
+    }
     
-    if (!weddingDoc.exists()) {
+    if (!exists) {
       return { allowed: false, reason: 'Wedding not found' }
     }
     
-    const weddingData = weddingDoc.data()
     const paymentStatus = weddingData?.paymentStatus || 'pending'
     const tier = getUserTier(paymentStatus)
     
@@ -217,20 +246,26 @@ export async function canAddCoOwner(weddingId: string): Promise<TierCheckResult>
  */
 export async function getWeddingUsageStats(weddingId: string) {
   try {
-    const database = adminDb || db
-    
     // Get wedding document
-    const weddingRef = adminDb 
-      ? adminDb.collection('weddings').doc(weddingId)
-      : doc(db, 'weddings', weddingId)
+    let weddingData: any
+    let exists = false
     
-    const weddingDoc = await (adminDb ? weddingRef.get() : getDoc(weddingRef))
+    if (adminDb) {
+      const weddingRef = adminDb.collection('weddings').doc(weddingId)
+      const weddingDoc = await weddingRef.get()
+      exists = weddingDoc.exists
+      weddingData = weddingDoc.data()
+    } else {
+      const weddingRef = doc(db, 'weddings', weddingId)
+      const weddingDoc = await getDoc(weddingRef)
+      exists = weddingDoc.exists()
+      weddingData = weddingDoc.data()
+    }
     
-    if (!weddingDoc.exists()) {
+    if (!exists) {
       throw new Error('Wedding not found')
     }
     
-    const weddingData = weddingDoc.data()
     const paymentStatus = weddingData?.paymentStatus || 'pending'
     const tier = getUserTier(paymentStatus)
     
@@ -245,18 +280,24 @@ export async function getWeddingUsageStats(weddingId: string) {
     })
     
     // Count guest invitations
-    const invitationsRef = adminDb
-      ? adminDb.collection('invitations').where('weddingId', '==', weddingId)
-      : collection(db, 'invitations')
+    let guestInvitations: any[] = []
     
-    const invitationsSnapshot = await (adminDb
-      ? invitationsRef.get()
-      : getDocs(invitationsRef))
-    
-    const guestInvitations = invitationsSnapshot.docs.filter(doc => {
-      const data = doc.data()
-      return data.type === 'guest' && data.weddingId === weddingId
-    })
+    if (adminDb) {
+      const invitationsSnapshot = await adminDb
+        .collection('invitations')
+        .where('weddingId', '==', weddingId)
+        .where('type', '==', 'guest')
+        .get()
+      guestInvitations = invitationsSnapshot.docs
+    } else {
+      const invitationsQuery = query(
+        collection(db, 'invitations'),
+        where('weddingId', '==', weddingId),
+        where('type', '==', 'guest')
+      )
+      const invitationsSnapshot = await getDocs(invitationsQuery)
+      guestInvitations = invitationsSnapshot.docs
+    }
     
     return {
       tier: paymentStatus === 'paid' ? 'premium' : 'free',

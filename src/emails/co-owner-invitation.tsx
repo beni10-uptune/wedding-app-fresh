@@ -1,16 +1,4 @@
-import {
-  Html,
-  Head,
-  Body,
-  Container,
-  Section,
-  Heading,
-  Text,
-  Button,
-  Link,
-  Preview,
-  Hr
-} from '@react-email/components'
+import * as React from 'react'
 
 interface CoOwnerInvitationEmailProps {
   partnerEmail: string
@@ -32,53 +20,52 @@ export function CoOwnerInvitationEmail({
   const partnerName = partnerEmail.split('@')[0].charAt(0).toUpperCase() + partnerEmail.split('@')[0].slice(1)
   
   return (
-    <Html>
-      <Head />
-      <Preview>
-        {inviterName} invited you to co-plan your wedding on UpTune!
-      </Preview>
-      <Body style={main}>
-        <Container style={container}>
-          <Section style={logoSection}>
+    <html>
+      <head>
+        <meta content="text/html; charset=UTF-8" httpEquiv="Content-Type" />
+      </head>
+      <body style={main}>
+        <div style={container}>
+          <div style={logoSection}>
             <div style={logoWrapper}>
-              <Text style={logoText}>♫ UpTune</Text>
-              <Text style={tagline}>for Weddings</Text>
+              <p style={logoText}>♫ UpTune</p>
+              <p style={tagline}>for Weddings</p>
             </div>
-          </Section>
+          </div>
 
-          <Section style={contentSection}>
-            <Heading style={heading}>
+          <div style={contentSection}>
+            <h1 style={heading}>
               Let's Plan Our Wedding Together! 💑
-            </Heading>
+            </h1>
 
-            <Text style={text}>
+            <p style={text}>
               Hi {partnerName},
-            </Text>
+            </p>
 
-            <Text style={text}>
+            <p style={text}>
               {inviterName} has started planning your wedding music on UpTune and wants you to join as a co-owner!
-            </Text>
+            </p>
 
-            <Section style={detailsBox}>
-              <Text style={detailsText}>
+            <div style={detailsBox}>
+              <p style={detailsText}>
                 <strong>💍 Your Wedding Details</strong>
-              </Text>
-              <Text style={detailsText}>
+              </p>
+              <p style={detailsText}>
                 👰‍♀️🤵 {coupleNames.join(' & ')}
-              </Text>
-              <Text style={detailsText}>
+              </p>
+              <p style={detailsText}>
                 📅 {weddingDate}
-              </Text>
+              </p>
               {venue && (
-                <Text style={detailsText}>
+                <p style={detailsText}>
                   📍 {venue}
-                </Text>
+                </p>
               )}
-            </Section>
+            </div>
 
-            <Text style={highlightText}>
+            <p style={highlightText}>
               As a co-owner, you'll be able to:
-            </Text>
+            </p>
             
             <ul style={featureList}>
               <li style={featureItem}>✨ Build your wedding playlist together</li>
@@ -88,57 +75,57 @@ export function CoOwnerInvitationEmail({
               <li style={featureItem}>🎉 Create the perfect soundtrack for your special day</li>
             </ul>
 
-            <Section style={buttonSection}>
-              <Button style={button} href={inviteLink}>
+            <div style={buttonSection}>
+              <a style={button} href={inviteLink}>
                 💕 Join as Co-Owner
-              </Button>
-            </Section>
+              </a>
+            </div>
 
-            <Text style={smallText}>
+            <p style={smallText}>
               You'll need to create an account or sign in to accept this invitation.
-            </Text>
+            </p>
 
-            <Hr style={divider} />
+            <hr style={divider} />
 
-            <Text style={footerText}>
+            <p style={footerText}>
               This invitation was sent by {inviterName} using{' '}
-              <Link href="https://weddings.uptune.xyz" style={link}>
+              <a href="https://weddings.uptune.xyz" style={link}>
                 UpTune for Weddings
-              </Link>
-            </Text>
+              </a>
+            </p>
             
-            <Text style={footerText}>
+            <p style={footerText}>
               Build your perfect wedding soundtrack together.
-            </Text>
-          </Section>
-        </Container>
-      </Body>
-    </Html>
+            </p>
+          </div>
+        </div>
+      </body>
+    </html>
   )
 }
 
 // Styles
-const main = {
+const main: React.CSSProperties = {
   backgroundColor: '#0a0a0a',
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
 }
 
-const container = {
+const container: React.CSSProperties = {
   margin: '0 auto',
   padding: '20px 0 48px',
   maxWidth: '560px',
 }
 
-const logoSection = {
+const logoSection: React.CSSProperties = {
   padding: '32px 20px',
-  textAlign: 'center' as const,
+  textAlign: 'center',
 }
 
-const logoWrapper = {
+const logoWrapper: React.CSSProperties = {
   display: 'inline-block',
 }
 
-const logoText = {
+const logoText: React.CSSProperties = {
   fontSize: '24px',
   fontWeight: 'bold',
   background: 'linear-gradient(to right, #a855f7, #ec4899)',
@@ -147,35 +134,35 @@ const logoText = {
   margin: '0',
 }
 
-const tagline = {
+const tagline: React.CSSProperties = {
   fontSize: '14px',
   color: '#a855f7',
   margin: '4px 0 0 0',
 }
 
-const contentSection = {
+const contentSection: React.CSSProperties = {
   backgroundColor: 'rgba(255, 255, 255, 0.05)',
   borderRadius: '12px',
   padding: '32px',
   border: '1px solid rgba(255, 255, 255, 0.1)',
 }
 
-const heading = {
+const heading: React.CSSProperties = {
   fontSize: '28px',
   fontWeight: 'bold',
   color: '#ffffff',
   margin: '0 0 24px 0',
-  textAlign: 'center' as const,
+  textAlign: 'center',
 }
 
-const text = {
+const text: React.CSSProperties = {
   fontSize: '16px',
   lineHeight: '24px',
   color: '#e5e5e5',
   margin: '0 0 16px 0',
 }
 
-const detailsBox = {
+const detailsBox: React.CSSProperties = {
   backgroundColor: 'rgba(168, 85, 247, 0.1)',
   borderRadius: '8px',
   padding: '20px',
@@ -183,69 +170,69 @@ const detailsBox = {
   border: '1px solid rgba(168, 85, 247, 0.3)',
 }
 
-const detailsText = {
+const detailsText: React.CSSProperties = {
   fontSize: '14px',
   color: '#ffffff',
   margin: '8px 0',
 }
 
-const highlightText = {
+const highlightText: React.CSSProperties = {
   fontSize: '16px',
   fontWeight: 'bold',
   color: '#ffffff',
   margin: '24px 0 16px 0',
 }
 
-const featureList = {
+const featureList: React.CSSProperties = {
   margin: '0 0 24px 0',
   paddingLeft: '20px',
 }
 
-const featureItem = {
+const featureItem: React.CSSProperties = {
   fontSize: '14px',
   lineHeight: '22px',
   color: '#e5e5e5',
   margin: '8px 0',
 }
 
-const buttonSection = {
-  textAlign: 'center' as const,
+const buttonSection: React.CSSProperties = {
+  textAlign: 'center',
   margin: '32px 0',
 }
 
-const button = {
+const button: React.CSSProperties = {
   backgroundColor: '#ec4899',
   borderRadius: '8px',
   color: '#ffffff',
   fontSize: '16px',
   fontWeight: 'bold',
   textDecoration: 'none',
-  textAlign: 'center' as const,
+  textAlign: 'center',
   display: 'inline-block',
   padding: '16px 32px',
   margin: '0 auto',
 }
 
-const smallText = {
+const smallText: React.CSSProperties = {
   fontSize: '14px',
   color: '#a3a3a3',
-  textAlign: 'center' as const,
+  textAlign: 'center',
   margin: '16px 0',
 }
 
-const divider = {
+const divider: React.CSSProperties = {
   borderColor: 'rgba(255, 255, 255, 0.1)',
   margin: '32px 0',
 }
 
-const footerText = {
+const footerText: React.CSSProperties = {
   fontSize: '12px',
   color: '#737373',
-  textAlign: 'center' as const,
+  textAlign: 'center',
   margin: '8px 0',
 }
 
-const link = {
+const link: React.CSSProperties = {
   color: '#a855f7',
   textDecoration: 'underline',
 }

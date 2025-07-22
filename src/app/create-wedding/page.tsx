@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ArrowRight, ArrowLeft, Music, Heart, MapPin, Users, Crown, CheckCircle, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { db } from '@/lib/firebase'
-import { collection, addDoc, Timestamp } from 'firebase/firestore'
+import { collection, addDoc, Timestamp, query, where, getDocs } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
 import { playlistTemplates } from '@/data/playlistTemplates'
 
@@ -25,6 +25,7 @@ export default function CreateWeddingPage() {
   const { user } = useAuth()
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
+  const [checkingExisting, setCheckingExisting] = useState(true)
   const [weddingData, setWeddingData] = useState<WeddingData>({
     coupleName1: '',
     coupleName2: '',
@@ -37,6 +38,36 @@ export default function CreateWeddingPage() {
     playlistTemplate: ''
   })
   const router = useRouter()
+
+  useEffect(() => {
+    checkExistingWedding()
+  }, [user])
+
+  const checkExistingWedding = async () => {
+    if (!user) {
+      router.push('/auth/login')
+      return
+    }
+
+    try {
+      // Check if user already has a wedding
+      const weddingsQuery = query(
+        collection(db, 'weddings'),
+        where('owners', 'array-contains', user.uid)
+      )
+      const snapshot = await getDocs(weddingsQuery)
+      
+      if (!snapshot.empty) {
+        // User already has a wedding, redirect to dashboard
+        router.push('/dashboard')
+        return
+      }
+    } catch (error) {
+      console.error('Error checking existing wedding:', error)
+    } finally {
+      setCheckingExisting(false)
+    }
+  }
 
   const weddingStyles = [
     'Classic & Traditional',
@@ -143,6 +174,17 @@ export default function CreateWeddingPage() {
 
   const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 5))
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1))
+
+  if (checkingExisting) {
+    return (
+      <div className="min-h-screen dark-gradient flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white/60">Checking your account...</p>
+        </div>
+      </div>
+    )
+  }
 
   if (!user) {
     return (

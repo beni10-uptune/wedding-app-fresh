@@ -567,7 +567,7 @@ export default function JoinPage() {
             ) : (
               <div className="text-center py-8">
                 <p className="text-white/60">
-                  Search for songs to add to the {playlists.find(p => p.id === selectedPlaylist)?.name} playlist
+                  Search for songs to add to the {moments.find(m => m.id === selectedMoment)?.name}
                 </p>
               </div>
             )}

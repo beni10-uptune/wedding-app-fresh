@@ -76,7 +76,7 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
 
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!user || !email) return
+    if (!user || !email || !wedding) return
 
     setInviting(true)
     try {
@@ -88,7 +88,35 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
         personalizedPrompt: useCustomPrompt ? personalizedPrompt : getPromptByTemplate(selectedPromptTemplate)
       }
       
-      await createInvitation(inviteData)
+      const invitation = await createInvitation(inviteData)
+      
+      // Send email
+      try {
+        const inviteLink = `${window.location.origin}/auth/guest-join/${weddingId}?code=${invitation.inviteCode}`
+        
+        await fetch('/api/send-invitation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            coupleNames: wedding.coupleNames || [wedding.coupleName1, wedding.coupleName2].filter(Boolean),
+            weddingDate: wedding.weddingDate.toDate().toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }),
+            venue: wedding.venue,
+            inviteLink,
+            personalizedPrompt: inviteData.personalizedPrompt,
+            role
+          })
+        })
+      } catch (emailError) {
+        console.error('Failed to send email:', emailError)
+        // Continue even if email fails
+      }
+      
       await loadInvitations()
       
       // Reset form

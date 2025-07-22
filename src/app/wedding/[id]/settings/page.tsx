@@ -13,7 +13,9 @@ import {
 
 interface Wedding {
   id: string
-  coupleNames: string[]
+  coupleNames?: string[]
+  coupleName1?: string
+  coupleName2?: string
   owners: string[]
   weddingDate: any
   venue?: string
@@ -77,15 +79,38 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
 
   const handleAddCoOwner = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!coOwnerEmail || !wedding) return
+    if (!coOwnerEmail || !wedding || !user) return
 
     setSaving(true)
     try {
-      // For now, we'll just copy the invite link
-      // In production, this would send an email
       const inviteLink = generateInviteLink()
-      navigator.clipboard.writeText(inviteLink)
-      setCopiedId('co-owner-link')
+      
+      // Send email
+      try {
+        await fetch('/api/send-invitation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'co-owner',
+            partnerEmail: coOwnerEmail,
+            inviterName: user.displayName || user.email?.split('@')[0] || 'Your partner',
+            coupleNames: wedding.coupleNames || [wedding.coupleName1, wedding.coupleName2].filter(Boolean),
+            weddingDate: wedding.weddingDate.toDate().toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }),
+            venue: wedding.venue,
+            inviteLink
+          })
+        })
+      } catch (emailError) {
+        console.error('Failed to send email:', emailError)
+        // Still copy link as fallback
+        navigator.clipboard.writeText(inviteLink)
+        setCopiedId('co-owner-link')
+      }
       
       // Reset form
       setCoOwnerEmail('')

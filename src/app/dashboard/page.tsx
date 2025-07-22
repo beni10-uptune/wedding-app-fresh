@@ -176,8 +176,6 @@ export default function Dashboard() {
         })
         
         const weddingDoc = allSnapshot.docs.find(doc => doc.id === sortedWeddings[0].id)!
-        
-        const weddingDoc = snapshot.docs[0]
         const data = weddingDoc.data()
         const weddingData = {
           id: weddingDoc.id,

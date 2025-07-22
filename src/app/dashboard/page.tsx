@@ -13,7 +13,8 @@ import {
   Sparkles, Gift,
   CheckCircle2, Zap, PartyPopper,
   HeartHandshake, Timer,
-  Calendar, UserCheck, Share2, Play, Lock, Download
+  Calendar, UserCheck, Share2, Play, Lock, Download,
+  AlertCircle, RefreshCw
 } from 'lucide-react'
 import Link from 'next/link'
 import { DashboardSkeleton } from '@/components/LoadingSkeleton'
@@ -44,6 +45,8 @@ export default function Dashboard() {
   const [activeWedding, setActiveWedding] = useState<Wedding | null>(null)
   const [timeline, setTimeline] = useState<Timeline | null>(null)
   const [userName, setUserName] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [retryCount, setRetryCount] = useState(0)
   const router = useRouter()
 
   // Get greeting based on time of day
@@ -56,11 +59,20 @@ export default function Dashboard() {
 
   // Calculate days until wedding
   const getDaysUntilWedding = (weddingDate: Timestamp) => {
-    const wedding = weddingDate.toDate()
-    const today = new Date()
-    const diffTime = wedding.getTime() - today.getTime()
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    return diffDays
+    try {
+      if (!weddingDate || !weddingDate.toDate) {
+        console.error('Invalid wedding date:', weddingDate)
+        return 0
+      }
+      const wedding = weddingDate.toDate()
+      const today = new Date()
+      const diffTime = wedding.getTime() - today.getTime()
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+      return Math.max(0, diffDays) // Prevent negative days
+    } catch (error) {
+      console.error('Error calculating days until wedding:', error)
+      return 0
+    }
   }
 
   // Get moment completion percentage
@@ -135,9 +147,17 @@ export default function Dashboard() {
         setUser(user)
         
         // Get user data
-        const userDoc = await getDoc(doc(db, 'users', user.uid))
-        if (userDoc.exists()) {
-          setUserName(userDoc.data().displayName || user.displayName || 'Lovebird')
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid))
+          if (userDoc.exists()) {
+            setUserName(userDoc.data().displayName || user.displayName || 'Lovebird')
+          } else {
+            // Create user document if it doesn't exist
+            setUserName(user.displayName || 'Lovebird')
+          }
+        } catch (error) {
+          console.error('Error loading user data:', error)
+          setUserName(user.displayName || 'Lovebird')
         }
         
         // Load user's active wedding
@@ -149,10 +169,13 @@ export default function Dashboard() {
     })
 
     return () => unsubscribe()
-  }, [router])
+  }, [router, retryCount])
 
   const loadActiveWedding = async (userId: string) => {
     try {
+      setError(null)
+      console.log('Loading weddings for user:', userId)
+      
       // First, get any weddings for this user (paid or unpaid)
       const allWeddingsQuery = query(
         collection(db, 'weddings'), 
@@ -160,45 +183,91 @@ export default function Dashboard() {
         orderBy('updatedAt', 'desc')
       )
       const allSnapshot = await getDocs(allWeddingsQuery)
+      console.log('Found weddings:', allSnapshot.size)
       
       if (!allSnapshot.empty) {
         // Find the most recent wedding (prefer paid ones)
-        const weddings = allSnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as Wedding[]
+        const weddings = allSnapshot.docs.map(doc => {
+          const data = doc.data()
+          return {
+            id: doc.id,
+            ...data,
+            // Ensure critical fields have defaults
+            paymentStatus: data.paymentStatus || 'pending',
+            owners: data.owners || [],
+            updatedAt: data.updatedAt || Timestamp.now()
+          }
+        }) as Wedding[]
+        
+        // Validate we have at least one valid wedding
+        const validWeddings = weddings.filter(w => 
+          w.owners && Array.isArray(w.owners) && w.owners.includes(userId)
+        )
+        
+        if (validWeddings.length === 0) {
+          console.error('No valid weddings found for user')
+          setActiveWedding(null)
+          return
+        }
         
         // Sort: paid weddings first, then by date
-        const sortedWeddings = weddings.sort((a, b) => {
+        const sortedWeddings = validWeddings.sort((a, b) => {
           if (a.paymentStatus === 'paid' && b.paymentStatus !== 'paid') return -1
           if (b.paymentStatus === 'paid' && a.paymentStatus !== 'paid') return 1
           return 0
         })
         
-        const weddingDoc = allSnapshot.docs.find(doc => doc.id === sortedWeddings[0].id)!
+        const selectedWedding = sortedWeddings[0]
+        const weddingDoc = allSnapshot.docs.find(doc => doc.id === selectedWedding.id)!
         const data = weddingDoc.data()
+        
+        // Validate and clean wedding data
         const weddingData = {
           id: weddingDoc.id,
           ...data,
-          // Ensure we have coupleNames array
-          coupleNames: data.coupleNames || [data.coupleName1, data.coupleName2].filter(Boolean)
+          // Ensure we have required fields with defaults
+          coupleNames: data.coupleNames || [data.coupleName1, data.coupleName2].filter(Boolean),
+          weddingDate: data.weddingDate || Timestamp.now(),
+          paymentStatus: data.paymentStatus || 'pending',
+          owners: data.owners || [userId],
+          venue: data.venue || '',
+          city: data.city || ''
         } as Wedding
         
         setActiveWedding(weddingData)
         
         // Load timeline and guest stats for this wedding
-        await loadTimeline(weddingDoc.id)
-        await loadGuestStats(weddingDoc.id, weddingData)
-        
-        // Don't auto-redirect - let users navigate manually
+        await Promise.all([
+          loadTimeline(weddingDoc.id),
+          loadGuestStats(weddingDoc.id, weddingData)
+        ])
+      } else {
+        // No weddings found - this is a valid state
+        console.log('No weddings found for user')
+        setActiveWedding(null)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading wedding:', error)
+      console.error('Error details:', error.code, error.message)
+      
+      // Provide user-friendly error messages
+      if (error.code === 'failed-precondition') {
+        setError('Database not configured properly. Please contact support.')
+      } else if (error.code === 'permission-denied') {
+        setError('You don\'t have permission to access this wedding.')
+      } else if (error.code === 'unavailable') {
+        setError('Service temporarily unavailable. Please try again.')
+      } else {
+        setError('Unable to load your wedding data. Please refresh the page.')
+      }
+      
+      setActiveWedding(null)
     }
   }
 
   const loadTimeline = async (weddingId: string) => {
     try {
+      console.log('Loading timeline for wedding:', weddingId)
       const weddingDoc = await getDoc(doc(db, 'weddings', weddingId))
       if (weddingDoc.exists()) {
         const weddingData = weddingDoc.data()
@@ -209,20 +278,27 @@ export default function Dashboard() {
         let totalSongs = 0
         let totalDuration = 0
         Object.values(timelineData).forEach((moment: any) => {
-          if (moment.songs && Array.isArray(moment.songs)) {
+          if (moment && moment.songs && Array.isArray(moment.songs)) {
             totalSongs += moment.songs.length
-            totalDuration += moment.songs.reduce((sum: number, song: any) => sum + (song.duration || 0), 0)
+            totalDuration += moment.songs.reduce((sum: number, song: any) => {
+              return sum + (song?.duration || 0)
+            }, 0)
           }
         })
+        
+        console.log('Timeline loaded - Total songs:', totalSongs, 'Total duration:', totalDuration)
         
         setActiveWedding(prev => prev ? { 
           ...prev, 
           songCount: totalSongs,
           totalDuration
         } : null)
+      } else {
+        console.error('Wedding document not found:', weddingId)
       }
     } catch (error) {
       console.error('Error loading timeline:', error)
+      // Don't throw - just log the error to prevent cascade failures
     }
   }
 
@@ -329,7 +405,34 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {activeWedding ? (
+      {error ? (
+        /* Error State */
+        <section className="px-4 py-12 relative z-10">
+          <div className="max-w-7xl mx-auto">
+            <div className="glass-gradient rounded-3xl p-12 text-center max-w-2xl mx-auto">
+              <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <AlertCircle className="w-10 h-10 text-red-400" />
+              </div>
+              <h2 className="text-3xl font-serif font-bold text-white mb-4">
+                Oops! Something went wrong
+              </h2>
+              <p className="text-xl text-white/70 mb-8">
+                {error}
+              </p>
+              <button
+                onClick={() => {
+                  setError(null)
+                  setRetryCount(prev => prev + 1)
+                }}
+                className="btn-primary inline-flex"
+              >
+                <RefreshCw className="w-5 h-5" />
+                Try Again
+              </button>
+            </div>
+          </div>
+        </section>
+      ) : activeWedding ? (
         activeWedding.paymentStatus === 'paid' ? (
         <>
           {/* Hero Section with Wedding Countdown */}

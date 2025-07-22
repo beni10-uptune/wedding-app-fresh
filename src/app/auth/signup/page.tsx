@@ -37,7 +37,22 @@ export default function SignUpPage() {
           }
         } catch (error) {
           console.error('Error checking user status:', error)
-          router.push('/dashboard')
+          // If we can't read the user doc, they might be a new user
+          // Try to create a minimal user doc
+          try {
+            await setDoc(doc(db, 'users', user.uid), {
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName || 'User',
+              createdAt: serverTimestamp(),
+              role: 'couple',
+              onboardingCompleted: false
+            }, { merge: true })
+            router.push('/create-wedding')
+          } catch (createError) {
+            console.error('Failed to create user doc in auth observer:', createError)
+            router.push('/dashboard')
+          }
         }
       } else {
         setCheckingAuth(false)
@@ -53,29 +68,55 @@ export default function SignUpPage() {
     setError('')
 
     try {
+      console.log('Starting signup process...')
+      
       // Create user account
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const user = userCredential.user
+      console.log('Firebase Auth user created:', user.uid)
 
       // Update display name
       await updateProfile(user, { displayName: name })
+      console.log('Display name updated')
 
       // Create user document in Firestore
-      await setDoc(doc(db, 'users', user.uid), {
-        uid: user.uid,
-        email: user.email,
-        displayName: name,
-        partnerName: partnerName,
-        createdAt: serverTimestamp(),
-        role: 'couple',
-        onboardingCompleted: false
-      })
+      try {
+        await setDoc(doc(db, 'users', user.uid), {
+          uid: user.uid,
+          email: user.email,
+          displayName: name,
+          partnerName: partnerName,
+          createdAt: serverTimestamp(),
+          role: 'couple',
+          onboardingCompleted: false
+        })
+        console.log('User document created in Firestore')
+      } catch (firestoreError) {
+        console.error('Firestore error:', firestoreError)
+        // If Firestore fails, we should still have the auth user
+        // Show a more specific error
+        throw new Error('Database configuration error. Please try again or contact support.')
+      }
 
       console.log('User created successfully, auth state should update')
       // Don't manually redirect - let the auth state listener handle it
       // The useEffect hook will catch the auth state change and redirect
     } catch (err) {
-      setError((err as Error).message || 'Failed to create account')
+      console.error('Signup error:', err)
+      const error = err as any
+      
+      // Check for specific Firebase errors
+      if (error.code === 'auth/email-already-in-use') {
+        setError('This email is already registered. Please sign in instead.')
+      } else if (error.code === 'auth/weak-password') {
+        setError('Password should be at least 6 characters.')
+      } else if (error.code === 'auth/invalid-email') {
+        setError('Please enter a valid email address.')
+      } else if (error.message && error.message.includes('Database configuration')) {
+        setError(error.message)
+      } else {
+        setError('Failed to create account. Please try again.')
+      }
     } finally {
       setLoading(false)
     }
@@ -86,29 +127,55 @@ export default function SignUpPage() {
     setError('')
 
     try {
+      console.log('Starting Google signup...')
       const provider = new GoogleAuthProvider()
       const userCredential = await signInWithPopup(auth, provider)
       const user = userCredential.user
+      console.log('Google auth successful:', user.uid)
 
       // Check if user already exists
-      const userDoc = await getDoc(doc(db, 'users', user.uid))
-      const isNewUser = !userDoc.exists()
+      let userDoc
+      try {
+        userDoc = await getDoc(doc(db, 'users', user.uid))
+      } catch (readError) {
+        console.error('Error reading user doc:', readError)
+        // Continue anyway - we'll create the doc
+      }
+      
+      const isNewUser = !userDoc?.exists()
       
       // Create/update user document in Firestore
-      await setDoc(doc(db, 'users', user.uid), {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL,
-        createdAt: serverTimestamp(),
-        role: 'couple',
-        onboardingCompleted: isNewUser ? false : userDoc.data()?.onboardingCompleted || true
-      }, { merge: true })
+      try {
+        await setDoc(doc(db, 'users', user.uid), {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          createdAt: serverTimestamp(),
+          role: 'couple',
+          onboardingCompleted: isNewUser ? false : userDoc?.data()?.onboardingCompleted || true
+        }, { merge: true })
+        console.log('User document created/updated in Firestore')
+      } catch (firestoreError) {
+        console.error('Firestore error:', firestoreError)
+        throw new Error('Database configuration error. Please try again or contact support.')
+      }
 
       console.log('Google signup successful, auth state should update')
       // Don't manually redirect - let the auth state listener handle it
     } catch (err) {
-      setError((err as Error).message || 'Failed to sign up with Google')
+      console.error('Google signup error:', err)
+      const error = err as any
+      
+      if (error.code === 'auth/popup-closed-by-user') {
+        setError('Sign-in cancelled. Please try again.')
+      } else if (error.code === 'auth/popup-blocked') {
+        setError('Pop-up blocked. Please allow pop-ups for this site.')
+      } else if (error.message && error.message.includes('Database configuration')) {
+        setError(error.message)
+      } else {
+        setError('Failed to sign up with Google. Please try again.')
+      }
     } finally {
       setLoading(false)
     }

@@ -9,7 +9,8 @@ import { db } from '@/lib/firebase'
 import { GuestSubmission } from '@/types/wedding-v2'
 import { 
   Users, Check, X, 
-  TrendingUp, Music, AlertCircle 
+  TrendingUp, Music, AlertCircle,
+  Share2, ExternalLink
 } from 'lucide-react'
 
 interface GuestSubmissionsProps {
@@ -118,6 +119,28 @@ export default function GuestSubmissions({ weddingId, onAddSong }: GuestSubmissi
 
   return (
     <div className="space-y-6">
+      {/* Share Link */}
+      <div className="glass-darker rounded-xl p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Share2 className="w-5 h-5 text-purple-400" />
+            <div>
+              <h4 className="font-medium text-white">Share with Guests</h4>
+              <p className="text-sm text-white/60">Let guests suggest their favorite songs</p>
+            </div>
+          </div>
+          <a
+            href={`/join/${weddingId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-secondary text-sm flex items-center gap-2"
+          >
+            <ExternalLink className="w-4 h-4" />
+            Open Guest Form
+          </a>
+        </div>
+      </div>
+
       {/* Filter Tabs */}
       <div className="flex gap-2 p-1 bg-white/5 rounded-lg">
         {(['pending', 'approved', 'rejected', 'all'] as const).map((status) => (

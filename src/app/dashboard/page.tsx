@@ -10,7 +10,8 @@ import {
   LogOut, Settings, ChevronRight, Heart, 
   Sparkles, Gift,
   CheckCircle2, Zap, PartyPopper,
-  HeartHandshake, Headphones, Timer
+  HeartHandshake, Timer,
+  Calendar, UserCheck, Share2, Play
 } from 'lucide-react'
 import Link from 'next/link'
 import QuickAddSongModal from '@/components/QuickAddSongModal'
@@ -75,9 +76,23 @@ export default function Dashboard() {
 
   // Get overall progress
   const getOverallProgress = () => {
-    if (!playlists.length) return 0
-    const totalProgress = playlists.reduce((acc, playlist) => acc + getPlaylistProgress(playlist), 0)
-    return Math.round(totalProgress / playlists.length)
+    if (!activeWedding) return 0
+    const targetSongs = 150 // Target number of songs for a full wedding
+    const currentSongs = activeWedding.songCount || 0
+    return Math.min(Math.round((currentSongs / targetSongs) * 100), 100)
+  }
+
+  // Get guest response rate
+  const getGuestResponseRate = () => {
+    if (!activeWedding) return { responded: 0, invited: 0, rate: 0 }
+    // Mock data for now - in real app, this would come from invitations collection
+    const invited = 25 // Default guest count
+    const responded = activeWedding.guestCount || 8 // Use existing guestCount field
+    return {
+      responded,
+      invited,
+      rate: Math.round((responded / invited) * 100)
+    }
   }
 
   useEffect(() => {
@@ -126,10 +141,7 @@ export default function Dashboard() {
         // Load playlists for this wedding
         await loadPlaylists(weddingDoc.id)
         
-        // If user has a paid wedding, redirect to builder for better experience
-        if (weddingData.paymentStatus === 'paid') {
-          router.push(`/wedding/${weddingDoc.id}/builder`)
-        }
+        // Don't auto-redirect - let users navigate manually
       }
     } catch (error) {
       console.error('Error loading wedding:', error)
@@ -304,7 +316,8 @@ export default function Dashboard() {
 
                   {/* Key Metrics */}
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all">
+                    {/* Songs Progress */}
+                    <Link href={`/wedding/${activeWedding.id}/builder`} className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all cursor-pointer group">
                       <div className="flex items-center justify-between mb-2">
                         <Music className="w-8 h-8 text-purple-400" />
                         <span className="text-3xl font-bold text-white">
@@ -312,76 +325,95 @@ export default function Dashboard() {
                         </span>
                       </div>
                       <p className="text-white font-medium">Songs Collected</p>
-                      <p className="text-sm text-white/60 mt-1">Across all playlists</p>
-                    </div>
-                    
-                    <div className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all">
-                      <div className="flex items-center justify-between mb-2">
-                        <CheckCircle2 className="w-8 h-8 text-green-400" />
-                        <span className="text-3xl font-bold text-white">
-                          {getOverallProgress()}%
-                        </span>
-                      </div>
-                      <p className="text-white font-medium">Playlist Progress</p>
                       <div className="w-full bg-white/10 rounded-full h-2 mt-3">
                         <div 
-                          className="bg-gradient-to-r from-green-400 to-emerald-400 h-2 rounded-full transition-all"
+                          className="bg-gradient-to-r from-purple-400 to-pink-400 h-2 rounded-full transition-all"
                           style={{ width: `${getOverallProgress()}%` }}
                         />
                       </div>
-                    </div>
+                      <p className="text-xs text-white/60 mt-2">Target: 150 songs</p>
+                    </Link>
                     
-                    <div className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all">
+                    {/* Guest Responses */}
+                    <Link href={`/wedding/${activeWedding.id}/guests`} className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all cursor-pointer group">
                       <div className="flex items-center justify-between mb-2">
-                        <Users className="w-8 h-8 text-pink-400" />
+                        <UserCheck className="w-8 h-8 text-green-400" />
                         <span className="text-3xl font-bold text-white">
-                          {activeWedding?.guestCount || 0}
+                          {getGuestResponseRate().responded}
                         </span>
                       </div>
-                      <p className="text-white font-medium">Guest Contributors</p>
-                      <p className="text-sm text-white/60 mt-1">Sharing their favorites</p>
-                    </div>
+                      <p className="text-white font-medium">Guest Responses</p>
+                      <div className="w-full bg-white/10 rounded-full h-2 mt-3">
+                        <div 
+                          className="bg-gradient-to-r from-green-400 to-emerald-400 h-2 rounded-full transition-all"
+                          style={{ width: `${getGuestResponseRate().rate}%` }}
+                        />
+                      </div>
+                      <p className="text-xs text-white/60 mt-2">{getGuestResponseRate().responded} of {getGuestResponseRate().invited} invited</p>
+                    </Link>
                     
-                    <div className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all">
+                    {/* Wedding Details */}
+                    <Link href={`/wedding/${activeWedding.id}`} className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all cursor-pointer group">
                       <div className="flex items-center justify-between mb-2">
-                        <Headphones className="w-8 h-8 text-indigo-400" />
-                        <span className="text-3xl font-bold text-white">
-                          {activeWedding?.playlistCount || 0}
+                        <Calendar className="w-8 h-8 text-pink-400" />
+                        <span className="text-xl font-bold text-white">
+                          {activeWedding?.venue || 'Venue'}
                         </span>
                       </div>
-                      <p className="text-white font-medium">Playlists Created</p>
-                      <p className="text-sm text-white/60 mt-1">For every moment</p>
-                    </div>
+                      <p className="text-white font-medium">Wedding Details</p>
+                      <p className="text-sm text-white/60 mt-1">{activeWedding?.city || 'Location'}</p>
+                      <ChevronRight className="w-4 h-4 text-white/40 group-hover:text-white mt-2" />
+                    </Link>
+                    
+                    {/* Quick Play */}
+                    <Link href={`/wedding/${activeWedding.id}/builder`} className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all cursor-pointer group">
+                      <div className="flex items-center justify-between mb-2">
+                        <Play className="w-8 h-8 text-indigo-400" />
+                        <span className="text-lg font-bold text-white">
+                          Build
+                        </span>
+                      </div>
+                      <p className="text-white font-medium">Music Builder</p>
+                      <p className="text-sm text-white/60 mt-1">Drag & drop editor</p>
+                      <ChevronRight className="w-4 h-4 text-white/40 group-hover:text-white mt-2" />
+                    </Link>
                   </div>
 
                   {/* Quick Actions */}
                   <div className="flex flex-wrap gap-4 mt-8">
-                    <button
-                      onClick={() => setShowQuickAdd(true)}
+                    <Link
+                      href={`/wedding/${activeWedding.id}/builder`}
                       className="btn-primary group"
                     >
-                      <Zap className="w-5 h-5 group-hover:animate-pulse" />
-                      Quick Add Song
-                    </button>
+                      <Music className="w-5 h-5 group-hover:animate-pulse" />
+                      Open Music Builder
+                    </Link>
                     <Link
                       href={`/wedding/${activeWedding.id}/guests`}
                       className="btn-secondary"
                     >
-                      <Users className="w-5 h-5" />
-                      Invite Guests
+                      <Share2 className="w-5 h-5" />
+                      Share with Guests
                     </Link>
+                    <button
+                      onClick={() => setShowQuickAdd(true)}
+                      className="btn-secondary group"
+                    >
+                      <Zap className="w-5 h-5" />
+                      Quick Add
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* Playlist Progress Section */}
+          {/* Recent Activity Section */}
           <section className="px-4 py-12 relative z-10">
             <div className="max-w-7xl mx-auto">
               <h3 className="text-3xl font-serif font-bold text-white mb-8 flex items-center gap-3">
                 <Sparkles className="w-8 h-8 text-yellow-400 animate-pulse" />
-                Your Wedding Playlists
+                Recent Activity
               </h3>
               
               <div className="grid gap-6">

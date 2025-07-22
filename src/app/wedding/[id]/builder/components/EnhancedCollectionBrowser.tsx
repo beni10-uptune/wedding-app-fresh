@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Song } from '@/types/wedding-v2'
-import { SONG_COLLECTIONS } from '@/data/curatedCollections'
+import { CURATED_COLLECTIONS as SONG_COLLECTIONS } from '@/data/curatedCollections'
 import CollectionCard from './CollectionCard'
 import { Sparkles, Music, Heart, PartyPopper, Zap } from 'lucide-react'
 import DraggableSong from './DraggableSong'
@@ -42,7 +42,7 @@ export default function EnhancedCollectionBrowser({
 
   const filteredCollections = selectedCategory === 'all' 
     ? SONG_COLLECTIONS 
-    : SONG_COLLECTIONS.filter(c => c.category === selectedCategory)
+    : SONG_COLLECTIONS.filter(c => c.moment === selectedCategory)
 
   const handlePlaySong = (song: Song) => {
     if (audioElement) {
@@ -132,7 +132,7 @@ export default function EnhancedCollectionBrowser({
                 {/* Expanded Songs - Draggable */}
                 {isExpanded && (
                   <div className="ml-4 space-y-1 animate-in slide-in-from-top-2">
-                    {songs.map((song, index) => (
+                    {songs.map((song, index) => song ? (
                       <DraggableSong
                         key={`${collection.id}-${song.id}`}
                         song={song}
@@ -143,7 +143,7 @@ export default function EnhancedCollectionBrowser({
                         onPause={handlePauseSong}
                         onAddToMoment={(momentId) => onAddSong(song, momentId)}
                       />
-                    ))}
+                    ) : null)}
                   </div>
                 )}
               </div>

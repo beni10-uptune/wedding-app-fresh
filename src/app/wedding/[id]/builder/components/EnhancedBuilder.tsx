@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { Timestamp } from 'firebase/firestore'
 import {
   DndContext,
   DragEndEvent,
@@ -10,22 +11,26 @@ import {
   useSensor,
   useSensors,
   closestCenter,
-  DragOverEvent
+  DragOverEvent,
+  useDroppable
 } from '@dnd-kit/core'
 import {
   arrayMove,
   SortableContext,
   verticalListSortingStrategy
 } from '@dnd-kit/sortable'
-import { WeddingV2, Song, Timeline } from '@/types/wedding-v2'
+import { WeddingV2, Song, Timeline, TimelineSong } from '@/types/wedding-v2'
 import { WEDDING_MOMENTS } from '@/data/weddingMoments'
 import EnhancedSongSearch from './EnhancedSongSearch'
 import EnhancedCollectionBrowser from './EnhancedCollectionBrowser'
 import DroppableTimeline from './DroppableTimeline'
 import DraggableSong from './DraggableSong'
+import GuestSubmissions from './GuestSubmissions'
 import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import { Save, Undo, Redo, Trash2 } from 'lucide-react'
+import { Save, Undo, Redo, Trash2, FileMusic } from 'lucide-react'
+import SpotifyExport from './SpotifyExport'
+import MobileBuilder from './MobileBuilder'
 import { debounce } from 'lodash'
 import { useHotkeys } from 'react-hotkeys-hook'
 
@@ -34,16 +39,59 @@ interface EnhancedBuilderProps {
   onUpdate: (wedding: WeddingV2) => void
 }
 
+// Convert Song to TimelineSong
+function songToTimelineSong(song: Song): TimelineSong {
+  return {
+    id: song.id,
+    spotifyId: song.id,
+    title: song.title,
+    artist: song.artist,
+    duration: song.duration,
+    addedBy: 'couple',
+    addedAt: Timestamp.now(),
+    energy: song.energyLevel,
+    explicit: song.explicit
+  }
+}
+
+// Convert TimelineSong to Song for components
+function timelineSongToSong(tlSong: TimelineSong): Song {
+  return {
+    id: tlSong.id,
+    title: tlSong.title,
+    artist: tlSong.artist,
+    duration: tlSong.duration,
+    energyLevel: (tlSong.energy || 3) as 1 | 2 | 3 | 4 | 5,
+    explicit: tlSong.explicit || false,
+    generationAppeal: [],
+    genres: [],
+    spotifyUri: `spotify:track:${tlSong.spotifyId}`,
+    previewUrl: ''
+  }
+}
+
 export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderProps) {
   const [timeline, setTimeline] = useState<Timeline>(wedding.timeline || {})
-  const [activeTab, setActiveTab] = useState<'search' | 'collections'>('collections')
+  const [activeTab, setActiveTab] = useState<'search' | 'collections' | 'guests'>('collections')
   const [selectedMoment, setSelectedMoment] = useState('first-dance')
-  const [draggedSong, setDraggedSong] = useState<Song | null>(null)
+  const [draggedSong, setDraggedSong] = useState<Song | null>(null) // Still needed for drag state
   const [playingId, setPlayingId] = useState<string | null>(null)
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null)
   const [isDraggingToTrash, setIsDraggingToTrash] = useState(false)
   const [history, setHistory] = useState<Timeline[]>([timeline])
   const [historyIndex, setHistoryIndex] = useState(0)
+  const [showSpotifyExport, setShowSpotifyExport] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -151,9 +199,18 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
   const handleAddSong = (song: Song, momentId: string) => {
     const newTimeline = { ...timeline }
     if (!newTimeline[momentId]) {
-      newTimeline[momentId] = { songs: [] }
+      const moment = WEDDING_MOMENTS.find(m => m.id === momentId)
+      if (!moment) return
+      
+      newTimeline[momentId] = {
+        id: momentId,
+        name: moment.name,
+        order: moment.order,
+        duration: moment.duration,
+        songs: []
+      }
     }
-    newTimeline[momentId].songs.push(song)
+    newTimeline[momentId].songs.push(songToTimelineSong(song))
     updateTimeline(newTimeline)
   }
 
@@ -169,7 +226,7 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
   }
 
   // Reorder songs within a moment
-  const handleReorderSongs = (momentId: string, songs: Song[]) => {
+  const handleReorderSongs = (momentId: string, songs: TimelineSong[]) => {
     const newTimeline = { ...timeline }
     if (newTimeline[momentId]) {
       newTimeline[momentId].songs = songs
@@ -227,9 +284,18 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
           
           // Add to target
           if (!newTimeline[targetMomentId]) {
-            newTimeline[targetMomentId] = { songs: [] }
+            const targetMoment = WEDDING_MOMENTS.find(m => m.id === targetMomentId)
+            if (!targetMoment) return
+            
+            newTimeline[targetMomentId] = {
+              id: targetMomentId,
+              name: targetMoment.name,
+              order: targetMoment.order,
+              duration: targetMoment.duration,
+              songs: []
+            }
           }
-          newTimeline[targetMomentId].songs.push(song)
+          newTimeline[targetMomentId].songs.push(songToTimelineSong(song))
           
           updateTimeline(newTimeline)
         }
@@ -262,22 +328,33 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
     }
   }
 
+  // Use mobile builder for small screens
+  if (isMobile) {
+    return (
+      <MobileBuilder
+        wedding={wedding}
+        onUpdate={onUpdate}
+      />
+    )
+  }
+
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
-      onDragEnd={handleDragEnd}
-    >
-      <div className="flex h-full">
+    <>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="flex h-full">
         {/* Left Panel - Search */}
         <div className="w-1/3 border-r border-white/10 flex flex-col">
           <div className="p-4 border-b border-white/10">
             <div className="flex gap-2">
               <button
                 onClick={() => setActiveTab('search')}
-                className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
+                className={`flex-1 py-2 px-3 rounded-lg font-medium transition-colors text-sm ${
                   activeTab === 'search'
                     ? 'bg-purple-500/20 text-purple-400'
                     : 'text-white/60 hover:text-white'
@@ -287,7 +364,7 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
               </button>
               <button
                 onClick={() => setActiveTab('collections')}
-                className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
+                className={`flex-1 py-2 px-3 rounded-lg font-medium transition-colors text-sm ${
                   activeTab === 'collections'
                     ? 'bg-purple-500/20 text-purple-400'
                     : 'text-white/60 hover:text-white'
@@ -295,26 +372,52 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
               >
                 Collections
               </button>
+              <button
+                onClick={() => setActiveTab('guests')}
+                className={`flex-1 py-2 px-3 rounded-lg font-medium transition-colors text-sm ${
+                  activeTab === 'guests'
+                    ? 'bg-purple-500/20 text-purple-400'
+                    : 'text-white/60 hover:text-white'
+                }`}
+              >
+                Guest Songs
+              </button>
             </div>
           </div>
 
           <div className="flex-1 overflow-hidden">
-            {activeTab === 'search' ? (
+            {activeTab === 'search' && (
               <EnhancedSongSearch
                 onAddSong={handleAddSong}
                 selectedMoment={selectedMoment}
               />
-            ) : (
+            )}
+            {activeTab === 'collections' && (
               <EnhancedCollectionBrowser
                 onAddSong={handleAddSong}
                 onAddAllSongs={(songs, momentId) => {
                   const newTimeline = { ...timeline }
                   if (!newTimeline[momentId]) {
-                    newTimeline[momentId] = { songs: [] }
+                    const moment = WEDDING_MOMENTS.find(m => m.id === momentId)
+                    if (!moment) return
+                    
+                    newTimeline[momentId] = {
+                      id: momentId,
+                      name: moment.name,
+                      order: moment.order,
+                      duration: moment.duration,
+                      songs: []
+                    }
                   }
-                  newTimeline[momentId].songs.push(...songs)
+                  newTimeline[momentId].songs.push(...songs.map(songToTimelineSong))
                   updateTimeline(newTimeline)
                 }}
+              />
+            )}
+            {activeTab === 'guests' && (
+              <GuestSubmissions
+                weddingId={wedding.id}
+                onAddSong={handleAddSong}
               />
             )}
           </div>
@@ -342,6 +445,13 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
               >
                 <Redo className="w-4 h-4 text-white" />
               </button>
+              <button
+                onClick={() => setShowSpotifyExport(true)}
+                className="p-2 rounded-lg hover:bg-white/10 text-green-400 hover:text-green-300"
+                title="Export to Spotify"
+              >
+                <FileMusic className="w-4 h-4" />
+              </button>
             </div>
           </div>
 
@@ -351,9 +461,11 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
               <DroppableTimeline
                 key={moment.id}
                 moment={moment}
-                songs={timeline[moment.id]?.songs || []}
+                songs={(timeline[moment.id]?.songs || []).map(timelineSongToSong)}
                 onRemoveSong={handleRemoveSong}
-                onReorderSongs={handleReorderSongs}
+                onReorderSongs={(momentId, songs) => {
+                  handleReorderSongs(momentId, songs.map(songToTimelineSong))
+                }}
                 playingId={playingId}
                 onPlaySong={handlePlaySong}
                 onPauseSong={handlePauseSong}
@@ -366,19 +478,18 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
         </div>
       </div>
 
-      {/* Drag Overlay */}
-      <DragOverlay>
-        {draggedSong && (
-          <div className="shadow-2xl opacity-90">
-            <DraggableSong
-              song={draggedSong}
-              source="timeline"
-              showAddButton={false}
-            />
-          </div>
-        )}
-      </DragOverlay>
+      {/* Removed DragOverlay to prevent duplication */}
     </DndContext>
+
+    {/* Spotify Export Modal */}
+    {showSpotifyExport && (
+      <SpotifyExport
+        wedding={wedding}
+        timeline={timeline}
+        onClose={() => setShowSpotifyExport(false)}
+      />
+    )}
+  </>
   )
 }
 

@@ -5,54 +5,29 @@ import { db } from '@/lib/firebase'
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId, weddingId, playlistName, description, trackUris } = await request.json()
-
-    // Get user's Spotify tokens
-    const userDoc = await getDoc(doc(db, 'users', userId))
-    if (!userDoc.exists()) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    // Get the authorization header
+    const authHeader = request.headers.get('Authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Missing authorization token' }, { status: 401 })
     }
 
-    const userData = userDoc.data()
-    if (!userData.spotifyTokens) {
-      return NextResponse.json({ error: 'Spotify not connected' }, { status: 401 })
-    }
+    const accessToken = authHeader.substring(7)
+    const { name, description, trackUris, weddingId, momentId } = await request.json()
 
-    // Check if token is expired and refresh if needed
-    let accessToken = userData.spotifyTokens.access_token
-    if (userData.spotifyTokens.expires_at < Date.now()) {
-      const refreshResponse = await fetch('https://accounts.spotify.com/api/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Basic ' + Buffer.from(
-            `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
-          ).toString('base64')
-        },
-        body: new URLSearchParams({
-          grant_type: 'refresh_token',
-          refresh_token: userData.spotifyTokens.refresh_token
-        })
-      })
-
-      if (!refreshResponse.ok) {
-        return NextResponse.json({ error: 'Failed to refresh token' }, { status: 401 })
-      }
-
-      const refreshData = await refreshResponse.json()
-      accessToken = refreshData.access_token
-
-      // Update stored tokens
-      await updateDoc(doc(db, 'users', userId), {
-        'spotifyTokens.access_token': accessToken,
-        'spotifyTokens.expires_at': Date.now() + (refreshData.expires_in * 1000)
-      })
+    // Validate required fields
+    if (!name || !trackUris || trackUris.length === 0) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
     // Create Spotify client with user's access token
     const spotifyClient = SpotifyApi.withAccessToken(
       process.env.SPOTIFY_CLIENT_ID!,
-      accessToken
+      {
+        access_token: accessToken,
+        token_type: 'Bearer',
+        expires_in: 3600,
+        refresh_token: ''
+      } as any
     )
 
     // Get user's Spotify profile
@@ -62,8 +37,8 @@ export async function POST(request: NextRequest) {
     const playlist = await spotifyClient.playlists.createPlaylist(
       profile.id,
       {
-        name: playlistName,
-        description: description,
+        name: name,
+        description: description || `Created with UpTune`,
         public: false
       }
     )

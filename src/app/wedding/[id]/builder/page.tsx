@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, use } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
@@ -16,6 +16,22 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
   const [loading, setLoading] = useState(true)
   const { user } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Handle Spotify OAuth callback
+  useEffect(() => {
+    const spotifyToken = searchParams.get('spotify_token')
+    const exportMoments = searchParams.get('export_moments')
+    
+    if (spotifyToken && exportMoments) {
+      // Store in localStorage for SpotifyExport component to use
+      localStorage.setItem('spotify_access_token', spotifyToken)
+      
+      // Clean up URL
+      const newUrl = window.location.pathname
+      window.history.replaceState({}, '', newUrl)
+    }
+  }, [searchParams])
 
   useEffect(() => {
     if (!user) {
@@ -73,14 +89,14 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
               className="flex items-center gap-2 text-white/60 hover:text-white transition-colors"
             >
               <ChevronLeft className="w-4 h-4" />
-              Back
+              Dashboard
             </Link>
             <div>
               <h1 className="text-lg font-semibold text-white">
-                {wedding.coupleName1} & {wedding.coupleName2}'s Wedding Music
+                {wedding.coupleNames.join(' & ')}'s Wedding Music
               </h1>
               <p className="text-sm text-white/60">
-                {new Date(wedding.weddingDate).toLocaleDateString('en-US', { 
+                {wedding.weddingDate.toDate().toLocaleDateString('en-US', { 
                   month: 'long', 
                   day: 'numeric', 
                   year: 'numeric' 

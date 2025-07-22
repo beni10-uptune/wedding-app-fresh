@@ -5,16 +5,17 @@ import { useRouter } from 'next/navigation'
 import { auth, db } from '@/lib/firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { collection, query, where, getDocs, doc, getDoc, orderBy, limit, Timestamp } from 'firebase/firestore'
+import { WEDDING_MOMENTS } from '@/data/weddingMoments'
+import { Timeline } from '@/types/wedding-v2'
 import { 
   Music, Plus, Users, 
   LogOut, Settings, ChevronRight, Heart, 
   Sparkles, Gift,
   CheckCircle2, Zap, PartyPopper,
   HeartHandshake, Timer,
-  Calendar, UserCheck, Share2, Play
+  Calendar, UserCheck, Share2, Play, Clock
 } from 'lucide-react'
 import Link from 'next/link'
-import QuickAddSongModal from '@/components/QuickAddSongModal'
 import { DashboardSkeleton } from '@/components/LoadingSkeleton'
 
 interface Wedding {
@@ -33,6 +34,7 @@ interface Wedding {
   owners: string[]
   coupleNames?: string[]
   title?: string
+  totalDuration?: number
 }
 
 interface Playlist {
@@ -48,9 +50,8 @@ export default function Dashboard() {
   const [, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [activeWedding, setActiveWedding] = useState<Wedding | null>(null)
-  const [playlists, setPlaylists] = useState<Playlist[]>([])
+  const [timeline, setTimeline] = useState<Timeline | null>(null)
   const [userName, setUserName] = useState('')
-  const [showQuickAdd, setShowQuickAdd] = useState(false)
   const router = useRouter()
 
   // Get greeting based on time of day
@@ -70,11 +71,12 @@ export default function Dashboard() {
     return diffDays
   }
 
-  // Get playlist completion percentage
-  const getPlaylistProgress = (playlist: Playlist) => {
-    const currentSongs = Array.isArray(playlist.songs) ? playlist.songs.length : 0
-    const targetSongs = playlist.targetSongCount || 20
-    return Math.min((currentSongs / targetSongs) * 100, 100)
+  // Get moment completion percentage
+  const getMomentProgress = (moment: any) => {
+    const currentSongs = moment.songs?.length || 0
+    const targetDuration = moment.duration * 60 // Convert minutes to seconds
+    const currentDuration = moment.songs?.reduce((sum: number, song: any) => sum + (song.duration || 0), 0) || 0
+    return Math.min((currentDuration / targetDuration) * 100, 100)
   }
 
   // Get overall progress
@@ -83,6 +85,31 @@ export default function Dashboard() {
     const targetSongs = 150 // Target number of songs for a full wedding
     const currentSongs = activeWedding.songCount || 0
     return Math.min(Math.round((currentSongs / targetSongs) * 100), 100)
+  }
+  
+  // Format duration
+  const formatDuration = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    if (hours > 0) {
+      return `${hours}h ${minutes}m`
+    }
+    return `${minutes} min`
+  }
+  
+  // Get wedding statistics
+  const getWeddingStats = () => {
+    if (!activeWedding || !timeline) return { totalTime: 0, plannedTime: 0, remainingTime: 0 }
+    
+    const totalDuration = activeWedding.totalDuration || 0
+    const plannedDuration = WEDDING_MOMENTS.reduce((sum, moment) => sum + (moment.duration * 60), 0)
+    const remainingTime = Math.max(plannedDuration - totalDuration, 0)
+    
+    return {
+      totalTime: totalDuration,
+      plannedTime: plannedDuration,
+      remainingTime
+    }
   }
 
   // Get guest response rate from actual submissions
@@ -156,8 +183,8 @@ export default function Dashboard() {
         
         setActiveWedding(weddingData)
         
-        // Load playlists and guest stats for this wedding
-        await loadPlaylists(weddingDoc.id)
+        // Load timeline and guest stats for this wedding
+        await loadTimeline(weddingDoc.id)
         await loadGuestStats(weddingDoc.id, weddingData)
         
         // Don't auto-redirect - let users navigate manually
@@ -167,22 +194,32 @@ export default function Dashboard() {
     }
   }
 
-  const loadPlaylists = async (weddingId: string) => {
+  const loadTimeline = async (weddingId: string) => {
     try {
-      const playlistsSnapshot = await getDocs(
-        collection(db, 'weddings', weddingId, 'playlists')
-      )
-      const playlistData = playlistsSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Playlist[]
-      setPlaylists(playlistData)
-      
-      // Calculate total song count
-      const totalSongs = playlistData.reduce((acc, playlist) => acc + (Array.isArray(playlist.songs) ? playlist.songs.length : 0), 0)
-      setActiveWedding(prev => prev ? { ...prev, songCount: totalSongs } : null)
+      const weddingDoc = await getDoc(doc(db, 'weddings', weddingId))
+      if (weddingDoc.exists()) {
+        const weddingData = weddingDoc.data()
+        const timelineData = weddingData.timeline || {}
+        setTimeline(timelineData)
+        
+        // Calculate total song count and duration
+        let totalSongs = 0
+        let totalDuration = 0
+        Object.values(timelineData).forEach((moment: any) => {
+          if (moment.songs && Array.isArray(moment.songs)) {
+            totalSongs += moment.songs.length
+            totalDuration += moment.songs.reduce((sum: number, song: any) => sum + (song.duration || 0), 0)
+          }
+        })
+        
+        setActiveWedding(prev => prev ? { 
+          ...prev, 
+          songCount: totalSongs,
+          totalDuration
+        } : null)
+      }
     } catch (error) {
-      console.error('Error loading playlists:', error)
+      console.error('Error loading timeline:', error)
     }
   }
 
@@ -269,9 +306,14 @@ export default function Dashboard() {
             </Link>
             
             <div className="flex items-center space-x-4">
-              <button className="text-white/60 hover:text-white transition-colors">
-                <Settings className="w-5 h-5" />
-              </button>
+              {activeWedding && (
+                <Link 
+                  href={`/wedding/${activeWedding.id}/settings`}
+                  className="text-white/60 hover:text-white transition-colors"
+                >
+                  <Settings className="w-5 h-5" />
+                </Link>
+              )}
               <button
                 onClick={handleSignOut}
                 className="flex items-center gap-2 text-white/60 hover:text-white transition-colors"
@@ -334,7 +376,7 @@ export default function Dashboard() {
                   </div>
 
                   {/* Key Metrics */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                     {/* Songs Progress */}
                     <Link href={`/wedding/${activeWedding.id}/builder`} className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all cursor-pointer group">
                       <div className="flex items-center justify-between mb-2">
@@ -343,15 +385,43 @@ export default function Dashboard() {
                           {activeWedding?.songCount || 0}
                         </span>
                       </div>
-                      <p className="text-white font-medium">Songs Collected</p>
+                      <p className="text-white font-medium">Songs</p>
                       <div className="w-full bg-white/10 rounded-full h-2 mt-3">
                         <div 
                           className="bg-gradient-to-r from-purple-400 to-pink-400 h-2 rounded-full transition-all"
                           style={{ width: `${getOverallProgress()}%` }}
                         />
                       </div>
-                      <p className="text-xs text-white/60 mt-2">Target: 150 songs</p>
+                      <p className="text-xs text-white/60 mt-2">Target: 150</p>
                     </Link>
+                    
+                    {/* Total Duration */}
+                    <div className="glass-darker rounded-2xl p-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <Timer className="w-8 h-8 text-blue-400" />
+                        <span className="text-2xl font-bold text-white">
+                          {formatDuration(getWeddingStats().totalTime)}
+                        </span>
+                      </div>
+                      <p className="text-white font-medium">Total Music</p>
+                      <p className="text-xs text-white/60 mt-1">
+                        Planned: {formatDuration(getWeddingStats().plannedTime)}
+                      </p>
+                    </div>
+                    
+                    {/* Remaining Time */}
+                    <div className="glass-darker rounded-2xl p-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <Zap className="w-8 h-8 text-yellow-400" />
+                        <span className="text-2xl font-bold text-white">
+                          {formatDuration(getWeddingStats().remainingTime)}
+                        </span>
+                      </div>
+                      <p className="text-white font-medium">To Fill</p>
+                      <p className="text-xs text-white/60 mt-1">
+                        Add more songs
+                      </p>
+                    </div>
                     
                     {/* Guest Responses */}
                     <Link href={`/wedding/${activeWedding.id}/guests`} className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all cursor-pointer group">
@@ -418,13 +488,6 @@ export default function Dashboard() {
                       <Share2 className="w-5 h-5" />
                       Share with Guests
                     </Link>
-                    <button
-                      onClick={() => setShowQuickAdd(true)}
-                      className="btn-secondary group"
-                    >
-                      <Zap className="w-5 h-5" />
-                      Quick Add
-                    </button>
                   </div>
                 </div>
               </div>
@@ -440,68 +503,73 @@ export default function Dashboard() {
               </h3>
               
               <div className="grid gap-6">
-                {playlists.map((playlist) => {
-                  const progress = getPlaylistProgress(playlist)
-                  const Icon = momentIcons[playlist.moment] || Music
-                  const gradient = momentColors[playlist.moment] || 'from-purple-500 to-pink-500'
-                  
-                  return (
-                    <Link
-                      key={playlist.id}
-                      href={`/wedding/${activeWedding.id}/playlist/${playlist.id}`}
-                      className="group"
-                    >
-                      <div className="glass-darker rounded-2xl p-6 hover:scale-[1.02] transform transition-all">
-                        <div className="flex items-center gap-6">
-                          <div className={`w-16 h-16 bg-gradient-to-r ${gradient} rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
-                            <Icon className="w-8 h-8 text-white" />
-                          </div>
-                          
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="text-xl font-bold text-white">{playlist.name}</h4>
-                              <span className="text-sm text-white/60">
-                                {Array.isArray(playlist.songs) ? playlist.songs.length : 0} / {playlist.targetSongCount || 20} songs
-                              </span>
+                {timeline && Object.entries(timeline).length > 0 ? (
+                  WEDDING_MOMENTS.filter(moment => timeline[moment.id]?.songs?.length > 0).map((moment) => {
+                    const momentData = timeline[moment.id]
+                    const progress = getMomentProgress(momentData)
+                    const Icon = momentIcons[moment.id] || Music
+                    const gradient = momentColors[moment.id] || 'from-purple-500 to-pink-500'
+                    const songCount = momentData.songs?.length || 0
+                    const duration = momentData.songs?.reduce((sum: number, song: any) => sum + (song.duration || 0), 0) || 0
+                    
+                    return (
+                      <Link
+                        key={moment.id}
+                        href={`/wedding/${activeWedding.id}/builder`}
+                        className="group"
+                      >
+                        <div className="glass-darker rounded-2xl p-6 hover:scale-[1.02] transform transition-all">
+                          <div className="flex items-center gap-6">
+                            <div className={`w-16 h-16 bg-gradient-to-r ${gradient} rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
+                              <span className="text-2xl">{moment.icon}</span>
                             </div>
-                            <p className="text-white/70 text-sm mb-3">{playlist.description}</p>
                             
-                            <div className="relative">
-                              <div className="w-full bg-white/10 rounded-full h-3">
-                                <div 
-                                  className={`bg-gradient-to-r ${gradient} h-3 rounded-full transition-all relative overflow-hidden`}
-                                  style={{ width: `${progress}%` }}
-                                >
-                                  <div className="absolute inset-0 bg-white/20 animate-shimmer"></div>
-                                </div>
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="text-xl font-bold text-white">{moment.name}</h4>
+                                <span className="text-sm text-white/60">
+                                  {songCount} songs • {formatDuration(duration)}
+                                </span>
                               </div>
-                              {progress === 100 && (
-                                <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                                  <CheckCircle2 className="w-3 h-3" />
-                                  Complete!
+                              <p className="text-white/70 text-sm mb-3">
+                                {moment.description || `Music for ${moment.name.toLowerCase()}`}
+                              </p>
+                              
+                              <div className="relative">
+                                <div className="w-full bg-white/10 rounded-full h-3">
+                                  <div 
+                                    className={`bg-gradient-to-r ${gradient} h-3 rounded-full transition-all relative overflow-hidden`}
+                                    style={{ width: `${progress}%` }}
+                                  >
+                                    <div className="absolute inset-0 bg-white/20 animate-shimmer"></div>
+                                  </div>
                                 </div>
-                              )}
+                                {progress >= 90 && progress <= 110 && (
+                                  <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                                    <CheckCircle2 className="w-3 h-3" />
+                                    Perfect!
+                                  </div>
+                                )}
+                              </div>
                             </div>
+                            
+                            <ChevronRight className="w-6 h-6 text-white/40 group-hover:text-white transition-colors" />
                           </div>
-                          
-                          <ChevronRight className="w-6 h-6 text-white/40 group-hover:text-white transition-colors" />
                         </div>
-                      </div>
-                    </Link>
-                  )
-                })}
-                
-                {playlists.length === 0 && (
+                      </Link>
+                    )
+                  })
+                ) : (
                   <div className="glass-darker rounded-2xl p-12 text-center">
                     <Music className="w-16 h-16 text-purple-400 mx-auto mb-4" />
-                    <h4 className="text-xl font-bold text-white mb-2">No playlists yet!</h4>
-                    <p className="text-white/60 mb-6">Create your first playlist to start building your wedding soundtrack.</p>
+                    <h4 className="text-xl font-bold text-white mb-2">No music added yet!</h4>
+                    <p className="text-white/60 mb-6">Start building your wedding soundtrack in the music builder.</p>
                     <Link
-                      href={`/wedding/${activeWedding.id}`}
+                      href={`/wedding/${activeWedding.id}/builder`}
                       className="btn-primary inline-flex"
                     >
                       <Plus className="w-5 h-5" />
-                      Create Playlist
+                      Open Music Builder
                     </Link>
                   </div>
                 )}
@@ -509,21 +577,6 @@ export default function Dashboard() {
             </div>
           </section>
 
-          {/* Quick Add Modal */}
-          {showQuickAdd && (
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div className="glass-gradient rounded-3xl p-8 max-w-md w-full animate-scale-in">
-                <h3 className="text-2xl font-bold text-white mb-4">Quick Add Song</h3>
-                <p className="text-white/70 mb-6">This feature is coming soon! For now, visit your playlists to add songs.</p>
-                <button
-                  onClick={() => setShowQuickAdd(false)}
-                  className="btn-primary w-full"
-                >
-                  Got it!
-                </button>
-              </div>
-            </div>
-          )}
         </>
       ) : (
         /* No Active Wedding */
@@ -582,20 +635,6 @@ export default function Dashboard() {
             </div>
           </div>
         </section>
-      )}
-      
-      {/* Quick Add Song Modal */}
-      {activeWedding && (
-        <QuickAddSongModal
-          isOpen={showQuickAdd}
-          onClose={() => setShowQuickAdd(false)}
-          weddingId={activeWedding.id}
-          playlists={playlists.map(p => ({
-            id: p.id,
-            name: p.name,
-            moment: p.moment
-          }))}
-        />
       )}
     </div>
   )

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Music, Users, Calendar, MapPin, Heart, Play, Plus, Settings, Download } from 'lucide-react'
+import { Music, Users, Calendar, MapPin, Heart, Play, Plus, Settings, Download, Crown } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { db } from '@/lib/firebase'
@@ -72,11 +72,7 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
           return
         }
         
-        // Check payment status - redirect to payment if not paid
-        if (weddingData.paymentStatus !== 'paid') {
-          router.push(`/wedding/${weddingId}/payment`)
-          return
-        }
+        // Don't redirect free users - they can use the dashboard
         
         setWedding(weddingData)
       } else {
@@ -191,6 +187,14 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
             </Link>
             
             <div className="flex items-center space-x-4">
+              {wedding?.paymentStatus === 'paid' && (
+                <div className="px-3 py-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full">
+                  <div className="flex items-center gap-1">
+                    <Crown className="w-4 h-4 text-white" />
+                    <span className="text-sm font-medium text-white">Premium</span>
+                  </div>
+                </div>
+              )}
               <Link href={`/wedding/${weddingId}/guests`} className="btn-glass">
                 <Users className="w-4 h-4" />
                 <span className="hidden sm:inline">Invite Guests</span>
@@ -291,6 +295,13 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
                     {playlist.description}
                   </p>
                   
+                  {/* Show song limit for free users */}
+                  {wedding?.paymentStatus !== 'paid' && (
+                    <div className="text-xs text-yellow-400 mb-2">
+                      Free plan: 25 songs total
+                    </div>
+                  )}
+                  
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-purple-400">
                       <Play className="w-4 h-4" />
@@ -363,7 +374,30 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
                   <span className="text-white/60">Status:</span>
                   <span className="font-medium text-purple-400 capitalize">{wedding.status}</span>
                 </div>
+                <div className="flex justify-between">
+                  <span className="text-white/60">Plan:</span>
+                  <span className="font-medium text-white">
+                    {wedding.paymentStatus === 'paid' ? (
+                      <span className="flex items-center gap-1">
+                        <Crown className="w-3 h-3 text-yellow-400" />
+                        Premium
+                      </span>
+                    ) : (
+                      'Free (25 songs)'
+                    )}
+                  </span>
+                </div>
               </div>
+              
+              {wedding.paymentStatus !== 'paid' && (
+                <Link 
+                  href={`/wedding/${weddingId}/payment`}
+                  className="btn-primary w-full mt-4"
+                >
+                  <Crown className="w-4 h-4" />
+                  Upgrade to Premium
+                </Link>
+              )}
             </div>
 
             {/* Activity Feed */}

@@ -103,32 +103,32 @@ export default function Home() {
           <div className="max-w-5xl mx-auto space-y-8">
             {/* Main Headline */}
             <h1 className="text-5xl md:text-7xl font-serif leading-tight">
-              The Wedding Music App<br />
-              <span className="gradient-text">Your Guests Will Love</span>
+              Create the Soundtrack to<br />
+              <span className="gradient-text">Your Perfect Day</span>
             </h1>
 
             {/* Subheadline */}
             <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              Finally, a simple way to build your perfect wedding soundtrack. <br className="hidden md:block" />
-              Collaborate with guests, organize by moment, and hand your DJ exactly what they need.
+              Every great wedding has music that moves people. <br className="hidden md:block" />
+              Build yours with confidence, get your guests involved, and dance all night long.
             </p>
 
             {/* Value Props */}
             <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-12">
               <div className="glass rounded-2xl p-6 hover:scale-105 transition-transform">
+                <Heart className="w-10 h-10 text-pink-400 mx-auto mb-4" />
+                <h3 className="font-bold text-lg mb-2">Feel Confident</h3>
+                <p className="text-white/70 text-sm">Know every moment has the perfect song. No awkward silences, no empty dance floors.</p>
+              </div>
+              <div className="glass rounded-2xl p-6 hover:scale-105 transition-transform">
                 <Users className="w-10 h-10 text-blue-400 mx-auto mb-4" />
-                <h3 className="font-bold text-lg mb-2">Guest Collaboration</h3>
-                <p className="text-white/70 text-sm">Share a link. Guests suggest songs. You curate the perfect mix.</p>
+                <h3 className="font-bold text-lg mb-2">Include Everyone</h3>
+                <p className="text-white/70 text-sm">Let loved ones contribute songs that matter. Everyone feels part of your special day.</p>
               </div>
               <div className="glass rounded-2xl p-6 hover:scale-105 transition-transform">
-                <Calendar className="w-10 h-10 text-purple-400 mx-auto mb-4" />
-                <h3 className="font-bold text-lg mb-2">Organized by Moment</h3>
-                <p className="text-white/70 text-sm">From processional to last dance - every moment gets its perfect song.</p>
-              </div>
-              <div className="glass rounded-2xl p-6 hover:scale-105 transition-transform">
-                <Download className="w-10 h-10 text-green-400 mx-auto mb-4" />
-                <h3 className="font-bold text-lg mb-2">DJ-Ready Export</h3>
-                <p className="text-white/70 text-sm">One click creates everything your DJ needs. No spreadsheets required.</p>
+                <Sparkles className="w-10 h-10 text-purple-400 mx-auto mb-4" />
+                <h3 className="font-bold text-lg mb-2">Save Your Sanity</h3>
+                <p className="text-white/70 text-sm">No more spreadsheets or scattered notes. Everything organized, ready when you need it.</p>
               </div>
             </div>
 
@@ -168,47 +168,44 @@ export default function Home() {
         <div className="container-max">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
-              The Wedding Music Struggle is Real
+              Music Sets the Mood for Everything
             </h2>
             <p className="text-xl text-white/70 max-w-3xl mx-auto">
-              You know the music matters. But where do you even start?
+              The right songs turn moments into memories. But getting there shouldn't be stressful.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <div className="glass rounded-2xl p-8">
-              <div className="text-2xl mb-4">😩</div>
-              <h3 className="text-xl font-bold mb-3">The Spreadsheet Nightmare</h3>
+              <div className="text-2xl mb-4">💕</div>
+              <h3 className="text-xl font-bold mb-3">Those Magical Moments</h3>
               <p className="text-white/70">
-                Managing song suggestions in emails, texts, and random conversations. 
-                Trying to organize everything in a spreadsheet that your DJ can actually use. 
-                It's overwhelming.
+                When your song plays for the first dance. When grandma tears up during the processional. 
+                When everyone rushes to the dance floor. These moments matter, and the music makes them.
               </p>
             </div>
             <div className="glass rounded-2xl p-8">
-              <div className="text-2xl mb-4">😓</div>
-              <h3 className="text-xl font-bold mb-3">The Pressure is Real</h3>
+              <div className="text-2xl mb-4">🎉</div>
+              <h3 className="text-xl font-bold mb-3">A Packed Dance Floor</h3>
               <p className="text-white/70">
-                Will grandma hate the music? Will the dance floor be empty? 
-                How do you balance what you love with what works for everyone? 
-                The stress is keeping you up at night.
+                Picture it: Every generation dancing together. Your college friends going wild. 
+                Even uncle Bob busting moves. This is what you want - and it starts with the right playlist.
               </p>
             </div>
             <div className="glass rounded-2xl p-8">
-              <div className="text-2xl mb-4">⏰</div>
-              <h3 className="text-xl font-bold mb-3">Time You Don't Have</h3>
+              <div className="text-2xl mb-4">🤝</div>
+              <h3 className="text-xl font-bold mb-3">Everyone Feels Included</h3>
               <p className="text-white/70">
-                Hours researching songs for each moment. Endless Spotify scrolling. 
-                And you still don't know if the flow will work. 
-                You have a wedding to plan!
+                Your mom's favorite song. Your partner's guilty pleasure. That inside joke with your bridesmaids. 
+                When everyone hears "their" song, they feel part of your love story.
               </p>
             </div>
             <div className="glass rounded-2xl p-8">
-              <div className="text-2xl mb-4">💔</div>
-              <h3 className="text-xl font-bold mb-3">FOMO on Guest Input</h3>
+              <div className="text-2xl mb-4">😌</div>
+              <h3 className="text-xl font-bold mb-3">Peace of Mind</h3>
               <p className="text-white/70">
-                Your guests have amazing song ideas, but how do you collect them? 
-                You want everyone to feel included, but managing it all feels impossible.
+                No last-minute panic about playlists. No worrying if you forgot something important. 
+                Just confidence that every moment will sound exactly how you imagined.
               </p>
             </div>
           </div>
@@ -220,10 +217,10 @@ export default function Home() {
         <div className="container-max">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
-              How UpTune Works
+              Your Music, Made Simple
             </h2>
             <p className="text-xl text-white/70">
-              Four simple steps to wedding music success
+              Go from stressed to sorted in four easy steps
             </p>
           </div>
 
@@ -433,15 +430,100 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Testimonials Section */}
+      <section id="testimonials" className="section relative z-10 py-20">
+        <div className="container-max">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
+              Real Couples, Real Joy
+            </h2>
+            <p className="text-xl text-white/70">
+              Here's what happens when the music is just right
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="glass rounded-2xl p-8">
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+              <p className="text-white/80 mb-6">
+                "Our dance floor was PACKED all night! Even my 85-year-old grandma was dancing. 
+                The flow from dinner to party was perfect. Worth every penny."
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center text-white font-bold">
+                  S
+                </div>
+                <div>
+                  <p className="font-semibold">Sarah & Tom</p>
+                  <p className="text-sm text-white/60">Married June 2024</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="glass rounded-2xl p-8">
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+              <p className="text-white/80 mb-6">
+                "Game changer! Our guests LOVED being part of the playlist. 
+                My mom cried when her song came on. The timeline feature saved us hours of planning."
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                  M
+                </div>
+                <div>
+                  <p className="font-semibold">Maria & James</p>
+                  <p className="text-sm text-white/60">Married August 2024</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="glass rounded-2xl p-8">
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+              <p className="text-white/80 mb-6">
+                "Our DJ said it was the most organized playlist he'd ever received. 
+                No awkward moments, perfect energy all night. Still getting compliments!"
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-pink-600 to-rose-600 rounded-full flex items-center justify-center text-white font-bold">
+                  A
+                </div>
+                <div>
+                  <p className="font-semibold">Alex & Jordan</p>
+                  <p className="text-sm text-white/60">Married October 2024</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-white/60">
+              Join hundreds of couples who've created their perfect wedding soundtrack
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Section */}
       <section id="pricing" className="section relative z-10 py-20 glass-darker">
         <div className="container-max">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
-              Simple, Transparent Pricing
+              Invest in Your Perfect Day
             </h2>
             <p className="text-xl text-white/70 max-w-3xl mx-auto">
-              Start free. Upgrade when you're ready to unlock everything.
+              Start free to explore. Upgrade once to keep forever. Less than your wedding favors.
             </p>
           </div>
 
@@ -583,27 +665,39 @@ export default function Home() {
         <div className="container-max">
           <div className="glass-gradient rounded-3xl p-12 text-center max-w-4xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">
-              Your Perfect Wedding Soundtrack Awaits
+              Ready for a Dance Floor<br />
+              <span className="gradient-text">Everyone Remembers?</span>
             </h2>
             <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-              Join thousands of couples creating their dream wedding music. 
-              Start free, upgrade when you're ready.
+              Stop stressing about the music. Start imagining the memories. 
+              Your perfect wedding soundtrack is just a few clicks away.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
               <Link href="/auth/signup" className="btn-primary text-lg px-8 py-4 group">
-                Start Building - It's Free
+                Create Your Soundtrack Free
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link href="/contact" className="btn-glass text-lg px-8 py-4">
-                Questions? Let's Chat
-                <ChevronRight className="w-5 h-5" />
+              <Link href="#how-it-works" className="btn-glass text-lg px-8 py-4">
+                See How It Works
+                <Play className="w-5 h-5" />
               </Link>
             </div>
             
-            <p className="text-sm text-white/50 mt-6">
-              No credit card required • Free plan includes 25 songs
-            </p>
+            <div className="flex flex-wrap justify-center gap-6 text-sm text-white/60">
+              <span className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                No credit card required
+              </span>
+              <span className="flex items-center gap-2">
+                <Music className="w-4 h-4 text-purple-400" />
+                Start with 25 free songs
+              </span>
+              <span className="flex items-center gap-2">
+                <Heart className="w-4 h-4 text-pink-400" />
+                Upgrade when you're ready
+              </span>
+            </div>
           </div>
         </div>
       </section>

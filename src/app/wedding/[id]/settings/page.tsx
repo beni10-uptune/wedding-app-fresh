@@ -8,8 +8,10 @@ import { db } from '@/lib/firebase'
 import Link from 'next/link'
 import { 
   ArrowLeft, Users, Check, 
-  UserPlus, Shield, AlertCircle 
+  UserPlus, Shield, AlertCircle, Crown 
 } from 'lucide-react'
+import UpgradeModal from '@/components/UpgradeModal'
+import { getUserTier } from '@/lib/subscription-tiers'
 
 interface Wedding {
   id: string
@@ -35,6 +37,7 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
   const [coOwnerEmail, setCoOwnerEmail] = useState('')
   const [coOwners, setCoOwners] = useState<string[]>([])
   const [showAddCoOwner, setShowAddCoOwner] = useState(false)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
 
   useEffect(() => {
     if (!user) {
@@ -164,6 +167,29 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
 
       {/* Main content */}
       <main className="relative z-10 max-w-4xl mx-auto px-4 py-8">
+        {/* Free tier notice */}
+        {wedding?.paymentStatus !== 'paid' && (
+          <div className="glass-gradient rounded-xl p-4 mb-6 border border-purple-500/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Crown className="w-5 h-5 text-purple-400" />
+                <div>
+                  <p className="text-sm font-medium text-white">Co-owners is a Premium Feature</p>
+                  <p className="text-xs text-white/60">
+                    Upgrade to collaborate with your partner on wedding planning
+                  </p>
+                </div>
+              </div>
+              <Link 
+                href={`/wedding/${weddingId}/payment`}
+                className="text-sm px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
+              >
+                Upgrade Now
+              </Link>
+            </div>
+          </div>
+        )}
+
         {/* Co-owner Management */}
         <div className="glass-darker rounded-xl border border-white/10 mb-8">
           <div className="px-6 py-4 border-b border-white/10">
@@ -173,7 +199,14 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
                 <h2 className="text-lg font-semibold text-white">Co-owners</h2>
               </div>
               <button
-                onClick={() => setShowAddCoOwner(true)}
+                onClick={() => {
+                  const tier = getUserTier(wedding?.paymentStatus)
+                  if (!tier.hasCoOwner) {
+                    setShowUpgradeModal(true)
+                  } else {
+                    setShowAddCoOwner(true)
+                  }
+                }}
                 className="btn-primary text-sm"
               >
                 <UserPlus className="w-4 h-4" />
@@ -284,6 +317,14 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
           </div>
         </div>
       )}
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        trigger="CO_OWNER_BLOCKED"
+        weddingId={weddingId}
+      />
     </div>
   )
 }

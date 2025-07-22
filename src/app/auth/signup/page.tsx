@@ -148,9 +148,14 @@ export default function SignUpPage() {
           <h2 className="text-3xl font-serif font-bold text-center mb-2">
             Start Your Musical Journey
           </h2>
-          <p className="text-white/60 text-center mb-8">
+          <p className="text-white/60 text-center mb-3">
             Create your perfect wedding soundtrack together
           </p>
+          <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg p-3 mb-6 border border-purple-500/30">
+            <p className="text-sm text-center font-medium text-white">
+              🎉 <span className="text-purple-300">Start Free:</span> 25 songs + 5 guest invites included!
+            </p>
+          </div>
 
           {error && (
             <div className="bg-red-500/20 text-red-300 p-3 rounded-lg mb-6 text-sm border border-red-500/30">
@@ -264,7 +269,7 @@ export default function SignUpPage() {
             </p>
             <p className="text-xs text-white/40 max-w-sm mx-auto">
               By creating an account, you agree to our Terms of Service and Privacy Policy. 
-              You&apos;ll be charged £25 when you&apos;re ready to export your playlists.
+              <span className="text-purple-300">Free to start</span> - upgrade to premium for just £25 when you need more.
             </p>
           </div>
         </div>

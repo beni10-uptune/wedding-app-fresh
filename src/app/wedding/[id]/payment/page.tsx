@@ -104,8 +104,8 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
         updatedAt: new Date()
       })
 
-      // Redirect to dashboard
-      router.push(`/wedding/${weddingId}`)
+      // Redirect to success page
+      router.push(`/wedding/${weddingId}/payment-success`)
     } catch (err) {
       console.error('Error updating payment status:', err)
       setError('Payment successful but failed to update status')

@@ -79,6 +79,11 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
   const [showSpotifyExport, setShowSpotifyExport] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
+  // Calculate total songs
+  const totalSongs = Object.values(timeline).reduce((count, moment) => {
+    return count + (moment?.songs?.length || 0)
+  }, 0)
+
   // Check if mobile on mount and resize
   useEffect(() => {
     const checkMobile = () => {
@@ -193,6 +198,22 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
 
   // Add song to specific moment
   const handleAddSong = (song: Song, momentId: string) => {
+    // Check free tier limits before adding
+    if (wedding.paymentStatus !== 'paid') {
+      if (totalSongs >= 25) {
+        alert('You\'ve reached the 25 song limit on the free plan. Upgrade to add unlimited songs!')
+        return
+      }
+      
+      // Warning at 80% (20 songs)
+      if (totalSongs >= 20 && totalSongs < 25) {
+        const remaining = 25 - totalSongs
+        if (!confirm(`⚠️ You have ${remaining} songs left on your free plan. Continue adding this song?`)) {
+          return
+        }
+      }
+    }
+    
     const newTimeline = { ...timeline }
     if (!newTimeline[momentId]) {
       const moment = WEDDING_MOMENTS.find(m => m.id === momentId)
@@ -423,7 +444,18 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
         <div className="flex-1 flex flex-col bg-black/20">
           {/* Timeline Header */}
           <div className="p-4 border-b border-white/10 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-white">Your Timeline</h2>
+            <div>
+              <h2 className="text-xl font-bold text-white">Your Timeline</h2>
+              <div className="flex items-center gap-2 mt-1">
+                <span className={`text-sm ${wedding.paymentStatus === 'paid' ? 'text-white/60' : totalSongs >= 25 ? 'text-red-400' : totalSongs >= 20 ? 'text-yellow-400' : 'text-white/60'}`}>
+                  {totalSongs} songs
+                  {wedding.paymentStatus !== 'paid' && ' / 25 free'}
+                </span>
+                {wedding.paymentStatus !== 'paid' && totalSongs >= 20 && totalSongs < 25 && (
+                  <span className="text-xs text-yellow-400">• {25 - totalSongs} left</span>
+                )}
+              </div>
+            </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={undo}

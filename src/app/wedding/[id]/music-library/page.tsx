@@ -1,13 +1,17 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { ArrowLeft, Search, Filter, Plus, Heart, Clock, Star, Music } from 'lucide-react'
+import { ArrowLeft, Search, Filter, Plus, Heart, Clock, Star, Music, Lock } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { musicLibrary, getFilteredSongs, getGenres, getMoods, getEnergyLevels, Song, weddingMoments } from '@/data/musicLibrary'
 import MusicPlayer from '@/components/MusicPlayer'
 import { searchSpotifyTracks, getSpotifyTrack } from '@/lib/spotify'
 import Image from 'next/image'
+import UpgradeModal from '@/components/UpgradeModal'
+import { getUserTier } from '@/lib/subscription-tiers'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '@/lib/firebase'
 
 interface SpotifyTrack {
   id: string
@@ -26,8 +30,8 @@ interface EnhancedSong extends Song {
 }
 
 export default function MusicLibraryPage({ params }: { params: Promise<{ id: string }> }) {
-  const { } = useAuth()
-  const [songs, setSongs] = useState<EnhancedSong[]>(musicLibrary)
+  const { user } = useAuth()
+  const [songs, setSongs] = useState<EnhancedSong[]>([])
   const [filters, setFilters] = useState({
     moment: '',
     genre: '',
@@ -43,12 +47,43 @@ export default function MusicLibraryPage({ params }: { params: Promise<{ id: str
   const [spotifySearchResults, setSpotifySearchResults] = useState<SpotifyTrack[]>([])
   const [isSearchingSpotify, setIsSearchingSpotify] = useState(false)
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(null)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+  const [wedding, setWedding] = useState<any>(null)
+  const [hasAccess, setHasAccess] = useState(false)
 
   useEffect(() => {
     params.then((p) => {
       setWeddingId(p.id)
+      loadWedding(p.id)
     })
   }, [params])
+
+  const loadWedding = async (id: string) => {
+    if (!user) return
+    
+    try {
+      const weddingDoc = await getDoc(doc(db, 'weddings', id))
+      if (weddingDoc.exists()) {
+        const weddingData = weddingDoc.data()
+        setWedding(weddingData)
+        
+        // Check if user has access to curated library
+        const tier = getUserTier(weddingData.paymentStatus)
+        const hasLibraryAccess = tier.features.curatedLibrary
+        setHasAccess(hasLibraryAccess)
+        
+        // Set songs based on access
+        if (hasLibraryAccess) {
+          setSongs(getFilteredSongs(musicLibrary, filters))
+        } else {
+          setSongs([])
+          setShowUpgradeModal(true)
+        }
+      }
+    } catch (error) {
+      console.error('Error loading wedding:', error)
+    }
+  }
 
   useEffect(() => {
     const fetchPlaylistsEffect = async () => {
@@ -113,6 +148,13 @@ export default function MusicLibraryPage({ params }: { params: Promise<{ id: str
       [filterType]: value
     }))
   }
+
+  // Update songs when filters change
+  useEffect(() => {
+    if (hasAccess) {
+      setSongs(getFilteredSongs(musicLibrary, filters))
+    }
+  }, [filters, hasAccess])
 
   const clearFilters = () => {
     setFilters({
@@ -270,6 +312,31 @@ export default function MusicLibraryPage({ params }: { params: Promise<{ id: str
 
       {/* Search and Filters */}
       <div className="max-w-7xl mx-auto px-4 py-6 relative z-10">
+        {/* Free tier notice */}
+        {!hasAccess && (
+          <div className="glass-gradient rounded-xl p-6 mb-8 border border-purple-500/30">
+            <div className="flex items-start gap-4">
+              <Lock className="w-6 h-6 text-purple-400 mt-1" />
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-white mb-2">Curated Library is a Premium Feature</h3>
+                <p className="text-white/80 mb-4">
+                  Get instant access to 500+ wedding-tested songs perfectly organized by moment. Our curated library saves you hours of playlist building.
+                </p>
+                <div className="flex items-center gap-4">
+                  <Link 
+                    href={`/wedding/${weddingId}/payment`}
+                    className="btn-primary inline-flex items-center gap-2"
+                  >
+                    Upgrade to Unlock Library
+                  </Link>
+                  <p className="text-sm text-white/60">
+                    Free users can still search and add songs from Spotify
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="glass-darker rounded-2xl p-6 mb-8">
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}
@@ -552,6 +619,14 @@ export default function MusicLibraryPage({ params }: { params: Promise<{ id: str
           </div>
         )}
       </div>
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        trigger="LIBRARY_BLOCKED"
+        weddingId={weddingId}
+      />
     </div>
   )
 }

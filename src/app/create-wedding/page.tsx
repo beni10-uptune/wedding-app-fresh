@@ -216,30 +216,40 @@ export default function CreateWeddingPage() {
     <div className="min-h-screen dark-gradient">
       {/* Header */}
       <header className="px-4 py-6">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
-              <Music className="w-6 h-6 text-white" />
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-between mb-4">
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                <Music className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-white">UpTune</h1>
+                <p className="text-sm text-pink-400 font-medium">for Weddings</p>
+              </div>
+            </Link>
+            <div className="flex items-center space-x-4">
+              <div className="text-sm text-white/60">
+                Step {currentStep} of 5
+              </div>
+              <div className="flex space-x-2">
+                {[1, 2, 3, 4, 5].map(step => (
+                  <div
+                    key={step}
+                    className={`w-3 h-3 rounded-full ${
+                      step <= currentStep ? 'bg-pink-500' : 'bg-white/20'
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-white">UpTune</h1>
-              <p className="text-sm text-pink-400 font-medium">for Weddings</p>
-            </div>
-          </Link>
-          <div className="flex items-center space-x-4">
-            <div className="text-sm text-white/60">
-              Step {currentStep} of 4
-            </div>
-            <div className="flex space-x-2">
-              {[1, 2, 3, 4, 5].map(step => (
-                <div
-                  key={step}
-                  className={`w-3 h-3 rounded-full ${
-                    step <= currentStep ? 'bg-pink-500' : 'bg-white/20'
-                  }`}
-                />
-              ))}
-            </div>
+          </div>
+          
+          {/* Free Plan Banner */}
+          <div className="glass-darker rounded-lg p-3 flex items-center gap-3">
+            <Sparkles className="w-5 h-5 text-yellow-400 flex-shrink-0" />
+            <p className="text-sm text-white/80">
+              <span className="font-semibold">Start Free:</span> 25 songs and 5 guest invites included. Upgrade anytime for unlimited access!
+            </p>
           </div>
         </div>
       </header>

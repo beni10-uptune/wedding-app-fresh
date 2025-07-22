@@ -8,7 +8,9 @@ import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Wedding, Invitation } from '@/types/wedding'
 import Link from 'next/link'
-import { ArrowLeft, Mail, Copy, Users, Check, X, Clock, Share2 } from 'lucide-react'
+import { ArrowLeft, Mail, Copy, Users, Check, X, Clock, Share2, Crown } from 'lucide-react'
+import UpgradeModal from '@/components/UpgradeModal'
+import { getUserTier, SUBSCRIPTION_TIERS } from '@/lib/subscription-tiers'
 
 export default function GuestsManagementPage({ params }: { params: Promise<{ id: string }> }) {
   const [wedding, setWedding] = useState<Wedding | null>(null)
@@ -18,6 +20,7 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
   const [weddingId, setWeddingId] = useState<string>('')
   const [inviting, setInviting] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
   const { user } = useAuth()
   const router = useRouter()
 
@@ -210,7 +213,14 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
             </div>
 
             <button
-              onClick={() => setShowInviteForm(true)}
+              onClick={() => {
+                const tier = getUserTier(wedding?.paymentStatus)
+                if (tier.maxGuests > 0 && invitations.length >= tier.maxGuests) {
+                  setShowUpgradeModal(true)
+                } else {
+                  setShowInviteForm(true)
+                }
+              }}
               className="btn-primary"
             >
               <Mail className="w-5 h-5" />
@@ -222,6 +232,29 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
 
       {/* Main content */}
       <main className="relative z-10 max-w-7xl mx-auto px-4 py-8">
+        {/* Free tier banner */}
+        {wedding?.paymentStatus !== 'paid' && (
+          <div className="glass-gradient rounded-xl p-4 mb-6 border border-purple-500/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Crown className="w-5 h-5 text-purple-400" />
+                <div>
+                  <p className="text-sm font-medium text-white">You're on the Free plan</p>
+                  <p className="text-xs text-white/60">
+                    {invitations.length} of {SUBSCRIPTION_TIERS.FREE.maxGuests} guests invited
+                  </p>
+                </div>
+              </div>
+              <Link 
+                href={`/wedding/${weddingId}/payment`}
+                className="text-sm px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
+              >
+                Upgrade for Unlimited
+              </Link>
+            </div>
+          </div>
+        )}
+
         {/* Share Link Section */}
         <div className="glass-gradient rounded-xl p-6 mb-8 border border-purple-500/30">
           <div className="flex items-start gap-4">
@@ -266,7 +299,17 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-white/60">Total Invites</p>
-                <p className="text-2xl font-bold text-white">{invitations.length}</p>
+                <div className="flex items-baseline gap-2">
+                  <p className="text-2xl font-bold text-white">{invitations.length}</p>
+                  {getUserTier(wedding?.paymentStatus).maxGuests > 0 && (
+                    <span className="text-sm text-white/60">
+                      / {getUserTier(wedding?.paymentStatus).maxGuests}
+                    </span>
+                  )}
+                </div>
+                {wedding?.paymentStatus !== 'paid' && invitations.length >= SUBSCRIPTION_TIERS.FREE.maxGuests && (
+                  <p className="text-xs text-purple-400 mt-1">Limit reached</p>
+                )}
               </div>
               <Users className="w-8 h-8 text-purple-400" />
             </div>
@@ -503,6 +546,14 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
           </div>
         </div>
       )}
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        trigger="GUEST_LIMIT"
+        weddingId={weddingId}
+      />
     </div>
   )
 }

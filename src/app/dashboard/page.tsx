@@ -434,7 +434,6 @@ export default function Dashboard() {
           </div>
         </section>
       ) : activeWedding ? (
-        activeWedding.paymentStatus === 'paid' ? (
         <>
           {/* Hero Section with Wedding Countdown */}
           <section className="px-4 py-12 relative z-10">
@@ -502,8 +501,8 @@ export default function Dashboard() {
                       </div>
                       <p className="text-xs text-white/60 mt-2">
                         {activeWedding?.paymentStatus === 'paid' 
-                          ? 'Target: 150' 
-                          : `${activeWedding?.songCount || 0} of 25 (Free plan)`
+                          ? 'Target: 150 songs' 
+                          : `${activeWedding?.songCount || 0} / 25 free`
                         }
                       </p>
                     </Link>
@@ -552,7 +551,9 @@ export default function Dashboard() {
                         />
                       </div>
                       <p className="text-xs text-white/60 mt-2">
-                        {guestStats.responded === 0 
+                        {activeWedding?.paymentStatus !== 'paid' && guestStats.invited >= 5
+                          ? `${guestStats.responded} / 5 free guest slots used`
+                          : guestStats.responded === 0 
                           ? 'Share with guests to collect song suggestions' 
                           : `${guestStats.responded} of ${guestStats.invited} expected guests`}
                       </p>
@@ -709,112 +710,6 @@ export default function Dashboard() {
           </section>
 
         </>
-      ) : (
-        /* Unpaid Wedding - Show Preview */
-        <section className="px-4 py-12 relative z-10">
-          <div className="max-w-7xl mx-auto">
-            {/* Payment Required Banner */}
-            <div className="glass-gradient rounded-3xl p-8 mb-8 border-2 border-yellow-500/30">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-yellow-500/20 rounded-full flex items-center justify-center">
-                    <Lock className="w-8 h-8 text-yellow-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-white mb-1">Complete Your Setup</h3>
-                    <p className="text-white/70">
-                      Your wedding details are saved. Unlock full access to continue building.
-                    </p>
-                  </div>
-                </div>
-                <Link
-                  href={`/wedding/${activeWedding.id}/payment`}
-                  className="btn-primary flex items-center gap-2"
-                >
-                  <Heart className="w-5 h-5" />
-                  Unlock Full Access
-                </Link>
-              </div>
-            </div>
-
-            {/* Preview of Wedding Details */}
-            <div className="glass-darker rounded-3xl p-8 mb-8">
-              <h3 className="text-2xl font-serif font-bold text-white mb-6">Your Wedding Details</h3>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <p className="text-white/60 text-sm mb-1">Couple Names</p>
-                  <p className="text-xl text-white font-medium">
-                    {activeWedding?.coupleNames?.join(' & ') || 'Your Wedding'}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm mb-1">Wedding Date</p>
-                  <p className="text-xl text-white font-medium">
-                    {activeWedding?.weddingDate?.toDate?.()?.toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    }) || 'Date not set'}
-                  </p>
-                </div>
-                {activeWedding?.venue && (
-                  <div>
-                    <p className="text-white/60 text-sm mb-1">Venue</p>
-                    <p className="text-xl text-white font-medium">{activeWedding.venue}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* What You'll Get */}
-            <div className="glass-darker rounded-3xl p-8">
-              <h3 className="text-2xl font-serif font-bold text-white mb-6 text-center">
-                🎵 What You'll Unlock
-              </h3>
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Music className="w-8 h-8 text-purple-400" />
-                  </div>
-                  <h4 className="text-lg font-semibold text-white mb-2">Music Builder</h4>
-                  <p className="text-white/60 text-sm">
-                    Create playlists for every moment of your wedding
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Users className="w-8 h-8 text-pink-400" />
-                  </div>
-                  <h4 className="text-lg font-semibold text-white mb-2">Guest Collaboration</h4>
-                  <p className="text-white/60 text-sm">
-                    Let guests suggest their favorite songs
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Download className="w-8 h-8 text-blue-400" />
-                  </div>
-                  <h4 className="text-lg font-semibold text-white mb-2">Export & Share</h4>
-                  <p className="text-white/60 text-sm">
-                    Export to Spotify or share with your DJ
-                  </p>
-                </div>
-              </div>
-              <div className="text-center mt-8">
-                <Link
-                  href={`/wedding/${activeWedding.id}/payment`}
-                  className="btn-primary text-lg px-8 py-4 inline-flex"
-                >
-                  <Heart className="w-6 h-6" />
-                  Get Started Now - £25
-                </Link>
-                <p className="text-white/50 text-sm mt-4">One-time payment • Lifetime access</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      )
     ) : (
         /* No Active Wedding */
         <section className="px-4 py-12 relative z-10">

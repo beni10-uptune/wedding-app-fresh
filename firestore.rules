@@ -1,61 +1,125 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users can read and write their own user document
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+    // Helper functions
+    function isOwner(weddingId) {
+      return request.auth != null && 
+        request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners;
     }
     
-    // Wedding documents - only authenticated users can create
+    function isPaidWedding(weddingId) {
+      return get(/databases/$(database)/documents/weddings/$(weddingId)).data.paymentStatus == 'paid';
+    }
+    
+    function countTimelineSongs(timeline) {
+      // Count total songs across all moments in timeline
+      let count = 0;
+      let moments = timeline.keys();
+      for (let i = 0; i < moments.size(); i++) {
+        let moment = timeline[moments[i]];
+        if (moment != null && moment.songs != null) {
+          count = count + moment.songs.size();
+        }
+      }
+      return count;
+    }
+    
+    // Allow users to read and write their own user document
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId
+        && request.resource.data.keys().hasAll(['uid', 'email', 'createdAt', 'role'])
+        && request.resource.data.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['uid', 'createdAt']);
+    }
+    
+    // Wedding access rules
     match /weddings/{weddingId} {
-      // Wedding owners (couple) can read/write their wedding
-      allow read, write: if request.auth != null && 
+      // Read access: owners or guests
+      allow read: if request.auth != null && 
         (request.auth.uid in resource.data.owners || 
-         request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners);
+         exists(/databases/$(database)/documents/weddings/$(weddingId)/guests/$(request.auth.uid)));
       
-      // Allow creation if user is authenticated
-      allow create: if request.auth != null;
+      // Create: any authenticated user
+      allow create: if request.auth != null
+        && request.resource.data.owners.hasAny([request.auth.uid])
+        && request.resource.data.paymentStatus == 'pending';
       
-      // Collaborators (guests) can read and suggest songs
-      match /collaborators/{collaboratorId} {
+      // Update: owners only, with restrictions
+      allow update: if request.auth != null && request.auth.uid in resource.data.owners
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['owners']) 
+            || request.auth.uid in resource.data.owners)
+        // Free tier song limit enforcement (25 songs max for unpaid weddings)
+        && (resource.data.paymentStatus == 'paid' 
+            || !request.resource.data.keys().hasAll(['timeline'])
+            || countTimelineSongs(request.resource.data.timeline) <= 25);
+      
+      // Delete: owners only
+      allow delete: if request.auth != null && request.auth.uid in resource.data.owners;
+      
+      // Guest submissions subcollection
+      match /guestSubmissions/{submissionId} {
         allow read: if request.auth != null;
-        allow write: if request.auth != null && request.auth.uid == collaboratorId;
+        allow create: if request.auth != null
+          && request.resource.data.keys().hasAll(['guestName', 'songTitle', 'songArtist', 'submittedAt']);
+        allow update: if request.auth != null && 
+          (request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners
+          || (resource.data.guestEmail == request.auth.token.email && 
+              request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes', 'voters'])));
       }
       
-      // Song suggestions - authenticated users can create, owners can approve
-      match /suggestions/{suggestionId} {
+      // Guests subcollection
+      match /guests/{guestId} {
         allow read: if request.auth != null;
         allow create: if request.auth != null;
-        allow update, delete: if request.auth != null && 
-          (request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners ||
-           request.auth.uid == resource.data.suggestedBy);
+        allow update: if request.auth != null && 
+          (request.auth.uid == resource.data.userId ||
+           request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners);
       }
       
-      // Playlists - owners can manage, collaborators can read
+      // Deprecated playlists subcollection (read-only for migration)
       match /playlists/{playlistId} {
-        allow read: if request.auth != null;
-        allow write: if request.auth != null && 
+        allow read: if request.auth != null && 
           request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners;
+        allow write: if false; // Deprecated - no writes allowed
+        
+        match /songs/{songId} {
+          allow read: if request.auth != null && 
+            request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners;
+          allow write: if false; // Deprecated - no writes allowed
+        }
       }
+    }
+    
+    // Invitations - public read for code lookup
+    match /invitations/{invitationId} {
+      allow read: if true; // Anyone can look up by code
       
-      // Votes - authenticated users can vote
-      match /votes/{voteId} {
-        allow read: if request.auth != null;
-        allow create, update: if request.auth != null && request.auth.uid == resource.data.userId;
-        allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
-      }
-    }
-    
-    // Curated music library - read-only for authenticated users
-    match /musicLibrary/{songId} {
-      allow read: if request.auth != null;
-      allow write: if false; // Only admins can write (handled via admin SDK)
-    }
-    
-    // Payment records - only the user can read their own payments
-    match /payments/{paymentId} {
-      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
-      allow write: if false; // Only backend can write payments
+      // Create: owners only, with free tier limit check (5 guest invitations for unpaid)
+      allow create: if request.auth != null && 
+        request.auth.uid in get(/databases/$(database)/documents/weddings/$(request.resource.data.weddingId)).data.owners
+        && (
+          // Always allow co-owner invitations
+          request.resource.data.type == 'co-owner'
+          // For guest invitations, check payment status or count
+          || isPaidWedding(request.resource.data.weddingId)
+          || (
+            // Count existing guest invitations for this wedding
+            query(/databases/$(database)/documents/invitations)
+              .where('weddingId', '==', request.resource.data.weddingId)
+              .where('type', '==', 'guest')
+              .limit(5)
+              .get()
+              .size() < 5
+          )
+        );
+      
+      allow update: if request.auth != null && 
+        (request.auth.uid in get(/databases/$(database)/documents/weddings/$(resource.data.weddingId)).data.owners ||
+         (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['used', 'usedBy', 'usedAt']) &&
+          request.resource.data.used == true &&
+          request.resource.data.usedBy == request.auth.uid));
     }
   }
-} 
+}

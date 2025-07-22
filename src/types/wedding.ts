@@ -120,6 +120,7 @@ export interface Invitation {
   weddingId: string
   email: string
   role: 'partner' | 'guest' | 'family' | 'friend' | 'wedding-party'
+  type?: 'guest' | 'co-owner' // Type of invitation for tier limit checking
   inviteCode: string
   invitedBy: string
   invitedAt: Timestamp

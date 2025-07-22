@@ -6,11 +6,13 @@ import { db } from '@/lib/firebase'
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore'
 import { 
   Download, FileText, Music, 
-  ArrowLeft, Loader2
+  ArrowLeft, Loader2, Lock
 } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { jsPDF } from 'jspdf'
+import UpgradeModal from '@/components/UpgradeModal'
+import { getUserTier } from '@/lib/subscription-tiers'
 
 interface Wedding {
   id: string
@@ -19,6 +21,8 @@ interface Wedding {
   weddingDate: any
   venue?: string
   city?: string
+  paymentStatus?: string
+  owners?: string[]
 }
 
 interface Playlist {
@@ -56,6 +60,7 @@ export default function ExportPage() {
   })
   const [exporting, setExporting] = useState(false)
   const [exportUrl, setExportUrl] = useState<string | null>(null)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
 
   useEffect(() => {
     if (user && id) {
@@ -70,6 +75,18 @@ export default function ExportPage() {
       if (weddingDoc.exists()) {
         const weddingData = { id: weddingDoc.id, ...weddingDoc.data() } as Wedding
         setWedding(weddingData)
+        
+        // Check if user has access
+        if (!weddingData.owners?.includes(user?.uid || '')) {
+          router.push(`/wedding/${id}`)
+          return
+        }
+        
+        // Check if user has premium access
+        const tier = getUserTier(weddingData.paymentStatus)
+        if (tier.maxExports === 0) {
+          setShowUpgradeModal(true)
+        }
       }
 
       // Load playlists with songs
@@ -226,6 +243,12 @@ export default function ExportPage() {
   }
 
   const handleExport = () => {
+    const tier = getUserTier(wedding?.paymentStatus)
+    if (!tier.features.export) {
+      setShowUpgradeModal(true)
+      return
+    }
+    
     if (exportFormat === 'pdf') {
       generatePDF()
     } else {
@@ -279,6 +302,27 @@ export default function ExportPage() {
       </header>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Free tier notice */}
+        {wedding?.paymentStatus !== 'paid' && (
+          <div className="glass-gradient rounded-xl p-6 mb-8 border border-purple-500/30">
+            <div className="flex items-start gap-4">
+              <Lock className="w-6 h-6 text-purple-400 mt-1" />
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-white mb-2">Export is a Premium Feature</h3>
+                <p className="text-white/80 mb-4">
+                  Ready to share your perfect playlist with your DJ? Upgrade to export your playlists as PDF or to Spotify.
+                </p>
+                <Link 
+                  href={`/wedding/${id}/payment`}
+                  className="btn-primary inline-flex items-center gap-2"
+                >
+                  Upgrade to Export
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Export Options */}
         <div className="glass-gradient rounded-3xl p-8 mb-8">
           <h2 className="text-3xl font-serif font-bold text-white mb-6 flex items-center gap-3">
@@ -427,6 +471,14 @@ export default function ExportPage() {
           </div>
         )}
       </div>
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        trigger="EXPORT_BLOCKED"
+        weddingId={id as string}
+      />
     </div>
   )
 }

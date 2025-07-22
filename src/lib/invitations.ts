@@ -12,6 +12,7 @@ import {
 } from 'firebase/firestore'
 import { db } from './firebase'
 import { Invitation, Collaborator, CollaboratorPermissions } from '@/types/wedding'
+import { canInviteGuest } from './tier-enforcement'
 
 // Generate a unique invitation code
 export function generateInviteCode(): string {
@@ -33,6 +34,14 @@ export async function createInvitation(
     personalizedPrompt?: string
   }
 ): Promise<Invitation> {
+  // Check if wedding can invite more guests (for guest invitations)
+  if (inviteData.role === 'guest') {
+    const canInvite = await canInviteGuest(inviteData.weddingId)
+    if (!canInvite.allowed) {
+      throw new Error(canInvite.reason || 'Cannot invite more guests')
+    }
+  }
+  
   const inviteCode = generateInviteCode()
   const invitationData: Omit<Invitation, 'id'> = {
     weddingId: inviteData.weddingId,
@@ -43,7 +52,8 @@ export async function createInvitation(
     invitedAt: Timestamp.now(),
     expiresAt: Timestamp.fromDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)), // 7 days
     status: 'pending',
-    personalizedPrompt: inviteData.personalizedPrompt
+    personalizedPrompt: inviteData.personalizedPrompt,
+    type: inviteData.role === 'partner' ? 'co-owner' : 'guest'
   }
 
   const invitationRef = doc(collection(db, 'invitations'))

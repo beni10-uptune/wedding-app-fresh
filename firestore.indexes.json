@@ -1,15 +1,39 @@
 {
   "indexes": [
     {
-      "collectionGroup": "suggestions",
+      "collectionGroup": "weddings",
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "weddingId",
-          "order": "ASCENDING"
+          "fieldPath": "owners",
+          "arrayConfig": "CONTAINS"
         },
         {
-          "fieldPath": "status",
+          "fieldPath": "updatedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "weddings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "owners",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "paymentStatus",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "weddings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "paymentStatus",
           "order": "ASCENDING"
         },
         {
@@ -19,55 +43,61 @@
       ]
     },
     {
-      "collectionGroup": "votes",
+      "collectionGroup": "invitations",
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "suggestionId",
+          "fieldPath": "inviteCode",
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "userId",
+          "fieldPath": "used",
           "order": "ASCENDING"
         }
       ]
     },
     {
-      "collectionGroup": "musicLibrary",
+      "collectionGroup": "invitations",
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "category",
+          "fieldPath": "weddingId",
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "mood",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "popularity",
+          "fieldPath": "createdAt",
           "order": "DESCENDING"
         }
       ]
     },
     {
-      "collectionGroup": "musicLibrary",
+      "collectionGroup": "guestSubmissions",
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "weddingMoment",
+          "fieldPath": "status",
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "genre",
+          "fieldPath": "submittedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "guestSubmissions",
+      "queryScope": "COLLECTION",  
+      "fields": [
+        {
+          "fieldPath": "guestEmail",
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "year",
+          "fieldPath": "submittedAt",
           "order": "DESCENDING"
         }
       ]
     }
   ],
   "fieldOverrides": []
-} 
+}

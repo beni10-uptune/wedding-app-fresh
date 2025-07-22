@@ -137,6 +137,15 @@ export default function QuickAddSongModal({
         return
       }
       
+      // Show warning if approaching limit (80%)
+      if (userTier.maxSongs !== -1 && currentSongCount >= Math.floor(userTier.maxSongs * 0.8)) {
+        const remaining = userTier.maxSongs - currentSongCount
+        if (!confirm(`⚠️ You have ${remaining} songs left on your free plan. Continue adding this song?`)) {
+          setAddingTrack(null)
+          return
+        }
+      }
+      
       // Check for duplicates in the selected moment
       const momentSongs = timeline[selectedMoment]?.songs || []
       const isDuplicate = momentSongs.some((song: any) => song.spotifyId === track.id)

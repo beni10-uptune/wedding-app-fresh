@@ -3,16 +3,20 @@
 import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import { WeddingV2 } from '@/types/wedding-v2'
+import { WeddingV2, Song, TimelineSong } from '@/types/wedding-v2'
 import { WEDDING_MOMENTS } from '@/data/weddingMoments'
+import { getCollectionsByMoment } from '@/data/curatedCollections'
 import { 
   Music, Search, Filter, Users, Sparkles, 
-  Download, Clock, ChevronLeft, ChevronRight,
-  Plus, X, Check, AlertCircle, Headphones
+  Download, Clock, ChevronLeft, Plus
 } from 'lucide-react'
 import Link from 'next/link'
+import CollectionCard from './components/CollectionCard'
+import GuestSubmissions from './components/GuestSubmissions'
+import GuestInviteModal from './components/GuestInviteModal'
+import SongSearch from './components/SongSearch'
 
 export default function WeddingBuilderPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: weddingId } = use(params)
@@ -20,7 +24,8 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
   const [loading, setLoading] = useState(true)
   const [activePanel, setActivePanel] = useState<'curated' | 'guests'>('curated')
   const [selectedMoment, setSelectedMoment] = useState<string>('prelude')
-  const [searchQuery, setSearchQuery] = useState('')
+  const [showInviteModal, setShowInviteModal] = useState(false)
+  const [saving, setSaving] = useState(false)
   const { user } = useAuth()
   const router = useRouter()
 
@@ -71,6 +76,62 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
     }
   }
 
+  const saveTimeline = async () => {
+    if (!wedding) return
+    
+    setSaving(true)
+    try {
+      await updateDoc(doc(db, 'weddings', weddingId), {
+        timeline: wedding.timeline,
+        updatedAt: Timestamp.now()
+      })
+    } catch (error) {
+      console.error('Error saving timeline:', error)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleAddSong = (song: Song | any, momentId: string) => {
+    if (!wedding) return
+
+    const timelineSong: TimelineSong = {
+      id: `${momentId}-${Date.now()}`,
+      spotifyId: song.id || song.spotifyId,
+      title: song.title,
+      artist: song.artist,
+      duration: song.duration || 210,
+      addedBy: song.addedBy || 'couple',
+      addedAt: Timestamp.now(),
+      energy: song.energyLevel,
+      explicit: song.explicit
+    }
+
+    const updatedWedding = { ...wedding }
+    updatedWedding.timeline[momentId].songs.push(timelineSong)
+    setWedding(updatedWedding)
+    
+    // Auto-save after 2 seconds
+    setTimeout(() => saveTimeline(), 2000)
+  }
+
+  const handleAddAllSongs = (songs: Song[], momentId: string) => {
+    songs.forEach(song => handleAddSong(song, momentId))
+  }
+
+  const handleRemoveSong = (momentId: string, songId: string) => {
+    if (!wedding) return
+
+    const updatedWedding = { ...wedding }
+    updatedWedding.timeline[momentId].songs = updatedWedding.timeline[momentId].songs.filter(
+      song => song.id !== songId
+    )
+    setWedding(updatedWedding)
+    
+    // Auto-save
+    setTimeout(() => saveTimeline(), 2000)
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen dark-gradient flex items-center justify-center">
@@ -102,6 +163,8 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
     (total, moment) => moment.songs.reduce((sum, song) => sum + song.duration, 0) + total, 0
   ) / 60 // Convert to minutes
 
+  const currentMomentCollections = getCollectionsByMoment(selectedMoment)
+
   return (
     <div className="min-h-screen dark-gradient flex flex-col">
       {/* Header */}
@@ -124,10 +187,16 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
                   <Clock className="w-4 h-4 text-purple-400" />
                   <span className="text-white">{Math.round(totalDuration)} min</span>
                 </div>
+                {saving && (
+                  <span className="text-xs text-green-400">Saving...</span>
+                )}
               </div>
               
               {/* Action Buttons */}
-              <button className="btn-secondary text-sm">
+              <button 
+                onClick={() => setShowInviteModal(true)}
+                className="btn-secondary text-sm"
+              >
                 <Users className="w-4 h-4" />
                 Get Guest Input
               </button>
@@ -143,32 +212,11 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
       {/* Main Content - Three Panels */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Panel - Search */}
-        <div className="w-[280px] glass border-r border-white/10 flex flex-col">
-          <div className="p-4 border-b border-white/10">
-            <h3 className="text-lg font-semibold text-white mb-3">Add Custom Songs</h3>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-              <input
-                type="text"
-                placeholder="Search any song..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-purple-400"
-              />
-            </div>
-            <button className="mt-2 text-sm text-purple-400 hover:text-purple-300 flex items-center gap-1">
-              <Filter className="w-3 h-3" />
-              Filters
-            </button>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto p-4">
-            {/* Search results will go here */}
-            <div className="text-center text-white/40 py-8">
-              <Search className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>Search for songs to add to your timeline</p>
-            </div>
-          </div>
+        <div className="w-[280px] glass border-r border-white/10">
+          <SongSearch 
+            onAddSong={handleAddSong}
+            selectedMoment={selectedMoment}
+          />
         </div>
 
         {/* Center Panel - Discovery */}
@@ -241,33 +289,28 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
                   <h4 className="text-lg font-semibold text-white mb-4">
                     Collections for {WEDDING_MOMENTS.find(m => m.id === selectedMoment)?.name}
                   </h4>
-                  <div className="grid grid-cols-2 gap-4">
-                    {/* Placeholder collections */}
-                    {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="glass-darker rounded-lg p-4 hover:scale-105 transition-transform cursor-pointer">
-                        <div className="flex items-center gap-3 mb-3">
-                          <span className="text-2xl">🎵</span>
-                          <div>
-                            <h5 className="font-medium text-white">Collection {i}</h5>
-                            <p className="text-xs text-white/60">25 songs</p>
-                          </div>
-                        </div>
-                        <p className="text-sm text-white/70">Perfect for your special moment</p>
-                      </div>
+                  <div className="space-y-4">
+                    {currentMomentCollections.map((collection) => (
+                      <CollectionCard
+                        key={collection.id}
+                        collection={collection}
+                        onAddSong={handleAddSong}
+                        onAddAllSongs={handleAddAllSongs}
+                      />
                     ))}
+                    {currentMomentCollections.length === 0 && (
+                      <p className="text-white/60 text-center py-8">
+                        No collections available for this moment yet.
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="text-center py-12">
-                <Users className="w-16 h-16 text-white/20 mx-auto mb-4" />
-                <h4 className="text-xl font-semibold text-white mb-2">No guest requests yet</h4>
-                <p className="text-white/60 mb-6">Invite guests to suggest their favorite songs</p>
-                <button className="btn-primary">
-                  <Users className="w-4 h-4" />
-                  Send Invitations
-                </button>
-              </div>
+              <GuestSubmissions 
+                weddingId={weddingId}
+                onAddSong={handleAddSong}
+              />
             )}
           </div>
         </div>
@@ -319,8 +362,17 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
                   {momentData.songs.length > 0 && (
                     <div className="mt-3 space-y-1">
                       {momentData.songs.slice(0, 3).map((song, index) => (
-                        <div key={song.id} className="text-xs text-white/60 truncate">
-                          {index + 1}. {song.title} - {song.artist}
+                        <div key={song.id} className="text-xs text-white/60 truncate flex items-center justify-between group">
+                          <span>{index + 1}. {song.title} - {song.artist}</span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleRemoveSong(moment.id, song.id)
+                            }}
+                            className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300"
+                          >
+                            ×
+                          </button>
                         </div>
                       ))}
                       {momentData.songs.length > 3 && (
@@ -348,6 +400,19 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
           </div>
         </div>
       </div>
+
+      {/* Guest Invite Modal */}
+      {showInviteModal && (
+        <GuestInviteModal
+          weddingId={weddingId}
+          coupleNames={wedding.coupleNames}
+          onClose={() => setShowInviteModal(false)}
+          onSuccess={() => {
+            setShowInviteModal(false)
+            // You could show a success toast here
+          }}
+        />
+      )}
     </div>
   )
 }

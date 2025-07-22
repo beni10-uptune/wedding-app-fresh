@@ -37,14 +37,6 @@ interface Wedding {
   totalDuration?: number
 }
 
-interface Playlist {
-  id: string
-  name: string
-  description: string
-  moment: string
-  songs: any[]
-  targetSongCount: number
-}
 
 export default function Dashboard() {
   const [, setUser] = useState<any>(null)
@@ -358,7 +350,7 @@ export default function Dashboard() {
                       <Timer className="w-12 h-12 text-pink-400" />
                       <div>
                         <p className="text-white/70 text-sm mb-1">
-                          {activeWedding?.coupleNames ? activeWedding.coupleNames.join(' & ') : `${activeWedding?.coupleName1 || 'Your'} & ${activeWedding?.coupleName2 || 'Partner'}`}'s Wedding
+                          {activeWedding?.coupleNames?.length ? activeWedding.coupleNames.join(' & ') : `${activeWedding?.coupleName1 || 'Your'} & ${activeWedding?.coupleName2 || 'Partner'}`}'s Wedding
                         </p>
                         <p className="text-3xl font-bold text-white">
                           {activeWedding?.weddingDate ? getDaysUntilWedding(activeWedding.weddingDate) : 0} days to go!

@@ -86,7 +86,7 @@ export default function SpotifyExport({ wedding, timeline, onClose }: SpotifyExp
             'Authorization': `Bearer ${spotifyToken}`
           },
           body: JSON.stringify({
-            name: `${wedding.coupleNames.join(' & ')} - ${moment.name}`,
+            name: `${wedding.coupleNames?.join(' & ') || 'Wedding'} - ${moment.name}`,
             description: `Wedding playlist for ${moment.name}. Created with UpTune.`,
             trackUris: songs.map(s => `spotify:track:${s.spotifyId}`).filter(Boolean),
             weddingId: wedding.id,

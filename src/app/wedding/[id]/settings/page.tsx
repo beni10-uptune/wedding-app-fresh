@@ -155,7 +155,7 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
               </Link>
               <div>
                 <h1 className="text-2xl font-bold gradient-text">Wedding Settings</h1>
-                <p className="text-sm text-purple-400">{wedding.coupleNames.join(' & ')}'s Wedding</p>
+                <p className="text-sm text-purple-400">{wedding.coupleNames?.join(' & ') || 'Wedding'}</p>
               </div>
             </div>
           </div>

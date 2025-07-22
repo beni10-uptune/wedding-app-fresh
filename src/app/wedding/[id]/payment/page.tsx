@@ -198,9 +198,9 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
             <div className="text-center mb-8">
               <p className="text-white/60 mb-2">Payment for:</p>
               <h2 className="text-xl font-semibold gradient-text">
-                {wedding.coupleNames 
+                {wedding.coupleNames?.length 
                   ? wedding.coupleNames.join(' & ') 
-                  : `${wedding.coupleName1} & ${wedding.coupleName2}`
+                  : `${wedding.coupleName1 || 'Partner 1'} & ${wedding.coupleName2 || 'Partner 2'}`
                 }&apos;s Wedding
               </h2>
               <p className="text-white/60 text-sm">

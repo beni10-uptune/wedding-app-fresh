@@ -152,7 +152,7 @@ export default function GuestJoinPage({
             <h1 className="text-3xl font-bold mb-2">You&apos;re Invited!</h1>
             {wedding && (
               <p className="text-white/90">
-                {wedding.coupleNames.join(' & ')}&apos;s Wedding
+                {wedding.coupleNames?.join(' & ') || 'Wedding'}
               </p>
             )}
           </div>

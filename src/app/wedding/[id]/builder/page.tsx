@@ -93,7 +93,7 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
             </Link>
             <div>
               <h1 className="text-lg font-semibold text-white">
-                {wedding.coupleNames.join(' & ')}'s Wedding Music
+                {wedding.coupleNames?.join(' & ') || 'Wedding'} Music
               </h1>
               <p className="text-sm text-white/60">
                 {wedding.weddingDate.toDate().toLocaleDateString('en-US', { 

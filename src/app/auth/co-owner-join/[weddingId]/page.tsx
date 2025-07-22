@@ -136,7 +136,7 @@ export default function CoOwnerJoinPage({ params }: { params: Promise<{ weddingI
 
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-white mb-2">
-              {wedding.coupleNames.join(' & ')}'s Wedding
+              {wedding.coupleNames?.join(' & ') || 'Wedding'}
             </h2>
             {wedding.venue && (
               <p className="text-white/70">

@@ -35,7 +35,8 @@ export default function QuickAddSongModal({
   isOpen,
   onClose,
   weddingId,
-  playlists
+  playlists,
+  onSongAdded
 }: QuickAddSongModalProps) {
   const { user } = useAuth()
   const [searchQuery, setSearchQuery] = useState('')

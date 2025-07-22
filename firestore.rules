@@ -11,19 +11,6 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/weddings/$(weddingId)).data.paymentStatus == 'paid';
     }
     
-    function countTimelineSongs(timeline) {
-      // Count total songs across all moments in timeline
-      let count = 0;
-      let moments = timeline.keys();
-      for (let i = 0; i < moments.size(); i++) {
-        let moment = timeline[moments[i]];
-        if (moment != null && moment.songs != null) {
-          count = count + moment.songs.size();
-        }
-      }
-      return count;
-    }
-    
     // Allow users to read and write their own user document
     match /users/{userId} {
       allow read: if request.auth != null && request.auth.uid == userId;
@@ -46,14 +33,12 @@ service cloud.firestore {
         && request.resource.data.owners.hasAny([request.auth.uid])
         && request.resource.data.paymentStatus == 'pending';
       
-      // Update: owners only, with restrictions
+      // Update: owners only
+      // Note: Song limit enforcement is handled at the application level
+      // since Firestore rules can't iterate over timeline objects
       allow update: if request.auth != null && request.auth.uid in resource.data.owners
         && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['owners']) 
-            || request.auth.uid in resource.data.owners)
-        // Free tier song limit enforcement (25 songs max for unpaid weddings)
-        && (resource.data.paymentStatus == 'paid' 
-            || !request.resource.data.keys().hasAll(['timeline'])
-            || countTimelineSongs(request.resource.data.timeline) <= 25);
+            || request.auth.uid in resource.data.owners);
       
       // Delete: owners only
       allow delete: if request.auth != null && request.auth.uid in resource.data.owners;
@@ -96,24 +81,10 @@ service cloud.firestore {
     match /invitations/{invitationId} {
       allow read: if true; // Anyone can look up by code
       
-      // Create: owners only, with free tier limit check (5 guest invitations for unpaid)
+      // Create: owners only
+      // Note: Guest invitation limits are enforced at the application level
       allow create: if request.auth != null && 
-        request.auth.uid in get(/databases/$(database)/documents/weddings/$(request.resource.data.weddingId)).data.owners
-        && (
-          // Always allow co-owner invitations
-          request.resource.data.type == 'co-owner'
-          // For guest invitations, check payment status or count
-          || isPaidWedding(request.resource.data.weddingId)
-          || (
-            // Count existing guest invitations for this wedding
-            query(/databases/$(database)/documents/invitations)
-              .where('weddingId', '==', request.resource.data.weddingId)
-              .where('type', '==', 'guest')
-              .limit(5)
-              .get()
-              .size() < 5
-          )
-        );
+        request.auth.uid in get(/databases/$(database)/documents/weddings/$(request.resource.data.weddingId)).data.owners;
       
       allow update: if request.auth != null && 
         (request.auth.uid in get(/databases/$(database)/documents/weddings/$(resource.data.weddingId)).data.owners ||

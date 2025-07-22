@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-middleware'
-import { canAddSong, canInviteGuest, canExport, canAddCoOwner, getWeddingUsageStats } from '@/lib/tier-enforcement'
+import { canAddSong, canInviteGuest, canExport, canAddCoOwner, getWeddingUsageStats } from '@/lib/tier-enforcement-server'
 import { z } from 'zod'
 
 const checkLimitSchema = z.object({

@@ -12,7 +12,7 @@ import {
 } from 'firebase/firestore'
 import { db } from './firebase'
 import { Invitation, Collaborator, CollaboratorPermissions } from '@/types/wedding'
-import { canInviteGuest } from './tier-enforcement'
+import { canInviteGuest } from './tier-enforcement-client'
 
 // Generate a unique invitation code
 export function generateInviteCode(): string {

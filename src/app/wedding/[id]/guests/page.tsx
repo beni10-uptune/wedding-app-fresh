@@ -99,7 +99,7 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             email,
-            coupleNames: wedding.coupleNames || [wedding.coupleName1, wedding.coupleName2].filter(Boolean),
+            coupleNames: wedding.coupleNames || [],
             weddingDate: wedding.weddingDate.toDate().toLocaleDateString('en-US', {
               weekday: 'long',
               year: 'numeric',

@@ -94,7 +94,7 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
             type: 'co-owner',
             partnerEmail: coOwnerEmail,
             inviterName: user.displayName || user.email?.split('@')[0] || 'Your partner',
-            coupleNames: wedding.coupleNames || [wedding.coupleName1, wedding.coupleName2].filter(Boolean),
+            coupleNames: wedding.coupleNames || [],
             weddingDate: wedding.weddingDate.toDate().toLocaleDateString('en-US', {
               weekday: 'long',
               year: 'numeric',

@@ -170,7 +170,7 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link
-                href={`/wedding/${weddingId}`}
+                href="/dashboard"
                 className="p-2 hover:bg-white/10 rounded-lg transition-colors"
               >
                 <ArrowLeft className="w-5 h-5 text-white" />

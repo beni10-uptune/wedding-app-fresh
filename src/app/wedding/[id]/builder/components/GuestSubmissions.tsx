@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { 
   collection, query, where, onSnapshot, 
   doc, updateDoc, Timestamp 
@@ -129,15 +130,13 @@ export default function GuestSubmissions({ weddingId, onAddSong }: GuestSubmissi
               <p className="text-sm text-white/60">Let guests suggest their favorite songs</p>
             </div>
           </div>
-          <a
-            href={`/join/${weddingId}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href={`/wedding/${weddingId}/guests`}
             className="btn-secondary text-sm flex items-center gap-2"
           >
             <ExternalLink className="w-4 h-4" />
-            Open Guest Form
-          </a>
+            Manage Invitations
+          </Link>
         </div>
       </div>
 

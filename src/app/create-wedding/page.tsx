@@ -5,7 +5,7 @@ import { ArrowRight, ArrowLeft, Music, Heart, MapPin, Users, Crown, CheckCircle,
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { db } from '@/lib/firebase'
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, addDoc, Timestamp } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
 import { playlistTemplates } from '@/data/playlistTemplates'
 
@@ -81,7 +81,7 @@ export default function CreateWeddingPage() {
       const weddingRef = await addDoc(collection(db, 'weddings'), {
         title: `${weddingData.coupleName1} & ${weddingData.coupleName2}'s Wedding`,
         coupleNames: [weddingData.coupleName1, weddingData.coupleName2],
-        weddingDate: new Date(weddingData.weddingDate),
+        weddingDate: Timestamp.fromDate(new Date(weddingData.weddingDate)),
         venue: weddingData.venue,
         owners: [user.uid],
         collaborators: [],

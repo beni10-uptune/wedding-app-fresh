@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { auth, db } from '@/lib/firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
-import { collection, query, where, getDocs, doc, getDoc, orderBy, limit } from 'firebase/firestore'
+import { collection, query, where, getDocs, doc, getDoc, orderBy, limit, Timestamp } from 'firebase/firestore'
 import { 
   Music, Plus, Users, 
   LogOut, Settings, ChevronRight, Heart, 
@@ -19,17 +19,20 @@ import { DashboardSkeleton } from '@/components/LoadingSkeleton'
 
 interface Wedding {
   id: string
-  coupleName1: string
-  coupleName2: string
-  weddingDate: string
+  coupleName1?: string
+  coupleName2?: string
+  weddingDate: Timestamp
   venue: string
-  city: string
-  playlistCount: number
-  guestCount: number
-  songCount: number
-  completedPlaylists: number
+  city?: string
+  playlistCount?: number
+  guestCount?: number
+  songCount?: number
+  completedPlaylists?: number
   updatedAt: any
   paymentStatus?: 'pending' | 'paid' | 'refunded'
+  owners: string[]
+  coupleNames?: string[]
+  title?: string
 }
 
 interface Playlist {
@@ -59,8 +62,8 @@ export default function Dashboard() {
   }
 
   // Calculate days until wedding
-  const getDaysUntilWedding = (weddingDate: string) => {
-    const wedding = new Date(weddingDate)
+  const getDaysUntilWedding = (weddingDate: Timestamp) => {
+    const wedding = weddingDate.toDate()
     const today = new Date()
     const diffTime = wedding.getTime() - today.getTime()
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
@@ -82,16 +85,28 @@ export default function Dashboard() {
     return Math.min(Math.round((currentSongs / targetSongs) * 100), 100)
   }
 
-  // Get guest response rate
-  const getGuestResponseRate = () => {
-    if (!activeWedding) return { responded: 0, invited: 0, rate: 0 }
-    // Mock data for now - in real app, this would come from invitations collection
-    const invited = 25 // Default guest count
-    const responded = activeWedding.guestCount || 8 // Use existing guestCount field
-    return {
-      responded,
-      invited,
-      rate: Math.round((responded / invited) * 100)
+  // Get guest response rate from actual submissions
+  const [guestStats, setGuestStats] = useState({ responded: 0, invited: 0, rate: 0 })
+  
+  const loadGuestStats = async (weddingId: string, weddingData?: Wedding) => {
+    try {
+      // Get guest submissions
+      const submissionsSnapshot = await getDocs(
+        collection(db, 'weddings', weddingId, 'guestSubmissions')
+      )
+      const uniqueGuests = new Set(submissionsSnapshot.docs.map(doc => doc.data().guestEmail))
+      const responded = uniqueGuests.size
+      
+      // For now, use guestCount as invited count (can be enhanced with actual invitations)
+      const invited = weddingData?.guestCount || activeWedding?.guestCount || 50 // Default expected guests
+      
+      setGuestStats({
+        responded,
+        invited,
+        rate: invited > 0 ? Math.round((responded / invited) * 100) : 0
+      })
+    } catch (error) {
+      console.error('Error loading guest stats:', error)
     }
   }
 
@@ -131,15 +146,19 @@ export default function Dashboard() {
       
       if (!snapshot.empty) {
         const weddingDoc = snapshot.docs[0]
+        const data = weddingDoc.data()
         const weddingData = {
           id: weddingDoc.id,
-          ...weddingDoc.data()
+          ...data,
+          // Ensure we have coupleNames array
+          coupleNames: data.coupleNames || [data.coupleName1, data.coupleName2].filter(Boolean)
         } as Wedding
         
         setActiveWedding(weddingData)
         
-        // Load playlists for this wedding
+        // Load playlists and guest stats for this wedding
         await loadPlaylists(weddingDoc.id)
+        await loadGuestStats(weddingDoc.id, weddingData)
         
         // Don't auto-redirect - let users navigate manually
       }
@@ -297,13 +316,13 @@ export default function Dashboard() {
                       <Timer className="w-12 h-12 text-pink-400" />
                       <div>
                         <p className="text-white/70 text-sm mb-1">
-                          {activeWedding?.coupleName1 || 'Your'} & {activeWedding?.coupleName2 || 'Partner'}'s Wedding
+                          {activeWedding?.coupleNames ? activeWedding.coupleNames.join(' & ') : `${activeWedding?.coupleName1 || 'Your'} & ${activeWedding?.coupleName2 || 'Partner'}`}'s Wedding
                         </p>
                         <p className="text-3xl font-bold text-white">
                           {activeWedding?.weddingDate ? getDaysUntilWedding(activeWedding.weddingDate) : 0} days to go!
                         </p>
                         <p className="text-white/60 text-sm mt-1">
-                          {activeWedding?.weddingDate ? new Date(activeWedding.weddingDate).toLocaleDateString('en-US', { 
+                          {activeWedding?.weddingDate ? activeWedding.weddingDate.toDate().toLocaleDateString('en-US', { 
                             weekday: 'long', 
                             year: 'numeric', 
                             month: 'long', 
@@ -339,17 +358,21 @@ export default function Dashboard() {
                       <div className="flex items-center justify-between mb-2">
                         <UserCheck className="w-8 h-8 text-green-400" />
                         <span className="text-3xl font-bold text-white">
-                          {getGuestResponseRate().responded}
+                          {guestStats.responded}
                         </span>
                       </div>
                       <p className="text-white font-medium">Guest Responses</p>
                       <div className="w-full bg-white/10 rounded-full h-2 mt-3">
                         <div 
                           className="bg-gradient-to-r from-green-400 to-emerald-400 h-2 rounded-full transition-all"
-                          style={{ width: `${getGuestResponseRate().rate}%` }}
+                          style={{ width: `${guestStats.rate}%` }}
                         />
                       </div>
-                      <p className="text-xs text-white/60 mt-2">{getGuestResponseRate().responded} of {getGuestResponseRate().invited} invited</p>
+                      <p className="text-xs text-white/60 mt-2">
+                        {guestStats.responded === 0 
+                          ? 'Share with guests to collect song suggestions' 
+                          : `${guestStats.responded} of ${guestStats.invited} expected guests`}
+                      </p>
                     </Link>
                     
                     {/* Wedding Details */}

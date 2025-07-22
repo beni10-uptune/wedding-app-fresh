@@ -105,16 +105,16 @@ export default function MusicLibraryPage({ params }: { params: Promise<{ id: str
       )
     }
     if (filters.moment) {
-      filtered = filtered.filter(song => song.moment === filters.moment)
+      filtered = filtered.filter(song => song.moments.includes(filters.moment))
     }
     if (filters.genre) {
       filtered = filtered.filter(song => song.genre === filters.genre)
     }
     if (filters.mood) {
-      filtered = filtered.filter(song => song.mood.includes(filters.mood))
+      filtered = filtered.filter(song => song.mood === filters.mood)
     }
     if (filters.energy) {
-      filtered = filtered.filter(song => song.energyLevel === filters.energy)
+      filtered = filtered.filter(song => song.energy === filters.energy)
     }
     setSongs(filtered)
   }, [filters])

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { auth, db } from '@/lib/firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
-import { collection, query, where, getDocs, doc, getDoc, orderBy, limit, Timestamp } from 'firebase/firestore'
+import { collection, query, where, getDocs, doc, getDoc, orderBy, Timestamp } from 'firebase/firestore'
 import { WEDDING_MOMENTS } from '@/data/weddingMoments'
 import { Timeline } from '@/types/wedding-v2'
 import { 
@@ -166,7 +166,7 @@ export default function Dashboard() {
         const weddings = allSnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        }))
+        })) as Wedding[]
         
         // Sort: paid weddings first, then by date
         const sortedWeddings = weddings.sort((a, b) => {

@@ -90,15 +90,23 @@ export default function JoinPage() {
     try {
       let weddingId: string
       
+      // Ensure code is a string
+      const codeStr = Array.isArray(code) ? code[0] : code
+      if (!codeStr) {
+        setError('Invalid invitation code')
+        setLoading(false)
+        return
+      }
+      
       // First try to use code as wedding ID directly (for share links)
-      const directWeddingDoc = await getDoc(doc(db, 'weddings', code))
+      const directWeddingDoc = await getDoc(doc(db, 'weddings', codeStr))
       if (directWeddingDoc.exists()) {
-        weddingId = code
+        weddingId = codeStr
       } else {
         // Try to find an invitation with this code
         const invitationsQuery = query(
           collection(db, 'invitations'),
-          where('inviteCode', '==', code)
+          where('inviteCode', '==', codeStr)
         )
         const inviteSnapshot = await getDocs(invitationsQuery)
         
@@ -113,7 +121,7 @@ export default function JoinPage() {
           // Try finding wedding by general invite code
           const weddingsQuery = query(
             collection(db, 'weddings'),
-            where('inviteCode', '==', code)
+            where('inviteCode', '==', codeStr)
           )
           const weddingSnapshot = await getDocs(weddingsQuery)
           

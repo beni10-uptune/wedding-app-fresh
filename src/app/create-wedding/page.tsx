@@ -163,8 +163,8 @@ export default function CreateWeddingPage() {
 
       await Promise.all(playlistPromises)
 
-      // Redirect to payment page
-      router.push(`/wedding/${weddingRef.id}/payment`)
+      // Redirect to dashboard (freemium model - payment comes later)
+      router.push('/dashboard')
     } catch (error) {
       console.error('Error creating wedding:', error)
     } finally {

@@ -7,6 +7,8 @@ import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useAuth } from '@/contexts/AuthContext'
 import { validateSongData } from '@/lib/song-utils'
+import { SUBSCRIPTION_TIERS, getUserTier } from '@/lib/subscription-tiers'
+import UpgradeModal from './UpgradeModal'
 import Image from 'next/image'
 
 interface QuickAddSongModalProps {
@@ -47,6 +49,7 @@ export default function QuickAddSongModal({
   const [addingTrack, setAddingTrack] = useState<string | null>(null)
   const [playingTrack, setPlayingTrack] = useState<string | null>(null)
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
 
   useEffect(() => {
     if (!isOpen) {
@@ -116,6 +119,23 @@ export default function QuickAddSongModal({
       
       const weddingData = weddingDoc.data()
       const timeline = weddingData.timeline || {}
+      const currentPaymentStatus = weddingData.paymentStatus || 'pending'
+      
+      // Count total songs across all moments
+      let currentSongCount = 0
+      Object.values(timeline).forEach((moment: any) => {
+        if (moment.songs && Array.isArray(moment.songs)) {
+          currentSongCount += moment.songs.length
+        }
+      })
+      
+      // Check if user is on free tier and would exceed limit
+      const userTier = getUserTier(currentPaymentStatus)
+      if (userTier.maxSongs !== -1 && currentSongCount >= userTier.maxSongs) {
+        setAddingTrack(null)
+        setShowUpgradeModal(true)
+        return
+      }
       
       // Check for duplicates in the selected moment
       const momentSongs = timeline[selectedMoment]?.songs || []
@@ -204,6 +224,7 @@ export default function QuickAddSongModal({
   if (!isOpen) return null
 
   return (
+    <>
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
@@ -359,5 +380,14 @@ export default function QuickAddSongModal({
         </div>
       </div>
     </div>
+    
+    {/* Upgrade Modal */}
+    <UpgradeModal
+      isOpen={showUpgradeModal}
+      onClose={() => setShowUpgradeModal(false)}
+      trigger="SONG_LIMIT"
+      weddingId={weddingId}
+    />
+  </>
   )
 }

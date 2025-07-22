@@ -14,10 +14,11 @@ import {
   CheckCircle2, Zap, PartyPopper,
   HeartHandshake, Timer,
   Calendar, UserCheck, Share2, Play, Lock, Download,
-  AlertCircle, RefreshCw
+  AlertCircle, RefreshCw, Crown
 } from 'lucide-react'
 import Link from 'next/link'
 import { DashboardSkeleton } from '@/components/LoadingSkeleton'
+import { getUserTier, SUBSCRIPTION_TIERS } from '@/lib/subscription-tiers'
 
 interface Wedding {
   id: string
@@ -499,7 +500,12 @@ export default function Dashboard() {
                           style={{ width: `${getOverallProgress()}%` }}
                         />
                       </div>
-                      <p className="text-xs text-white/60 mt-2">Target: 150</p>
+                      <p className="text-xs text-white/60 mt-2">
+                        {activeWedding?.paymentStatus === 'paid' 
+                          ? 'Target: 150' 
+                          : `${activeWedding?.songCount || 0} of 25 (Free plan)`
+                        }
+                      </p>
                     </Link>
                     
                     {/* Total Duration */}
@@ -596,6 +602,24 @@ export default function Dashboard() {
                       Share with Guests
                     </Link>
                   </div>
+                  
+                  {/* Free Plan Notice */}
+                  {activeWedding?.paymentStatus !== 'paid' && (
+                    <div className="mt-8 glass-darker rounded-xl p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Crown className="w-5 h-5 text-yellow-400" />
+                        <p className="text-white/80">
+                          You're on the free plan. Upgrade to unlock unlimited songs, exports, and more!
+                        </p>
+                      </div>
+                      <Link
+                        href={`/wedding/${activeWedding.id}/payment`}
+                        className="text-purple-400 hover:text-purple-300 font-medium"
+                      >
+                        Upgrade Now
+                      </Link>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

@@ -170,7 +170,7 @@ export async function canAddCoOwner(weddingId: string): Promise<TierCheckResult>
     const paymentStatus = weddingData?.paymentStatus || 'pending'
     const tier = getUserTier(paymentStatus)
     
-    if (!tier.hasCoOwner) {
+    if (!tier.features.coOwner) {
       return {
         allowed: false,
         reason: 'Co-owner feature requires premium plan'
@@ -236,7 +236,7 @@ export async function getWeddingUsageStats(weddingId: string) {
         allowed: tier.maxExports !== 0
       },
       coOwner: {
-        allowed: tier.hasCoOwner
+        allowed: tier.features.coOwner
       }
     }
   } catch (error) {

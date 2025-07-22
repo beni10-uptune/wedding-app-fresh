@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { renderToStaticMarkup } from 'react-dom/server'
 import { WeddingInvitationEmail } from '@/emails/wedding-invitation'
 import { CoOwnerInvitationEmail } from '@/emails/co-owner-invitation'
 
@@ -99,36 +100,40 @@ export async function GET(request: NextRequest) {
   const template = searchParams.get('template')
 
   if (template === 'co-owner') {
-    return new Response(
-      CoOwnerInvitationEmail({
-        partnerEmail: 'partner@example.com',
-        inviterName: 'Sarah',
-        coupleNames: ['Sarah', 'Michael'],
-        weddingDate: 'Saturday, June 15, 2024',
-        venue: 'The Grand Ballroom',
-        inviteLink: 'https://example.com/join'
-      }),
-      {
-        headers: {
-          'Content-Type': 'text/html',
-        },
-      }
-    )
-  }
-
-  return new Response(
-    WeddingInvitationEmail({
-      guestEmail: 'guest@example.com',
+    const emailHtml = CoOwnerInvitationEmail({
+      partnerEmail: 'partner@example.com',
+      inviterName: 'Sarah',
       coupleNames: ['Sarah', 'Michael'],
       weddingDate: 'Saturday, June 15, 2024',
       venue: 'The Grand Ballroom',
-      inviteLink: 'https://example.com/join',
-      personalizedPrompt: 'What songs always get you on the dance floor?'
-    }),
-    {
+      inviteLink: 'https://example.com/join'
+    })
+    
+    // Convert React element to HTML string
+    const htmlString = renderToStaticMarkup(emailHtml)
+    
+    return new Response(htmlString, {
       headers: {
         'Content-Type': 'text/html',
       },
-    }
-  )
+    })
+  }
+
+  const emailHtml = WeddingInvitationEmail({
+    guestEmail: 'guest@example.com',
+    coupleNames: ['Sarah', 'Michael'],
+    weddingDate: 'Saturday, June 15, 2024',
+    venue: 'The Grand Ballroom',
+    inviteLink: 'https://example.com/join',
+    personalizedPrompt: 'What songs always get you on the dance floor?'
+  })
+  
+  // Convert React element to HTML string
+  const htmlString = renderToStaticMarkup(emailHtml)
+  
+  return new Response(htmlString, {
+    headers: {
+      'Content-Type': 'text/html',
+    },
+  })
 }

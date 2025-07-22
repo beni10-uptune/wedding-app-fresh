@@ -11,6 +11,7 @@ function PaymentSuccessContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [countdown, setCountdown] = useState(5)
+  const weddingId = searchParams.get('wedding_id')
 
   useEffect(() => {
     try {
@@ -43,7 +44,8 @@ function PaymentSuccessContent() {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer)
-          router.push('/dashboard')
+          // If we have a wedding ID, go to that wedding, otherwise dashboard
+          router.push(weddingId ? `/wedding/${weddingId}` : '/dashboard')
           return 0
         }
         return prev - 1

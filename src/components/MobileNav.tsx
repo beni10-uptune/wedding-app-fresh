@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Menu, X, Music, Home, Users, Settings, LogOut } from 'lucide-react'
+import { Menu, X, Music, Home, LogOut } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { signOut } from 'firebase/auth'
@@ -21,8 +21,6 @@ export default function MobileNav() {
   const navItems = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
     { href: '/create-wedding', label: 'New Wedding', icon: Music },
-    { href: '/profile', label: 'Profile', icon: Users },
-    { href: '/settings', label: 'Settings', icon: Settings },
   ]
 
   return (

@@ -25,13 +25,11 @@ interface WeddingWithPrompt extends Wedding {
   personalizedPrompt?: string
 }
 
-interface Playlist {
+interface Moment {
   id: string
   name: string
   description: string
-  moment: string
-  songs: any[]
-  targetSongCount: number
+  icon: string
 }
 
 interface SpotifyTrack {
@@ -48,13 +46,20 @@ export default function JoinPage() {
   const { code } = useParams()
   const router = useRouter()
   const [wedding, setWedding] = useState<WeddingWithPrompt | null>(null)
-  const [playlists, setPlaylists] = useState<Playlist[]>([])
+  const [moments] = useState<Moment[]>([
+    { id: 'ceremony', name: 'Ceremony', description: 'Walk down the aisle', icon: '💒' },
+    { id: 'cocktail', name: 'Cocktail Hour', description: 'Mingling and drinks', icon: '🍸' },
+    { id: 'dinner', name: 'Dinner', description: 'Meal service', icon: '🍽️' },
+    { id: 'first-dance', name: 'First Dance', description: 'Special moment', icon: '💕' },
+    { id: 'party', name: 'Dance Floor', description: 'Party time!', icon: '🎉' }
+  ])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [guestName, setGuestName] = useState('')
   const [guestEmail, setGuestEmail] = useState('')
   const [hasJoined, setHasJoined] = useState(false)
-  const [selectedPlaylist, setSelectedPlaylist] = useState('')
+  const [selectedMoment, setSelectedMoment] = useState('party')
+  const [submittedSongs, setSubmittedSongs] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<SpotifyTrack[]>([])
   const [searching, setSearching] = useState(false)
@@ -141,18 +146,10 @@ export default function JoinPage() {
         const weddingData = { id: weddingDoc.id, ...weddingDoc.data() } as WeddingWithPrompt
         setWedding(weddingData)
         
-        // Load playlists
-        const playlistsSnapshot = await getDocs(
-          collection(db, 'weddings', weddingId, 'playlists')
-        )
-        const playlistData = playlistsSnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as Playlist[]
-        setPlaylists(playlistData)
-        
-        if (playlistData.length > 0) {
-          setSelectedPlaylist(playlistData[0].id)
+        // Load submitted songs from localStorage
+        const storedSubmissions = localStorage.getItem(`wedding_${weddingId}_submissions`)
+        if (storedSubmissions) {
+          setSubmittedSongs(JSON.parse(storedSubmissions))
         }
       } else {
         setError('Wedding not found')
@@ -236,24 +233,30 @@ export default function JoinPage() {
   }
 
   const handleAddSong = async (track: SpotifyTrack) => {
-    if (!selectedPlaylist || !wedding || !auth.currentUser) return
+    if (!selectedMoment || !wedding) return
     
     setAddingTrack(track.id)
     try {
-      const playlistRef = collection(db, 'weddings', wedding.id, 'playlists', selectedPlaylist, 'songs')
-      await addDoc(playlistRef, {
-        spotify_id: track.id,
-        title: track.name,
-        artist: track.artist,
-        album: track.album,
-        duration_ms: track.duration_ms,
-        preview_url: track.preview_url,
-        image: track.image,
-        addedBy: auth.currentUser.uid,
-        addedByName: guestName,
-        addedAt: serverTimestamp(),
-        votes: 0
+      // Create guest submission
+      await addDoc(collection(db, 'weddings', wedding.id, 'guestSubmissions'), {
+        guestName,
+        guestEmail,
+        songSpotifyId: track.id,
+        songTitle: track.name,
+        songArtist: track.artist,
+        songAlbum: track.album,
+        duration: Math.floor(track.duration_ms / 1000),
+        previewUrl: track.preview_url,
+        suggestedFor: selectedMoment,
+        submittedAt: serverTimestamp(),
+        status: 'pending',
+        votes: 1 // Guest's own vote
       })
+
+      // Track submission locally
+      const newSubmissions = [...submittedSongs, track.id]
+      setSubmittedSongs(newSubmissions)
+      localStorage.setItem(`wedding_${wedding.id}_submissions`, JSON.stringify(newSubmissions))
 
       // Clear search
       setSearchQuery('')
@@ -430,15 +433,15 @@ export default function JoinPage() {
             <div className="grid md:grid-cols-3 gap-4">
               <div className="glass-darker rounded-xl p-4 text-center">
                 <Headphones className="w-8 h-8 text-purple-400 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-white">{playlists.length}</p>
-                <p className="text-sm text-white/60">Playlists</p>
+                <p className="text-2xl font-bold text-white">{moments.length}</p>
+                <p className="text-sm text-white/60">Moments</p>
               </div>
               <div className="glass-darker rounded-xl p-4 text-center">
                 <Music className="w-8 h-8 text-pink-400 mx-auto mb-2" />
                 <p className="text-2xl font-bold text-white">
-                  {playlists.reduce((acc, p) => acc + (p.songs?.length || 0), 0)}
+                  {submittedSongs.length}
                 </p>
-                <p className="text-sm text-white/60">Songs Added</p>
+                <p className="text-sm text-white/60">Songs Suggested</p>
               </div>
               <div className="glass-darker rounded-xl p-4 text-center">
                 <Heart className="w-8 h-8 text-red-400 mx-auto mb-2" />
@@ -448,24 +451,24 @@ export default function JoinPage() {
             </div>
           </div>
 
-          {/* Playlist Selector */}
+          {/* Moment Selector */}
           <div className="glass rounded-2xl p-6 mb-6">
             <h3 className="text-lg font-bold text-white mb-4">Choose a moment to add songs to:</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {playlists.map(playlist => (
+              {moments.map(moment => (
                 <button
-                  key={playlist.id}
-                  onClick={() => setSelectedPlaylist(playlist.id)}
+                  key={moment.id}
+                  onClick={() => setSelectedMoment(moment.id)}
                   className={`p-4 rounded-xl border transition-all ${
-                    selectedPlaylist === playlist.id
+                    selectedMoment === moment.id
                       ? 'border-purple-500 bg-purple-500/20 scale-105'
                       : 'border-white/20 hover:border-purple-400'
                   }`}
                 >
-                  <span className="text-2xl mb-2 block">{getMomentIcon(playlist.moment)}</span>
-                  <p className="font-medium text-white">{playlist.name}</p>
+                  <span className="text-2xl mb-2 block">{moment.icon}</span>
+                  <p className="font-medium text-white">{moment.name}</p>
                   <p className="text-xs text-white/60 mt-1">
-                    {playlist.songs?.length || 0} songs
+                    {moment.description}
                   </p>
                 </button>
               ))}

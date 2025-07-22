@@ -3,21 +3,22 @@
 import { useState, useEffect } from 'react'
 import { X, Search, Plus, Play, Pause } from 'lucide-react'
 // Removed direct Spotify import - will use API route instead
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useAuth } from '@/contexts/AuthContext'
-import { checkDuplicateSong, validateSongData } from '@/lib/song-utils'
+import { validateSongData } from '@/lib/song-utils'
 import Image from 'next/image'
 
 interface QuickAddSongModalProps {
   isOpen: boolean
   onClose: () => void
   weddingId: string
-  playlists: Array<{
+  playlists?: Array<{
     id: string
     name: string
     moment: string
   }>
+  onSongAdded?: () => void
 }
 
 interface SpotifyTrack {
@@ -39,7 +40,8 @@ export default function QuickAddSongModal({
   const { user } = useAuth()
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<SpotifyTrack[]>([])
-  const [selectedPlaylist, setSelectedPlaylist] = useState(playlists[0]?.id || '')
+  const [selectedMoment, setSelectedMoment] = useState('first-dance')
+  const [availableMoments, setAvailableMoments] = useState<string[]>(['first-dance', 'ceremony', 'cocktail', 'dinner', 'party'])
   const [loading, setLoading] = useState(false)
   const [addingTrack, setAddingTrack] = useState<string | null>(null)
   const [playingTrack, setPlayingTrack] = useState<string | null>(null)
@@ -99,14 +101,27 @@ export default function QuickAddSongModal({
   }
 
   const handleAddSong = async (track: SpotifyTrack) => {
-    if (!selectedPlaylist || !user) return
+    if (!selectedMoment || !user) return
     
     setAddingTrack(track.id)
     try {
-      // Check for duplicates
-      const isDuplicate = await checkDuplicateSong(weddingId, selectedPlaylist, track.id)
+      // Get the wedding document
+      const weddingRef = doc(db, 'weddings', weddingId)
+      const weddingDoc = await getDoc(weddingRef)
+      
+      if (!weddingDoc.exists()) {
+        throw new Error('Wedding not found')
+      }
+      
+      const weddingData = weddingDoc.data()
+      const timeline = weddingData.timeline || {}
+      
+      // Check for duplicates in the selected moment
+      const momentSongs = timeline[selectedMoment]?.songs || []
+      const isDuplicate = momentSongs.some((song: any) => song.spotifyId === track.id)
+      
       if (isDuplicate) {
-        alert('This song is already in the playlist!')
+        alert('This song is already in this moment!')
         setAddingTrack(null)
         return
       }
@@ -125,19 +140,33 @@ export default function QuickAddSongModal({
         return
       }
 
-      // Add song to the selected playlist
-      const playlistRef = collection(db, 'weddings', weddingId, 'playlists', selectedPlaylist, 'songs')
-      await addDoc(playlistRef, {
-        spotify_id: track.id,
+      // Create the new song object
+      const newSong = {
+        id: `${Date.now()}_${track.id}`,
+        spotifyId: track.id,
         title: track.name,
         artist: track.artist,
-        album: track.album,
-        duration_ms: track.duration_ms,
-        preview_url: track.preview_url,
-        image: track.image,
-        addedBy: user.uid,
-        addedAt: serverTimestamp(),
-        votes: 0
+        duration: Math.floor(track.duration_ms / 1000), // Convert to seconds
+        addedBy: 'couple',
+        addedAt: Timestamp.now(),
+        energy: 3,
+        explicit: false
+      }
+
+      // Update the timeline
+      if (!timeline[selectedMoment]) {
+        timeline[selectedMoment] = {
+          songs: [],
+          duration: 60 // Default duration in minutes
+        }
+      }
+      
+      timeline[selectedMoment].songs.push(newSong)
+      
+      // Update the wedding document
+      await updateDoc(weddingRef, {
+        timeline,
+        updatedAt: new Date()
       })
 
       // Show success animation
@@ -146,6 +175,11 @@ export default function QuickAddSongModal({
       // Clear search after successful add
       setSearchQuery('')
       setSearchResults([])
+      
+      // Notify parent component
+      if (onSongAdded) {
+        onSongAdded()
+      }
       
     } catch (error) {
       console.error('Error adding song:', error)
@@ -198,18 +232,18 @@ export default function QuickAddSongModal({
               Add to playlist:
             </label>
             <div className="flex gap-2 flex-wrap">
-              {playlists.map(playlist => (
+              {availableMoments.map(moment => (
                 <button
-                  key={playlist.id}
-                  onClick={() => setSelectedPlaylist(playlist.id)}
+                  key={moment}
+                  onClick={() => setSelectedMoment(moment)}
                   className={`px-4 py-2 rounded-lg border transition-all ${
-                    selectedPlaylist === playlist.id
+                    selectedMoment === moment
                       ? 'border-purple-500 bg-purple-500/20 text-white'
                       : 'border-white/20 hover:border-purple-400 text-white/60'
                   }`}
                 >
-                  <span className="mr-2">{getMomentIcon(playlist.moment)}</span>
-                  {playlist.name}
+                  <span className="mr-2">{getMomentIcon(moment)}</span>
+                  {moment.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                 </button>
               ))}
             </div>

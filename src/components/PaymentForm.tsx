@@ -33,7 +33,7 @@ function CheckoutForm({ onSuccess, onError }: Omit<PaymentFormProps, 'clientSecr
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/payment-success`,
+        return_url: `${window.location.origin}/payment-success?wedding_id=${new URLSearchParams(window.location.search).get('wedding_id') || window.location.pathname.split('/')[2]}`,
       },
       redirect: 'if_required'
     })

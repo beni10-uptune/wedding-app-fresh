@@ -523,7 +523,6 @@ export default function PlaylistBuilderPage({ params }: { params: Promise<{ id: 
                 {/* Spotify Export */}
                 <SpotifyExport
                   weddingId={weddingId}
-                  playlistId={playlistId}
                   playlistName={playlist.name}
                   songs={playlist.songs.map(song => ({
                     spotifyId: song.spotify_id,

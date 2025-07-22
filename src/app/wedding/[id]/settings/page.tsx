@@ -201,7 +201,7 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
               <button
                 onClick={() => {
                   const tier = getUserTier(wedding?.paymentStatus)
-                  if (!tier.hasCoOwner) {
+                  if (!tier.features.coOwner) {
                     setShowUpgradeModal(true)
                   } else {
                     setShowAddCoOwner(true)

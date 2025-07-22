@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db, auth } from '@/lib/firebase'
-import { Wedding } from '@/types/wedding'
 
 // Extended interface to support old wedding data structure
 interface ExtendedWedding {
@@ -22,7 +21,6 @@ interface ExtendedWedding {
 import PaymentForm from '@/components/PaymentForm'
 import { Heart, Music, Check, ArrowLeft, Lock } from 'lucide-react'
 import Link from 'next/link'
-import { STRIPE_CONFIG } from '@/lib/stripe'
 
 export default function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: weddingId } = use(params)

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { ArrowLeft, Search, Filter, Play, Plus, Heart, Clock, Star, Music, ExternalLink } from 'lucide-react'
+import { ArrowLeft, Search, Filter, Plus, Heart, Clock, Star, Music } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { musicLibrary, getFilteredSongs, getGenres, getMoods, getEnergyLevels, Song, weddingMoments } from '@/data/musicLibrary'

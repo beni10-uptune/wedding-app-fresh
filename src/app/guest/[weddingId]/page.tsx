@@ -23,7 +23,7 @@ import { Wedding, SongSuggestion, Vote, WeddingMoment } from '@/types/wedding'
 import Link from 'next/link'
 import { searchSpotifyTracks } from '@/lib/spotify'
 import SongCard from '@/components/SongCard'
-import { Search, X } from 'lucide-react'
+import { Search } from 'lucide-react'
 
 const WEDDING_MOMENTS: { value: WeddingMoment; label: string; icon: string }[] = [
   { value: 'processional', label: 'Processional', icon: '👰' },

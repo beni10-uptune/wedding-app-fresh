@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Song } from '@/types/wedding-v2'
 import { CURATED_COLLECTIONS as SONG_COLLECTIONS } from '@/data/curatedCollections'
 import CollectionCard from './CollectionCard'
-import { Sparkles, Music, Heart, PartyPopper, Zap } from 'lucide-react'
+import { Sparkles, Music, Heart, PartyPopper } from 'lucide-react'
 import DraggableSong from './DraggableSong'
 import { getSongsInCollection } from '@/data/curatedCollections'
 

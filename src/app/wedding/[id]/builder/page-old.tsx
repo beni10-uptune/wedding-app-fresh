@@ -9,8 +9,8 @@ import { WeddingV2, Song, TimelineSong } from '@/types/wedding-v2'
 import { WEDDING_MOMENTS } from '@/data/weddingMoments'
 import { getCollectionsByMoment } from '@/data/curatedCollections'
 import { 
-  Music, Search, Filter, Users, Sparkles, 
-  Download, Clock, ChevronLeft, Plus
+  Music, Users, Sparkles, 
+  Download, Clock, ChevronLeft
 } from 'lucide-react'
 import Link from 'next/link'
 import CollectionCard from './components/CollectionCard'

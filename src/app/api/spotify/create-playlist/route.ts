@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SpotifyApi } from '@spotify/web-api-ts-sdk'
-import { doc, getDoc, updateDoc } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
 
 export async function POST(request: NextRequest) {
   try {

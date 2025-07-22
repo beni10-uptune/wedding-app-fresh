@@ -8,7 +8,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Wedding, Invitation } from '@/types/wedding'
 import Link from 'next/link'
-import { ArrowLeft, Mail, Copy, Users, Check, X, Clock, HeartHandshake, Share2, QrCode } from 'lucide-react'
+import { ArrowLeft, Mail, Copy, Users, Check, X, Clock, Share2 } from 'lucide-react'
 
 export default function GuestsManagementPage({ params }: { params: Promise<{ id: string }> }) {
   const [wedding, setWedding] = useState<Wedding | null>(null)

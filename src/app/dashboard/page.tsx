@@ -13,7 +13,7 @@ import {
   Sparkles, Gift,
   CheckCircle2, Zap, PartyPopper,
   HeartHandshake, Timer,
-  Calendar, UserCheck, Share2, Play, Clock
+  Calendar, UserCheck, Share2, Play
 } from 'lucide-react'
 import Link from 'next/link'
 import { DashboardSkeleton } from '@/components/LoadingSkeleton'

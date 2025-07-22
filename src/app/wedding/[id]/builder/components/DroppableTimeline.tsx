@@ -9,7 +9,7 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Song, WeddingMoment } from '@/types/wedding-v2'
-import { Clock, Trash2, AlertCircle } from 'lucide-react'
+import { Trash2, AlertCircle } from 'lucide-react'
 import DraggableSong from './DraggableSong'
 import { formatDuration } from '@/lib/spotify-client'
 
@@ -27,7 +27,6 @@ export default function DroppableTimeline({
   moment,
   songs,
   onRemoveSong,
-  onReorderSongs,
   playingId,
   onPlaySong,
   onPauseSong

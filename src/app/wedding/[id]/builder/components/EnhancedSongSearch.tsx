@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { searchSpotifyTracks, formatDuration } from '@/lib/spotify-client'
+import { searchSpotifyTracks } from '@/lib/spotify-client'
 import { Song } from '@/types/wedding-v2'
 import { Search, AlertCircle, Music } from 'lucide-react'
 import { debounce } from 'lodash'

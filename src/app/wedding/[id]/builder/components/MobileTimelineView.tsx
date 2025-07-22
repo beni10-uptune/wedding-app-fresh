@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { Song, Timeline } from '@/types/wedding-v2'
 import { WEDDING_MOMENTS } from '@/data/weddingMoments'
 import { 

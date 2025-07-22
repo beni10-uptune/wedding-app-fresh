@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { auth, db } from '@/lib/firebase'
+import { db } from '@/lib/firebase'
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore'
 import { 
-  Download, FileText, Music, Headphones, 
-  CheckCircle, Clock, Calendar, MapPin,
-  Heart, ArrowLeft, Loader2, Copy,
-  Share2, Mail
+  Download, FileText, Music, 
+  ArrowLeft, Loader2
 } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'

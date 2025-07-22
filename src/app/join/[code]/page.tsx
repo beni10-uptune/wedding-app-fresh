@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { auth, db } from '@/lib/firebase'
-import { collection, query, where, getDocs, doc, getDoc, updateDoc, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, query, where, getDocs, doc, getDoc, addDoc, serverTimestamp } from 'firebase/firestore'
 import { signInAnonymously, onAuthStateChanged } from 'firebase/auth'
 import { 
-  Music, Heart, Users, Calendar, MapPin, 
-  Sparkles, Gift, Search, Plus, Play, Pause,
+  Music, Heart, Calendar, MapPin, 
+  Sparkles, Search, Plus, Play, Pause,
   CheckCircle, Headphones
 } from 'lucide-react'
 import Image from 'next/image'

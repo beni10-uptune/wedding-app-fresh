@@ -23,6 +23,7 @@ export function WeddingInvitationEmail({
   
   return (
     <html>
+      {/* eslint-disable-next-line @next/next/no-head-element */}
       <head>
         <meta content="text/html; charset=UTF-8" httpEquiv="Content-Type" />
       </head>

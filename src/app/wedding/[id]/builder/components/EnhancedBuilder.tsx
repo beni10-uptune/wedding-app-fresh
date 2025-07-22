@@ -5,7 +5,6 @@ import { Timestamp } from 'firebase/firestore'
 import {
   DndContext,
   DragEndEvent,
-  DragOverlay,
   DragStartEvent,
   PointerSensor,
   useSensor,
@@ -15,16 +14,13 @@ import {
   useDroppable
 } from '@dnd-kit/core'
 import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy
+  arrayMove
 } from '@dnd-kit/sortable'
 import { WeddingV2, Song, Timeline, TimelineSong } from '@/types/wedding-v2'
 import { WEDDING_MOMENTS } from '@/data/weddingMoments'
 import EnhancedSongSearch from './EnhancedSongSearch'
 import EnhancedCollectionBrowser from './EnhancedCollectionBrowser'
 import DroppableTimeline from './DroppableTimeline'
-import DraggableSong from './DraggableSong'
 import GuestSubmissions from './GuestSubmissions'
 import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'

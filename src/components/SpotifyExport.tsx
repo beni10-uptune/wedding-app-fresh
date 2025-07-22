@@ -9,7 +9,6 @@ import Image from 'next/image'
 
 interface SpotifyExportProps {
   weddingId: string
-  playlistId: string
   playlistName: string
   songs: Array<{
     spotifyId?: string
@@ -20,7 +19,6 @@ interface SpotifyExportProps {
 
 export default function SpotifyExport({ 
   weddingId, 
-  playlistId, 
   playlistName, 
   songs 
 }: SpotifyExportProps) {

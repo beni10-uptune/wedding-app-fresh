@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Music, Users, Calendar, MapPin, Heart, Play, Plus, Settings, Share2, Download } from 'lucide-react'
+import { Music, Users, Calendar, MapPin, Heart, Play, Plus, Settings, Download } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { db } from '@/lib/firebase'

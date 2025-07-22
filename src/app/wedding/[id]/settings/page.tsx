@@ -3,11 +3,11 @@
 import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
-import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore'
+import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import Link from 'next/link'
 import { 
-  ArrowLeft, Settings, Users, Mail, Copy, Check, X, 
+  ArrowLeft, Users, Check, 
   UserPlus, Shield, AlertCircle 
 } from 'lucide-react'
 

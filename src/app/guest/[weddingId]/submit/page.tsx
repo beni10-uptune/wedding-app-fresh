@@ -3,8 +3,8 @@
 import { useState, useEffect, use } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { 
-  Music, Search, Heart, Send, Check, 
-  AlertCircle, ChevronLeft, Sparkles 
+  Heart, Send, Check, 
+  AlertCircle 
 } from 'lucide-react'
 import { 
   doc, getDoc, collection, addDoc, 

@@ -7,7 +7,7 @@ import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore'
 import { db, auth } from '@/lib/firebase'
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import Link from 'next/link'
-import { Heart, Music, Users, AlertCircle } from 'lucide-react'
+import { Heart, Users, AlertCircle } from 'lucide-react'
 
 interface Wedding {
   id: string

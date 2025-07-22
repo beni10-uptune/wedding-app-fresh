@@ -5,7 +5,7 @@ import { ArrowRight, ArrowLeft, Music, Heart, MapPin, Users, Crown, CheckCircle,
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { db } from '@/lib/firebase'
-import { collection, addDoc, Timestamp, query, where, getDocs } from 'firebase/firestore'
+import { collection, addDoc, Timestamp, query, where, getDocs, updateDoc, doc, serverTimestamp } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
 import { playlistTemplates } from '@/data/playlistTemplates'
 
@@ -162,6 +162,14 @@ export default function CreateWeddingPage() {
       }
 
       await Promise.all(playlistPromises)
+      
+      // Mark onboarding as complete
+      if (user) {
+        await updateDoc(doc(db, 'users', user.uid), {
+          onboardingCompleted: true,
+          updatedAt: serverTimestamp()
+        })
+      }
 
       // Redirect to dashboard (freemium model - payment comes later)
       router.push('/dashboard')

@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ArrowRight, Music } from 'lucide-react'
 import Link from 'next/link'
-import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from 'firebase/auth'
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile, onAuthStateChanged } from 'firebase/auth'
 import { auth, db } from '@/lib/firebase'
-import { doc, setDoc } from 'firebase/firestore'
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
 
 export default function SignUpPage() {
@@ -15,7 +15,37 @@ export default function SignUpPage() {
   const [partnerName, setPartnerName] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [checkingAuth, setCheckingAuth] = useState(true)
   const router = useRouter()
+  
+  // Check if user is already logged in
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Check if user has completed onboarding (has a wedding)
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid))
+          const userData = userDoc.data()
+          
+          // If user just signed up (onboardingCompleted is false), go to create-wedding
+          if (userData && userData.onboardingCompleted === false) {
+            console.log('New user detected, redirecting to create-wedding')
+            router.push('/create-wedding')
+          } else {
+            console.log('Existing user detected, redirecting to dashboard')
+            router.push('/dashboard')
+          }
+        } catch (error) {
+          console.error('Error checking user status:', error)
+          router.push('/dashboard')
+        }
+      } else {
+        setCheckingAuth(false)
+      }
+    })
+    
+    return () => unsubscribe()
+  }, [router])
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -36,11 +66,14 @@ export default function SignUpPage() {
         email: user.email,
         displayName: name,
         partnerName: partnerName,
-        createdAt: new Date(),
-        role: 'couple'
+        createdAt: serverTimestamp(),
+        role: 'couple',
+        onboardingCompleted: false
       })
 
-      router.push('/create-wedding')
+      console.log('User created successfully, auth state should update')
+      // Don't manually redirect - let the auth state listener handle it
+      // The useEffect hook will catch the auth state change and redirect
     } catch (err) {
       setError((err as Error).message || 'Failed to create account')
     } finally {
@@ -57,22 +90,39 @@ export default function SignUpPage() {
       const userCredential = await signInWithPopup(auth, provider)
       const user = userCredential.user
 
+      // Check if user already exists
+      const userDoc = await getDoc(doc(db, 'users', user.uid))
+      const isNewUser = !userDoc.exists()
+      
       // Create/update user document in Firestore
       await setDoc(doc(db, 'users', user.uid), {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
         photoURL: user.photoURL,
-        createdAt: new Date(),
-        role: 'couple'
+        createdAt: serverTimestamp(),
+        role: 'couple',
+        onboardingCompleted: isNewUser ? false : userDoc.data()?.onboardingCompleted || true
       }, { merge: true })
 
-      router.push('/create-wedding')
+      console.log('Google signup successful, auth state should update')
+      // Don't manually redirect - let the auth state listener handle it
     } catch (err) {
       setError((err as Error).message || 'Failed to sign up with Google')
     } finally {
       setLoading(false)
     }
+  }
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen dark-gradient flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white/60">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

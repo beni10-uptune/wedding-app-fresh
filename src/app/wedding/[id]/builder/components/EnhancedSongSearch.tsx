@@ -5,7 +5,7 @@ import { searchSpotifyTracks } from '@/lib/spotify-client'
 import { Song } from '@/types/wedding-v2'
 import { Search, AlertCircle, Music } from 'lucide-react'
 import { debounce } from 'lodash'
-import DraggableSong from './DraggableSong'
+import UnifiedSongCard from './UnifiedSongCard'
 
 interface EnhancedSongSearchProps {
   onAddSong: (song: Song, momentId: string) => void
@@ -109,6 +109,7 @@ export default function EnhancedSongSearch({ onAddSong, selectedMoment }: Enhanc
     title: track.name,
     artist: track.artist,
     album: track.album,
+    albumArt: track.image,
     duration: Math.round(track.duration_ms / 1000),
     energyLevel: 3, // Default
     explicit: track.explicit || false,
@@ -138,6 +139,7 @@ export default function EnhancedSongSearch({ onAddSong, selectedMoment }: Enhanc
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-purple-400"
+            data-tutorial="search-input"
           />
         </div>
       </div>
@@ -170,30 +172,66 @@ export default function EnhancedSongSearch({ onAddSong, selectedMoment }: Enhanc
         {!loading && results.length > 0 && (
           <div className="p-4 space-y-2">
             {results.map((track, index) => (
-              <DraggableSong
-                key={track.id}
-                song={convertToSong(track)}
-                source="search"
-                index={index}
-                isPlaying={playingId === track.id}
-                onPlay={() => handlePlayPause(track)}
-                onPause={() => {
-                  if (audioElement) {
-                    audioElement.pause()
-                    setPlayingId(null)
-                  }
-                }}
-                onAddToMoment={(momentId) => handleAddToMoment(track, momentId)}
-              />
+              <div key={track.id} data-tutorial={index === 0 ? "song-card" : undefined}>
+                <UnifiedSongCard
+                  song={convertToSong(track)}
+                  source="search"
+                  index={index}
+                  isPlaying={playingId === track.id}
+                  onPlay={() => handlePlayPause(track)}
+                  onPause={() => {
+                    if (audioElement) {
+                      audioElement.pause()
+                      setPlayingId(null)
+                    }
+                  }}
+                  onAddToMoment={(momentId) => handleAddToMoment(track, momentId)}
+                />
+              </div>
             ))}
           </div>
         )}
 
         {!loading && !query.trim() && (
-          <div className="text-center text-white/40 py-8 px-4">
-            <Search className="w-12 h-12 mx-auto mb-3 opacity-50" />
-            <p>Search for songs to add to your timeline</p>
-            <p className="text-sm mt-1">Drag songs to any moment or use the + menu</p>
+          <div className="py-8 px-4">
+            <div className="text-center mb-6">
+              <Search className="w-12 h-12 mx-auto mb-3 text-white/30" />
+              <p className="text-white/60 font-medium">Search for songs to add to your timeline</p>
+              <p className="text-sm text-white/40 mt-1">
+                Type an artist, song title, or lyrics to get started
+              </p>
+            </div>
+            
+            {/* Quick Search Suggestions */}
+            <div className="bg-white/5 rounded-lg p-4">
+              <p className="text-xs font-medium text-white/60 mb-3">Popular searches:</p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  'Ed Sheeran Perfect',
+                  'First Dance Songs',
+                  'John Legend',
+                  'Classic Love Songs',
+                  'Upbeat Party',
+                  'Father Daughter Dance'
+                ].map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    onClick={() => setQuery(suggestion)}
+                    className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full text-sm text-white/80 transition-colors"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            {/* Pro Tips */}
+            <div className="mt-6 text-xs text-white/40 space-y-1">
+              <p>💡 Pro tips:</p>
+              <p>• Click any song to preview it</p>
+              <p>• Use the "+ Add" button to choose specific moments</p>
+              <p>• Drag songs directly to timeline moments</p>
+            </div>
           </div>
         )}
       </div>

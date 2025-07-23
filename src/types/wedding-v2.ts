@@ -18,6 +18,7 @@ export interface Song {
   title: string;
   artist: string;
   album?: string;
+  albumArt?: string; // Album artwork URL
   duration: number; // seconds
   bpm?: number;
   energyLevel: 1 | 2 | 3 | 4 | 5;
@@ -40,6 +41,9 @@ export interface TimelineSong {
   spotifyId: string;
   title: string;
   artist: string;
+  album?: string;
+  albumArt?: string;
+  previewUrl?: string;
   duration: number;
   addedBy: 'couple' | 'guest' | 'ai';
   addedAt: Timestamp;

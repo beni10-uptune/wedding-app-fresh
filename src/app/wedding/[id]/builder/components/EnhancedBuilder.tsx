@@ -20,13 +20,15 @@ import { WeddingV2, Song, Timeline, TimelineSong } from '@/types/wedding-v2'
 import { WEDDING_MOMENTS } from '@/data/weddingMoments'
 import EnhancedSongSearch from './EnhancedSongSearch'
 import EnhancedCollectionBrowser from './EnhancedCollectionBrowser'
-import DroppableTimeline from './DroppableTimeline'
+import EnhancedTimeline from './EnhancedTimeline'
 import GuestSubmissions from './GuestSubmissions'
 import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Save, Undo, Redo, Trash2, FileMusic } from 'lucide-react'
 import SpotifyExport from './SpotifyExport'
 import MobileBuilder from './MobileBuilder'
+import WelcomeFlow from './WelcomeFlow'
+import InteractiveTutorial from './InteractiveTutorial'
 import { debounce } from 'lodash'
 import { useHotkeys } from 'react-hotkeys-hook'
 
@@ -42,6 +44,9 @@ function songToTimelineSong(song: Song): TimelineSong {
     spotifyId: song.id,
     title: song.title,
     artist: song.artist,
+    album: song.album,
+    albumArt: song.albumArt,
+    previewUrl: song.previewUrl,
     duration: song.duration,
     addedBy: 'couple',
     addedAt: Timestamp.now(),
@@ -56,13 +61,15 @@ function timelineSongToSong(tlSong: TimelineSong): Song {
     id: tlSong.id,
     title: tlSong.title,
     artist: tlSong.artist,
+    album: tlSong.album,
+    albumArt: tlSong.albumArt,
     duration: tlSong.duration,
     energyLevel: (tlSong.energy || 3) as 1 | 2 | 3 | 4 | 5,
     explicit: tlSong.explicit || false,
     generationAppeal: [],
     genres: [],
     spotifyUri: `spotify:track:${tlSong.spotifyId}`,
-    previewUrl: ''
+    previewUrl: tlSong.previewUrl
   }
 }
 
@@ -78,6 +85,9 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
   const [historyIndex, setHistoryIndex] = useState(0)
   const [showSpotifyExport, setShowSpotifyExport] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [showWelcomeFlow, setShowWelcomeFlow] = useState(false)
+  const [showTutorial, setShowTutorial] = useState(false)
+  const [hasSeenWelcome, setHasSeenWelcome] = useState(false)
 
   // Calculate total songs
   const totalSongs = Object.values(timeline).reduce((count, moment) => {
@@ -93,6 +103,19 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
+
+  // Check if user has seen welcome flow
+  useEffect(() => {
+    const hasSeenKey = `wedding_${wedding.id}_welcome_seen`
+    const hasSeen = localStorage.getItem(hasSeenKey)
+    
+    if (!hasSeen && totalSongs === 0) {
+      // New user with empty timeline
+      setShowWelcomeFlow(true)
+    } else {
+      setHasSeenWelcome(true)
+    }
+  }, [wedding.id, totalSongs])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -251,6 +274,34 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
     updateTimeline(newTimeline)
   }
 
+  // Welcome flow handlers
+  const handleWelcomeComplete = (preferences: any) => {
+    // Save preferences
+    localStorage.setItem(`wedding_${wedding.id}_welcome_seen`, 'true')
+    setShowWelcomeFlow(false)
+    setHasSeenWelcome(true)
+    setShowTutorial(true)
+    
+    // TODO: Save preferences to Firebase
+    console.log('User preferences:', preferences)
+  }
+
+  const handleWelcomeSkip = () => {
+    localStorage.setItem(`wedding_${wedding.id}_welcome_seen`, 'true')
+    setShowWelcomeFlow(false)
+    setHasSeenWelcome(true)
+  }
+
+  const handleTutorialComplete = () => {
+    localStorage.setItem(`wedding_${wedding.id}_tutorial_seen`, 'true')
+    setShowTutorial(false)
+  }
+
+  const handleTutorialSkip = () => {
+    localStorage.setItem(`wedding_${wedding.id}_tutorial_seen`, 'true')
+    setShowTutorial(false)
+  }
+
   // Drag and Drop handlers
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event
@@ -357,6 +408,23 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
 
   return (
     <>
+      {/* Welcome Flow */}
+      {showWelcomeFlow && (
+        <WelcomeFlow
+          wedding={wedding}
+          onComplete={handleWelcomeComplete}
+          onSkip={handleWelcomeSkip}
+        />
+      )}
+
+      {/* Interactive Tutorial */}
+      {showTutorial && !showWelcomeFlow && (
+        <InteractiveTutorial
+          onComplete={handleTutorialComplete}
+          onSkip={handleTutorialSkip}
+        />
+      )}
+
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -386,6 +454,7 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
                     ? 'bg-purple-500/20 text-purple-400'
                     : 'text-white/60 hover:text-white'
                 }`}
+                data-tutorial="collections-tab"
               >
                 Collections
               </button>
@@ -484,10 +553,10 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
           </div>
 
           {/* Timeline Moments */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {WEDDING_MOMENTS.map((moment) => (
-              <DroppableTimeline
-                key={moment.id}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4" data-tutorial="timeline">
+            {WEDDING_MOMENTS.map((moment, index) => (
+              <div key={moment.id} data-tutorial={index === 0 ? "timeline-moment" : undefined}>
+                <EnhancedTimeline
                 moment={moment}
                 songs={(timeline[moment.id]?.songs || []).map(timelineSongToSong)}
                 onRemoveSong={handleRemoveSong}
@@ -497,7 +566,12 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
                 playingId={playingId}
                 onPlaySong={handlePlaySong}
                 onPauseSong={handlePauseSong}
-              />
+                onAddSong={(momentId) => {
+                  setSelectedMoment(momentId)
+                  setActiveTab('search')
+                }}
+                />
+              </div>
             ))}
           </div>
 

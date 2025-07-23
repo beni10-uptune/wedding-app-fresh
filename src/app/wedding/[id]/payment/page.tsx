@@ -59,7 +59,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
 
       // Check if already paid
       if (weddingData.paymentStatus === 'paid') {
-        router.push(`/wedding/${weddingId}`)
+        router.push(`/wedding/${weddingId}/builder`)
         return
       }
 
@@ -147,10 +147,15 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
 
       <div className="relative z-10 max-w-2xl mx-auto px-4 py-12">
         {/* Header */}
-        <Link href={`/wedding/${weddingId}`} className="inline-flex items-center gap-2 text-white/60 hover:text-white mb-8">
-          <ArrowLeft className="w-5 h-5" />
-          Back to Wedding
-        </Link>
+        <div className="flex items-center justify-between mb-8">
+          <Link href="/dashboard" className="inline-flex items-center gap-2 text-white/60 hover:text-white">
+            <ArrowLeft className="w-5 h-5" />
+            Back to Dashboard
+          </Link>
+          <Link href="/dashboard" className="text-purple-400 hover:text-purple-300 transition-colors">
+            Continue with Free Plan →
+          </Link>
+        </div>
 
         {/* Payment Card */}
         <div className="glass rounded-2xl p-8">
@@ -159,38 +164,60 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
               <Heart className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-serif font-bold text-white mb-2">
-              Complete Your Journey
+              Upgrade to Premium
             </h1>
             <p className="text-white/60">
-              One-time payment for lifetime access to your wedding music platform
+              Unlock unlimited songs, guests, and premium features
             </p>
           </div>
 
-          {/* What's Included */}
-          <div className="glass-darker rounded-xl p-6 mb-8">
-            <h3 className="text-lg font-semibold text-white mb-4">What&apos;s Included:</h3>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-3">
-                <Check className="w-5 h-5 text-green-400 mt-0.5" />
-                <span className="text-white/80">Unlimited playlist creation and editing</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <Check className="w-5 h-5 text-green-400 mt-0.5" />
-                <span className="text-white/80">Access to 500+ curated wedding songs</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <Check className="w-5 h-5 text-green-400 mt-0.5" />
-                <span className="text-white/80">Guest collaboration and voting features</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <Check className="w-5 h-5 text-green-400 mt-0.5" />
-                <span className="text-white/80">Professional DJ export formats</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <Check className="w-5 h-5 text-green-400 mt-0.5" />
-                <span className="text-white/80">Lifetime access - no recurring fees</span>
-              </li>
-            </ul>
+          {/* Current Plan vs Premium */}
+          <div className="grid md:grid-cols-2 gap-4 mb-8">
+            {/* Free Plan */}
+            <div className="glass-darker rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-white mb-4">Free Plan (Current)</h3>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-green-400 mt-0.5" />
+                  <span className="text-white/80">Up to 25 songs</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-green-400 mt-0.5" />
+                  <span className="text-white/80">Up to 5 guest invites</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-green-400 mt-0.5" />
+                  <span className="text-white/80">Basic playlist creation</span>
+                </li>
+              </ul>
+            </div>
+            
+            {/* Premium Plan */}
+            <div className="glass-darker rounded-xl p-6 border-2 border-purple-500/30">
+              <h3 className="text-lg font-semibold text-white mb-4">Premium Plan</h3>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-purple-400 mt-0.5" />
+                  <span className="text-white/80">Unlimited songs</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-purple-400 mt-0.5" />
+                  <span className="text-white/80">Unlimited guest invites</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-purple-400 mt-0.5" />
+                  <span className="text-white/80">Spotify integration</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-purple-400 mt-0.5" />
+                  <span className="text-white/80">Professional DJ export</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-purple-400 mt-0.5" />
+                  <span className="text-white/80">Priority support</span>
+                </li>
+              </ul>
+            </div>
           </div>
 
           {/* Wedding Details */}
@@ -220,6 +247,16 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
               onError={setError}
             />
           )}
+          
+          {/* Continue with Free Plan */}
+          <div className="mt-6 text-center">
+            <Link 
+              href="/dashboard" 
+              className="text-white/60 hover:text-white transition-colors"
+            >
+              or continue with the free plan
+            </Link>
+          </div>
         </div>
 
         {/* Trust Badges */}

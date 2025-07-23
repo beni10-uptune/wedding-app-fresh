@@ -24,27 +24,8 @@ export async function getSmartRedirectPath(user: User): Promise<string> {
         return '/create-wedding'
       }
       
-      // Check for paid weddings first
-      const paidWedding = snapshot.docs.find(doc => 
-        doc.data().paymentStatus === 'paid'
-      )
-      
-      if (paidWedding) {
-        // User has a paid wedding, go directly to builder
-        return `/wedding/${paidWedding.id}/builder`
-      }
-      
-      // Check for pending payment weddings
-      const pendingWedding = snapshot.docs.find(doc => 
-        doc.data().paymentStatus === 'pending' || !doc.data().paymentStatus
-      )
-      
-      if (pendingWedding) {
-        // Has wedding but needs to pay
-        return `/wedding/${pendingWedding.id}/payment`
-      }
-      
-      // Default to dashboard
+      // For freemium model, all users go to dashboard
+      // They can upgrade from there if they want
       return '/dashboard'
     } catch (queryError) {
       console.error('Compound query failed:', queryError)
@@ -60,14 +41,11 @@ export async function getSmartRedirectPath(user: User): Promise<string> {
       const simpleSnapshot = await getDocs(simpleQuery)
       
       if (!simpleSnapshot.empty) {
-        const firstWedding = simpleSnapshot.docs[0]
-        const data = firstWedding.data()
-        
-        if (data.paymentStatus === 'paid') {
-          return `/wedding/${firstWedding.id}/builder`
-        } else {
-          return `/wedding/${firstWedding.id}/payment`
-        }
+        // User has a wedding, go to dashboard
+        return '/dashboard'
+      } else {
+        // No wedding found, create one
+        return '/create-wedding'
       }
     } catch (simpleError) {
       console.error('Simple query also failed:', simpleError)

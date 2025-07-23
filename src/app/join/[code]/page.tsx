@@ -19,6 +19,7 @@ interface Wedding {
   weddingDate: any
   venue?: string
   city?: string
+  paymentStatus?: 'pending' | 'paid' | 'refunded'
 }
 
 interface WeddingWithPrompt extends Wedding {
@@ -155,9 +156,18 @@ export default function JoinPage() {
       }
       
       // Load wedding data
+      console.log('Loading wedding data for ID:', weddingId)
       const weddingDoc = await getDoc(doc(db, 'weddings', weddingId))
+      
       if (weddingDoc.exists()) {
         const weddingData = { id: weddingDoc.id, ...weddingDoc.data() } as WeddingWithPrompt
+        console.log('Wedding data loaded:', weddingData)
+        
+        // Add personalized prompt if we found one earlier
+        if (personalizedPrompt) {
+          weddingData.personalizedPrompt = personalizedPrompt
+        }
+        
         setWedding(weddingData)
         
         // Load submitted songs from localStorage
@@ -166,11 +176,16 @@ export default function JoinPage() {
           setSubmittedSongs(JSON.parse(storedSubmissions))
         }
       } else {
-        setError('Wedding not found')
+        console.error('Wedding document does not exist for ID:', weddingId)
+        setError('Wedding not found. Please check your invitation link.')
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading wedding:', error)
-      setError('Something went wrong. Please try again.')
+      if (error.code === 'permission-denied') {
+        setError('You do not have permission to view this wedding.')
+      } else {
+        setError('Unable to load wedding details. Please try again.')
+      }
     } finally {
       setLoading(false)
     }

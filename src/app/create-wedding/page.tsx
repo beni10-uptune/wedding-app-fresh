@@ -104,23 +104,48 @@ export default function CreateWeddingPage() {
   }
 
   const handleSubmit = async () => {
-    if (!user) return
+    if (!user) {
+      console.error('No user found')
+      alert('Please sign in to create a wedding')
+      return
+    }
     
+    // Validate required fields
+    if (!weddingData.coupleName1 || !weddingData.coupleName2) {
+      alert('Please enter both partner names')
+      return
+    }
+    
+    if (!weddingData.weddingDate) {
+      alert('Please select a wedding date')
+      return
+    }
+    
+    console.log('Creating wedding with data:', weddingData)
     setLoading(true)
+    
     try {
       // Create wedding document
       const weddingRef = await addDoc(collection(db, 'weddings'), {
         title: `${weddingData.coupleName1} & ${weddingData.coupleName2}'s Wedding`,
         coupleNames: [weddingData.coupleName1, weddingData.coupleName2],
         weddingDate: Timestamp.fromDate(new Date(weddingData.weddingDate)),
-        venue: weddingData.venue,
+        venue: weddingData.venue || '',
+        city: weddingData.city || '',
+        guestCount: weddingData.guestCount || 50,
+        weddingStyle: weddingData.weddingStyle || '',
         owners: [user.uid],
+        userId: user.uid,
+        partnerEmails: [],
         collaborators: [],
         status: 'planning',
         paymentStatus: 'pending',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        subscriptionTier: 'free',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
       })
+      
+      console.log('Wedding created with ID:', weddingRef.id)
 
       // Create playlists based on template or custom selection
       let playlistPromises: Promise<any>[] = []
@@ -138,8 +163,8 @@ export default function CreateWeddingPage() {
               suggestedGenres: playlist.suggestedGenres || [],
               suggestedMood: playlist.suggestedMood || [],
               songs: [],
-              createdAt: new Date(),
-              updatedAt: new Date(),
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp(),
               createdBy: user.uid
             })
           })
@@ -154,8 +179,8 @@ export default function CreateWeddingPage() {
             moment: momentId,
             targetSongCount: 20, // Default target
             songs: [],
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
             createdBy: user.uid
           })
         })
@@ -173,8 +198,9 @@ export default function CreateWeddingPage() {
 
       // Redirect to dashboard (freemium model - payment comes later)
       router.push('/dashboard')
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating wedding:', error)
+      alert(`Failed to create wedding: ${error.message || 'Unknown error'}`)
     } finally {
       setLoading(false)
     }

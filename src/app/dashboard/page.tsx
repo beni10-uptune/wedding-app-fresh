@@ -174,13 +174,26 @@ export default function Dashboard() {
       setError(null)
       console.log('Loading weddings for user:', userId)
       
-      // First, get any weddings for this user (paid or unpaid)
-      const allWeddingsQuery = query(
-        collection(db, 'weddings'), 
-        where('owners', 'array-contains', userId),
-        orderBy('updatedAt', 'desc')
-      )
-      const allSnapshot = await getDocs(allWeddingsQuery)
+      let allSnapshot
+      
+      try {
+        // First, try with ordering (requires index)
+        const allWeddingsQuery = query(
+          collection(db, 'weddings'), 
+          where('owners', 'array-contains', userId),
+          orderBy('updatedAt', 'desc')
+        )
+        allSnapshot = await getDocs(allWeddingsQuery)
+      } catch (indexError: any) {
+        console.log('Index not ready, falling back to simple query:', indexError.message)
+        // Fallback to simple query without ordering
+        const simpleQuery = query(
+          collection(db, 'weddings'), 
+          where('owners', 'array-contains', userId)
+        )
+        allSnapshot = await getDocs(simpleQuery)
+      }
+      
       console.log('Found weddings:', allSnapshot.size)
       
       if (!allSnapshot.empty) {

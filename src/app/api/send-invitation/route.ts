@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       } = emailData
 
       emailResponse = await resend.emails.send({
-        from: 'UpTune Weddings <onboarding@resend.dev>',
+        from: 'UpTune Weddings <hello@uptune.xyz>',
         to: [partnerEmail],
         subject: `${inviterName} invited you to co-plan your wedding! 💑`,
         react: CoOwnerInvitationEmail({
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       } = emailData
 
       emailResponse = await resend.emails.send({
-        from: 'UpTune Weddings <onboarding@resend.dev>',
+        from: 'UpTune Weddings <hello@uptune.xyz>',
         to: [email],
         subject: `You're invited to ${coupleNames.join(' & ')}'s wedding playlist! 🎵`,
         react: WeddingInvitationEmail({

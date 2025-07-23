@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react'
 import { ArrowRight, Music } from 'lucide-react'
 import Link from 'next/link'
 import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile, onAuthStateChanged } from 'firebase/auth'
-import { auth, db } from '@/lib/firebase'
-import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
+import { auth } from '@/lib/firebase'
 import { useRouter } from 'next/navigation'
+import { ensureUserDocument, getUserDocument } from '@/lib/auth-utils'
+import { formatFirestoreError } from '@/lib/firestore-helpers'
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('')
@@ -24,35 +25,27 @@ export default function SignUpPage() {
       if (user) {
         // Check if user has completed onboarding (has a wedding)
         try {
-          const userDoc = await getDoc(doc(db, 'users', user.uid))
-          const userData = userDoc.data()
+          const userData = await getUserDocument(user.uid)
           
-          // If user just signed up (onboardingCompleted is false), go to create-wedding
-          if (userData && userData.onboardingCompleted === false) {
-            console.log('New user detected, redirecting to create-wedding')
-            router.push('/create-wedding')
+          if (userData) {
+            // If user just signed up (onboardingCompleted is false), go to create-wedding
+            if (userData.onboardingCompleted === false) {
+              console.log('New user detected, redirecting to create-wedding')
+              router.push('/create-wedding')
+            } else {
+              console.log('Existing user detected, redirecting to dashboard')
+              router.push('/dashboard')
+            }
           } else {
-            console.log('Existing user detected, redirecting to dashboard')
-            router.push('/dashboard')
+            // No user document found, ensure it exists
+            console.log('No user document found, creating one...')
+            await ensureUserDocument(user)
+            router.push('/create-wedding')
           }
         } catch (error) {
-          console.error('Error checking user status:', error)
-          // If we can't read the user doc, they might be a new user
-          // Try to create a minimal user doc
-          try {
-            await setDoc(doc(db, 'users', user.uid), {
-              uid: user.uid,
-              email: user.email,
-              displayName: user.displayName || 'User',
-              createdAt: serverTimestamp(),
-              role: 'couple',
-              onboardingCompleted: false
-            }, { merge: true })
-            router.push('/create-wedding')
-          } catch (createError) {
-            console.error('Failed to create user doc in auth observer:', createError)
-            router.push('/dashboard')
-          }
+          console.error('Error in auth state observer:', error)
+          // Default to dashboard on error
+          router.push('/dashboard')
         }
       } else {
         setCheckingAuth(false)
@@ -79,23 +72,17 @@ export default function SignUpPage() {
       await updateProfile(user, { displayName: name })
       console.log('Display name updated')
 
-      // Create user document in Firestore
+      // Create user document in Firestore with retry logic
       try {
-        await setDoc(doc(db, 'users', user.uid), {
-          uid: user.uid,
-          email: user.email,
+        await ensureUserDocument(user, {
           displayName: name,
-          partnerName: partnerName,
-          createdAt: serverTimestamp(),
-          role: 'couple',
-          onboardingCompleted: false
+          partnerName: partnerName || undefined
         })
-        console.log('User document created in Firestore')
+        console.log('User document created successfully')
       } catch (firestoreError) {
         console.error('Firestore error:', firestoreError)
-        // If Firestore fails, we should still have the auth user
-        // Show a more specific error
-        throw new Error('Database configuration error. Please try again or contact support.')
+        // Format the error for the user
+        throw new Error(formatFirestoreError(firestoreError))
       }
 
       console.log('User created successfully, auth state should update')
@@ -112,10 +99,10 @@ export default function SignUpPage() {
         setError('Password should be at least 6 characters.')
       } else if (error.code === 'auth/invalid-email') {
         setError('Please enter a valid email address.')
-      } else if (error.message && error.message.includes('Database configuration')) {
-        setError(error.message)
+      } else if (error.code === 'auth/network-request-failed') {
+        setError('Network error. Please check your internet connection.')
       } else {
-        setError('Failed to create account. Please try again.')
+        setError(error.message || 'Failed to create account. Please try again.')
       }
     } finally {
       setLoading(false)
@@ -133,32 +120,13 @@ export default function SignUpPage() {
       const user = userCredential.user
       console.log('Google auth successful:', user.uid)
 
-      // Check if user already exists
-      let userDoc
+      // Ensure user document exists with retry logic
       try {
-        userDoc = await getDoc(doc(db, 'users', user.uid))
-      } catch (readError) {
-        console.error('Error reading user doc:', readError)
-        // Continue anyway - we'll create the doc
-      }
-      
-      const isNewUser = !userDoc?.exists()
-      
-      // Create/update user document in Firestore
-      try {
-        await setDoc(doc(db, 'users', user.uid), {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-          createdAt: serverTimestamp(),
-          role: 'couple',
-          onboardingCompleted: isNewUser ? false : userDoc?.data()?.onboardingCompleted || true
-        }, { merge: true })
-        console.log('User document created/updated in Firestore')
+        await ensureUserDocument(user)
+        console.log('User document ensured in Firestore')
       } catch (firestoreError) {
         console.error('Firestore error:', firestoreError)
-        throw new Error('Database configuration error. Please try again or contact support.')
+        throw new Error(formatFirestoreError(firestoreError))
       }
 
       console.log('Google signup successful, auth state should update')
@@ -171,10 +139,10 @@ export default function SignUpPage() {
         setError('Sign-in cancelled. Please try again.')
       } else if (error.code === 'auth/popup-blocked') {
         setError('Pop-up blocked. Please allow pop-ups for this site.')
-      } else if (error.message && error.message.includes('Database configuration')) {
-        setError(error.message)
+      } else if (error.code === 'auth/network-request-failed') {
+        setError('Network error. Please check your internet connection.')
       } else {
-        setError('Failed to sign up with Google. Please try again.')
+        setError(error.message || 'Failed to sign up with Google. Please try again.')
       }
     } finally {
       setLoading(false)

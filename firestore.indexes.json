@@ -29,16 +29,16 @@
       ]
     },
     {
-      "collectionGroup": "weddings",
+      "collectionGroup": "invitations",
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "paymentStatus",
+          "fieldPath": "weddingId",
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
+          "fieldPath": "type",
+          "order": "ASCENDING"
         }
       ]
     },
@@ -51,13 +51,13 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "used",
+          "fieldPath": "status",
           "order": "ASCENDING"
         }
       ]
     },
     {
-      "collectionGroup": "invitations",
+      "collectionGroup": "collaborators",
       "queryScope": "COLLECTION",
       "fields": [
         {
@@ -65,36 +65,12 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "guestSubmissions",
-      "queryScope": "COLLECTION",
-      "fields": [
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
         {
           "fieldPath": "status",
           "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "submittedAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "guestSubmissions",
-      "queryScope": "COLLECTION",  
-      "fields": [
-        {
-          "fieldPath": "guestEmail",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "submittedAt",
-          "order": "DESCENDING"
         }
       ]
     }

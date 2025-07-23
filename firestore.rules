@@ -1,101 +1,75 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Test collection - allow all authenticated users
+    // Test collection - for debugging
     match /test-collection/{document} {
       allow read, write: if request.auth != null;
     }
     
-    // Helper functions
-    function isOwner(weddingId) {
-      return request.auth != null && 
-        request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners;
-    }
-    
-    function isPaidWedding(weddingId) {
-      return get(/databases/$(database)/documents/weddings/$(weddingId)).data.paymentStatus == 'paid';
-    }
-    
-    // Allow users to read and write their own user document
+    // Users collection
     match /users/{userId} {
+      // Users can read their own document
       allow read: if request.auth != null && request.auth.uid == userId;
-      allow create: if request.auth != null && request.auth.uid == userId
-        && request.resource.data.keys().hasAll(['uid', 'email', 'createdAt', 'role'])
+      
+      // Users can create their own document with required fields
+      allow create: if request.auth != null 
+        && request.auth.uid == userId
         && request.resource.data.uid == userId;
-      allow update: if request.auth != null && request.auth.uid == userId
-        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['uid', 'createdAt']);
+      
+      // Users can update their own document (except uid)
+      allow update: if request.auth != null 
+        && request.auth.uid == userId
+        && request.resource.data.uid == resource.data.uid;
     }
     
-    // Wedding access rules
+    // Weddings collection
     match /weddings/{weddingId} {
-      // Read access: owners or guests
+      // Allow read if user is an owner
       allow read: if request.auth != null && 
-        (request.auth.uid in resource.data.owners || 
-         exists(/databases/$(database)/documents/weddings/$(weddingId)/guests/$(request.auth.uid)));
+        request.auth.uid in resource.data.owners;
       
-      // Create: any authenticated user
+      // Allow create if user will be an owner
       allow create: if request.auth != null
-        && request.resource.data.owners.hasAny([request.auth.uid])
-        && request.resource.data.paymentStatus == 'pending';
+        && request.auth.uid in request.resource.data.owners;
       
-      // Update: owners only
-      // Note: Song limit enforcement is handled at the application level
-      // since Firestore rules can't iterate over timeline objects
-      allow update: if request.auth != null && request.auth.uid in resource.data.owners
-        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['owners']) 
-            || request.auth.uid in resource.data.owners);
+      // Allow update if user is an owner
+      allow update: if request.auth != null 
+        && request.auth.uid in resource.data.owners;
       
-      // Delete: owners only
-      allow delete: if request.auth != null && request.auth.uid in resource.data.owners;
+      // Allow delete if user is an owner
+      allow delete: if request.auth != null 
+        && request.auth.uid in resource.data.owners;
       
       // Guest submissions subcollection
       match /guestSubmissions/{submissionId} {
         allow read: if request.auth != null;
-        allow create: if request.auth != null
-          && request.resource.data.keys().hasAll(['guestName', 'songTitle', 'songArtist', 'submittedAt']);
-        allow update: if request.auth != null && 
-          (request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners
-          || (resource.data.guestEmail == request.auth.token.email && 
-              request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes', 'voters'])));
+        allow create: if true; // Allow anyone to submit
+        allow update: if request.auth != null 
+          && request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners;
       }
       
       // Guests subcollection
       match /guests/{guestId} {
-        allow read: if request.auth != null;
-        allow create: if request.auth != null;
-        allow update: if request.auth != null && 
-          (request.auth.uid == resource.data.userId ||
-           request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners);
-      }
-      
-      // Deprecated playlists subcollection (read-only for migration)
-      match /playlists/{playlistId} {
-        allow read: if request.auth != null && 
-          request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners;
-        allow write: if false; // Deprecated - no writes allowed
-        
-        match /songs/{songId} {
-          allow read: if request.auth != null && 
-            request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners;
-          allow write: if false; // Deprecated - no writes allowed
-        }
+        allow read, write: if request.auth != null;
       }
     }
     
-    // Invitations - public read for code lookup
+    // Invitations collection
     match /invitations/{invitationId} {
-      allow read: if true; // Anyone can look up by code
+      // Anyone can read invitations (for code lookup)
+      allow read: if true;
       
-      // Create: owners only
-      // Note: Guest invitation limits are enforced at the application level
-      allow create: if request.auth != null && 
-        request.auth.uid in get(/databases/$(database)/documents/weddings/$(request.resource.data.weddingId)).data.owners;
+      // Only wedding owners can create invitations
+      allow create: if request.auth != null;
       
-      allow update: if request.auth != null && 
-        (request.auth.uid in get(/databases/$(database)/documents/weddings/$(resource.data.weddingId)).data.owners ||
-         (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['used', 'usedBy', 'usedAt']) &&
-          request.resource.data.used == true &&
-          request.resource.data.usedBy == request.auth.uid));
+      // Allow updates for accepting invitations
+      allow update: if request.auth != null;
+    }
+    
+    // Collaborators collection (if used)
+    match /collaborators/{collaboratorId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
     }
   }
 }

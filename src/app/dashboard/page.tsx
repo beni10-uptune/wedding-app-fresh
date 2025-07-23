@@ -18,6 +18,8 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { DashboardSkeleton } from '@/components/LoadingSkeleton'
+import { ensureUserDocument } from '@/lib/auth-utils'
+import { formatFirestoreError } from '@/lib/firestore-helpers'
 
 interface Wedding {
   id: string
@@ -145,18 +147,15 @@ export default function Dashboard() {
       if (user) {
         setUser(user)
         
-        // Get user data
+        // Ensure user document exists
         try {
-          const userDoc = await getDoc(doc(db, 'users', user.uid))
-          if (userDoc.exists()) {
-            setUserName(userDoc.data().displayName || user.displayName || 'Lovebird')
-          } else {
-            // Create user document if it doesn't exist
-            setUserName(user.displayName || 'Lovebird')
-          }
+          const userData = await ensureUserDocument(user)
+          setUserName(userData.displayName || user.displayName || 'Lovebird')
         } catch (error) {
-          console.error('Error loading user data:', error)
+          console.error('Error ensuring user data:', error)
           setUserName(user.displayName || 'Lovebird')
+          // Show user-friendly error but don't block dashboard
+          setError('Having trouble loading your profile. Some features may be limited.')
         }
         
         // Load user's active wedding
@@ -247,17 +246,45 @@ export default function Dashboard() {
       }
     } catch (error: any) {
       console.error('Error loading wedding:', error)
-      console.error('Error details:', error.code, error.message)
       
-      // Provide user-friendly error messages
-      if (error.code === 'failed-precondition') {
-        setError('Database not configured properly. Please contact support.')
-      } else if (error.code === 'permission-denied') {
-        setError('You don\'t have permission to access this wedding.')
-      } else if (error.code === 'unavailable') {
-        setError('Service temporarily unavailable. Please try again.')
-      } else {
-        setError('Unable to load your wedding data. Please refresh the page.')
+      // Format error for user
+      const errorMessage = formatFirestoreError(error)
+      setError(errorMessage)
+      
+      // If it's a missing index error, try simpler query
+      if (error.code === 'failed-precondition' && error.message?.includes('index')) {
+        console.log('Trying simpler query without ordering...')
+        try {
+          const simpleQuery = query(
+            collection(db, 'weddings'),
+            where('owners', 'array-contains', userId)
+          )
+          const simpleSnapshot = await getDocs(simpleQuery)
+          
+          if (!simpleSnapshot.empty) {
+            const weddingDoc = simpleSnapshot.docs[0]
+            const data = weddingDoc.data()
+            const weddingData = {
+              id: weddingDoc.id,
+              ...data,
+              coupleNames: data.coupleNames || [],
+              weddingDate: data.weddingDate || Timestamp.now(),
+              paymentStatus: data.paymentStatus || 'pending',
+              owners: data.owners || [userId]
+            } as Wedding
+            
+            setActiveWedding(weddingData)
+            setError(null) // Clear error if simple query works
+            
+            // Try to load additional data
+            await Promise.all([
+              loadTimeline(weddingDoc.id).catch(console.error),
+              loadGuestStats(weddingDoc.id, weddingData).catch(console.error)
+            ])
+          }
+        } catch (simpleError) {
+          console.error('Simple query also failed:', simpleError)
+        }
       }
       
       setActiveWedding(null)

@@ -7,6 +7,8 @@ import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 
 import { auth } from '@/lib/firebase'
 import { useRouter } from 'next/navigation'
 import { getSmartRedirectPath } from '@/lib/auth-helpers'
+import { ensureUserDocument } from '@/lib/auth-utils'
+import { formatFirestoreError } from '@/lib/firestore-helpers'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -22,10 +24,34 @@ export default function LoginPage() {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      
+      // Ensure user document exists
+      try {
+        await ensureUserDocument(userCredential.user)
+      } catch (firestoreError) {
+        console.error('Error ensuring user document:', firestoreError)
+        // Continue anyway - user is authenticated
+      }
+      
       const redirectPath = await getSmartRedirectPath(userCredential.user)
       router.push(redirectPath)
-    } catch (err) {
-      setError((err as Error).message || 'Failed to sign in')
+    } catch (err: any) {
+      console.error('Login error:', err)
+      
+      // Provide user-friendly error messages
+      if (err.code === 'auth/user-not-found') {
+        setError('No account found with this email. Please sign up first.')
+      } else if (err.code === 'auth/wrong-password') {
+        setError('Incorrect password. Please try again.')
+      } else if (err.code === 'auth/invalid-email') {
+        setError('Please enter a valid email address.')
+      } else if (err.code === 'auth/too-many-requests') {
+        setError('Too many failed attempts. Please try again later.')
+      } else if (err.code === 'auth/network-request-failed') {
+        setError('Network error. Please check your internet connection.')
+      } else {
+        setError(formatFirestoreError(err))
+      }
     } finally {
       setLoading(false)
     }
@@ -38,10 +64,29 @@ export default function LoginPage() {
     try {
       const provider = new GoogleAuthProvider()
       const userCredential = await signInWithPopup(auth, provider)
+      
+      // Ensure user document exists
+      try {
+        await ensureUserDocument(userCredential.user)
+      } catch (firestoreError) {
+        console.error('Error ensuring user document:', firestoreError)
+        // Continue anyway - user is authenticated
+      }
+      
       const redirectPath = await getSmartRedirectPath(userCredential.user)
       router.push(redirectPath)
-    } catch (err) {
-      setError((err as Error).message || 'Failed to sign in with Google')
+    } catch (err: any) {
+      console.error('Google login error:', err)
+      
+      if (err.code === 'auth/popup-closed-by-user') {
+        setError('Sign-in cancelled. Please try again.')
+      } else if (err.code === 'auth/popup-blocked') {
+        setError('Pop-up blocked. Please allow pop-ups for this site.')
+      } else if (err.code === 'auth/network-request-failed') {
+        setError('Network error. Please check your internet connection.')
+      } else {
+        setError(formatFirestoreError(err))
+      }
     } finally {
       setLoading(false)
     }

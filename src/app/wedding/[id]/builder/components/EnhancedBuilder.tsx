@@ -24,11 +24,13 @@ import EnhancedTimeline from './EnhancedTimeline'
 import GuestSubmissions from './GuestSubmissions'
 import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import { Save, Undo, Redo, Trash2, FileMusic } from 'lucide-react'
+import { Save, Undo, Redo, Trash2, FileMusic, BookOpen } from 'lucide-react'
 import SpotifyExport from './SpotifyExport'
 import MobileBuilder from './MobileBuilder'
 import WelcomeFlow from './WelcomeFlow'
 import InteractiveTutorial from './InteractiveTutorial'
+import GuideViewer from './GuideViewer'
+import CuratedPlaylistBrowser from './CuratedPlaylistBrowser'
 import { debounce } from 'lodash'
 import { useHotkeys } from 'react-hotkeys-hook'
 
@@ -88,6 +90,8 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
   const [showWelcomeFlow, setShowWelcomeFlow] = useState(false)
   const [showTutorial, setShowTutorial] = useState(false)
   const [hasSeenWelcome, setHasSeenWelcome] = useState(false)
+  const [showGuideViewer, setShowGuideViewer] = useState(false)
+  const [selectedGuideMoment, setSelectedGuideMoment] = useState<string | undefined>()
 
   // Calculate total songs
   const totalSongs = Object.values(timeline).reduce((count, moment) => {
@@ -302,6 +306,17 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
     setShowTutorial(false)
   }
 
+  // Guide viewer handlers
+  const handleOpenGuide = (momentId?: string) => {
+    setSelectedGuideMoment(momentId)
+    setShowGuideViewer(true)
+  }
+
+  const handleCloseGuide = () => {
+    setShowGuideViewer(false)
+    setSelectedGuideMoment(undefined)
+  }
+
   // Drag and Drop handlers
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event
@@ -479,7 +494,8 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
               />
             )}
             {activeTab === 'collections' && (
-              <EnhancedCollectionBrowser
+              <CuratedPlaylistBrowser
+                selectedMoment={selectedMoment}
                 onAddSong={handleAddSong}
                 onAddAllSongs={(songs, momentId) => {
                   const newTimeline = { ...timeline }
@@ -498,6 +514,7 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
                   newTimeline[momentId].songs.push(...songs.map(songToTimelineSong))
                   updateTimeline(newTimeline)
                 }}
+                onOpenGuide={handleOpenGuide}
               />
             )}
             {activeTab === 'guests' && (
@@ -549,6 +566,13 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
               >
                 <FileMusic className="w-4 h-4" />
               </button>
+              <button
+                onClick={() => handleOpenGuide()}
+                className="p-2 rounded-lg hover:bg-white/10 text-purple-400 hover:text-purple-300"
+                title="Wedding Music Guides"
+              >
+                <BookOpen className="w-4 h-4" />
+              </button>
             </div>
           </div>
 
@@ -589,6 +613,15 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
         wedding={wedding}
         timeline={timeline}
         onClose={() => setShowSpotifyExport(false)}
+      />
+    )}
+
+    {/* Guide Viewer */}
+    {showGuideViewer && (
+      <GuideViewer
+        momentId={selectedGuideMoment}
+        onClose={handleCloseGuide}
+        onSelectGuide={() => {}}
       />
     )}
   </>

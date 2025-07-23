@@ -1,40 +1,40 @@
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import Image from 'next/image'
-import { PlaylistEmbed } from '@/components/PlaylistEmbed'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { Heart, Sparkles } from 'lucide-react'
 
-// Lazy load interactive components
-const Quiz = dynamic(() => import('./Quiz'), { 
-  loading: () => <div className="animate-pulse bg-gray-100 h-96 rounded-lg" />
+// Dynamic imports for interactive components
+const Quiz = dynamic(() => import('./Quiz'), {
+  loading: () => <div className="animate-pulse bg-white/10 h-64 rounded-xl" />
 })
 const MusicCalculator = dynamic(() => import('./MusicCalculator'), {
-  loading: () => <div className="animate-pulse bg-gray-100 h-64 rounded-lg" />
+  loading: () => <div className="animate-pulse bg-white/10 h-64 rounded-xl" />
 })
 const TrendingSongs = dynamic(() => import('./TrendingSongs'), {
-  loading: () => <div className="animate-pulse bg-gray-100 h-96 rounded-lg" />
+  loading: () => <div className="animate-pulse bg-white/10 h-96 rounded-xl" />
 })
 const PlaylistShowcase = dynamic(() => import('./PlaylistShowcase'), {
-  loading: () => <div className="animate-pulse bg-gray-100 h-64 rounded-lg" />
+  loading: () => <div className="animate-pulse bg-white/10 h-64 rounded-xl" />
 })
 const Checklist = dynamic(() => import('./Checklist'), {
-  loading: () => <div className="animate-pulse bg-gray-100 h-64 rounded-lg" />
+  loading: () => <div className="animate-pulse bg-white/10 h-64 rounded-xl" />
 })
 const CalloutBox = dynamic(() => import('./CalloutBox'))
 const InteractiveTimeline = dynamic(() => import('./InteractiveTimeline'), {
-  loading: () => <div className="animate-pulse bg-gray-100 h-96 rounded-lg" />
+  loading: () => <div className="animate-pulse bg-white/10 h-96 rounded-xl" />
 })
 
 // CTA Components
 const TrialCTA = () => (
-  <div className="my-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg text-center">
-    <h3 className="text-xl font-bold mb-2">Ready to Get Started?</h3>
-    <p className="text-gray-600 mb-4">
+  <div className="my-8 p-6 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-xl text-center border border-purple-500/30">
+    <Heart className="w-12 h-12 text-pink-400 mx-auto mb-4" />
+    <h3 className="text-xl font-bold mb-2 text-white">Ready to Get Started?</h3>
+    <p className="text-white/70 mb-4">
       Join thousands of couples planning their perfect wedding soundtrack
     </p>
-    <Link href="/signup">
-      <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+    <Link href="/auth/signup">
+      <Button size="lg" className="btn-primary">
         Start Your Free Trial
       </Button>
     </Link>
@@ -42,8 +42,8 @@ const TrialCTA = () => (
 )
 
 const FeatureCTA = ({ feature, text }: { feature: string; text: string }) => (
-  <Link href={`/?feature=${feature}`} className="inline-flex items-center text-purple-600 hover:text-purple-700 font-medium">
-    {text} →
+  <Link href={`/?feature=${feature}`} className="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium transition-colors">
+    {text} <span className="ml-1">→</span>
   </Link>
 )
 
@@ -53,7 +53,7 @@ const components = {
   h1: ({ children, ...props }: any) => {
     const id = children?.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')
     return (
-      <h1 id={id} className="scroll-mt-20" {...props}>
+      <h1 id={id} className="scroll-mt-20 text-white" {...props}>
         {children}
       </h1>
     )
@@ -61,7 +61,7 @@ const components = {
   h2: ({ children, ...props }: any) => {
     const id = children?.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')
     return (
-      <h2 id={id} className="scroll-mt-20" {...props}>
+      <h2 id={id} className="scroll-mt-20 text-white" {...props}>
         {children}
       </h2>
     )
@@ -69,7 +69,7 @@ const components = {
   h3: ({ children, ...props }: any) => {
     const id = children?.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')
     return (
-      <h3 id={id} className="scroll-mt-20" {...props}>
+      <h3 id={id} className="scroll-mt-20 text-white" {...props}>
         {children}
       </h3>
     )
@@ -81,7 +81,7 @@ const components = {
     
     if (isInternal) {
       return (
-        <Link href={href} className="text-purple-600 hover:text-purple-700 underline" {...props}>
+        <Link href={href} className="text-purple-400 hover:text-purple-300 underline transition-colors" {...props}>
           {children}
         </Link>
       )
@@ -92,7 +92,7 @@ const components = {
         href={href} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="text-purple-600 hover:text-purple-700 underline"
+        className="text-purple-400 hover:text-purple-300 underline transition-colors"
         {...props}
       >
         {children}
@@ -118,7 +118,7 @@ const components = {
   
   // Code blocks
   pre: ({ children, ...props }: any) => (
-    <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto my-6" {...props}>
+    <pre className="bg-black/50 text-gray-100 p-4 rounded-lg overflow-x-auto my-6 border border-white/10" {...props}>
       {children}
     </pre>
   ),
@@ -127,10 +127,7 @@ const components = {
     const isInline = !className
     return (
       <code 
-        className={cn(
-          isInline && 'bg-gray-100 px-1.5 py-0.5 rounded text-sm',
-          className
-        )} 
+        className={isInline ? "bg-white/10 text-purple-300 px-1 py-0.5 rounded text-sm" : className}
         {...props}
       >
         {children}
@@ -141,30 +138,56 @@ const components = {
   // Tables
   table: ({ children, ...props }: any) => (
     <div className="overflow-x-auto my-6">
-      <table className="min-w-full divide-y divide-gray-200" {...props}>
+      <table className="min-w-full divide-y divide-white/20" {...props}>
         {children}
       </table>
     </div>
   ),
   
+  th: ({ children, ...props }: any) => (
+    <th className="px-6 py-3 text-left text-xs font-medium text-white/80 uppercase tracking-wider" {...props}>
+      {children}
+    </th>
+  ),
+  
+  td: ({ children, ...props }: any) => (
+    <td className="px-6 py-4 whitespace-nowrap text-sm text-white/70" {...props}>
+      {children}
+    </td>
+  ),
+  
   // Lists
   ul: ({ children, ...props }: any) => (
-    <ul className="list-disc list-inside space-y-2 my-4" {...props}>
+    <ul className="list-disc list-inside space-y-2 my-4 text-white/80" {...props}>
       {children}
     </ul>
   ),
   
   ol: ({ children, ...props }: any) => (
-    <ol className="list-decimal list-inside space-y-2 my-4" {...props}>
+    <ol className="list-decimal list-inside space-y-2 my-4 text-white/80" {...props}>
       {children}
     </ol>
   ),
   
   // Blockquotes
   blockquote: ({ children, ...props }: any) => (
-    <blockquote className="border-l-4 border-purple-500 pl-4 my-6 italic text-gray-700" {...props}>
+    <blockquote className="border-l-4 border-purple-500 pl-4 my-6 italic text-white/70" {...props}>
       {children}
     </blockquote>
+  ),
+  
+  // Paragraphs
+  p: ({ children, ...props }: any) => (
+    <p className="text-white/80 my-4" {...props}>
+      {children}
+    </p>
+  ),
+  
+  // Strong text
+  strong: ({ children, ...props }: any) => (
+    <strong className="text-white font-bold" {...props}>
+      {children}
+    </strong>
   ),
   
   // Interactive components
@@ -172,7 +195,7 @@ const components = {
   MusicCalculator,
   TrendingSongs,
   PlaylistShowcase,
-  PlaylistEmbed,
+  PlaylistEmbed: PlaylistShowcase,
   Checklist,
   CalloutBox,
   InteractiveTimeline,

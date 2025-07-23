@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
-import { ChevronRight, RotateCcw } from 'lucide-react'
+import { ChevronRight, RotateCcw, Sparkles } from 'lucide-react'
 
 interface QuizQuestion {
   id: string
@@ -91,16 +91,17 @@ export default function Quiz({ title = 'Find Your Wedding Music Style', question
     const style = musicStyles[result as keyof typeof musicStyles]
     
     return (
-      <div className="my-8 p-8 bg-gradient-to-br from-gray-50 to-purple-50 rounded-lg">
+      <div className="my-8 p-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl">
         <div className="text-center mb-6">
-          <h3 className="text-2xl font-bold mb-2">Your Wedding Music Style:</h3>
+          <Sparkles className="w-12 h-12 text-purple-400 mx-auto mb-4" />
+          <h3 className="text-2xl font-bold mb-2 text-white">Your Wedding Music Style:</h3>
           <div className={`inline-block px-6 py-3 rounded-full bg-gradient-to-r ${style.color} text-white font-bold text-xl mb-4`}>
             {style.name}
           </div>
-          <p className="text-gray-600 mb-4">{style.description}</p>
+          <p className="text-white/70 mb-4">{style.description}</p>
           <div className="flex flex-wrap gap-2 justify-center mb-6">
             {style.traits.map((trait) => (
-              <span key={trait} className="px-3 py-1 bg-white rounded-full text-sm">
+              <span key={trait} className="px-3 py-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-sm text-white/80">
                 {trait}
               </span>
             ))}
@@ -108,13 +109,18 @@ export default function Quiz({ title = 'Find Your Wedding Music Style', question
         </div>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/signup">
-            <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+          <Link href="/auth/signup">
+            <Button size="lg" className="btn-primary">
               Create Your Playlist
               <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
-          <Button variant="outline" size="lg" onClick={resetQuiz}>
+          <Button 
+            variant="ghost" 
+            size="lg" 
+            onClick={resetQuiz}
+            className="bg-white/10 hover:bg-white/20 text-white border border-white/20"
+          >
             <RotateCcw className="mr-2 h-4 w-4" />
             Take Again
           </Button>
@@ -127,11 +133,11 @@ export default function Quiz({ title = 'Find Your Wedding Music Style', question
   const progress = ((currentQuestion + 1) / questions.length) * 100
 
   return (
-    <div className="my-8 p-8 bg-gradient-to-br from-gray-50 to-purple-50 rounded-lg">
-      <h3 className="text-2xl font-bold mb-6 text-center">{title}</h3>
+    <div className="my-8 p-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl">
+      <h3 className="text-2xl font-bold mb-6 text-center text-white">{title}</h3>
       
       {/* Progress bar */}
-      <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+      <div className="w-full bg-white/10 rounded-full h-2 mb-6">
         <div 
           className="bg-gradient-to-r from-purple-600 to-pink-600 h-2 rounded-full transition-all duration-300"
           style={{ width: `${progress}%` }}
@@ -139,17 +145,17 @@ export default function Quiz({ title = 'Find Your Wedding Music Style', question
       </div>
       
       <div className="mb-6">
-        <p className="text-sm text-gray-600 mb-2">
+        <p className="text-sm text-white/60 mb-2">
           Question {currentQuestion + 1} of {questions.length}
         </p>
-        <h4 className="text-xl font-semibold mb-4">{question.question}</h4>
+        <h4 className="text-xl font-semibold mb-4 text-white">{question.question}</h4>
         
         <RadioGroup onValueChange={handleAnswer}>
           <div className="space-y-3">
             {question.options.map((option) => (
-              <div key={option.value} className="flex items-center space-x-2 p-3 rounded-lg hover:bg-white transition-colors">
-                <RadioGroupItem value={option.value} id={option.value} />
-                <Label htmlFor={option.value} className="flex-1 cursor-pointer">
+              <div key={option.value} className="flex items-center space-x-2 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all border border-white/10">
+                <RadioGroupItem value={option.value} id={option.value} className="text-purple-400" />
+                <Label htmlFor={option.value} className="flex-1 cursor-pointer text-white/80 hover:text-white">
                   {option.label}
                 </Label>
               </div>

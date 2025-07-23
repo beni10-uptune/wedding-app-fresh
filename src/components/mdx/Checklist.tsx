@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Check, Download, Save } from 'lucide-react'
+import { Check, Download, Save, ListChecks } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useAuth } from '@/contexts/AuthContext'
@@ -84,18 +84,21 @@ export default function Checklist({
   }, {} as Record<string, ChecklistItem[]>)
 
   return (
-    <div className="my-8 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg">
+    <div className="my-8 p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl">
       <div className="mb-6">
-        <h3 className="text-xl font-bold mb-2">{title}</h3>
+        <div className="flex items-center gap-3 mb-4">
+          <ListChecks className="w-6 h-6 text-purple-400" />
+          <h3 className="text-xl font-bold text-white">{title}</h3>
+        </div>
         <div className="flex items-center justify-between mb-4">
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-white/60">
             {checkedItems.length} of {items.length} completed
           </span>
-          <span className="text-sm font-medium text-purple-600">
+          <span className="text-sm font-medium text-purple-400">
             {Math.round(progress)}%
           </span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-white/10 rounded-full h-2">
           <div 
             className="bg-gradient-to-r from-purple-600 to-pink-600 h-2 rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
@@ -106,25 +109,25 @@ export default function Checklist({
       <div className="space-y-6 mb-6">
         {Object.entries(groupedItems).map(([category, categoryItems]) => (
           <div key={category}>
-            <h4 className="font-semibold text-gray-700 mb-3">{category}</h4>
+            <h4 className="font-semibold text-white/80 mb-3">{category}</h4>
             <div className="space-y-2">
               {categoryItems.map((item) => (
-                <div key={item.id} className="flex items-start gap-3 p-3 bg-white rounded hover:shadow-sm transition-shadow">
+                <div key={item.id} className="flex items-start gap-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-all border border-white/10">
                   <Checkbox
                     id={item.id}
                     checked={checkedItems.includes(item.id)}
                     onCheckedChange={() => handleToggle(item.id)}
-                    className="mt-0.5"
+                    className="mt-0.5 border-white/30 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                   />
                   <label
                     htmlFor={item.id}
                     className={`flex-1 cursor-pointer ${
-                      checkedItems.includes(item.id) ? 'line-through text-gray-500' : ''
+                      checkedItems.includes(item.id) ? 'line-through text-white/50' : 'text-white/80'
                     }`}
                   >
                     <span className="block">{item.text}</span>
                     {item.timeframe && (
-                      <span className="text-xs text-gray-500">{item.timeframe}</span>
+                      <span className="text-xs text-white/50">{item.timeframe}</span>
                     )}
                   </label>
                 </div>
@@ -136,12 +139,20 @@ export default function Checklist({
 
       <div className="flex gap-3">
         {saveable && (
-          <Button onClick={handleSave} variant="outline" className="flex-1">
+          <Button 
+            onClick={handleSave} 
+            variant="ghost" 
+            className="flex-1 bg-white/10 hover:bg-white/20 text-white border border-white/20"
+          >
             <Save className="w-4 h-4 mr-2" />
             Save Progress
           </Button>
         )}
-        <Button onClick={handleDownload} variant="outline" className="flex-1">
+        <Button 
+          onClick={handleDownload} 
+          variant="ghost" 
+          className="flex-1 bg-white/10 hover:bg-white/20 text-white border border-white/20"
+        >
           <Download className="w-4 h-4 mr-2" />
           Download
         </Button>

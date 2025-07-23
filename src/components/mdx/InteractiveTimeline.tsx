@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Clock, Music, Users, Utensils, PartyPopper } from 'lucide-react'
+import { Clock, Music, Users, Utensils, PartyPopper, Timer } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -70,12 +70,15 @@ export default function InteractiveTimeline() {
   const activeEvent = defaultTimeline.find(e => e.id === selectedEvent)!
 
   return (
-    <div className="my-8 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg">
-      <h3 className="text-2xl font-bold mb-6 text-center">Interactive Wedding Timeline</h3>
+    <div className="my-8 p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl">
+      <div className="flex items-center gap-3 mb-6">
+        <Timer className="w-8 h-8 text-purple-400" />
+        <h3 className="text-2xl font-bold text-white">Interactive Wedding Timeline</h3>
+      </div>
       
       {/* Timeline */}
       <div className="relative mb-8">
-        <div className="absolute top-6 left-0 right-0 h-0.5 bg-gray-300"></div>
+        <div className="absolute top-6 left-0 right-0 h-0.5 bg-white/20"></div>
         <div className="flex justify-between relative">
           {defaultTimeline.map((event) => {
             const Icon = event.icon
@@ -89,20 +92,20 @@ export default function InteractiveTimeline() {
               >
                 <div className={cn(
                   'w-12 h-12 rounded-full flex items-center justify-center transition-all',
-                  isActive ? event.color : 'bg-gray-300',
+                  isActive ? event.color : 'bg-white/20',
                   'group-hover:scale-110'
                 )}>
                   <Icon className="w-6 h-6 text-white" />
                 </div>
                 <span className={cn(
                   'text-xs mt-2 font-medium',
-                  isActive ? 'text-gray-900' : 'text-gray-600'
+                  isActive ? 'text-white' : 'text-white/60'
                 )}>
                   {event.time}
                 </span>
                 <span className={cn(
                   'text-xs',
-                  isActive ? 'text-gray-700' : 'text-gray-500'
+                  isActive ? 'text-white/80' : 'text-white/50'
                 )}>
                   {event.title}
                 </span>
@@ -113,40 +116,43 @@ export default function InteractiveTimeline() {
       </div>
 
       {/* Event Details */}
-      <div className="bg-white p-6 rounded-lg shadow-sm">
+      <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 p-6 rounded-lg border border-purple-500/30">
         <div className="flex items-center gap-3 mb-4">
           <div className={cn('p-3 rounded-lg', activeEvent.color)}>
             <activeEvent.icon className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h4 className="text-xl font-bold">{activeEvent.title}</h4>
-            <p className="text-sm text-gray-600">
+            <h4 className="text-xl font-bold text-white">{activeEvent.title}</h4>
+            <p className="text-sm text-white/70">
               {activeEvent.time} • {activeEvent.duration} minutes
             </p>
           </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-4 mb-6">
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h5 className="font-semibold mb-2">Music Style</h5>
-            <p className="text-gray-700">{activeEvent.musicStyle}</p>
+          <div className="p-4 bg-white/10 rounded-lg border border-white/20">
+            <h5 className="font-semibold mb-2 text-white">Music Style</h5>
+            <p className="text-white/80">{activeEvent.musicStyle}</p>
           </div>
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h5 className="font-semibold mb-2">Songs Needed</h5>
-            <p className="text-2xl font-bold text-purple-600">{activeEvent.songCount}</p>
+          <div className="p-4 bg-white/10 rounded-lg border border-white/20">
+            <h5 className="font-semibold mb-2 text-white">Songs Needed</h5>
+            <p className="text-2xl font-bold text-purple-300">{activeEvent.songCount}</p>
           </div>
         </div>
 
-        <p className="text-gray-600 mb-6">{activeEvent.description}</p>
+        <p className="text-white/70 mb-6">{activeEvent.description}</p>
 
         <div className="flex flex-col sm:flex-row gap-3">
-          <Link href="/signup" className="flex-1">
-            <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+          <Link href="/auth/signup" className="flex-1">
+            <Button className="w-full btn-primary">
               <Clock className="w-4 h-4 mr-2" />
               Build Your Timeline
             </Button>
           </Link>
-          <Button variant="outline" className="flex-1">
+          <Button 
+            variant="ghost" 
+            className="flex-1 bg-white/10 hover:bg-white/20 text-white border border-white/20"
+          >
             View Sample Playlist
           </Button>
         </div>

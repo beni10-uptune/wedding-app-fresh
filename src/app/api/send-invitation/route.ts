@@ -3,8 +3,6 @@ import { Resend } from 'resend'
 import { WeddingInvitationEmail } from '@/emails/wedding-invitation'
 import { CoOwnerInvitationEmail } from '@/emails/co-owner-invitation'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -17,6 +15,8 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
+
+    const resend = new Resend(process.env.RESEND_API_KEY)
 
     let emailResponse
 

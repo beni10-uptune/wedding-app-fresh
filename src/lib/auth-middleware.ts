@@ -3,6 +3,15 @@ import { auth } from '@/lib/firebase-admin'
 
 export async function authenticateRequest(request: NextRequest) {
   try {
+    // If Firebase Admin is not configured, we can't authenticate server-side
+    if (!auth) {
+      return {
+        authenticated: false,
+        error: 'Server authentication not configured',
+        user: null
+      }
+    }
+
     const authHeader = request.headers.get('authorization')
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {

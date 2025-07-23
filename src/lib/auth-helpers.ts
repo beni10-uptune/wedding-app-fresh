@@ -51,9 +51,7 @@ export async function getSmartRedirectPath(user: User): Promise<string> {
       // Fall through to simple query
     }
     
-  } catch (error) {
-    console.error('Error in smart redirect:', error)
-    // If query fails (maybe index not ready), try simpler query
+    // If compound query failed, try simpler query
     try {
       const simpleQuery = query(
         collection(db, 'weddings'),
@@ -75,6 +73,10 @@ export async function getSmartRedirectPath(user: User): Promise<string> {
       console.error('Simple query also failed:', simpleError)
     }
     
-    return '/dashboard'
+  } catch (error) {
+    console.error('Error in smart redirect:', error)
   }
+  
+  // Default fallback
+  return '/dashboard'
 }

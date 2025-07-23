@@ -97,10 +97,11 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
       try {
         const inviteLink = `${window.location.origin}/join/${invitation.inviteCode}`
         
-        await fetch('/api/send-invitation', {
+        const response = await fetch('/api/send-invitation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            type: 'guest',  // This was missing!
             email,
             coupleNames: wedding.coupleNames || [],
             weddingDate: wedding.weddingDate.toDate().toLocaleDateString('en-US', {
@@ -115,6 +116,11 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
             role
           })
         })
+        
+        if (!response.ok) {
+          const errorData = await response.json()
+          console.error('Email API error:', errorData)
+        }
       } catch (emailError) {
         console.error('Failed to send email:', emailError)
         // Continue even if email fails

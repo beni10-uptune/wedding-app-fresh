@@ -124,7 +124,7 @@ export default function TrendingSongs({
         ))}
       </div>
 
-      <Link href="/signup">
+      <Link href="/auth/signup">
         <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
           Create Your Wedding Playlist
         </Button>

@@ -70,7 +70,7 @@ export function TrendingSongsWidget() {
         ))}
       </div>
 
-      <Link href="/signup">
+      <Link href="/auth/signup">
         <Button variant="outline" className="w-full bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/30">
           Create Your Playlist
         </Button>

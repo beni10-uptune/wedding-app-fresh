@@ -39,9 +39,13 @@ export async function POST(request: NextRequest) {
     const { weddingId, email } = validation.data
 
     // Create a payment intent
+    // Stripe will automatically handle currency based on customer's location
     const paymentIntent = await stripe.paymentIntents.create({
       amount: STRIPE_CONFIG.amount,
-      currency: STRIPE_CONFIG.currency,
+      currency: 'gbp', // Base currency - Stripe can present in customer's local currency
+      automatic_payment_methods: {
+        enabled: true,
+      },
       metadata: {
         weddingId,
         userId,

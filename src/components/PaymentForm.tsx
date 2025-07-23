@@ -74,7 +74,7 @@ function CheckoutForm({ onSuccess, onError }: Omit<PaymentFormProps, 'clientSecr
         ) : (
           <>
             <CreditCard className="w-5 h-5" />
-            Pay {(STRIPE_CONFIG.amount / 100).toLocaleString('en-GB', { style: 'currency', currency: 'GBP' })}
+            Pay Now
           </>
         )}
       </button>

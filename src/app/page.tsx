@@ -6,23 +6,6 @@ import Link from 'next/link'
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [selectedCurrency, setSelectedCurrency] = useState<'GBP' | 'USD' | 'EUR'>('GBP')
-
-  // Auto-detect currency
-  useEffect(() => {
-    const locale = navigator.language || 'en-GB'
-    if (locale.includes('US')) setSelectedCurrency('USD')
-    else if (locale.includes('DE') || locale.includes('FR') || locale.includes('IT') || locale.includes('ES')) setSelectedCurrency('EUR')
-    else setSelectedCurrency('GBP')
-  }, [])
-
-  const currencySymbols = {
-    GBP: '£',
-    USD: '$',
-    EUR: '€'
-  }
-
-  const currencyAmount = 25 // Same price for all currencies for simplicity
   
   return (
     <div className="min-h-screen dark-gradient relative overflow-hidden">
@@ -528,23 +511,6 @@ export default function Home() {
           </div>
 
           <div className="max-w-4xl mx-auto">
-            {/* Currency Selector */}
-            <div className="flex justify-center gap-2 mb-8">
-              {(['GBP', 'USD', 'EUR'] as const).map((currency) => (
-                <button
-                  key={currency}
-                  onClick={() => setSelectedCurrency(currency)}
-                  className={`px-4 py-2 rounded-lg transition-all ${
-                    selectedCurrency === currency
-                      ? 'bg-purple-600 text-white'
-                      : 'glass text-white/60 hover:text-white'
-                  }`}
-                >
-                  {currency}
-                </button>
-              ))}
-            </div>
-
             {/* Free vs Paid */}
             <div className="grid md:grid-cols-2 gap-8 mb-12">
               {/* Free Plan */}
@@ -590,7 +556,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-2xl font-bold mb-2">Full Access</h3>
                 <div className="text-4xl font-bold gradient-text mb-4">
-                  {currencySymbols[selectedCurrency]}{currencyAmount}
+                  £25
                 </div>
                 <p className="text-white/60 mb-6">One-time payment • Lifetime access</p>
 

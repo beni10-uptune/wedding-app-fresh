@@ -7,8 +7,8 @@ export default stripePromise
 
 // Stripe configuration
 export const STRIPE_CONFIG = {
-  currency: 'gbp',
-  amount: 2500, // £25 in pence
+  // Currency will be automatically determined by Stripe based on customer location
+  amount: Number(process.env.NEXT_PUBLIC_WEDDING_PRICE) || 2500, // Base price in smallest currency unit
   productName: 'UpTune Wedding Music Platform',
   description: 'One-time payment for unlimited access to create and manage your wedding playlists'
 }

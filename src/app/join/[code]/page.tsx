@@ -180,6 +180,19 @@ export default function JoinPage() {
     if (!guestName || !wedding) return
 
     try {
+      // Check if wedding has reached guest limit (for free tier)
+      if (wedding.paymentStatus !== 'paid') {
+        // Count existing guests
+        const guestsSnapshot = await getDocs(collection(db, 'weddings', wedding.id, 'guests'))
+        const currentGuestCount = guestsSnapshot.size
+        
+        // Check against free tier limit (5 guests)
+        if (currentGuestCount >= 5) {
+          setError('This wedding has reached the maximum number of guests for the free plan. The couple needs to upgrade to add more guests.')
+          return
+        }
+      }
+
       // Sign in anonymously if not already signed in
       if (!auth.currentUser) {
         await signInAnonymously(auth)
@@ -199,12 +212,14 @@ export default function JoinPage() {
         email: guestEmail,
         userId: auth.currentUser?.uid,
         joinedAt: serverTimestamp(),
-        inviteCode: code
+        inviteCode: code,
+        joinMethod: personalizedPrompt ? 'invitation' : 'share-link'
       })
 
       setHasJoined(true)
     } catch (error) {
       console.error('Error joining wedding:', error)
+      setError('Unable to join wedding. Please try again.')
     }
   }
 

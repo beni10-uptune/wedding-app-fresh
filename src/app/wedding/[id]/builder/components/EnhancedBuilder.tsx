@@ -26,7 +26,7 @@ import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Save, Undo, Redo, Trash2, FileMusic, BookOpen } from 'lucide-react'
 import SpotifyExport from './SpotifyExport'
-import MobileBuilder from './MobileBuilder'
+import EnhancedMobileBuilder from './EnhancedMobileBuilder'
 import WelcomeFlow from './WelcomeFlow'
 import InteractiveTutorial from './InteractiveTutorial'
 import GuideViewer from './GuideViewer'
@@ -411,10 +411,10 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
     }
   }
 
-  // Use mobile builder for small screens
+  // Use enhanced mobile builder for small screens
   if (isMobile) {
     return (
-      <MobileBuilder
+      <EnhancedMobileBuilder
         wedding={wedding}
         onUpdate={onUpdate}
       />

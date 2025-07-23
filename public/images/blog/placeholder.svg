@@ -1,0 +1,12 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="url(#gradient)"/>
+  <path d="M600 265C616.569 265 630 278.431 630 295V335C630 351.569 616.569 365 600 365C583.431 365 570 351.569 570 335V295C570 278.431 583.431 265 600 265Z" fill="white" fill-opacity="0.3"/>
+  <path d="M550 315C550 298.431 563.431 285 580 285H620C636.569 285 650 298.431 650 315C650 331.569 636.569 345 620 345H580C563.431 345 550 331.569 550 315Z" fill="white" fill-opacity="0.3"/>
+  <text x="600" y="420" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="white" fill-opacity="0.8">UpTune Wedding Music Blog</text>
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9333EA"/>
+      <stop offset="1" stop-color="#EC4899"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -33,7 +33,8 @@ For UpTune, I recommend **Resend** for its simplicity and React Email support.
 3. Get your API key
 4. Add to `.env.local`:
    ```
-   RESEND_API_KEY=re_xxxxxxxxxxxx
+   RESEND_API_KEY
+   =re_xxxxxxxxxxxx
    ```
 
 ### Step 3: Install Dependencies

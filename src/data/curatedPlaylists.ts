@@ -13,7 +13,18 @@ export interface CuratedPlaylist {
   popularityScore: number // 1-100
 }
 
-// Sample songs for playlists (in production, these would come from Spotify API)
+// IMPORTANT: These songs currently use PLACEHOLDER IDs (1, 2, 3, etc.)
+// For Spotify previews to work, these need to be replaced with real Spotify Track IDs
+// Real Spotify IDs are 22 characters long (e.g., '2tpWsVSb9UEmDRxAl1zhX1')
+// 
+// To update with real Spotify data:
+// 1. Replace the 'id' parameter with the actual Spotify track ID
+// 2. The spotifyUri will automatically be generated correctly
+// 3. Consider adding real album, albumArt, and previewUrl data from Spotify API
+//
+// Example format for real Spotify data:
+// createSong('2tpWsVSb9UEmDRxAl1zhX1', 'At Last', 'Etta James', 182, 2, ['soul', 'jazz'])
+
 const createSong = (
   id: string,
   title: string,
@@ -31,7 +42,7 @@ const createSong = (
   generationAppeal: ['millennial', 'gen_z', 'gen_x'],
   genres,
   spotifyUri: `spotify:track:${id}`,
-  previewUrl: undefined,
+  previewUrl: undefined, // Will be populated when using real Spotify IDs
   bpm: undefined,
   audioFeatures: undefined
 })
@@ -44,7 +55,7 @@ export const curatedPlaylists: CuratedPlaylist[] = [
     momentId: 'first-dance',
     icon: '💕',
     vibe: ['romantic', 'classic', 'elegant'],
-    totalDuration: 1200,
+    totalDuration: 3600,
     curator: 'Wedding Music Expert',
     popularityScore: 95,
     songs: [
@@ -52,7 +63,20 @@ export const curatedPlaylists: CuratedPlaylist[] = [
       createSong('2', 'The Way You Look Tonight', 'Frank Sinatra', 221, 2, ['jazz', 'standards']),
       createSong('3', 'Unchained Melody', 'The Righteous Brothers', 217, 2, ['oldies', 'soul']),
       createSong('4', "Can't Help Falling in Love", 'Elvis Presley', 181, 2, ['rock', 'oldies']),
-      createSong('5', 'L-O-V-E', 'Nat King Cole', 152, 2, ['jazz', 'standards'])
+      createSong('5', 'L-O-V-E', 'Nat King Cole', 152, 2, ['jazz', 'standards']),
+      createSong('56', 'Fly Me to the Moon', 'Frank Sinatra', 146, 2, ['jazz', 'standards']),
+      createSong('57', 'What a Wonderful World', 'Louis Armstrong', 140, 2, ['jazz', 'standards']),
+      createSong('58', 'Stand by Me', 'Ben E. King', 178, 2, ['soul', 'r&b']),
+      createSong('59', 'Let\'s Stay Together', 'Al Green', 197, 2, ['soul', 'r&b']),
+      createSong('60', 'My Girl', 'The Temptations', 165, 2, ['soul', 'motown']),
+      createSong('61', 'Wonderful Tonight', 'Eric Clapton', 238, 2, ['rock', 'soft rock']),
+      createSong('62', 'Your Song', 'Elton John', 241, 2, ['pop', 'rock']),
+      createSong('63', 'Make You Feel My Love', 'Bob Dylan', 212, 2, ['folk', 'rock']),
+      createSong('64', 'The Luckiest', 'Ben Folds', 263, 2, ['alternative', 'piano rock']),
+      createSong('65', 'Endless Love', 'Diana Ross & Lionel Richie', 267, 2, ['soul', 'pop']),
+      createSong('66', 'I Don\'t Want to Miss a Thing', 'Aerosmith', 298, 3, ['rock', 'ballad']),
+      createSong('67', 'Everything', 'Michael Bublé', 213, 2, ['pop', 'jazz']),
+      createSong('68', 'Have I Told You Lately', 'Rod Stewart', 239, 2, ['pop', 'rock'])
     ]
   },
   {
@@ -62,7 +86,7 @@ export const curatedPlaylists: CuratedPlaylist[] = [
     momentId: 'first-dance',
     icon: '✨',
     vibe: ['modern', 'romantic', 'contemporary'],
-    totalDuration: 1350,
+    totalDuration: 3900,
     curator: 'Wedding Music Expert',
     popularityScore: 92,
     songs: [
@@ -70,7 +94,21 @@ export const curatedPlaylists: CuratedPlaylist[] = [
       createSong('7', 'All of Me', 'John Legend', 269, 2, ['pop', 'r&b']),
       createSong('8', 'Marry Me', 'Train', 220, 2, ['pop', 'rock']),
       createSong('9', 'A Thousand Years', 'Christina Perri', 285, 2, ['pop']),
-      createSong('10', 'Thinking Out Loud', 'Ed Sheeran', 281, 2, ['pop'])
+      createSong('10', 'Thinking Out Loud', 'Ed Sheeran', 281, 2, ['pop']),
+      createSong('69', 'Speechless', 'Dan + Shay', 218, 2, ['country', 'pop']),
+      createSong('70', 'Die a Happy Man', 'Thomas Rhett', 227, 2, ['country']),
+      createSong('71', 'Marry You', 'Bruno Mars', 230, 3, ['pop']),
+      createSong('72', 'XO', 'Beyoncé', 213, 2, ['pop', 'r&b']),
+      createSong('73', 'Lover', 'Taylor Swift', 221, 2, ['pop']),
+      createSong('74', 'Better Days', 'OneRepublic', 205, 2, ['pop', 'rock']),
+      createSong('75', 'Say You Won\'t Let Go', 'James Arthur', 211, 2, ['pop']),
+      createSong('76', 'Heaven', 'Kane Brown', 169, 2, ['country']),
+      createSong('77', 'Amazed', 'Lonestar', 240, 2, ['country']),
+      createSong('78', 'I Get to Love You', 'Ruelle', 214, 2, ['indie', 'alternative']),
+      createSong('79', 'Grow Old With Me', 'Tom Odell', 189, 2, ['alternative', 'indie']),
+      createSong('80', 'Love Someone', 'Lukas Graham', 194, 2, ['pop']),
+      createSong('81', 'Yours', 'Russell Dickerson', 231, 2, ['country']),
+      createSong('82', 'From the Ground Up', 'Dan + Shay', 236, 2, ['country'])
     ]
   },
   {
@@ -80,14 +118,26 @@ export const curatedPlaylists: CuratedPlaylist[] = [
     momentId: 'processional',
     icon: '🎊',
     vibe: ['joyful', 'uplifting', 'celebratory'],
-    totalDuration: 900,
+    totalDuration: 3000,
     curator: 'Wedding Music Expert',
     popularityScore: 88,
     songs: [
       createSong('11', 'Marry You', 'Bruno Mars', 230, 4, ['pop']),
       createSong('12', 'Signed, Sealed, Delivered', 'Stevie Wonder', 181, 4, ['soul', 'motown']),
       createSong('13', 'I Choose You', 'Sara Bareilles', 244, 3, ['pop']),
-      createSong('14', 'Home', 'Edward Sharpe & The Magnetic Zeros', 245, 3, ['indie', 'folk'])
+      createSong('14', 'Home', 'Edward Sharpe & The Magnetic Zeros', 245, 3, ['indie', 'folk']),
+      createSong('83', 'Good Day Sunshine', 'The Beatles', 129, 3, ['rock', 'pop']),
+      createSong('84', 'Here Comes the Sun', 'The Beatles', 185, 3, ['rock', 'pop']),
+      createSong('85', 'Beautiful Day', 'U2', 248, 3, ['rock']),
+      createSong('86', 'Walking on Sunshine', 'Katrina and the Waves', 239, 4, ['pop', 'new wave']),
+      createSong('87', 'Lovely Day', 'Bill Withers', 254, 3, ['soul', 'r&b']),
+      createSong('88', 'Best Day of My Life', 'American Authors', 194, 4, ['indie', 'pop']),
+      createSong('89', 'On Top of the World', 'Imagine Dragons', 192, 4, ['pop', 'rock']),
+      createSong('90', 'Brighter Than the Sun', 'Colbie Caillat', 231, 3, ['pop']),
+      createSong('91', 'Love on Top', 'Beyoncé', 267, 4, ['pop', 'r&b']),
+      createSong('92', 'A Sky Full of Stars', 'Coldplay', 268, 3, ['pop', 'rock']),
+      createSong('93', 'Sugar', 'Maroon 5', 235, 4, ['pop']),
+      createSong('94', 'Ho Hey', 'The Lumineers', 163, 3, ['indie', 'folk'])
     ]
   },
   {
@@ -122,7 +172,7 @@ export const curatedPlaylists: CuratedPlaylist[] = [
     momentId: 'party',
     icon: '🔥',
     vibe: ['high-energy', 'fun', 'crowd-pleaser'],
-    totalDuration: 2400,
+    totalDuration: 4200,
     curator: 'Wedding Music Expert',
     popularityScore: 98,
     songs: [
@@ -135,7 +185,17 @@ export const curatedPlaylists: CuratedPlaylist[] = [
       createSong('33', 'Celebration', 'Kool & The Gang', 218, 5, ['funk', 'disco']),
       createSong('34', 'Dancing Queen', 'ABBA', 232, 4, ['pop', 'disco']),
       createSong('35', 'Mr. Brightside', 'The Killers', 222, 4, ['rock', 'indie']),
-      createSong('36', 'Shake It Off', 'Taylor Swift', 219, 4, ['pop'])
+      createSong('36', 'Shake It Off', 'Taylor Swift', 219, 4, ['pop']),
+      createSong('95', '24K Magic', 'Bruno Mars', 226, 5, ['funk', 'pop']),
+      createSong('96', 'Levitating', 'Dua Lipa', 203, 5, ['pop', 'disco']),
+      createSong('97', 'Blinding Lights', 'The Weeknd', 200, 4, ['pop', 'synth']),
+      createSong('98', 'I Gotta Feeling', 'The Black Eyed Peas', 289, 5, ['pop', 'dance']),
+      createSong('99', 'Dynamite', 'Taio Cruz', 202, 5, ['pop', 'dance']),
+      createSong('100', 'Timber', 'Pitbull ft. Ke$ha', 204, 5, ['pop', 'country']),
+      createSong('101', 'Yeah!', 'Usher ft. Lil Jon & Ludacris', 250, 5, ['hip hop', 'crunk']),
+      createSong('102', 'Crazy in Love', 'Beyoncé ft. Jay-Z', 236, 5, ['pop', 'r&b']),
+      createSong('103', 'Pump It', 'The Black Eyed Peas', 213, 5, ['hip hop', 'dance']),
+      createSong('104', 'Get Lucky', 'Daft Punk ft. Pharrell Williams', 369, 4, ['disco', 'funk'])
     ]
   },
   {

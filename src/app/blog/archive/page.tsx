@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, Calendar, Clock } from 'lucide-react'
+import { ArrowLeft, Calendar } from 'lucide-react'
 import { BlogPostCard } from '@/components/blog/BlogPostCard'
 import { getBlogPosts } from '@/lib/blog/api'
 
@@ -30,37 +30,32 @@ export default async function ArchivePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <Link href="/blog" className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6">
+        <Link href="/blog" className="inline-flex items-center text-white/60 hover:text-white mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Blog
         </Link>
         
-        <h1 className="text-4xl font-bold mb-3">All Articles</h1>
-        <p className="text-xl text-gray-600">
-          Browse our complete collection of wedding music planning resources
+        <h1 className="text-4xl font-bold mb-2 gradient-text">Article Archive</h1>
+        <p className="text-xl text-white/70">
+          Browse all {posts.length} articles from the UpTune blog
         </p>
       </div>
 
-      <div className="max-w-4xl">
-        {Object.entries(postsByMonth).map(([monthYear, monthPosts]) => (
-          <div key={monthYear} className="mb-12">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <Calendar className="w-6 h-6 text-purple-600" />
-              {monthYear}
-            </h2>
-            <div className="space-y-4">
+      <div className="space-y-12">
+        {Object.entries(postsByMonth).map(([month, monthPosts]) => (
+          <div key={month}>
+            <div className="flex items-center gap-3 mb-6">
+              <Calendar className="w-5 h-5 text-purple-400" />
+              <h2 className="text-2xl font-semibold">{month}</h2>
+              <span className="text-white/50">({monthPosts.length} articles)</span>
+            </div>
+            <div className="grid gap-4">
               {monthPosts.map((post) => (
                 <BlogPostCard key={post.id} post={post} />
               ))}
             </div>
           </div>
         ))}
-
-        {posts.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-600">No articles published yet.</p>
-          </div>
-        )}
       </div>
     </div>
   )

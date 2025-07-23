@@ -83,12 +83,12 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-12">
-        <Link href="/blog" className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6">
+        <Link href="/blog" className="inline-flex items-center text-white/60 hover:text-white mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Blog
         </Link>
         
-        <div className={`bg-gradient-to-r ${categoryData.color} rounded-lg p-8 text-white`}>
+        <div className={`glass-gradient bg-gradient-to-r ${categoryData.color} rounded-xl p-8`}>
           <h1 className="text-4xl font-bold mb-3">{categoryData.name}</h1>
           <p className="text-xl opacity-90">{categoryData.description}</p>
         </div>
@@ -107,9 +107,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               </div>
             </>
           ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-600 mb-4">No articles in this category yet.</p>
-              <Link href="/blog" className="text-purple-600 hover:text-purple-700">
+            <div className="text-center py-12 glass rounded-xl">
+              <p className="text-white/60 mb-4">No articles in this category yet.</p>
+              <Link href="/blog" className="text-purple-400 hover:text-purple-300 transition-colors">
                 Browse all articles
               </Link>
             </div>
@@ -119,7 +119,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         {/* Sidebar */}
         <aside className="space-y-8">
           {/* Other Categories */}
-          <div>
+          <div className="card">
             <h3 className="font-semibold mb-4">Explore Other Categories</h3>
             <div className="space-y-2">
               {Object.entries(categories).map(([slug, category]) => {
@@ -128,10 +128,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                   <Link
                     key={slug}
                     href={`/blog/category/${slug}`}
-                    className="block p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="block p-3 glass rounded-lg hover:bg-white/20 transition-all"
                   >
                     <p className="font-medium">{category.name}</p>
-                    <p className="text-sm text-gray-600">{category.description}</p>
+                    <p className="text-sm text-white/60">{category.description}</p>
                   </Link>
                 )
               })}

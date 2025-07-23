@@ -90,19 +90,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <>
       <ReadingProgress />
       
-      <article className="container mx-auto px-4 py-8 max-w-6xl">
+      <article className="relative">
         {/* Header */}
-        <header className="mb-8">
-          <Link href="/blog" className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6">
+        <header className="container mx-auto px-4 py-8 max-w-6xl">
+          <Link href="/blog" className="inline-flex items-center text-white/60 hover:text-white mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Blog
           </Link>
           
           <div className="flex items-center gap-4 mb-4">
-            <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+            <span className="px-3 py-1 bg-purple-600/20 text-purple-400 rounded-full text-sm font-medium">
               {post.category}
             </span>
-            <div className="flex items-center gap-4 text-sm text-gray-600">
+            <div className="flex items-center gap-4 text-sm text-white/60">
               <span className="flex items-center gap-1">
                 <Clock className="w-4 h-4" />
                 {post.readTime} min read
@@ -114,16 +114,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6 gradient-text">
             {post.title}
           </h1>
 
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-xl text-white/70 mb-8">
             {post.excerpt}
           </p>
 
           {/* Author and Share */}
-          <div className="flex items-center justify-between border-y py-4">
+          <div className="flex items-center justify-between glass rounded-lg p-4">
             <div className="flex items-center gap-3">
               {post.author.avatar && (
                 <Image
@@ -137,7 +137,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <div>
                 <p className="font-medium">{post.author.name}</p>
                 {post.author.bio && (
-                  <p className="text-sm text-gray-600">{post.author.bio}</p>
+                  <p className="text-sm text-white/60">{post.author.bio}</p>
                 )}
               </div>
             </div>
@@ -146,84 +146,86 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 url={`https://uptune.xyz/blog/${post.slug}`}
                 title={post.title}
               />
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="text-white/70 hover:text-white">
                 <Bookmark className="w-4 h-4" />
               </Button>
             </div>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-8">
-            {post.featuredImage && (
-              <div className="relative aspect-video mb-8 rounded-lg overflow-hidden">
-                <Image
-                  src={post.featuredImage}
-                  alt={post.title}
-                  fill
-                  className="object-cover"
-                  priority
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-8">
+              {post.featuredImage && (
+                <div className="relative aspect-video mb-8 rounded-lg overflow-hidden">
+                  <Image
+                    src={post.featuredImage}
+                    alt={post.title}
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+              )}
+
+              <div className="prose prose-invert prose-purple prose-lg max-w-none">
+                <MDXRemote 
+                  source={post.content}
+                  components={mdxComponents}
                 />
               </div>
-            )}
 
-            <div className="prose prose-lg max-w-none">
-              <MDXRemote 
-                source={post.content}
-                components={mdxComponents}
-              />
-            </div>
-
-            {/* Post Footer */}
-            <div className="mt-12 pt-8 border-t">
-              <div className="flex flex-wrap gap-2 mb-8">
-                {post.tags.map((tag) => (
-                  <Link
-                    key={tag}
-                    href={`/blog?tag=${tag}`}
-                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200"
-                  >
-                    #{tag}
-                  </Link>
-                ))}
-              </div>
-
-              {/* CTA */}
-              <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-8 rounded-lg text-white text-center">
-                <h3 className="text-2xl font-bold mb-2">Ready to Plan Your Wedding Music?</h3>
-                <p className="mb-6 text-purple-100">
-                  Create the perfect playlist for every moment of your special day
-                </p>
-                <Link href="/signup">
-                  <Button size="lg" variant="secondary">
-                    Start Your Free Trial
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <aside className="lg:col-span-4 space-y-8">
-            {/* Table of Contents */}
-            <TableOfContents content={post.content} />
-
-            {/* Newsletter */}
-            <NewsletterSignup />
-
-            {/* Related Posts */}
-            {relatedPosts.length > 0 && (
-              <div>
-                <h3 className="font-semibold mb-4">Related Articles</h3>
-                <div className="space-y-4">
-                  {relatedPosts.map((relatedPost) => (
-                    <BlogPostCard key={relatedPost.id} post={relatedPost} />
+              {/* Post Footer */}
+              <div className="mt-12 pt-8 border-t border-white/10">
+                <div className="flex flex-wrap gap-2 mb-8">
+                  {post.tags.map((tag) => (
+                    <Link
+                      key={tag}
+                      href={`/blog?tag=${tag}`}
+                      className="px-3 py-1 glass rounded-full text-sm hover:bg-white/20 transition-colors"
+                    >
+                      #{tag}
+                    </Link>
                   ))}
                 </div>
+
+                {/* CTA */}
+                <div className="glass-gradient rounded-xl p-8 text-center">
+                  <h3 className="text-2xl font-bold mb-2">Ready to Plan Your Wedding Music?</h3>
+                  <p className="mb-6 text-white/70">
+                    Create the perfect playlist for every moment of your special day
+                  </p>
+                  <Link href="/auth/signup">
+                    <Button size="lg" className="btn-primary">
+                      Start Your Free Trial
+                    </Button>
+                  </Link>
+                </div>
               </div>
-            )}
-          </aside>
+            </div>
+
+            {/* Sidebar */}
+            <aside className="lg:col-span-4 space-y-8">
+              {/* Table of Contents */}
+              <TableOfContents content={post.content} />
+
+              {/* Newsletter */}
+              <NewsletterSignup />
+
+              {/* Related Posts */}
+              {relatedPosts.length > 0 && (
+                <div className="card">
+                  <h3 className="font-semibold mb-4">Related Articles</h3>
+                  <div className="space-y-4">
+                    {relatedPosts.map((relatedPost) => (
+                      <BlogPostCard key={relatedPost.id} post={relatedPost} />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </aside>
+          </div>
         </div>
       </article>
     </>

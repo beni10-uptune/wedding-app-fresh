@@ -38,6 +38,7 @@ export default function Home() {
               <Link href="#features" className="text-white/70 hover:text-white transition-colors">Features</Link>
               <Link href="#testimonials" className="text-white/70 hover:text-white transition-colors">Love Stories</Link>
               <Link href="#pricing" className="text-white/70 hover:text-white transition-colors">Pricing</Link>
+              <Link href="/blog" className="text-white/70 hover:text-white transition-colors">Blog</Link>
             </nav>
             
             {/* Auth Buttons */}
@@ -70,6 +71,7 @@ export default function Home() {
               <Link href="#features" className="text-white/70 hover:text-white" onClick={() => setMobileMenuOpen(false)}>Features</Link>
               <Link href="#testimonials" className="text-white/70 hover:text-white" onClick={() => setMobileMenuOpen(false)}>Love Stories</Link>
               <Link href="#pricing" className="text-white/70 hover:text-white" onClick={() => setMobileMenuOpen(false)}>Pricing</Link>
+              <Link href="/blog" className="text-white/70 hover:text-white" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
               <hr className="border-white/10" />
               <Link href="/auth/login" className="text-white/70 hover:text-white" onClick={() => setMobileMenuOpen(false)}>Log In</Link>
               <Link href="/auth/signup" className="btn-primary text-center" onClick={() => setMobileMenuOpen(false)}>
@@ -626,6 +628,66 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Blog Section */}
+      <section className="section relative z-10 py-20">
+        <div className="container-max">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
+              Wedding Music <span className="gradient-text">Inspiration & Guides</span>
+            </h2>
+            <p className="text-xl text-white/70 max-w-2xl mx-auto">
+              Expert tips, real wedding stories, and curated playlists to help you create your perfect soundtrack
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            {/* Blog Cards */}
+            <Link href="/blog/complete-guide-wedding-music-planning" className="card group">
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-purple-400 transition-colors">
+                Complete Wedding Music Planning Guide
+              </h3>
+              <p className="text-white/60 mb-4">
+                Everything you need to know about planning music for every moment of your big day
+              </p>
+              <span className="text-purple-400 flex items-center gap-2">
+                Read more <ArrowRight className="w-4 h-4" />
+              </span>
+            </Link>
+            
+            <Link href="/blog/10-ways-guest-music-selection" className="card group">
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-purple-400 transition-colors">
+                Get Your Guests Involved
+              </h3>
+              <p className="text-white/60 mb-4">
+                Creative ways to include your guests in choosing your wedding music
+              </p>
+              <span className="text-purple-400 flex items-center gap-2">
+                Read more <ArrowRight className="w-4 h-4" />
+              </span>
+            </Link>
+            
+            <Link href="/blog/wedding-reception-music-guide" className="card group">
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-purple-400 transition-colors">
+                Reception Music Mastery
+              </h3>
+              <p className="text-white/60 mb-4">
+                From cocktail hour to last dance - create the perfect flow
+              </p>
+              <span className="text-purple-400 flex items-center gap-2">
+                Read more <ArrowRight className="w-4 h-4" />
+              </span>
+            </Link>
+          </div>
+          
+          <div className="text-center">
+            <Link href="/blog" className="btn-glass">
+              Explore All Articles
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="section relative z-10 py-20">
         <div className="container-max">
@@ -677,6 +739,7 @@ export default function Home() {
               <span className="text-white/60">Made with love for music • Trusted by couples worldwide • DJ approved</span>
             </div>
             <div className="flex items-center gap-6 text-sm text-white/60">
+              <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
               <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
               <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
               <Link href="/help" className="hover:text-white transition-colors">Help</Link>

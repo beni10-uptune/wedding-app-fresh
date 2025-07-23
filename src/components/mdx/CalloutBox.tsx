@@ -12,31 +12,31 @@ interface CalloutBoxProps {
 const typeConfig = {
   info: {
     icon: Info,
-    bgColor: 'bg-blue-50',
-    borderColor: 'border-blue-200',
-    iconColor: 'text-blue-600',
-    titleColor: 'text-blue-900',
+    bgColor: 'bg-blue-600/10',
+    borderColor: 'border-blue-500/30',
+    iconColor: 'text-blue-400',
+    titleColor: 'text-blue-300',
   },
   tip: {
     icon: Lightbulb,
-    bgColor: 'bg-green-50',
-    borderColor: 'border-green-200',
-    iconColor: 'text-green-600',
-    titleColor: 'text-green-900',
+    bgColor: 'bg-green-600/10',
+    borderColor: 'border-green-500/30',
+    iconColor: 'text-green-400',
+    titleColor: 'text-green-300',
   },
   warning: {
     icon: AlertTriangle,
-    bgColor: 'bg-yellow-50',
-    borderColor: 'border-yellow-200',
-    iconColor: 'text-yellow-600',
-    titleColor: 'text-yellow-900',
+    bgColor: 'bg-yellow-600/10',
+    borderColor: 'border-yellow-500/30',
+    iconColor: 'text-yellow-400',
+    titleColor: 'text-yellow-300',
   },
   important: {
     icon: AlertCircle,
-    bgColor: 'bg-purple-50',
-    borderColor: 'border-purple-200',
-    iconColor: 'text-purple-600',
-    titleColor: 'text-purple-900',
+    bgColor: 'bg-purple-600/10',
+    borderColor: 'border-purple-500/30',
+    iconColor: 'text-purple-400',
+    titleColor: 'text-purple-300',
   },
 }
 
@@ -50,7 +50,7 @@ export default function CalloutBox({
 
   return (
     <div className={cn(
-      'my-6 p-4 rounded-lg border-2',
+      'my-6 p-4 rounded-lg border-2 backdrop-blur-sm',
       config.bgColor,
       config.borderColor
     )}>
@@ -62,7 +62,7 @@ export default function CalloutBox({
               {title}
             </h4>
           )}
-          <div className="text-gray-700 prose-sm max-w-none">
+          <div className="text-white/80 prose-sm max-w-none">
             {children}
           </div>
         </div>

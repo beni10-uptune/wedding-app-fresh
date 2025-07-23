@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { List } from 'lucide-react'
 
 interface TOCItem {
   id: string
@@ -59,8 +60,11 @@ export function TableOfContents({ content }: TableOfContentsProps) {
   if (headings.length === 0) return null
 
   return (
-    <div className="sticky top-20 bg-gray-50 p-6 rounded-lg">
-      <h3 className="font-semibold mb-4">Table of Contents</h3>
+    <div className="sticky top-20 bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-xl">
+      <div className="flex items-center gap-2 mb-4">
+        <List className="w-5 h-5 text-purple-400" />
+        <h3 className="font-semibold text-white">Table of Contents</h3>
+      </div>
       <nav>
         <ul className="space-y-2">
           {headings.map(({ id, text, level }) => (
@@ -71,8 +75,10 @@ export function TableOfContents({ content }: TableOfContentsProps) {
               <a
                 href={`#${id}`}
                 className={cn(
-                  'block text-sm py-1 hover:text-purple-600 transition-colors',
-                  activeId === id ? 'text-purple-600 font-medium' : 'text-gray-600'
+                  'block text-sm py-1 transition-colors',
+                  activeId === id 
+                    ? 'text-purple-400 font-medium' 
+                    : 'text-white/60 hover:text-white'
                 )}
               >
                 {text}

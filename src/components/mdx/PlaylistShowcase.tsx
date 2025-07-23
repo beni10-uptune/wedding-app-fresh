@@ -89,12 +89,12 @@ export default function PlaylistShowcase({
 
   if (loading) {
     return (
-      <div className="my-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
+      <div className="my-8 p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-3/4 mb-4"></div>
+          <div className="h-8 bg-white/20 rounded w-3/4 mb-4"></div>
           <div className="space-y-3">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-12 bg-gray-100 rounded"></div>
+              <div key={i} className="h-12 bg-white/10 rounded"></div>
             ))}
           </div>
         </div>
@@ -105,16 +105,16 @@ export default function PlaylistShowcase({
   if (!playlist) return null
 
   return (
-    <div className="my-8 overflow-hidden rounded-lg shadow-lg">
+    <div className="my-8 overflow-hidden rounded-xl bg-white/5 backdrop-blur-md border border-white/10">
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
         <div className="flex items-center gap-3 mb-2">
           <Music className="w-8 h-8" />
           <h3 className="text-2xl font-bold">{playlist.name}</h3>
         </div>
         {playlist.description && (
-          <p className="text-purple-100 mb-4">{playlist.description}</p>
+          <p className="text-white/80 mb-4">{playlist.description}</p>
         )}
-        <div className="flex items-center gap-4 text-sm">
+        <div className="flex items-center gap-4 text-sm text-white/70">
           <span className="flex items-center gap-1">
             <Clock className="w-4 h-4" />
             {Math.floor(playlist.totalDuration / 60)} minutes
@@ -123,16 +123,16 @@ export default function PlaylistShowcase({
         </div>
       </div>
       
-      <div className="bg-white p-6">
+      <div className="bg-white/5 backdrop-blur-sm p-6">
         <div className="space-y-2 mb-6">
           {playlist.songs.map((song, index) => (
-            <div key={song.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
-              <span className="text-gray-500 w-6 text-center">{index + 1}</span>
+            <div key={song.id} className="flex items-center gap-3 p-2 hover:bg-white/10 rounded transition-colors">
+              <span className="text-white/50 w-6 text-center">{index + 1}</span>
               <div className="flex-1">
-                <p className="font-medium">{song.title}</p>
-                <p className="text-sm text-gray-600">{song.artist}</p>
+                <p className="font-medium text-white">{song.title}</p>
+                <p className="text-sm text-white/60">{song.artist}</p>
               </div>
-              <span className="text-sm text-gray-500">{formatDuration(song.duration)}</span>
+              <span className="text-sm text-white/50">{formatDuration(song.duration)}</span>
             </div>
           ))}
         </div>
@@ -154,7 +154,7 @@ export default function PlaylistShowcase({
               </Button>
             </Link>
           )}
-          <Button variant="outline" className="flex-1">
+          <Button variant="outline" className="flex-1 bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/30">
             <ExternalLink className="w-4 h-4 mr-2" />
             View Full Playlist
           </Button>

@@ -66,12 +66,12 @@ export default function TrendingSongs({
 
   if (loading) {
     return (
-      <div className="my-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
+      <div className="my-8 p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl">
         <div className="animate-pulse">
-          <div className="h-6 bg-gray-200 rounded w-1/2 mb-4"></div>
+          <div className="h-6 bg-white/20 rounded w-1/2 mb-4"></div>
           <div className="space-y-3">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-16 bg-gray-100 rounded"></div>
+              <div key={i} className="h-16 bg-white/10 rounded"></div>
             ))}
           </div>
         </div>
@@ -80,23 +80,23 @@ export default function TrendingSongs({
   }
 
   return (
-    <div className="my-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
+    <div className="my-8 p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-green-100 rounded-lg">
-          <TrendingUp className="w-6 h-6 text-green-600" />
+        <div className="p-2 bg-gradient-to-r from-purple-600/20 to-pink-600/20 backdrop-blur-sm border border-white/10 rounded-lg">
+          <TrendingUp className="w-6 h-6 text-purple-400" />
         </div>
-        <h3 className="text-xl font-bold">{title}</h3>
+        <h3 className="text-xl font-bold text-white">{title}</h3>
       </div>
       
       <div className="space-y-3 mb-6">
         {songs.map((song, index) => (
-          <div key={song.id} className="flex items-center gap-3 p-3 bg-white rounded-lg hover:shadow-md transition-shadow">
-            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
+          <div key={song.id} className="flex items-center gap-3 p-3 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:border-white/20 transition-all">
+            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
               {index + 1}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-medium truncate">{song.title}</p>
-              <p className="text-sm text-gray-600 truncate">{song.artist}</p>
+              <p className="font-medium truncate text-white">{song.title}</p>
+              <p className="text-sm text-white/60 truncate">{song.artist}</p>
             </div>
             <div className="flex items-center gap-2">
               {song.spotifyUrl && (

@@ -95,7 +95,7 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
       
       // Send email
       try {
-        const inviteLink = `${window.location.origin}/auth/guest-join/${weddingId}?code=${invitation.inviteCode}`
+        const inviteLink = `${window.location.origin}/join/${invitation.inviteCode}`
         
         await fetch('/api/send-invitation', {
           method: 'POST',
@@ -151,7 +151,7 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
   }
 
   const copyInviteLink = (invitation: Invitation) => {
-    const link = `${window.location.origin}/auth/guest-join/${weddingId}?code=${invitation.inviteCode}`
+    const link = `${window.location.origin}/join/${invitation.inviteCode}`
     navigator.clipboard.writeText(link)
     setCopiedId(invitation.id)
     setTimeout(() => setCopiedId(null), 2000)

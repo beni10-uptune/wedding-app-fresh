@@ -9,11 +9,13 @@ export async function POST(request: NextRequest) {
     const { type, ...emailData } = body
 
     if (!process.env.RESEND_API_KEY) {
-      console.error('RESEND_API_KEY not configured')
-      return NextResponse.json(
-        { error: 'Email service not configured' },
-        { status: 500 }
-      )
+      console.warn('RESEND_API_KEY not configured - email will not be sent')
+      // Return success but indicate email was not sent
+      return NextResponse.json({ 
+        success: true,
+        emailSent: false,
+        message: 'Invitation created but email not sent (email service not configured)' 
+      })
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY)

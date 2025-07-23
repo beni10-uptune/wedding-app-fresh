@@ -103,41 +103,55 @@ export default function JoinPage() {
         return
       }
       
+      console.log('Loading wedding with code:', codeStr)
+      
       // First try to use code as wedding ID directly (for share links)
-      const directWeddingDoc = await getDoc(doc(db, 'weddings', codeStr))
-      if (directWeddingDoc.exists()) {
-        weddingId = codeStr
-      } else {
-        // Try to find an invitation with this code
-        const invitationsQuery = query(
-          collection(db, 'invitations'),
-          where('inviteCode', '==', codeStr)
-        )
-        const inviteSnapshot = await getDocs(invitationsQuery)
-        
-        if (!inviteSnapshot.empty) {
-          // Found an invitation with personalized prompt
-          const inviteData = inviteSnapshot.docs[0].data()
-          weddingId = inviteData.weddingId
-          if (inviteData.personalizedPrompt) {
-            setPersonalizedPrompt(inviteData.personalizedPrompt)
-          }
+      try {
+        const directWeddingDoc = await getDoc(doc(db, 'weddings', codeStr))
+        if (directWeddingDoc.exists()) {
+          console.log('Found wedding by direct ID')
+          weddingId = codeStr
         } else {
-          // Try finding wedding by general invite code
-          const weddingsQuery = query(
-            collection(db, 'weddings'),
+          // Not a direct wedding ID, try to find an invitation with this code
+          console.log('Not a wedding ID, checking invitations...')
+          const invitationsQuery = query(
+            collection(db, 'invitations'),
             where('inviteCode', '==', codeStr)
           )
-          const weddingSnapshot = await getDocs(weddingsQuery)
+          const inviteSnapshot = await getDocs(invitationsQuery)
           
-          if (weddingSnapshot.empty) {
-            setError('Invalid invitation code')
-            setLoading(false)
-            return
+          if (!inviteSnapshot.empty) {
+            // Found an invitation with personalized prompt
+            console.log('Found invitation with code')
+            const inviteData = inviteSnapshot.docs[0].data()
+            weddingId = inviteData.weddingId
+            if (inviteData.personalizedPrompt) {
+              setPersonalizedPrompt(inviteData.personalizedPrompt)
+            }
+          } else {
+            // Try finding wedding by general invite code
+            console.log('Checking for wedding invite code')
+            const weddingsQuery = query(
+              collection(db, 'weddings'),
+              where('inviteCode', '==', codeStr)
+            )
+            const weddingSnapshot = await getDocs(weddingsQuery)
+            
+            if (weddingSnapshot.empty) {
+              console.error('No wedding or invitation found for code:', codeStr)
+              setError('Invalid invitation code or link')
+              setLoading(false)
+              return
+            }
+            
+            weddingId = weddingSnapshot.docs[0].id
           }
-          
-          weddingId = weddingSnapshot.docs[0].id
         }
+      } catch (queryError) {
+        console.error('Error querying for wedding:', queryError)
+        setError('Unable to load wedding. Please check the link and try again.')
+        setLoading(false)
+        return
       }
       
       // Load wedding data

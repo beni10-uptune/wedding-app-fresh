@@ -35,13 +35,14 @@ const categories = {
 }
 
 interface CategoryPageProps {
-  params: {
+  params: Promise<{
     category: string
-  }
+  }>
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const category = categories[params.category as keyof typeof categories]
+  const { category: categorySlug } = await params
+  const category = categories[categorySlug as keyof typeof categories]
   
   if (!category) {
     return {
@@ -66,7 +67,8 @@ export async function generateStaticParams() {
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
-  const categoryData = categories[params.category as keyof typeof categories]
+  const { category: categorySlug } = await params
+  const categoryData = categories[categorySlug as keyof typeof categories]
   
   if (!categoryData) {
     notFound()
@@ -121,7 +123,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             <h3 className="font-semibold mb-4">Explore Other Categories</h3>
             <div className="space-y-2">
               {Object.entries(categories).map(([slug, category]) => {
-                if (slug === params.category) return null
+                if (slug === categorySlug) return null
                 return (
                   <Link
                     key={slug}

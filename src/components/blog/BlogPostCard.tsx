@@ -12,7 +12,12 @@ interface BlogPostCardProps {
 }
 
 export function BlogPostCard({ post, featured = false }: BlogPostCardProps) {
-  const formattedDate = formatDistanceToNow(new Date(post.publishedAt), { addSuffix: true })
+  const formattedDate = formatDistanceToNow(
+    typeof post.publishedAt === 'string' 
+      ? new Date(post.publishedAt) 
+      : post.publishedAt.toDate(), 
+    { addSuffix: true }
+  )
 
   if (featured) {
     return (

@@ -14,13 +14,14 @@ import { TableOfContents } from '@/components/blog/TableOfContents'
 import { mdxComponents } from '@/components/mdx'
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-  const post = await getBlogPost(params.slug)
+  const { slug } = await params
+  const post = await getBlogPost(slug)
   
   if (!post) {
     return {
@@ -35,7 +36,9 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       title: post.title,
       description: post.excerpt,
       type: 'article',
-      publishedTime: post.publishedAt.toString(),
+      publishedTime: typeof post.publishedAt === 'string' 
+        ? post.publishedAt 
+        : post.publishedAt.toDate().toISOString(),
       authors: [post.author.name],
       images: post.featuredImage ? [post.featuredImage] : [],
     },
@@ -60,7 +63,8 @@ export async function generateStaticParams() {
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = await getBlogPost(params.slug)
+  const { slug } = await params
+  const post = await getBlogPost(slug)
   
   if (!post) {
     notFound()
@@ -73,7 +77,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     3
   )
 
-  const publishedDate = new Date(post.publishedAt).toLocaleDateString('en-US', {
+  const publishedDate = (typeof post.publishedAt === 'string' 
+    ? new Date(post.publishedAt) 
+    : post.publishedAt.toDate()
+  ).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

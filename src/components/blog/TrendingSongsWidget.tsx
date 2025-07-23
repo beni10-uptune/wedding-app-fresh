@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { TrendingUp, Play } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Song } from '@/types'
+import { Song } from '@/types/wedding'
 
 export function TrendingSongsWidget() {
   const [songs, setSongs] = useState<Song[]>([])
@@ -64,7 +64,7 @@ export function TrendingSongsWidget() {
               variant="ghost"
               size="sm"
               className="flex-shrink-0"
-              onClick={() => window.open(song.spotifyUrl, '_blank')}
+              onClick={() => song.spotifyId && window.open(`https://open.spotify.com/track/${song.spotifyId}`, '_blank')}
             >
               <Play className="w-4 h-4" />
             </Button>

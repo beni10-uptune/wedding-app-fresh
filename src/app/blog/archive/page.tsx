@@ -14,7 +14,9 @@ export default async function ArchivePage() {
 
   // Group posts by month
   const postsByMonth = posts.reduce((acc, post) => {
-    const date = new Date(post.publishedAt)
+    const date = typeof post.publishedAt === 'string' 
+      ? new Date(post.publishedAt) 
+      : post.publishedAt.toDate()
     const monthYear = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
     
     if (!acc[monthYear]) {

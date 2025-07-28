@@ -20,6 +20,8 @@ export interface Song {
   album?: string;
   albumArt?: string; // Album artwork URL
   albumImage?: string; // Alternative field name for album artwork
+  releaseDate?: string; // YYYY-MM-DD format
+  popularity?: number; // Spotify popularity 0-100
   duration: number; // seconds
   bpm?: number;
   energyLevel: 1 | 2 | 3 | 4 | 5;
@@ -35,6 +37,7 @@ export interface Song {
     energy: number;
     valence: number; // happiness
     acousticness: number;
+    tempo?: number; // BPM from audio features
   };
 }
 

@@ -62,8 +62,10 @@ interface SpotifyTrack {
   artists: string[]
   album: string
   albumImage?: string
+  releaseDate?: string
   duration_ms: number
   explicit: boolean
+  popularity?: number
   preview_url: string | null
   external_urls: {
     spotify: string
@@ -92,7 +94,7 @@ async function getPlaylistTracks(playlistId: string): Promise<SpotifyTrack[]> {
     const response = await spotifyApi.getPlaylistTracks(playlistId, {
       offset,
       limit,
-      fields: 'items(track(id,name,artists,album(name,images),duration_ms,explicit,preview_url,external_urls,type)),next,total'
+      fields: 'items(track(id,name,artists,album(name,images,release_date),duration_ms,explicit,popularity,preview_url,external_urls,type)),next,total'
     })
     
     // console.log(`    Fetched ${response.body.items.length} items at offset ${offset}`)
@@ -123,8 +125,10 @@ async function getPlaylistTracks(playlistId: string): Promise<SpotifyTrack[]> {
           artists: track.artists.map((a: any) => a.name),
           album: track.album.name,
           albumImage: track.album.images?.[0]?.url || undefined,
+          releaseDate: track.album.release_date || undefined,
           duration_ms: track.duration_ms,
           explicit: track.explicit || false,
+          popularity: track.popularity || 0,
           preview_url: track.preview_url,
           external_urls: track.external_urls
         })
@@ -269,8 +273,10 @@ async function main() {
             artist: track.artists.join(', '),
             album: track.album,
             albumImage: track.albumImage,
+            releaseDate: track.releaseDate,
             duration: Math.floor(track.duration_ms / 1000),
             explicit: track.explicit,
+            popularity: track.popularity || 0,
             previewUrl: track.preview_url,
             spotifyUri: `spotify:track:${track.id}`,
             moments,

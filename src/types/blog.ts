@@ -10,6 +10,7 @@ export interface BlogPost {
   category: string
   tags: string[]
   featuredImage?: string
+  featuredImageAlt?: string
   publishedAt: string | Timestamp
   updatedAt: string | Timestamp
   status: 'draft' | 'published' | 'archived'

@@ -1697,6 +1697,12 @@ export const mockBlogPosts: BlogPost[] = [
     status: 'published',
     readTime: 12,
     views: 0,
+    featuredImage: '/images/blog/wedding_music_planning_guide.png',
+    seo: {
+      metaTitle: 'Complete Guide to Wedding Music Planning | UpTune',
+      metaDescription: 'Learn how to create the perfect soundtrack for every moment of your wedding day with our comprehensive music planning guide.',
+      focusKeyword: 'wedding music planning'
+    }
   },
   {
     id: '2',

@@ -94,8 +94,8 @@ function calculateMoments(song: Song, audioFeatures?: any): string[] {
 /**
  * Determine generation appeal based on release date and artist
  */
-function calculateGenerationAppeal(releaseDate?: string, artist?: string): string[] {
-  const generations: string[] = []
+function calculateGenerationAppeal(releaseDate?: string, artist?: string): ('boomer' | 'gen_x' | 'millennial' | 'gen_z')[] {
+  const generations: ('boomer' | 'gen_x' | 'millennial' | 'gen_z')[] = []
   
   if (releaseDate) {
     const year = parseInt(releaseDate.substring(0, 4))

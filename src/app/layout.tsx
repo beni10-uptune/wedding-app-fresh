@@ -5,6 +5,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { Analytics } from "@vercel/analytics/next";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { GoogleTagManagerWrapper } from "@/components/GoogleTagManagerWrapper";
+import { CookieConsent } from "@/components/CookieConsent";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
       { url: '/favicon.ico', sizes: 'any' },
     ],
     apple: [
-      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+      { url: '/icon.svg', sizes: '180x180', type: 'image/svg+xml' },
     ],
   },
   openGraph: {
@@ -63,6 +64,7 @@ export default function RootLayout({
         <ErrorBoundary>
           <AuthProvider>
             {children}
+            <CookieConsent />
             <Analytics />
           </AuthProvider>
         </ErrorBoundary>

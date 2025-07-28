@@ -21,6 +21,13 @@ export function GoogleTagManager({ gtmId }: GoogleTagManagerProps) {
   useEffect(() => {
     if (!gtmId) return
 
+    // Check for cookie consent
+    const consent = localStorage.getItem('cookieConsent')
+    if (consent !== 'true') {
+      console.log('GTM initialization blocked - no cookie consent')
+      return
+    }
+
     // Initialize dataLayer
     window.dataLayer = window.dataLayer || []
     
@@ -69,10 +76,14 @@ export function GoogleTagManager({ gtmId }: GoogleTagManagerProps) {
 // Helper function to push events to dataLayer
 export function pushToDataLayer(event: string, data?: Record<string, any>) {
   if (typeof window !== 'undefined' && window.dataLayer) {
-    window.dataLayer.push({
-      event,
-      ...data,
-    })
+    // Check consent before pushing events
+    const consent = localStorage.getItem('cookieConsent')
+    if (consent === 'true') {
+      window.dataLayer.push({
+        event,
+        ...data,
+      })
+    }
   }
 }
 

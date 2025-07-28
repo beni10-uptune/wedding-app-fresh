@@ -65,7 +65,7 @@ const CURATED_COLLECTIONS: Collection[] = [
     description: 'International favorites for diverse weddings',
     icon: Globe,
     gradient: 'from-violet-500 to-purple-500',
-    getSongs: () => ALL_WEDDING_SONGS.filter(s => s.popularIn?.length > 1).slice(0, 20)
+    getSongs: () => ALL_WEDDING_SONGS.filter(s => s.popularIn && s.popularIn.length > 1).slice(0, 20)
   }
 ]
 

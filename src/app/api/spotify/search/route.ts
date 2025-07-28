@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     album: song.album || '',
     duration_ms: (song.duration || 0) * 1000,
     preview_url: song.previewUrl || null,
-    image: null,
+    image: song.albumImage || song.albumArt || null,
     explicit: song.explicit || false,
     fromLocal: true
   }))

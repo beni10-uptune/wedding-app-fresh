@@ -61,6 +61,7 @@ interface SpotifyTrack {
   name: string
   artists: string[]
   album: string
+  albumImage?: string
   duration_ms: number
   explicit: boolean
   preview_url: string | null
@@ -91,7 +92,7 @@ async function getPlaylistTracks(playlistId: string): Promise<SpotifyTrack[]> {
     const response = await spotifyApi.getPlaylistTracks(playlistId, {
       offset,
       limit,
-      fields: 'items(track(id,name,artists,album,duration_ms,explicit,preview_url,external_urls,type)),next,total'
+      fields: 'items(track(id,name,artists,album(name,images),duration_ms,explicit,preview_url,external_urls,type)),next,total'
     })
     
     // console.log(`    Fetched ${response.body.items.length} items at offset ${offset}`)
@@ -121,6 +122,7 @@ async function getPlaylistTracks(playlistId: string): Promise<SpotifyTrack[]> {
           name: track.name,
           artists: track.artists.map((a: any) => a.name),
           album: track.album.name,
+          albumImage: track.album.images?.[0]?.url || undefined,
           duration_ms: track.duration_ms,
           explicit: track.explicit || false,
           preview_url: track.preview_url,
@@ -266,6 +268,7 @@ async function main() {
             title: track.name,
             artist: track.artists.join(', '),
             album: track.album,
+            albumImage: track.albumImage,
             duration: Math.floor(track.duration_ms / 1000),
             explicit: track.explicit,
             previewUrl: track.preview_url,

@@ -19,6 +19,7 @@ export interface Song {
   artist: string;
   album?: string;
   albumArt?: string; // Album artwork URL
+  albumImage?: string; // Alternative field name for album artwork
   duration: number; // seconds
   bpm?: number;
   energyLevel: 1 | 2 | 3 | 4 | 5;
@@ -27,6 +28,8 @@ export interface Song {
   genres: string[];
   previewUrl?: string;
   spotifyUri: string;
+  moments?: string[]; // Wedding moments this song fits
+  popularIn?: string[]; // Regions where this song is popular
   audioFeatures?: {
     danceability: number;
     energy: number;

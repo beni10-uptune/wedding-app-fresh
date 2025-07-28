@@ -26,6 +26,15 @@ export const metadata: Metadata = {
   description: "The joyful way to plan your wedding music. Collaborate with your partner and guests to create the perfect soundtrack. £25 per wedding.",
   keywords: "wedding music, wedding playlist, wedding DJ, wedding planning, music curation",
   authors: [{ name: "UpTune" }],
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
   openGraph: {
     title: "UpTune for Weddings - Transform Your Wedding Music Planning",
     description: "The joyful way to plan your wedding music. Collaborate with your partner and guests to create the perfect soundtrack.",

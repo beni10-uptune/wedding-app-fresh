@@ -1,9 +1,26 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Search, Plus, Music, Heart, Sparkles, Play, Pause, Clock, Loader2 } from 'lucide-react'
+import { Search, Plus, Music, Heart, Sparkles, Play, Pause, Clock, Loader2, GripVertical } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { useDroppable } from '@dnd-kit/core'
 
 // Type for Spotify track
 interface SpotifyTrack {
@@ -72,12 +89,121 @@ const WEDDING_MOMENTS = [
   { id: 'dancing', label: 'Dancing', icon: Music, color: 'from-green-500 to-blue-500' }
 ]
 
+// Droppable moment section
+interface DroppableMomentProps {
+  moment: typeof WEDDING_MOMENTS[0]
+  songs: Array<{
+    song: SpotifyTrack
+    moment: string
+    uniqueId: string
+  }>
+}
+
+function DroppableMoment({ moment, songs }: DroppableMomentProps) {
+  const { setNodeRef, isOver } = useDroppable({
+    id: moment.id,
+  })
+
+  return (
+    <div 
+      ref={setNodeRef}
+      className={`glass-darker rounded-lg p-4 transition-all ${
+        isOver ? 'ring-2 ring-purple-400 bg-purple-500/10' : ''
+      }`}
+      data-moment-id={moment.id}
+    >
+      <div className="flex items-center gap-2 mb-3">
+        <div className={`w-8 h-8 rounded-full bg-gradient-to-r ${moment.color} flex items-center justify-center`}>
+          <moment.icon className="w-4 h-4 text-white" />
+        </div>
+        <h4 className="font-medium text-white">{moment.label}</h4>
+        <span className="text-sm text-white/60">({songs.length} songs)</span>
+      </div>
+      
+      {songs.length > 0 ? (
+        <SortableContext
+          items={songs.map(item => item.uniqueId)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="space-y-1">
+            {songs.map((item) => (
+              <SortableSong
+                key={item.uniqueId}
+                id={item.uniqueId}
+                song={item.song}
+                moment={item.moment}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      ) : (
+        <div className="border-2 border-dashed border-white/20 rounded-lg p-8 text-center">
+          <p className="text-sm text-white/40 italic">
+            Drag songs here or search to add
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Sortable song item component
+interface SortableSongProps {
+  id: string
+  song: SpotifyTrack
+  moment: string
+}
+
+function SortableSong({ id, song, moment }: SortableSongProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 group"
+    >
+      <div
+        {...attributes}
+        {...listeners}
+        className="cursor-grab hover:cursor-grabbing text-white/40 hover:text-white/60"
+      >
+        <GripVertical className="w-4 h-4" />
+      </div>
+      <img
+        src={song.image}
+        alt={song.album}
+        className="w-8 h-8 rounded"
+      />
+      <div className="flex-1">
+        <p className="text-sm text-white">{song.title}</p>
+        <p className="text-xs text-white/60">{song.artist}</p>
+      </div>
+      <span className="text-xs text-white/40">{song.duration}</span>
+    </div>
+  )
+}
+
 export function InteractiveDemo() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedMoment, setSelectedMoment] = useState('ceremony')
   const [addedSongs, setAddedSongs] = useState<Array<{
     song: SpotifyTrack
     moment: string
+    uniqueId: string
   }>>([])
   const [showResults, setShowResults] = useState(false)
   const [playingId, setPlayingId] = useState<string | null>(null)
@@ -85,6 +211,15 @@ export function InteractiveDemo() {
   const [searchResults, setSearchResults] = useState<SpotifyTrack[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [searchError, setSearchError] = useState(false)
+  const [activeDragId, setActiveDragId] = useState<string | null>(null)
+  
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  )
 
   // Search Spotify
   useEffect(() => {
@@ -161,7 +296,8 @@ export function InteractiveDemo() {
       return
     }
     
-    setAddedSongs(prev => [...prev, { song, moment: selectedMoment }])
+    const uniqueId = `${song.id}-${Date.now()}`
+    setAddedSongs(prev => [...prev, { song, moment: selectedMoment, uniqueId }])
     setSearchQuery('')
     setShowResults(false)
   }
@@ -170,11 +306,65 @@ export function InteractiveDemo() {
     return addedSongs.filter(item => item.moment === momentId)
   }
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveDragId(event.active.id as string)
+  }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    setActiveDragId(null)
+
+    if (!over) return
+
+    const activeId = active.id as string
+    const overId = over.id as string
+
+    // Find the dragged song
+    const draggedItem = addedSongs.find(item => item.uniqueId === activeId)
+    if (!draggedItem) return
+
+    // Check if dropping on a different moment
+    const targetMoment = WEDDING_MOMENTS.find(m => m.id === overId)
+    if (targetMoment) {
+      // Move song to different moment
+      setAddedSongs(prev => 
+        prev.map(item => 
+          item.uniqueId === activeId 
+            ? { ...item, moment: targetMoment.id }
+            : item
+        )
+      )
+    } else {
+      // Reorder within the same moment
+      const overItem = addedSongs.find(item => item.uniqueId === overId)
+      if (!overItem || draggedItem.moment !== overItem.moment) return
+
+      setAddedSongs(prev => {
+        const oldIndex = prev.findIndex(item => item.uniqueId === activeId)
+        const newIndex = prev.findIndex(item => item.uniqueId === overId)
+        
+        const newSongs = [...prev]
+        const [removed] = newSongs.splice(oldIndex, 1)
+        newSongs.splice(newIndex, 0, removed)
+        
+        return newSongs
+      })
+    }
+  }
+
+  const activeDragItem = addedSongs.find(item => item.uniqueId === activeDragId)
+
 
   return (
-    <div className="relative">
-      {/* Demo Container */}
-      <div className="glass rounded-2xl p-8 max-w-4xl mx-auto">
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <div className="relative">
+        {/* Demo Container */}
+        <div className="glass rounded-2xl p-8 max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-serif font-bold text-white mb-4">
             Try It Now - No Signup Required
@@ -286,48 +476,23 @@ export function InteractiveDemo() {
 
           {/* Right: Timeline Preview */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Your Wedding Timeline ({addedSongs.length}/5 demo songs)
-            </h3>
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-1">
+                Your Wedding Timeline ({addedSongs.length}/5 demo songs)
+              </h3>
+              <p className="text-sm text-white/60 mb-4">
+                Drag songs between moments to organize your perfect flow
+              </p>
+            </div>
             
             {WEDDING_MOMENTS.map((moment) => {
               const songs = getSongsForMoment(moment.id)
               return (
-                <div key={moment.id} className="glass-darker rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className={`w-8 h-8 rounded-full bg-gradient-to-r ${moment.color} flex items-center justify-center`}>
-                      <moment.icon className="w-4 h-4 text-white" />
-                    </div>
-                    <h4 className="font-medium text-white">{moment.label}</h4>
-                    <span className="text-sm text-white/60">({songs.length} songs)</span>
-                  </div>
-                  
-                  {songs.length > 0 ? (
-                    <div className="space-y-2">
-                      {songs.map((item, index) => (
-                        <motion.div
-                          key={`${item.song.id}-${index}`}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5"
-                        >
-                          <img
-                            src={item.song.image}
-                            alt={item.song.album}
-                            className="w-8 h-8 rounded"
-                          />
-                          <div className="flex-1">
-                            <p className="text-sm text-white">{item.song.title}</p>
-                            <p className="text-xs text-white/60">{item.song.artist}</p>
-                          </div>
-                          <span className="text-xs text-white/40">{item.song.duration}</span>
-                        </motion.div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-white/40 italic">No songs added yet</p>
-                  )}
-                </div>
+                <DroppableMoment
+                  key={moment.id}
+                  moment={moment}
+                  songs={songs}
+                />
               )
             })}
           </div>
@@ -401,6 +566,26 @@ export function InteractiveDemo() {
           </motion.div>
         )}
       </AnimatePresence>
+      
+      {/* Drag Overlay */}
+      <DragOverlay>
+        {activeDragItem ? (
+          <div className="bg-slate-800 rounded-lg p-3 shadow-2xl opacity-90 cursor-grabbing">
+            <div className="flex items-center gap-3">
+              <img
+                src={activeDragItem.song.image}
+                alt={activeDragItem.song.album}
+                className="w-10 h-10 rounded"
+              />
+              <div>
+                <p className="text-sm font-medium text-white">{activeDragItem.song.title}</p>
+                <p className="text-xs text-white/60">{activeDragItem.song.artist}</p>
+              </div>
+            </div>
+          </div>
+        ) : null}
+      </DragOverlay>
     </div>
+    </DndContext>
   )
 }

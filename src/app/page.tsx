@@ -3,6 +3,7 @@
 import { ArrowRight, Heart, Music, Users, CheckCircle, Play, Sparkles, Download, Shield, Star, Calendar, Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import Link from 'next/link'
+import { InteractiveDemo } from '@/components/InteractiveDemo'
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -194,6 +195,13 @@ export default function Home() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Interactive Demo Section */}
+      <section className="section relative z-10 py-20 glass-darker">
+        <div className="container-max">
+          <InteractiveDemo />
         </div>
       </section>
 

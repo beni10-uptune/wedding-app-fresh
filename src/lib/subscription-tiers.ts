@@ -3,8 +3,8 @@
 export const SUBSCRIPTION_TIERS = {
   FREE: {
     name: 'Free',
-    maxSongs: 25,
-    maxGuests: 5,
+    maxSongs: 10, // Reduced from 25 to create urgency
+    maxGuests: 3, // Reduced from 5 to create urgency
     maxExports: 0, // No exports on free tier
     features: {
       timeline: true,
@@ -40,12 +40,12 @@ export const SUBSCRIPTION_TIERS = {
 export const UPGRADE_TRIGGERS = {
   SONG_LIMIT: {
     title: 'Song Limit Reached',
-    message: 'You\'ve added 25 songs! Upgrade to add unlimited songs to your wedding soundtrack.',
+    message: 'You\'ve added 10 songs! Upgrade to add unlimited songs to your wedding soundtrack.',
     cta: 'Upgrade to Continue'
   },
   GUEST_LIMIT: {
     title: 'Guest Limit Reached',
-    message: 'You\'ve shared with 5 guests! Upgrade to invite unlimited guests to collaborate.',
+    message: 'You\'ve shared with 3 guests! Upgrade to invite unlimited guests to collaborate.',
     cta: 'Upgrade for Unlimited Guests'
   },
   EXPORT_BLOCKED: {

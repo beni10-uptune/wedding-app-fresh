@@ -8,6 +8,8 @@ import { db } from '@/lib/firebase'
 import { collection, addDoc, Timestamp, query, where, getDocs, updateDoc, doc, serverTimestamp, getDoc } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
 import { playlistTemplates } from '@/data/playlistTemplates'
+import { ProgressBar } from '@/components/onboarding/ProgressBar'
+import { WeddingCreatedSuccess } from '@/components/WeddingCreatedSuccess'
 
 interface WeddingData {
   coupleName1: string
@@ -27,6 +29,8 @@ export default function CreateWeddingPage() {
   const [loading, setLoading] = useState(false)
   const [checkingExisting, setCheckingExisting] = useState(true)
   const [error, setError] = useState('')
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [createdWeddingId, setCreatedWeddingId] = useState('')
   const [weddingData, setWeddingData] = useState<WeddingData>({
     coupleName1: '',
     coupleName2: '',
@@ -222,8 +226,9 @@ export default function CreateWeddingPage() {
         })
       }
 
-      // Redirect to dashboard (freemium model - payment comes later)
-      router.push('/dashboard')
+      // Show success modal instead of immediate redirect
+      setCreatedWeddingId(weddingRef.id)
+      setShowSuccess(true)
     } catch (error: any) {
       console.error('Error creating wedding:', error)
       // Check for specific Firebase errors
@@ -293,28 +298,13 @@ export default function CreateWeddingPage() {
                 <p className="text-sm text-pink-400 font-medium">for Weddings</p>
               </div>
             </Link>
-            <div className="flex items-center space-x-4">
-              <div className="text-sm text-white/60">
-                Step {currentStep} of 5
-              </div>
-              <div className="flex space-x-2">
-                {[1, 2, 3, 4, 5].map(step => (
-                  <div
-                    key={step}
-                    className={`w-3 h-3 rounded-full ${
-                      step <= currentStep ? 'bg-pink-500' : 'bg-white/20'
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
           </div>
           
           {/* Free Plan Banner */}
           <div className="glass-darker rounded-lg p-3 flex items-center gap-3">
             <Sparkles className="w-5 h-5 text-yellow-400 flex-shrink-0" />
             <p className="text-sm text-white/80">
-              <span className="font-semibold">Start Free:</span> 25 songs and 5 guest invites included. Upgrade anytime for unlimited access!
+              <span className="font-semibold">Start Free:</span> Add up to 10 songs and invite 3 guests. Upgrade anytime for unlimited access!
             </p>
           </div>
         </div>
@@ -324,6 +314,18 @@ export default function CreateWeddingPage() {
       <main className="px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="glass rounded-2xl p-8">
+            {/* Progress Bar */}
+            <ProgressBar 
+              currentStep={currentStep} 
+              totalSteps={5}
+              stepLabels={[
+                'Basic Details',
+                'Venue & Date',
+                'Wedding Style',
+                'Musical Moments',
+                'Choose Template'
+              ]}
+            />
             
             {/* Error Display */}
             {error && (
@@ -475,6 +477,46 @@ export default function CreateWeddingPage() {
                     </button>
                   ))}
                 </div>
+
+                {/* Value Preview - Show what they'll get */}
+                {weddingData.weddingStyle && (
+                  <div className="mt-8 p-6 glass-darker rounded-xl">
+                    <div className="flex items-start gap-4">
+                      <Sparkles className="w-6 h-6 text-yellow-400 flex-shrink-0 mt-1" />
+                      <div>
+                        <h4 className="font-semibold text-white mb-2">
+                          Great choice! We'll create playlists perfect for {weddingData.weddingStyle.toLowerCase()} weddings
+                        </h4>
+                        <p className="text-white/70 text-sm mb-3">
+                          Based on your style, we'll suggest songs that match your vibe:
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {weddingData.weddingStyle === 'Classic & Traditional' && (
+                            <>
+                              <span className="text-xs px-3 py-1 bg-purple-500/20 rounded-full text-purple-300">Frank Sinatra</span>
+                              <span className="text-xs px-3 py-1 bg-purple-500/20 rounded-full text-purple-300">Etta James</span>
+                              <span className="text-xs px-3 py-1 bg-purple-500/20 rounded-full text-purple-300">Nat King Cole</span>
+                            </>
+                          )}
+                          {weddingData.weddingStyle === 'Modern & Contemporary' && (
+                            <>
+                              <span className="text-xs px-3 py-1 bg-purple-500/20 rounded-full text-purple-300">Ed Sheeran</span>
+                              <span className="text-xs px-3 py-1 bg-purple-500/20 rounded-full text-purple-300">John Legend</span>
+                              <span className="text-xs px-3 py-1 bg-purple-500/20 rounded-full text-purple-300">Bruno Mars</span>
+                            </>
+                          )}
+                          {weddingData.weddingStyle === 'Fun & Casual' && (
+                            <>
+                              <span className="text-xs px-3 py-1 bg-purple-500/20 rounded-full text-purple-300">Uptown Funk</span>
+                              <span className="text-xs px-3 py-1 bg-purple-500/20 rounded-full text-purple-300">Shut Up and Dance</span>
+                              <span className="text-xs px-3 py-1 bg-purple-500/20 rounded-full text-purple-300">Can't Stop the Feeling</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -623,6 +665,17 @@ export default function CreateWeddingPage() {
           </div>
         </div>
       </main>
+
+      {/* Success Modal */}
+      {showSuccess && (
+        <WeddingCreatedSuccess
+          weddingId={createdWeddingId}
+          coupleName1={weddingData.coupleName1}
+          coupleName2={weddingData.coupleName2}
+          selectedMoments={weddingData.moments.length}
+          onClose={() => router.push(`/wedding/${createdWeddingId}/builder`)}
+        />
+      )}
     </div>
   )
 }

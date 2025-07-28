@@ -141,11 +141,6 @@ export default function CreateWeddingPage() {
     }
     
     // Validate required fields
-    if (!weddingData.coupleName1 || !weddingData.coupleName2) {
-      setError('Please enter both partner names')
-      return
-    }
-    
     if (!weddingData.weddingDate) {
       setError('Please select a wedding date')
       return
@@ -342,50 +337,41 @@ export default function CreateWeddingPage() {
                     <Heart className="w-8 h-8 text-white" />
                   </div>
                   <h2 className="text-3xl font-serif font-bold text-white mb-2">
-                    Tell Us About Your Love Story
+                    Welcome {weddingData.coupleName1} & {weddingData.coupleName2}!
                   </h2>
                   <p className="text-white/60">
-                    Let&apos;s start with the basics about your special day
+                    Let&apos;s set up your wedding music experience
                   </p>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-white mb-2">
-                      Partner 1 Name
-                    </label>
-                    <input
-                      type="text"
-                      value={weddingData.coupleName1}
-                      onChange={(e) => handleInputChange('coupleName1', e.target.value)}
-                      className="input"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-white mb-2">
-                      Partner 2 Name
-                    </label>
-                    <input
-                      type="text"
-                      value={weddingData.coupleName2}
-                      onChange={(e) => handleInputChange('coupleName2', e.target.value)}
-                      className="input"
-                      placeholder="Partner's name"
-                    />
-                  </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-white mb-2">
-                    Wedding Date
+                    When is your big day?
                   </label>
                   <input
                     type="date"
                     value={weddingData.weddingDate}
                     onChange={(e) => handleInputChange('weddingDate', e.target.value)}
                     className="input"
+                    min={new Date().toISOString().split('T')[0]}
                   />
+                </div>
+
+                <div className="glass-darker rounded-lg p-4 mt-6">
+                  <div className="flex items-start gap-3">
+                    <Sparkles className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm text-white/80 font-medium mb-1">
+                        What we&apos;ll help you with:
+                      </p>
+                      <ul className="text-sm text-white/60 space-y-1">
+                        <li>• Collaborative playlist creation with your partner</li>
+                        <li>• Guest song requests and voting</li>
+                        <li>• Music for every wedding moment</li>
+                        <li>• Easy export to Spotify</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

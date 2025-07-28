@@ -114,13 +114,20 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
     const hasSeenKey = `wedding_${wedding.id}_welcome_seen`
     const hasSeen = localStorage.getItem(hasSeenKey)
     
-    if (!hasSeen && totalSongs === 0) {
-      // New user with empty timeline
-      setShowWelcomeFlow(true)
-    } else {
+    // Skip WelcomeFlow if user completed create-wedding wizard (has weddingStyle)
+    // or if they've already seen the welcome flow
+    if (wedding.weddingStyle || hasSeen || totalSongs > 0) {
       setHasSeenWelcome(true)
+      // If they have a wedding style but haven't seen tutorial, show it directly
+      if (wedding.weddingStyle && !hasSeen && totalSongs === 0) {
+        setShowTutorial(true)
+        localStorage.setItem(hasSeenKey, 'true')
+      }
+    } else if (!hasSeen && totalSongs === 0) {
+      // Only show WelcomeFlow for users who didn't complete create-wedding
+      setShowWelcomeFlow(true)
     }
-  }, [wedding.id, totalSongs])
+  }, [wedding.id, totalSongs, wedding.weddingStyle])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {

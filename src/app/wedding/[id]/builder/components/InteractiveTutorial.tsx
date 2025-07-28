@@ -102,12 +102,47 @@ export default function InteractiveTutorial({ onComplete, onSkip }: InteractiveT
     const element = document.querySelector(target)
     if (element) {
       const rect = element.getBoundingClientRect()
-      setHighlightPosition({
-        top: rect.top - 8,
-        left: rect.left - 8,
-        width: rect.width + 16,
-        height: rect.height + 16
-      })
+      
+      // Check if element is outside viewport and scroll it into view
+      const viewportHeight = window.innerHeight
+      const elementCenterY = rect.top + rect.height / 2
+      
+      // If element is below the viewport or too close to bottom
+      if (rect.bottom > viewportHeight - 100 || rect.top > viewportHeight - 300) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        // Wait for scroll to complete before updating position
+        setTimeout(() => {
+          const newRect = element.getBoundingClientRect()
+          setHighlightPosition({
+            top: newRect.top - 8,
+            left: newRect.left - 8,
+            width: newRect.width + 16,
+            height: newRect.height + 16
+          })
+        }, 500)
+      } 
+      // If element is above the viewport
+      else if (rect.top < 100) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        setTimeout(() => {
+          const newRect = element.getBoundingClientRect()
+          setHighlightPosition({
+            top: newRect.top - 8,
+            left: newRect.left - 8,
+            width: newRect.width + 16,
+            height: newRect.height + 16
+          })
+        }, 500)
+      }
+      // Element is visible, update position immediately
+      else {
+        setHighlightPosition({
+          top: rect.top - 8,
+          left: rect.left - 8,
+          width: rect.width + 16,
+          height: rect.height + 16
+        })
+      }
     }
   }
 
@@ -130,32 +165,60 @@ export default function InteractiveTutorial({ onComplete, onSkip }: InteractiveT
     const { top, left, width, height } = highlightPosition
     
     const tooltipWidth = 320
-    const tooltipHeight = 200 // Approximate
+    const tooltipHeight = 250 // Approximate height including buttons
     const padding = 16
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+    
+    let calculatedTop = 0
+    let calculatedLeft = 0
     
     switch (position) {
       case 'top':
-        return {
-          top: top - tooltipHeight - padding,
-          left: left + (width / 2) - (tooltipWidth / 2)
-        }
+        calculatedTop = top - tooltipHeight - padding
+        calculatedLeft = left + (width / 2) - (tooltipWidth / 2)
+        break
       case 'bottom':
-        return {
-          top: top + height + padding,
-          left: left + (width / 2) - (tooltipWidth / 2)
-        }
+        calculatedTop = top + height + padding
+        calculatedLeft = left + (width / 2) - (tooltipWidth / 2)
+        break
       case 'left':
-        return {
-          top: top + (height / 2) - (tooltipHeight / 2),
-          left: left - tooltipWidth - padding
-        }
+        calculatedTop = top + (height / 2) - (tooltipHeight / 2)
+        calculatedLeft = left - tooltipWidth - padding
+        break
       case 'right':
-        return {
-          top: top + (height / 2) - (tooltipHeight / 2),
-          left: left + width + padding
-        }
+        calculatedTop = top + (height / 2) - (tooltipHeight / 2)
+        calculatedLeft = left + width + padding
+        break
       default:
-        return { top: 100, left: 100 }
+        calculatedTop = 100
+        calculatedLeft = 100
+    }
+    
+    // Ensure tooltip stays within viewport bounds
+    // Check if tooltip goes below viewport
+    if (calculatedTop + tooltipHeight > viewportHeight - padding) {
+      calculatedTop = viewportHeight - tooltipHeight - padding
+    }
+    
+    // Check if tooltip goes above viewport
+    if (calculatedTop < padding) {
+      calculatedTop = padding
+    }
+    
+    // Check if tooltip goes beyond right edge
+    if (calculatedLeft + tooltipWidth > viewportWidth - padding) {
+      calculatedLeft = viewportWidth - tooltipWidth - padding
+    }
+    
+    // Check if tooltip goes beyond left edge
+    if (calculatedLeft < padding) {
+      calculatedLeft = padding
+    }
+    
+    return {
+      top: calculatedTop,
+      left: calculatedLeft
     }
   }
 

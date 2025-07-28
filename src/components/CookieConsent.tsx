@@ -51,7 +51,7 @@ export function CookieConsent() {
     
     // Disable tracking
     if (typeof window !== 'undefined') {
-      window['ga-disable-GA_MEASUREMENT_ID'] = true
+      (window as any)['ga-disable-GA_MEASUREMENT_ID'] = true
       window.dataLayer = window.dataLayer || []
       window.dataLayer.push({
         event: 'consent_denied',

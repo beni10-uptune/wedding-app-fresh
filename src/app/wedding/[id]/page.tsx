@@ -298,7 +298,7 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
                   {/* Show song limit for free users */}
                   {wedding?.paymentStatus !== 'paid' && (
                     <div className="text-xs text-yellow-400 mb-2">
-                      Free plan: 25 songs total
+                      Free plan: 10 songs total
                     </div>
                   )}
                   
@@ -383,7 +383,7 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
                         Premium
                       </span>
                     ) : (
-                      'Free (25 songs)'
+                      'Free (10 songs)'
                     )}
                   </span>
                 </div>

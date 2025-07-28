@@ -535,7 +535,7 @@ export default function Home() {
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-green-400 mt-0.5" />
-                    <span>Add up to 25 songs</span>
+                    <span>Add up to 10 songs</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-green-400 mt-0.5" />
@@ -727,7 +727,7 @@ export default function Home() {
               </span>
               <span className="flex items-center gap-2">
                 <Music className="w-4 h-4 text-purple-400" />
-                Start with 25 free songs
+                Start with 10 free songs
               </span>
               <span className="flex items-center gap-2">
                 <Heart className="w-4 h-4 text-pink-400" />

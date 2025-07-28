@@ -512,7 +512,7 @@ export default function Dashboard() {
                       <p className="text-xs text-white/60 mt-2">
                         {activeWedding?.paymentStatus === 'paid' 
                           ? 'Target: 150 songs' 
-                          : `${activeWedding?.songCount || 0} / 25 free`
+                          : `${activeWedding?.songCount || 0} / 10 free`
                         }
                       </p>
                     </Link>

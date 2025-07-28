@@ -199,7 +199,7 @@ export default function SignUpPage() {
           </p>
           <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg p-3 mb-6 border border-purple-500/30">
             <p className="text-sm text-center font-medium text-white">
-              🎉 <span className="text-purple-300">Start Free:</span> 25 songs + 5 guest invites included!
+              🎉 <span className="text-purple-300">Start Free:</span> 10 songs + 3 guest invites included!
             </p>
           </div>
 

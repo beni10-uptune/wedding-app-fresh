@@ -179,7 +179,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-400 mt-0.5" />
-                  <span className="text-white/80">Up to 25 songs</span>
+                  <span className="text-white/80">Up to 10 songs</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-400 mt-0.5" />

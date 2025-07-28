@@ -34,6 +34,7 @@ import CuratedPlaylistBrowser from './CuratedPlaylistBrowser'
 import { debounce } from 'lodash'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { logError, logger } from '@/lib/logger'
+import { getEffectiveSongLimit, getSongLimitMessage } from '@/lib/grandfathering'
 
 interface EnhancedBuilderProps {
   wedding: WeddingV2
@@ -236,14 +237,17 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
   const handleAddSong = (song: Song, momentId: string) => {
     // Check free tier limits before adding
     if (wedding.paymentStatus !== 'paid') {
-      if (totalSongs >= 25) {
-        alert('You\'ve reached the 25 song limit on the free plan. Upgrade to add unlimited songs!')
+      const songLimit = getEffectiveSongLimit(wedding)
+      
+      if (totalSongs >= songLimit) {
+        alert(`You've reached the ${songLimit} song limit on the free plan. Upgrade to add unlimited songs!`)
         return
       }
       
-      // Warning at 80% (20 songs)
-      if (totalSongs >= 20 && totalSongs < 25) {
-        const remaining = 25 - totalSongs
+      // Warning at 80%
+      const warningThreshold = Math.floor(songLimit * 0.8)
+      if (totalSongs >= warningThreshold && totalSongs < songLimit) {
+        const remaining = songLimit - totalSongs
         if (!confirm(`⚠️ You have ${remaining} songs left on your free plan. Continue adding this song?`)) {
           return
         }
@@ -542,13 +546,9 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
             <div>
               <h2 className="text-xl font-bold text-white">Your Timeline</h2>
               <div className="flex items-center gap-2 mt-1">
-                <span className={`text-sm ${wedding.paymentStatus === 'paid' ? 'text-white/60' : totalSongs >= 25 ? 'text-red-400' : totalSongs >= 20 ? 'text-yellow-400' : 'text-white/60'}`}>
-                  {totalSongs} songs
-                  {wedding.paymentStatus !== 'paid' && ' / 25 free'}
+                <span className={`text-sm ${wedding.paymentStatus === 'paid' ? 'text-white/60' : totalSongs >= getEffectiveSongLimit(wedding) ? 'text-red-400' : totalSongs >= Math.floor(getEffectiveSongLimit(wedding) * 0.8) ? 'text-yellow-400' : 'text-white/60'}`}>
+                  {getSongLimitMessage(wedding, totalSongs)}
                 </span>
-                {wedding.paymentStatus !== 'paid' && totalSongs >= 20 && totalSongs < 25 && (
-                  <span className="text-xs text-yellow-400">• {25 - totalSongs} left</span>
-                )}
               </div>
             </div>
             <div className="flex items-center gap-2">

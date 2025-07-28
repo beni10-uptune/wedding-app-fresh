@@ -28,7 +28,7 @@ export interface Song {
   explicit: boolean;
   generationAppeal: ('boomer' | 'gen_x' | 'millennial' | 'gen_z')[];
   genres: string[];
-  previewUrl?: string;
+  previewUrl?: string | null;
   spotifyUri: string;
   moments?: string[]; // Wedding moments this song fits
   popularIn?: string[]; // Regions where this song is popular
@@ -49,7 +49,7 @@ export interface TimelineSong {
   artist: string;
   album?: string;
   albumArt?: string;
-  previewUrl?: string;
+  previewUrl?: string | null;
   duration: number;
   addedBy: 'couple' | 'guest' | 'ai';
   addedAt: Timestamp;

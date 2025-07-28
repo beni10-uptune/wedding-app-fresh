@@ -1,11 +1,22 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Search, Plus, Music, Heart, Sparkles, Play, Pause, Clock } from 'lucide-react'
+import { Search, Plus, Music, Heart, Sparkles, Play, Pause, Clock, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
-// Sample songs for demo
+// Type for Spotify track
+interface SpotifyTrack {
+  id: string
+  title: string
+  artist: string
+  album: string
+  duration: string
+  image: string
+  preview: string | null
+}
+
+// Sample songs for fallback
 const DEMO_SONGS = [
   {
     id: '1',
@@ -65,19 +76,86 @@ export function InteractiveDemo() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedMoment, setSelectedMoment] = useState('ceremony')
   const [addedSongs, setAddedSongs] = useState<Array<{
-    song: typeof DEMO_SONGS[0]
+    song: SpotifyTrack
     moment: string
   }>>([])
   const [showResults, setShowResults] = useState(false)
   const [playingId, setPlayingId] = useState<string | null>(null)
   const [showLimitReached, setShowLimitReached] = useState(false)
+  const [searchResults, setSearchResults] = useState<SpotifyTrack[]>([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [searchError, setSearchError] = useState(false)
 
-  const filteredSongs = DEMO_SONGS.filter(song => 
-    song.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    song.artist.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  // Search Spotify
+  useEffect(() => {
+    const searchSpotify = async () => {
+      if (searchQuery.length < 2) {
+        setSearchResults([])
+        setShowResults(false)
+        return
+      }
 
-  const handleAddSong = (song: typeof DEMO_SONGS[0]) => {
+      setIsSearching(true)
+      setSearchError(false)
+      
+      try {
+        const response = await fetch(`/api/spotify/search?q=${encodeURIComponent(searchQuery)}&limit=5`)
+        
+        if (!response.ok) {
+          const errorData = await response.json()
+          console.error('API error:', errorData)
+          throw new Error('Search failed')
+        }
+        
+        const data = await response.json()
+        console.log('API response:', data) // Debug log
+        
+        // Check if we have tracks in the response
+        if (!data.tracks || !Array.isArray(data.tracks)) {
+          console.error('Invalid response format:', data)
+          throw new Error('Invalid response format')
+        }
+        
+        const tracks: SpotifyTrack[] = data.tracks.map((track: any) => ({
+          id: track.id,
+          title: track.name,
+          artist: track.artist || 'Unknown Artist',
+          album: track.album,
+          duration: formatDuration(track.duration_ms),
+          image: track.image || '/placeholder-album.png',
+          preview: track.preview_url
+        }))
+        
+        setSearchResults(tracks)
+        setShowResults(true)
+      } catch (error) {
+        console.error('Search error:', error)
+        setSearchError(true)
+        // Always show demo songs on error
+        const filtered = searchQuery.length > 0 
+          ? DEMO_SONGS.filter(song => 
+              song.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              song.artist.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+          : DEMO_SONGS
+        setSearchResults(filtered)
+        setShowResults(true)
+      } finally {
+        setIsSearching(false)
+      }
+    }
+
+    const debounceTimer = setTimeout(searchSpotify, 300)
+    return () => clearTimeout(debounceTimer)
+  }, [searchQuery])
+
+  const formatDuration = (ms: number) => {
+    const minutes = Math.floor(ms / 60000)
+    const seconds = Math.floor((ms % 60000) / 1000)
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`
+  }
+
+  const handleAddSong = (song: SpotifyTrack) => {
     if (addedSongs.length >= 5) {
       setShowLimitReached(true)
       return
@@ -92,9 +170,6 @@ export function InteractiveDemo() {
     return addedSongs.filter(item => item.moment === momentId)
   }
 
-  useEffect(() => {
-    setShowResults(searchQuery.length > 0)
-  }, [searchQuery])
 
   return (
     <div className="relative">
@@ -137,7 +212,21 @@ export function InteractiveDemo() {
                   exit={{ opacity: 0, y: -10 }}
                   className="space-y-2"
                 >
-                  {filteredSongs.map((song) => (
+                  {isSearching ? (
+                    <div className="text-center py-4">
+                      <Loader2 className="w-6 h-6 animate-spin text-purple-400 mx-auto" />
+                      <p className="text-sm text-white/60 mt-2">Searching songs...</p>
+                    </div>
+                  ) : searchError ? (
+                    <div className="text-center py-4">
+                      <p className="text-sm text-white/60">Using demo songs (Spotify unavailable)</p>
+                    </div>
+                  ) : searchResults.length === 0 ? (
+                    <div className="text-center py-4">
+                      <p className="text-sm text-white/60">No songs found. Try another search.</p>
+                    </div>
+                  ) : (
+                    searchResults.map((song) => (
                     <motion.div
                       key={song.id}
                       whileHover={{ scale: 1.02 }}
@@ -165,7 +254,8 @@ export function InteractiveDemo() {
                         <Plus className="w-5 h-5 text-purple-400" />
                       </button>
                     </motion.div>
-                  ))}
+                  ))
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

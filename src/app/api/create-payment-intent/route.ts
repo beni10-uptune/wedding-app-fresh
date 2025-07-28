@@ -4,6 +4,7 @@ import { STRIPE_CONFIG } from '@/lib/stripe'
 import { authenticateRequest, createAuthResponse } from '@/lib/auth-middleware'
 import { paymentIntentSchema, validateData } from '@/lib/validations'
 import { rateLimit, createRateLimitResponse } from '@/lib/rate-limit'
+import { logError } from '@/lib/logger'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-06-30.basil'
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
       clientSecret: paymentIntent.client_secret 
     })
   } catch (error) {
-    console.error('Error creating payment intent:', error)
+    logError(error, { context: 'Payment intent creation failed' })
     return NextResponse.json(
       { error: 'Failed to create payment intent' },
       { status: 500 }

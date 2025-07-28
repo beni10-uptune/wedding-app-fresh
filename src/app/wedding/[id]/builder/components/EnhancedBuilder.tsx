@@ -33,6 +33,7 @@ import GuideViewer from './GuideViewer'
 import CuratedPlaylistBrowser from './CuratedPlaylistBrowser'
 import { debounce } from 'lodash'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { logError, logger } from '@/lib/logger'
 
 interface EnhancedBuilderProps {
   wedding: WeddingV2
@@ -156,7 +157,7 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
           updatedAt: new Date()
         })
       } catch (error) {
-        console.error('Failed to save timeline:', error)
+        logError(error, { context: 'Failed to save timeline', weddingId: wedding.id })
       }
     }, 1000),
     [wedding.id]
@@ -204,7 +205,8 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
       const audio = new Audio(song.previewUrl)
       audio.volume = 0.5
       audio.play().catch(err => {
-        console.error('Failed to play preview:', err)
+        // Preview play failures are common and expected (user interaction required)
+        logger.debug('Failed to play preview', { error: err })
       })
 
       audio.addEventListener('ended', () => {
@@ -287,7 +289,7 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
     setShowTutorial(true)
     
     // TODO: Save preferences to Firebase
-    console.log('User preferences:', preferences)
+    logger.info('User preferences saved', { preferences, weddingId: wedding.id })
   }
 
   const handleWelcomeSkip = () => {

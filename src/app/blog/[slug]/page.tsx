@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 }
 
 export async function generateStaticParams() {
-  const posts = await getBlogPosts({ limit: 100 })
+  const { posts } = await getBlogPosts({ limit: 100 })
   
   return posts.map((post) => ({
     slug: post.slug,

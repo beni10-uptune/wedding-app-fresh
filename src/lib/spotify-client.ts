@@ -1,27 +1,25 @@
 // Client-side Spotify functions
+import { logger, logError } from './logger'
 
 export async function searchSpotifyTracks(query: string, limit = 10) {
   try {
     const response = await fetch(`/api/spotify/search?q=${encodeURIComponent(query)}&limit=${limit}`)
     
     if (!response.ok) {
-      console.error('Search API error:', response.status, response.statusText)
+      logger.error('Search API error', { status: response.status, statusText: response.statusText })
       throw new Error('Failed to search tracks')
     }
     
     const data = await response.json()
     
     if (data.error) {
-      console.error('Search error:', data.error, data.details)
-      if (data.credentials) {
-        console.log('Credential check:', data.credentials)
-      }
+      logger.error('Search error', { error: data.error, details: data.details, credentials: data.credentials })
       throw new Error(data.error)
     }
     
     return data.tracks || []
   } catch (error) {
-    console.error('Failed to search Spotify:', error)
+    logError(error, { context: 'Failed to search Spotify', query })
     // Return empty array instead of throwing
     return []
   }

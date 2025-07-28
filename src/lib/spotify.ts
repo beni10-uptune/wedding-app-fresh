@@ -1,4 +1,5 @@
 import { SpotifyApi } from '@spotify/web-api-ts-sdk'
+import { logger, logError } from './logger'
 
 // Client credentials flow for public data (searching, previews)
 let spotifyClient: SpotifyApi | null = null
@@ -13,7 +14,7 @@ export async function getSpotifyClient() {
     const data = await response.json()
     
     if (data.demo_mode) {
-      console.log('Running in Spotify demo mode')
+      logger.info('Running in Spotify demo mode')
       return null
     }
     
@@ -28,7 +29,7 @@ export async function getSpotifyClient() {
       return spotifyClient
     }
   } catch (error) {
-    console.error('Failed to initialize Spotify client:', error)
+    logError(error, { context: 'Failed to initialize Spotify client' })
   }
   
   return null
@@ -41,13 +42,13 @@ export async function searchSpotifyTracks(query: string, limit = 10) {
     
     // Demo mode - return mock results
     if (!client) {
-      console.log('No Spotify client available, using mock results')
+      logger.debug('No Spotify client available, using mock results')
       return getMockSearchResults(query, limit)
     }
 
-    console.log('Searching Spotify for:', query)
+    logger.debug('Searching Spotify', { query, limit })
     const results = await client.search(query, ['track'], 'US', limit as 10)
-    console.log('Spotify search returned', results.tracks.items.length, 'results')
+    logger.debug('Spotify search completed', { resultCount: results.tracks.items.length })
     
     return results.tracks.items.map(track => ({
       id: track.id,
@@ -62,7 +63,7 @@ export async function searchSpotifyTracks(query: string, limit = 10) {
       explicit: track.explicit
     }))
   } catch (error) {
-    console.error('Spotify search error:', error)
+    logError(error, { context: 'Spotify search error', query })
     return getMockSearchResults(query, limit)
   }
 }
@@ -199,7 +200,7 @@ export async function getSpotifyTrack(trackId: string) {
       image: track.album.images[0]?.url
     }
   } catch (error) {
-    console.error('Spotify track fetch error:', error)
+    logError(error, { context: 'Spotify track fetch error', trackId })
     return null
   }
 }

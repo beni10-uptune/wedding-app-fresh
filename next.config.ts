@@ -1,12 +1,23 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export',
+  // Remove 'export' mode to support API routes
+  // output: 'export',
+  
+  // Keep trailing slash for consistency
   trailingSlash: true,
+  
   images: {
-    unoptimized: true,
+    // Allow external images from various sources
+    domains: [
+      'images.unsplash.com',
+      'i.scdn.co',  // Spotify images
+      'mosaic.scdn.co',  // Spotify mosaic images
+      'firebasestorage.googleapis.com',  // Firebase Storage
+    ],
   },
-  // Disable server-side features for static export
+  
+  // Enable server-side features
   experimental: {
     esmExternals: true,
   },

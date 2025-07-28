@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import { doc, updateDoc } from 'firebase/firestore'
+import { doc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { adminDb } from '@/lib/firebase-admin'
+import { logger, logError } from '@/lib/logger'
+import { GTMEvents } from '@/components/GoogleTagManager'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-06-30.basil'
@@ -20,7 +22,7 @@ export async function POST(request: NextRequest) {
     try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
     } catch (err) {
-      console.error('Webhook signature verification failed:', err)
+      logError(err, { context: 'Webhook signature verification failed' })
       return NextResponse.json(
         { error: 'Webhook signature verification failed' },
         { status: 400 }
@@ -31,13 +33,13 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
-        console.log('Payment succeeded:', paymentIntent.id)
+        logger.info('Payment succeeded', { paymentIntentId: paymentIntent.id })
         
         // Extract metadata
         const { weddingId, userId, email } = paymentIntent.metadata
 
         if (!weddingId || !userId) {
-          console.error('Missing metadata in payment intent')
+          logger.error('Missing metadata in payment intent', { paymentIntentId: paymentIntent.id })
           return NextResponse.json({ error: 'Missing metadata' }, { status: 400 })
         }
 
@@ -64,9 +66,16 @@ export async function POST(request: NextRequest) {
             })
           }
 
-          console.log(`Wedding ${weddingId} marked as paid`)
+          logger.info('Wedding marked as paid', { weddingId, paymentIntentId: paymentIntent.id })
+          
+          // Track purchase event
+          GTMEvents.purchase(
+            paymentIntent.amount / 100, // Convert from cents to pounds
+            paymentIntent.currency.toUpperCase(),
+            paymentIntent.id
+          )
         } catch (error) {
-          console.error('Error updating wedding payment status:', error)
+          logError(error, { context: 'Error updating wedding payment status', weddingId })
           // Don't return error to Stripe - we'll handle this separately
         }
         break
@@ -74,16 +83,16 @@ export async function POST(request: NextRequest) {
 
       case 'payment_intent.payment_failed': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
-        console.log('Payment failed:', paymentIntent.id)
+        logger.info('Payment failed', { paymentIntentId: paymentIntent.id })
         
         const { weddingId } = paymentIntent.metadata
 
         if (weddingId) {
           try {
             // Log the failure but don't update payment status
-            console.error(`Payment failed for wedding ${weddingId}`)
+            logger.warn('Payment failed for wedding', { weddingId, paymentIntentId: paymentIntent.id })
           } catch (error) {
-            console.error('Error handling payment failure:', error)
+            logError(error, { context: 'Error handling payment failure', weddingId })
           }
         }
         break
@@ -91,7 +100,7 @@ export async function POST(request: NextRequest) {
 
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
-        console.log('Checkout session completed:', session.id)
+        logger.info('Checkout session completed', { sessionId: session.id })
         
         // Handle checkout session if using Stripe Checkout
         if (session.metadata?.weddingId) {
@@ -115,20 +124,80 @@ export async function POST(request: NextRequest) {
                 updatedAt: new Date()
               })
             }
+            
+            // Track purchase event for checkout session
+            GTMEvents.purchase(
+              (session.amount_total || 0) / 100, // Convert from cents to pounds
+              (session.currency || 'GBP').toUpperCase(),
+              session.id
+            )
           } catch (error) {
-            console.error('Error updating wedding from checkout session:', error)
+            logError(error, { context: 'Error updating wedding from checkout session', weddingId: session.metadata.weddingId })
+          }
+        }
+        break
+      }
+
+      case 'charge.refunded': {
+        const charge = event.data.object as Stripe.Charge
+        logger.info('Charge refunded', { chargeId: charge.id, refunded: charge.refunded })
+        
+        const paymentIntentId = charge.payment_intent as string
+        
+        // Find wedding by payment intent
+        if (paymentIntentId) {
+          try {
+            // Query for wedding with this payment intent
+            const weddingsRef = collection(db, 'weddings')
+            const q = query(weddingsRef, where('paymentIntentId', '==', paymentIntentId))
+            const snapshot = await getDocs(q)
+            
+            if (!snapshot.empty) {
+              const weddingDoc = snapshot.docs[0]
+              const weddingId = weddingDoc.id
+              
+              if (adminDb) {
+                await adminDb.collection('weddings').doc(weddingId).update({
+                  paymentStatus: 'refunded',
+                  refundedAt: new Date(),
+                  refundAmount: charge.amount_refunded,
+                  updatedAt: new Date()
+                })
+              } else {
+                await updateDoc(doc(db, 'weddings', weddingId), {
+                  paymentStatus: 'refunded',
+                  refundedAt: new Date(),
+                  refundAmount: charge.amount_refunded,
+                  updatedAt: new Date()
+                })
+              }
+
+              logger.info('Wedding marked as refunded', { 
+                weddingId, 
+                refundAmount: charge.amount_refunded 
+              })
+              
+              // Track refund event
+              GTMEvents.refund(
+                charge.amount_refunded / 100, // Convert from cents to pounds
+                charge.currency.toUpperCase(),
+                paymentIntentId
+              )
+            }
+          } catch (error) {
+            logError(error, { context: 'Error updating wedding refund status', paymentIntentId })
           }
         }
         break
       }
 
       default:
-        console.log(`Unhandled event type: ${event.type}`)
+        logger.debug('Unhandled webhook event type', { eventType: event.type })
     }
 
     return NextResponse.json({ received: true })
   } catch (error) {
-    console.error('Webhook error:', error)
+    logError(error, { context: 'Webhook handler failed' })
     return NextResponse.json(
       { error: 'Webhook handler failed' },
       { status: 500 }

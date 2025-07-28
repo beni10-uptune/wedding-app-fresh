@@ -8,7 +8,7 @@ import { TrendingSongsWidget } from '@/components/blog/TrendingSongsWidget'
 import { getBlogPosts } from '@/lib/blog/api'
 
 export default async function BlogHomePage() {
-  const posts = await getBlogPosts({ limit: 6, status: 'published' })
+  const { posts } = await getBlogPosts({ limit: 6, status: 'published' })
   const featuredPost = posts[0]
   const recentPosts = posts.slice(1)
 

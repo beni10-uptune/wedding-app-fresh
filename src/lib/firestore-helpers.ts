@@ -9,6 +9,7 @@ import {
   DocumentReference,
   FirestoreError 
 } from 'firebase/firestore'
+import { logger, logError } from './logger'
 
 // Retry configuration
 const MAX_RETRIES = 3
@@ -51,7 +52,7 @@ export async function setDocWithRetry<T>(
       return // Success
     } catch (error) {
       lastError = error
-      console.error(`Firestore setDoc attempt ${attempt + 1} failed:`, error)
+      logError(error, { context: 'Firestore setDoc failed', attempt: attempt + 1 })
       
       if (!isRetryableError(error) || attempt === MAX_RETRIES - 1) {
         throw error
@@ -59,7 +60,7 @@ export async function setDocWithRetry<T>(
       
       // Exponential backoff
       const delay = RETRY_DELAY * Math.pow(2, attempt)
-      console.log(`Retrying in ${delay}ms...`)
+      logger.debug('Retrying operation', { delay, attempt: attempt + 1 })
       await sleep(delay)
     }
   }
@@ -84,7 +85,7 @@ export async function getDocWithRetry<T>(
       return null
     } catch (error) {
       lastError = error
-      console.error(`Firestore getDoc attempt ${attempt + 1} failed:`, error)
+      logError(error, { context: 'Firestore getDoc failed', attempt: attempt + 1 })
       
       if (!isRetryableError(error) || attempt === MAX_RETRIES - 1) {
         throw error
@@ -92,7 +93,7 @@ export async function getDocWithRetry<T>(
       
       // Exponential backoff
       const delay = RETRY_DELAY * Math.pow(2, attempt)
-      console.log(`Retrying in ${delay}ms...`)
+      logger.debug('Retrying operation', { delay, attempt: attempt + 1 })
       await sleep(delay)
     }
   }

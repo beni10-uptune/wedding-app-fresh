@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { logger, logError } from '@/lib/logger'
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
@@ -11,7 +12,7 @@ export async function GET(request: NextRequest) {
 
   // Check if credentials are available
   if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET) {
-    console.log('Spotify credentials not configured')
+    logger.warn('Spotify credentials not configured')
     return NextResponse.json({ 
       tracks: [],
       demo: true,
@@ -34,14 +35,14 @@ export async function GET(request: NextRequest) {
 
     if (!tokenResponse.ok) {
       const errorText = await tokenResponse.text()
-      console.error('Spotify token error:', tokenResponse.status, errorText)
+      logger.error('Spotify token error', { status: tokenResponse.status, error: errorText })
       throw new Error(`Failed to get Spotify token: ${tokenResponse.status}`)
     }
 
     const tokenData = await tokenResponse.json()
 
     if (!tokenData.access_token) {
-      console.error('No access token in response:', tokenData)
+      logger.error('No access token in response', { response: tokenData })
       throw new Error('Failed to get Spotify access token')
     }
 
@@ -58,7 +59,7 @@ export async function GET(request: NextRequest) {
 
     if (!searchResponse.ok) {
       const errorText = await searchResponse.text()
-      console.error('Spotify search API error:', searchResponse.status, errorText)
+      logger.error('Spotify search API error', { status: searchResponse.status, error: errorText })
       throw new Error(`Spotify search failed: ${searchResponse.status}`)
     }
 
@@ -77,7 +78,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ tracks })
   } catch (error) {
-    console.error('Spotify search error:', error)
+    logError(error, { context: 'Spotify search failed', query })
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(
       { 

@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { User, onAuthStateChanged } from 'firebase/auth'
 import { auth, db } from '@/lib/firebase'
 import { doc, getDoc } from 'firebase/firestore'
+import { logError } from '@/lib/logger'
 
 interface AuthContextType {
   user: User | null
@@ -39,7 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUserRole(data.role || 'guest')
           }
         } catch (error) {
-          console.error('Error fetching user data:', error)
+          logError(error, { context: 'Error fetching user data', userId: user.uid })
         }
       } else {
         setUserRole(null)

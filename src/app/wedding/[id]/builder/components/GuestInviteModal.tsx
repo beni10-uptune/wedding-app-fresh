@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { X, Mail, Send, Copy, Check } from 'lucide-react'
-import { collection, addDoc, Timestamp } from 'firebase/firestore'
+import { collection, addDoc, Timestamp, doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { generateInviteToken } from '@/lib/utils'
 
@@ -53,11 +53,18 @@ export default function GuestInviteModal({
         return
       }
 
-      // Create invitations in Firestore
+      // Create invitations in Firestore and send emails
       const invitationsRef = collection(db, 'weddings', weddingId, 'invitations')
+      
+      // Get wedding details for email
+      const weddingDoc = await getDoc(doc(db, 'weddings', weddingId))
+      const weddingData = weddingDoc.data()
+      
       const promises = emailList.map(async (email) => {
         const token = generateInviteToken()
-        return addDoc(invitationsRef, {
+        
+        // Save invitation to Firestore
+        await addDoc(invitationsRef, {
           email,
           token,
           sentAt: Timestamp.now(),
@@ -65,12 +72,32 @@ export default function GuestInviteModal({
           firstViewedAt: null,
           submittedAt: null
         })
+
+        // Send email invitation
+        const inviteLink = `${window.location.origin}/guest/${weddingId}?token=${token}`
+        
+        try {
+          await fetch('/api/send-invitation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'guest',
+              email,
+              coupleNames,
+              weddingDate: weddingData?.weddingDate || null,
+              venue: weddingData?.venue || '',
+              inviteLink,
+              personalizedPrompt: customMessage || "We'd love your song suggestions for our special day!",
+              role: 'guest'
+            })
+          })
+        } catch (emailError) {
+          console.error('Failed to send email to', email, emailError)
+          // Continue with other emails even if one fails
+        }
       })
 
       await Promise.all(promises)
-
-      // TODO: In production, this would trigger Cloud Functions to send actual emails
-      // For now, we'll just show success
       
       onSuccess()
       onClose()

@@ -1,7 +1,5 @@
 import { Metadata } from 'next'
-import Link from 'next/link'
-import { Music, ArrowLeft, Heart, Menu, X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { BlogNavigation } from '@/components/BlogNavigation'
 
 export const metadata: Metadata = {
   title: {
@@ -38,56 +36,7 @@ export default function BlogLayout({
       </div>
 
       {/* Blog Header */}
-      <header className="sticky top-0 z-50 glass-darker border-b border-white/10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-8">
-              {/* Logo */}
-              <Link href="/" className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
-                  <Music className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold">UpTune Blog</h1>
-                  <p className="text-xs text-purple-400">Wedding Music Guides</p>
-                </div>
-              </Link>
-              
-              {/* Desktop Nav */}
-              <nav className="hidden md:flex items-center gap-6">
-                <Link href="/blog" className="text-white/70 hover:text-white transition-colors">
-                  All Articles
-                </Link>
-                <Link href="/blog/category/music-planning" className="text-white/70 hover:text-white transition-colors">
-                  Music Planning
-                </Link>
-                <Link href="/blog/category/real-weddings" className="text-white/70 hover:text-white transition-colors">
-                  Real Weddings
-                </Link>
-                <Link href="/blog/category/reception-planning" className="text-white/70 hover:text-white transition-colors">
-                  Reception Tips
-                </Link>
-              </nav>
-            </div>
-            
-            {/* CTA Buttons */}
-            <div className="hidden md:flex items-center gap-4">
-              <Link href="/" className="text-white/70 hover:text-white transition-colors">
-                Back to App
-              </Link>
-              <Link href="/auth/signup" className="btn-primary">
-                Start Free Trial
-                <Heart className="w-4 h-4" />
-              </Link>
-            </div>
-            
-            {/* Mobile Menu Button */}
-            <button className="md:hidden p-2">
-              <Menu className="w-6 h-6 text-white" />
-            </button>
-          </div>
-        </div>
-      </header>
+      <BlogNavigation />
 
       {/* Main Content */}
       <main className="relative z-10 flex-1">

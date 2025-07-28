@@ -1,6 +1,7 @@
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 import { NextRequest, NextResponse } from 'next/server'
+import { logger, logError } from './logger'
 
 // Create Redis instance - you'll need to set these env vars in Vercel
 const redis = new Redis({
@@ -50,7 +51,7 @@ export async function rateLimit(
 
   // Skip if Redis is not configured
   if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
-    console.warn('Rate limiting skipped: Redis not configured')
+    logger.warn('Rate limiting skipped: Redis not configured')
     return { success: true }
   }
 
@@ -73,7 +74,7 @@ export async function rateLimit(
       }
     }
   } catch (error) {
-    console.error('Rate limiting error:', error)
+    logError(error, { context: 'Rate limiting error', limiter })
     // Fail open - allow request if rate limiting fails
     return { success: true }
   }

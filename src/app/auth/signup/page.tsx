@@ -8,6 +8,7 @@ import { auth } from '@/lib/firebase'
 import { useRouter } from 'next/navigation'
 import { ensureUserDocument, getUserDocument } from '@/lib/auth-utils'
 import { formatFirestoreError } from '@/lib/firestore-helpers'
+import { GTMEvents } from '@/components/GoogleTagManager'
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('')
@@ -86,6 +87,10 @@ export default function SignUpPage() {
       }
 
       console.log('User created successfully, auth state should update')
+      
+      // Track signup event
+      GTMEvents.signUp('email')
+      
       // Don't manually redirect - let the auth state listener handle it
       // The useEffect hook will catch the auth state change and redirect
     } catch (err) {
@@ -130,6 +135,10 @@ export default function SignUpPage() {
       }
 
       console.log('Google signup successful, auth state should update')
+      
+      // Track signup event
+      GTMEvents.signUp('google')
+      
       // Don't manually redirect - let the auth state listener handle it
     } catch (err) {
       console.error('Google signup error:', err)

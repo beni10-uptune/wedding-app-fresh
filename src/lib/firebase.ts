@@ -4,6 +4,8 @@ import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 import { getAnalytics } from 'firebase/analytics'
+import { logger, logError } from './logger'
+import { getEnvVar } from './env-validation'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -18,7 +20,7 @@ const firebaseConfig = {
 
 // Validate Firebase configuration
 if (!firebaseConfig.apiKey || !firebaseConfig.authDomain || !firebaseConfig.projectId) {
-  console.error('Firebase configuration is incomplete:', {
+  logger.error('Firebase configuration is incomplete', {
     hasApiKey: !!firebaseConfig.apiKey,
     hasAuthDomain: !!firebaseConfig.authDomain,
     hasProjectId: !!firebaseConfig.projectId,
@@ -39,7 +41,7 @@ export const storage = getStorage(app)
 // Set auth persistence to keep users logged in
 if (typeof window !== 'undefined') {
   setPersistence(auth, browserLocalPersistence).catch((error) => {
-    console.error('Error setting auth persistence:', error)
+    logError(error, { context: 'Error setting auth persistence' })
   })
 }
 

@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { DashboardSkeleton } from '@/components/LoadingSkeleton'
+import { DashboardNavigation } from '@/components/DashboardNavigation'
 import { ensureUserDocument } from '@/lib/auth-utils'
 import { formatFirestoreError } from '@/lib/firestore-helpers'
 
@@ -410,39 +411,10 @@ export default function Dashboard() {
       </div>
 
       {/* Header */}
-      <header className="glass sticky top-0 z-50 border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/dashboard" className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center animate-pulse-slow">
-                <Music className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-white">UpTune</h1>
-                <p className="text-sm gradient-text font-medium">for Weddings</p>
-              </div>
-            </Link>
-            
-            <div className="flex items-center space-x-4">
-              {activeWedding && (
-                <Link 
-                  href={`/wedding/${activeWedding.id}/settings`}
-                  className="text-white/60 hover:text-white transition-colors"
-                >
-                  <Settings className="w-5 h-5" />
-                </Link>
-              )}
-              <button
-                onClick={handleSignOut}
-                className="flex items-center gap-2 text-white/60 hover:text-white transition-colors"
-              >
-                <LogOut className="w-5 h-5" />
-                <span className="hidden sm:inline">Sign Out</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <DashboardNavigation 
+        activeWeddingId={activeWedding?.id}
+        userName={userName}
+      />
 
       {error ? (
         /* Error State */

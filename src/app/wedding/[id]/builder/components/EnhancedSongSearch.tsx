@@ -6,6 +6,7 @@ import { Song } from '@/types/wedding-v2'
 import { Search, AlertCircle, Music } from 'lucide-react'
 import { debounce } from 'lodash'
 import UnifiedSongCard from './UnifiedSongCard'
+import { logError, logger } from '@/lib/logger'
 
 interface EnhancedSongSearchProps {
   onAddSong: (song: Song, momentId: string) => void
@@ -57,7 +58,7 @@ export default function EnhancedSongSearch({ onAddSong, selectedMoment }: Enhanc
         const tracks = await searchSpotifyTracks(searchQuery)
         setResults(tracks)
       } catch (err) {
-        console.error('Search error:', err)
+        logError(err, { context: 'Song search failed', query: searchQuery })
         setError('Failed to search songs. Please try again.')
       } finally {
         setLoading(false)
@@ -88,7 +89,8 @@ export default function EnhancedSongSearch({ onAddSong, selectedMoment }: Enhanc
         const audio = new Audio(track.preview_url)
         audio.volume = 0.5
         audio.play().catch(err => {
-          console.error('Failed to play preview:', err)
+          // Preview play failures are common and expected
+          logger.debug('Failed to play preview', { error: err })
           setError('Preview not available for this track')
         })
 

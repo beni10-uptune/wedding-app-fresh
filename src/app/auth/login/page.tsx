@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 import { getSmartRedirectPath } from '@/lib/auth-helpers'
 import { ensureUserDocument } from '@/lib/auth-utils'
 import { formatFirestoreError } from '@/lib/firestore-helpers'
+import { GTMEvents } from '@/components/GoogleTagManager'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -32,6 +33,9 @@ export default function LoginPage() {
         console.error('Error ensuring user document:', firestoreError)
         // Continue anyway - user is authenticated
       }
+      
+      // Track login event
+      GTMEvents.login('email')
       
       const redirectPath = await getSmartRedirectPath(userCredential.user)
       router.push(redirectPath)
@@ -72,6 +76,9 @@ export default function LoginPage() {
         console.error('Error ensuring user document:', firestoreError)
         // Continue anyway - user is authenticated
       }
+      
+      // Track login event
+      GTMEvents.login('google')
       
       const redirectPath = await getSmartRedirectPath(userCredential.user)
       router.push(redirectPath)

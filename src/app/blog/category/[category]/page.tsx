@@ -74,7 +74,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     notFound()
   }
 
-  const posts = await getBlogPosts({ 
+  const { posts } = await getBlogPosts({ 
     category: categoryData.name,
     limit: 20 
   })

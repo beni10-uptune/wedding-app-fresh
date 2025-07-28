@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 }
 
 export default async function ArchivePage() {
-  const posts = await getBlogPosts({ limit: 100 })
+  const { posts } = await getBlogPosts({ limit: 100 })
 
   // Group posts by month
   const postsByMonth = posts.reduce((acc, post) => {

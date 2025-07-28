@@ -10,14 +10,41 @@ import {
   Timestamp,
   addDoc,
   updateDoc,
-  increment
+  increment,
+  startAfter,
+  DocumentSnapshot
 } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { BlogPost, BlogAuthor, UserBlogInteraction } from '@/types/blog'
+import { logger } from '@/lib/logger'
 
 const BLOG_POSTS_COLLECTION = 'blogPosts'
 const BLOG_AUTHORS_COLLECTION = 'blogAuthors'
 const BLOG_INTERACTIONS_COLLECTION = 'blogInteractions'
+
+// Cache for authors to reduce reads
+const authorCache = new Map<string, BlogAuthor>()
+
+async function getAuthor(authorId: string): Promise<BlogAuthor | null> {
+  try {
+    // Check cache first
+    if (authorCache.has(authorId)) {
+      return authorCache.get(authorId)!
+    }
+
+    const authorDoc = await getDoc(doc(db, BLOG_AUTHORS_COLLECTION, authorId))
+    if (!authorDoc.exists()) {
+      return null
+    }
+
+    const author = { id: authorDoc.id, ...authorDoc.data() } as BlogAuthor
+    authorCache.set(authorId, author)
+    return author
+  } catch (error) {
+    logger.error('Error fetching author:', { error, authorId })
+    return null
+  }
+}
 
 export async function getBlogPosts({
   category,
@@ -25,146 +52,132 @@ export async function getBlogPosts({
   status = 'published',
   limit = 10,
   offset = 0,
+  lastDoc,
 }: {
   category?: string
   tag?: string
   status?: 'draft' | 'published' | 'archived'
   limit?: number
   offset?: number
-} = {}) {
+  lastDoc?: DocumentSnapshot
+} = {}): Promise<{ posts: BlogPost[], lastDoc?: DocumentSnapshot }> {
   try {
-    // For now, return mock data until Firestore is populated
-    const mockPosts: BlogPost[] = [
-      {
-        id: '1',
-        slug: 'complete-guide-wedding-music-planning',
-        title: "The Complete Guide to Wedding Music Planning: Create Your Perfect Soundtrack",
-        excerpt: "Learn how to create the perfect soundtrack for every moment of your wedding day with our comprehensive music planning guide.",
-        content: '',
-        author: {
-          id: '1',
-          name: 'Sarah Mitchell',
-          bio: 'Wedding music expert and content strategist at UpTune.',
-        },
-        category: 'Music Planning',
-        tags: ["planning", "complete-guide", "timeline"],
-        publishedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        status: 'published',
-        readTime: 12,
-        views: 0,
-      },
-      {
-        id: '2',
-        slug: 'perfect-wedding-timeline',
-        title: "How to Create the Perfect Wedding Timeline with Music",
-        excerpt: "Design a flawless wedding day timeline with perfectly timed music for each special moment.",
-        content: '',
-        author: {
-          id: '2',
-          name: 'UpTune Team',
-          bio: 'The UpTune team is dedicated to helping couples create their perfect wedding soundtrack.',
-        },
-        category: 'Planning Resources',
-        tags: ["timeline", "planning", "coordination"],
-        publishedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        status: 'published',
-        readTime: 10,
-        views: 0,
-      },
-      {
-        id: '3',
-        slug: '10-ways-guest-music-selection',
-        title: "10 Ways to Get Your Wedding Guests Involved in Music Selection",
-        excerpt: "Discover creative ways to include your guests in choosing your wedding music while maintaining your vision.",
-        content: '',
-        author: {
-          id: '1',
-          name: 'Sarah Mitchell',
-          bio: 'Wedding music expert and content strategist at UpTune.',
-        },
-        category: 'Guest Experience',
-        tags: ["guest-involvement", "music-selection", "collaboration"],
-        publishedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        status: 'published',
-        readTime: 8,
-        views: 0,
-      },
-      {
-        id: '4',
-        slug: 'real-wedding-sarah-tom',
-        title: "Real Wedding: How Sarah & Tom Created Their Perfect Soundtrack",
-        excerpt: "Follow Sarah and Tom's journey as they navigated different musical tastes to create a wedding playlist that had everyone dancing.",
-        content: '',
-        author: {
-          id: '2',
-          name: 'UpTune Team',
-          bio: 'The UpTune team is dedicated to helping couples create their perfect wedding soundtrack.',
-        },
-        category: 'Real Weddings',
-        tags: ["real-wedding", "success-story", "case-study"],
-        publishedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        status: 'published',
-        readTime: 7,
-        views: 0,
-      },
-      {
-        id: '5',
-        slug: 'wedding-reception-music-guide',
-        title: "Wedding Reception Music: From Cocktail Hour to Last Dance",
-        excerpt: "Master the art of reception music planning with this detailed guide.",
-        content: '',
-        author: {
-          id: '1',
-          name: 'Sarah Mitchell',
-          bio: 'Wedding music expert and content strategist at UpTune.',
-        },
-        category: 'Reception Planning',
-        tags: ["reception", "cocktail-hour", "dancing"],
-        publishedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        status: 'published',
-        readTime: 9,
-        views: 0,
-      },
-    ]
+    const postsRef = collection(db, BLOG_POSTS_COLLECTION)
+    let q = query(postsRef, where('status', '==', status))
 
-    // Filter by category if provided
-    let filtered = mockPosts
+    // Add category filter
     if (category) {
-      filtered = filtered.filter(post => post.category === category)
-    }
-    if (tag) {
-      filtered = filtered.filter(post => post.tags.includes(tag))
+      q = query(q, where('category', '==', category))
     }
 
-    // Apply limit
-    return filtered.slice(0, limit)
+    // Add tag filter
+    if (tag) {
+      q = query(q, where('tags', 'array-contains', tag))
+    }
+
+    // Add ordering and pagination
+    q = query(q, orderBy('publishedAt', 'desc'))
+    
+    if (lastDoc) {
+      q = query(q, startAfter(lastDoc))
+    }
+    
+    q = query(q, firestoreLimit(limit))
+
+    const snapshot = await getDocs(q)
+    const posts: BlogPost[] = []
+
+    for (const doc of snapshot.docs) {
+      const data = doc.data()
+      const author = await getAuthor(data.authorId)
+      
+      if (author) {
+        posts.push({
+          id: doc.id,
+          ...data,
+          author,
+          publishedAt: data.publishedAt?.toDate?.() || data.publishedAt,
+          updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
+        } as BlogPost)
+      }
+    }
+
+    const lastDocument = snapshot.docs[snapshot.docs.length - 1]
+
+    return { posts, lastDoc: lastDocument }
   } catch (error) {
-    console.error('Error fetching blog posts:', error)
-    return []
+    logger.error('Error fetching blog posts:', { error, category, tag, status })
+    
+    // Fallback to mock data if Firestore fails
+    try {
+      const { mockBlogPosts } = await import('./mock-content')
+      let filtered = mockBlogPosts.filter(p => p.status === status)
+      
+      if (category) {
+        filtered = filtered.filter(p => p.category === category)
+      }
+      if (tag) {
+        filtered = filtered.filter(p => p.tags.includes(tag))
+      }
+      
+      return { posts: filtered.slice(0, limit) }
+    } catch {
+      return { posts: [] }
+    }
   }
 }
 
 export async function getBlogPost(slug: string): Promise<BlogPost | null> {
   try {
-    // Import mock content
-    const { mockBlogPosts } = await import('./mock-content')
+    // First try to get from Firestore
+    const postDoc = await getDoc(doc(db, BLOG_POSTS_COLLECTION, slug))
     
-    // Find post by slug
+    if (postDoc.exists()) {
+      const data = postDoc.data()
+      const author = await getAuthor(data.authorId)
+      
+      if (author) {
+        // Increment view count
+        await updateDoc(postDoc.ref, {
+          views: increment(1)
+        }).catch(error => {
+          logger.warn('Failed to increment view count:', { error, slug })
+        })
+
+        return {
+          id: postDoc.id,
+          ...data,
+          author,
+          publishedAt: data.publishedAt?.toDate?.() || data.publishedAt,
+          updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
+          views: (data.views || 0) + 1, // Include the incremented view
+        } as BlogPost
+      }
+    }
+
+    // Fall back to mock data if not in Firestore
+    const { mockBlogPosts } = await import('./mock-content')
     const post = mockBlogPosts.find(p => p.slug === slug)
     
-    if (!post) return null
-    
-    // Simulate view count increment
-    post.views = (post.views || 0) + 1
-    
-    return post
+    if (post) {
+      post.views = (post.views || 0) + 1
+      return post
+    }
+
+    return null
   } catch (error) {
-    console.error('Error fetching blog post:', error)
+    logger.error('Error fetching blog post:', { error, slug })
+    
+    // Fallback to mock data
+    try {
+      const { mockBlogPosts } = await import('./mock-content')
+      const post = mockBlogPosts.find(p => p.slug === slug)
+      if (post) {
+        post.views = (post.views || 0) + 1
+        return post
+      }
+    } catch {}
+    
     return null
   }
 }
@@ -177,35 +190,47 @@ export async function getRelatedPosts(
 ): Promise<BlogPost[]> {
   try {
     // First try to get posts from the same category
-    const categoryPosts = await getBlogPosts({
+    const { posts: categoryPosts } = await getBlogPosts({
       category,
       limit: limit + 1, // Get one extra to exclude current post
     })
 
-    const relatedPosts = categoryPosts.filter(post => post.id !== postId)
+    const relatedPosts = categoryPosts.filter(post => post.id !== postId && post.slug !== postId)
 
     if (relatedPosts.length >= limit) {
       return relatedPosts.slice(0, limit)
     }
 
     // If not enough posts, get posts with matching tags
-    const tagPosts = await Promise.all(
-      tags.map(tag => getBlogPosts({ tag, limit: 2 }))
-    )
+    const tagPromises = tags.map(tag => getBlogPosts({ tag, limit: 2 }))
+    const tagResults = await Promise.all(tagPromises)
+    const tagPosts = tagResults.flatMap(result => result.posts)
 
     const uniquePosts = new Map<string, BlogPost>()
     
     relatedPosts.forEach(post => uniquePosts.set(post.id, post))
-    tagPosts.flat().forEach(post => {
-      if (post.id !== postId) {
+    tagPosts.forEach(post => {
+      if (post.id !== postId && post.slug !== postId) {
         uniquePosts.set(post.id, post)
       }
     })
 
     return Array.from(uniquePosts.values()).slice(0, limit)
   } catch (error) {
-    console.error('Error fetching related posts:', error)
+    logger.error('Error fetching related posts:', { error, postId, category })
     return []
+  }
+}
+
+export async function getBlogCategories(): Promise<string[]> {
+  try {
+    const { posts } = await getBlogPosts({ limit: 100 })
+    const categories = new Set<string>()
+    posts.forEach(post => categories.add(post.category))
+    return Array.from(categories).sort()
+  } catch (error) {
+    logger.error('Error fetching blog categories:', { error })
+    return ['Music Planning', 'Planning Resources', 'Guest Experience', 'Real Weddings', 'Reception Planning']
   }
 }
 
@@ -230,7 +255,7 @@ export async function saveBlogPost(userId: string, postId: string) {
 
     return true
   } catch (error) {
-    console.error('Error saving blog post:', error)
+    logger.error('Error saving blog post:', { error, userId, postId })
     return false
   }
 }
@@ -260,27 +285,35 @@ export async function updateReadProgress(
 
     return true
   } catch (error) {
-    console.error('Error updating read progress:', error)
+    logger.error('Error updating read progress:', { error, userId, postId, progress })
     return false
   }
 }
 
-export async function getTrendingSongs(limit: number = 10) {
+export async function getTrendingSongs(category?: string, limit: number = 10) {
   try {
-    const songsRef = collection(db, 'songs')
-    const q = query(
-      songsRef,
-      orderBy('popularity', 'desc'),
-      firestoreLimit(limit)
-    )
-    
-    const snapshot = await getDocs(q)
-    return snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }))
+    // For now, return mock trending songs until we have real data
+    const mockTrendingSongs = [
+      { id: '1', title: 'Perfect', artist: 'Ed Sheeran', spotifyId: '0tgVpDi06FyKpA1z0VMD4v', popularity: 95 },
+      { id: '2', title: 'Thinking Out Loud', artist: 'Ed Sheeran', spotifyId: '3QGsuHI8jO1Rx4JWLUh9jd', popularity: 92 },
+      { id: '3', title: 'Marry You', artist: 'Bruno Mars', spotifyId: '5UofU3xG4Y7a1rHoYcVpYu', popularity: 90 },
+      { id: '4', title: 'A Thousand Years', artist: 'Christina Perri', spotifyId: '6lanRgr6wXibZr8KgzXxBl', popularity: 89 },
+      { id: '5', title: "Can't Help Myself", artist: 'Flowers', spotifyId: '5UlZLkF8pcCLa7NVBV5Tv5', popularity: 88 },
+      { id: '6', title: 'All of Me', artist: 'John Legend', spotifyId: '3U4isOIWM3VvDubwSI3y7a', popularity: 87 },
+      { id: '7', title: 'Make You Feel My Love', artist: 'Adele', spotifyId: '08GOmTlwRlB0xwU7jgHDgE', popularity: 85 },
+      { id: '8', title: "I'm Yours", artist: 'Jason Mraz', spotifyId: '7cuk8JsPTYJCfxfRqOp3xP', popularity: 84 },
+      { id: '9', title: 'Better Days', artist: 'OneRepublic', spotifyId: '2eAvDnpXP5W0cVtiI0PUxV', popularity: 82 },
+      { id: '10', title: 'Photograph', artist: 'Ed Sheeran', spotifyId: '6fxVffaTuwjgEk5h9QyRjy', popularity: 80 }
+    ]
+
+    return category 
+      ? mockTrendingSongs.filter(song => {
+          // Filter by category logic here if needed
+          return true
+        }).slice(0, limit)
+      : mockTrendingSongs.slice(0, limit)
   } catch (error) {
-    console.error('Error fetching trending songs:', error)
+    logger.error('Error fetching trending songs:', { error, category, limit })
     return []
   }
 }

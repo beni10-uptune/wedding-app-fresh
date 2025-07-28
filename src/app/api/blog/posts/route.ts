@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getBlogPosts } from '@/lib/blog/api'
+import { logError } from '@/lib/logger'
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,7 +19,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ posts })
   } catch (error) {
-    console.error('Error fetching blog posts:', error)
+    logError(error, { context: 'Error fetching blog posts' })
     return NextResponse.json(
       { error: 'Failed to fetch blog posts' },
       { status: 500 }

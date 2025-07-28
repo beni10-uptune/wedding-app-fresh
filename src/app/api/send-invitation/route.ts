@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { WeddingInvitationEmail } from '@/emails/wedding-invitation'
 import { CoOwnerInvitationEmail } from '@/emails/co-owner-invitation'
+import { logger, logError } from '@/lib/logger'
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,7 +10,7 @@ export async function POST(request: NextRequest) {
     const { type, ...emailData } = body
 
     if (!process.env.RESEND_API_KEY) {
-      console.warn('RESEND_API_KEY not configured - email will not be sent')
+      logger.warn('RESEND_API_KEY not configured - email will not be sent')
       // Return success but indicate email was not sent
       return NextResponse.json({ 
         success: true,
@@ -75,7 +76,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (emailResponse.error) {
-      console.error('Resend error:', emailResponse.error)
+      logError(emailResponse.error, { context: 'Resend API error' })
       return NextResponse.json(
         { error: 'Failed to send email' },
         { status: 400 }
@@ -87,7 +88,7 @@ export async function POST(request: NextRequest) {
       data: emailResponse.data 
     })
   } catch (error) {
-    console.error('Error sending email:', error)
+    logError(error, { context: 'Email sending failed' })
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

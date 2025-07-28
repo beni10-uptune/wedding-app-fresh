@@ -9,6 +9,7 @@ import {
 } from '@stripe/react-stripe-js'
 import stripePromise, { STRIPE_CONFIG } from '@/lib/stripe'
 import { CreditCard, Lock } from 'lucide-react'
+import { GTMEvents } from '@/components/GoogleTagManager'
 
 interface PaymentFormProps {
   clientSecret: string
@@ -29,6 +30,9 @@ function CheckoutForm({ onSuccess, onError }: Omit<PaymentFormProps, 'clientSecr
     }
 
     setIsProcessing(true)
+    
+    // Track checkout begin
+    GTMEvents.beginCheckout(STRIPE_CONFIG.amount)
 
     const { error } = await stripe.confirmPayment({
       elements,

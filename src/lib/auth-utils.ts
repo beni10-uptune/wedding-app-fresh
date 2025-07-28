@@ -6,6 +6,7 @@ import { User } from 'firebase/auth'
 import { doc, serverTimestamp } from 'firebase/firestore'
 import { db } from './firebase'
 import { setDocWithRetry, getDocWithRetry } from './firestore-helpers'
+import { logger, logError } from './logger'
 
 export interface UserDocument {
   uid: string
@@ -34,7 +35,7 @@ export async function ensureUserDocument(
     const existingUser = await getDocWithRetry<UserDocument>(userRef)
     
     if (existingUser) {
-      console.log('User document already exists:', user.uid)
+      logger.debug('User document already exists', { userId: user.uid })
       
       // Update lastLogin timestamp
       await setDocWithRetry(userRef, {
@@ -45,7 +46,7 @@ export async function ensureUserDocument(
     }
     
     // Create new user document
-    console.log('Creating new user document:', user.uid)
+      logger.info('Creating new user document', { userId: user.uid })
     
     const userData: UserDocument = {
       uid: user.uid,
@@ -60,11 +61,11 @@ export async function ensureUserDocument(
     }
     
     await setDocWithRetry(userRef, userData)
-    console.log('User document created successfully')
+    logger.info('User document created successfully', { userId: user.uid })
     
     return userData
   } catch (error) {
-    console.error('Error ensuring user document:', error)
+    logError(error, { context: 'Error ensuring user document', userId: user.uid })
     
     // If all retries failed, create a minimal user document
     // This ensures the user can at least access the app
@@ -79,10 +80,10 @@ export async function ensureUserDocument(
       }
       
       await setDocWithRetry(userRef, minimalUserData)
-      console.log('Created minimal user document as fallback')
+      logger.warn('Created minimal user document as fallback', { userId: user.uid })
       return minimalUserData
     } catch (fallbackError) {
-      console.error('Failed to create even minimal user document:', fallbackError)
+      logError(fallbackError, { context: 'Failed to create minimal user document', userId: user.uid })
       throw fallbackError
     }
   }
@@ -98,7 +99,7 @@ export async function getUserDocument(userId: string): Promise<UserDocument | nu
     const userData = await getDocWithRetry<UserDocument>(userRef)
     return userData
   } catch (error) {
-    console.error('Error getting user document:', error)
+    logError(error, { context: 'Error getting user document', userId })
     return null
   }
 }

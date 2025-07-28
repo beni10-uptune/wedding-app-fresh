@@ -6,6 +6,7 @@ import { Heart, CheckCircle, Music } from 'lucide-react'
 import Link from 'next/link'
 import confetti from 'canvas-confetti'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { GTMEvents } from '@/components/GoogleTagManager'
 
 function PaymentSuccessContent() {
   const router = useRouter()
@@ -21,6 +22,13 @@ function PaymentSuccessContent() {
       
       // Only trigger confetti if we have a valid payment redirect
       if (paymentIntentSecret || paymentIntent) {
+        // Track purchase complete event
+        GTMEvents.purchase(
+          25, // Premium plan price in GBP
+          'GBP',
+          paymentIntent || 'unknown'
+        )
+        
         // Trigger confetti only on client side
         if (typeof window !== 'undefined' && typeof confetti === 'function') {
           try {

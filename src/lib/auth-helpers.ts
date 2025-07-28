@@ -2,6 +2,7 @@ import { User } from 'firebase/auth'
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore'
 import { db } from './firebase'
 import { ensureUserDocument } from './auth-utils'
+import { logger, logError } from './logger'
 
 export async function getSmartRedirectPath(user: User): Promise<string> {
   try {
@@ -28,7 +29,7 @@ export async function getSmartRedirectPath(user: User): Promise<string> {
       // They can upgrade from there if they want
       return '/dashboard'
     } catch (queryError) {
-      console.error('Compound query failed:', queryError)
+      logger.debug('Compound query failed, falling back to simple query', { error: queryError })
       // Fall through to simple query
     }
     
@@ -48,11 +49,11 @@ export async function getSmartRedirectPath(user: User): Promise<string> {
         return '/create-wedding'
       }
     } catch (simpleError) {
-      console.error('Simple query also failed:', simpleError)
+      logError(simpleError, { context: 'Simple query failed in smart redirect' })
     }
     
   } catch (error) {
-    console.error('Error in smart redirect:', error)
+    logError(error, { context: 'Smart redirect failed', userId: user.uid })
   }
   
   // Default fallback

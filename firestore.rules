@@ -106,5 +106,32 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow write: if request.auth != null;
     }
+    
+    // Community Songs Database
+    match /communitySongs/{songId} {
+      // Anyone can read song data
+      allow read: if true;
+      
+      // Only authenticated users can create/update songs
+      allow create: if request.auth != null;
+      
+      // Update allowed for authenticated users (to increment usage counts)
+      allow update: if request.auth != null
+        && request.resource.data.id == resource.data.id
+        && request.resource.data.title == resource.data.title
+        && request.resource.data.artist == resource.data.artist;
+      
+      // No deletion allowed to preserve data
+      allow delete: if false;
+    }
+    
+    // Song Usage Analytics
+    match /songAnalytics/{analyticsId} {
+      // Read allowed for authenticated users
+      allow read: if request.auth != null;
+      
+      // Write allowed for authenticated users
+      allow write: if request.auth != null;
+    }
   }
 }

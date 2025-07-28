@@ -3,8 +3,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { searchSpotifyTracks, formatDuration } from '@/lib/spotify-client'
 import { Song } from '@/types/wedding-v2'
-import { Search, Plus, Play, Pause, AlertCircle, Music } from 'lucide-react'
+import { Search, Plus, Play, Pause, AlertCircle, Music, Loader2 } from 'lucide-react'
 import { debounce } from 'lodash'
+import { enrichAndStoreSong } from '@/lib/song-enrichment'
 
 interface SongSearchProps {
   onAddSong: (song: Song, momentId: string) => void
@@ -104,28 +105,70 @@ export default function SongSearch({ onAddSong, selectedMoment }: SongSearchProp
     }
   }
 
-  const handleAddSong = (track: SearchResult) => {
-    const song: Song = {
-      id: track.id,
-      title: track.name,
-      artist: track.artist,
-      album: track.album,
-      duration: Math.round(track.duration_ms / 1000),
-      energyLevel: 3, // Default, could be fetched from audio features
-      explicit: track.explicit,
-      generationAppeal: ['millennial', 'gen_z'], // Default
-      genres: [], // Could be fetched from Spotify
-      previewUrl: track.preview_url || undefined,
-      spotifyUri: track.uri,
-      bpm: undefined,
-      audioFeatures: undefined
+  const handleAddSong = async (track: SearchResult) => {
+    // Create a temporary loading indicator for this specific song
+    const songElement = document.getElementById(`song-${track.id}`)
+    if (songElement) {
+      const addButton = songElement.querySelector('.add-button')
+      if (addButton) {
+        addButton.innerHTML = '<svg class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>'
+      }
     }
-
-    onAddSong(song, selectedMoment)
     
-    // Clear search after adding
-    setQuery('')
-    setResults([])
+    try {
+      // Create basic song object
+      const basicSong: Partial<Song> = {
+        id: track.id,
+        title: track.name,
+        artist: track.artist,
+        album: track.album,
+        albumArt: track.image,
+        albumImage: track.image,
+        duration: Math.round(track.duration_ms / 1000),
+        explicit: track.explicit,
+        previewUrl: track.preview_url || undefined,
+        spotifyUri: track.uri
+      }
+      
+      // Enrich with BPM, audio features, and store in community DB
+      const enrichedSong = await enrichAndStoreSong(basicSong, selectedMoment)
+      
+      // Add enriched song to wedding
+      onAddSong(enrichedSong, selectedMoment)
+      
+      // Show success feedback
+      if (enrichedSong.bpm) {
+        setError(`✓ Added "${track.name}" (${enrichedSong.bpm} BPM, ${enrichedSong.generationAppeal.join('/')})`)
+        setTimeout(() => setError(''), 3000)
+      }
+      
+      // Clear search after adding
+      setQuery('')
+      setResults([])
+    } catch (error) {
+      console.error('Error enriching song:', error)
+      
+      // Fall back to basic song if enrichment fails
+      const basicSong: Song = {
+        id: track.id,
+        title: track.name,
+        artist: track.artist,
+        album: track.album,
+        duration: Math.round(track.duration_ms / 1000),
+        energyLevel: 3,
+        explicit: track.explicit,
+        generationAppeal: ['millennial'],
+        genres: [],
+        previewUrl: track.preview_url || undefined,
+        spotifyUri: track.uri,
+        bpm: undefined,
+        audioFeatures: undefined
+      }
+      
+      onAddSong(basicSong, selectedMoment)
+      setQuery('')
+      setResults([])
+    }
   }
 
   return (
@@ -175,6 +218,7 @@ export default function SongSearch({ onAddSong, selectedMoment }: SongSearchProp
             {results.map((track) => (
               <div
                 key={track.id}
+                id={`song-${track.id}`}
                 className="glass-darker rounded-lg p-3 hover:ring-1 hover:ring-white/20 transition-all group"
               >
                 <div className="flex items-center gap-3">
@@ -228,7 +272,7 @@ export default function SongSearch({ onAddSong, selectedMoment }: SongSearchProp
                     )}
                     <button
                       onClick={() => handleAddSong(track)}
-                      className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center hover:bg-purple-500/30 transition-colors opacity-0 group-hover:opacity-100"
+                      className="add-button w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center hover:bg-purple-500/30 transition-colors opacity-0 group-hover:opacity-100"
                       title="Add to timeline"
                     >
                       <Plus className="w-4 h-4 text-purple-400" />

@@ -3,9 +3,9 @@ import { logger, logError } from '@/lib/logger'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const spotifyId = params.id
+  const { id: spotifyId } = await params
 
   if (!spotifyId) {
     return NextResponse.json({ error: 'Song ID required' }, { status: 400 })

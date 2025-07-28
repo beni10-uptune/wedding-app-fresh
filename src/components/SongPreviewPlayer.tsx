@@ -17,7 +17,7 @@ export function SongPreviewPlayer({ song, autoPlay = false, onEnded }: SongPrevi
   const [volume, setVolume] = useState(0.7)
   const [isMuted, setIsMuted] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
-  const progressInterval = useRef<NodeJS.Timeout>()
+  const progressInterval = useRef<NodeJS.Timeout | null>(null)
 
   // Handle song change
   useEffect(() => {

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Search, Plus, Music, Heart, Sparkles, Play, Pause, Clock, Loader2, GripVertical } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import { SPOTIFY_WEDDING_SONGS } from '@/data/spotify-wedding-songs'
 import {
   DndContext,
   DragEndEvent,
@@ -33,8 +34,38 @@ interface SpotifyTrack {
   preview: string | null
 }
 
-// Sample songs for fallback
-const DEMO_SONGS = [
+// Get popular songs from our database
+function getPopularDemoSongs(): SpotifyTrack[] {
+  const firstDanceSongs = SPOTIFY_WEDDING_SONGS['first-dance'] || []
+  const dancingSongs = SPOTIFY_WEDDING_SONGS['dancing'] || []
+  const generalSongs = SPOTIFY_WEDDING_SONGS['general'] || []
+  
+  // Pick a mix of songs
+  const popularSongs = [
+    ...firstDanceSongs.slice(0, 2),
+    ...dancingSongs.slice(0, 2),
+    ...generalSongs.slice(0, 1)
+  ].map(song => ({
+    id: song.id,
+    title: song.title,
+    artist: song.artist,
+    album: song.album || '',
+    duration: formatDuration(song.duration || 0),
+    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop',
+    preview: song.previewUrl || null
+  }))
+  
+  return popularSongs.length > 0 ? popularSongs : FALLBACK_SONGS
+}
+
+function formatDuration(seconds: number): string {
+  const mins = Math.floor(seconds / 60)
+  const secs = seconds % 60
+  return `${mins}:${secs.toString().padStart(2, '0')}`
+}
+
+// Fallback songs if database is empty
+const FALLBACK_SONGS: SpotifyTrack[] = [
   {
     id: '1',
     title: 'Perfect',
@@ -42,45 +73,21 @@ const DEMO_SONGS = [
     album: 'Divide',
     duration: '4:23',
     image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop',
-    preview: 'https://p.scdn.co/mp3-preview/example1'
+    preview: null
   },
   {
     id: '2',
-    title: 'Thinking Out Loud',
-    artist: 'Ed Sheeran',
-    album: '×',
-    duration: '4:41',
-    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop',
-    preview: 'https://p.scdn.co/mp3-preview/example2'
-  },
-  {
-    id: '3',
     title: 'All of Me',
     artist: 'John Legend',
     album: 'Love in the Future',
     duration: '4:29',
     image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop',
-    preview: 'https://p.scdn.co/mp3-preview/example3'
-  },
-  {
-    id: '4',
-    title: 'Marry You',
-    artist: 'Bruno Mars',
-    album: 'Doo-Wops & Hooligans',
-    duration: '3:50',
-    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop',
-    preview: 'https://p.scdn.co/mp3-preview/example4'
-  },
-  {
-    id: '5',
-    title: 'A Thousand Years',
-    artist: 'Christina Perri',
-    album: 'The Twilight Saga',
-    duration: '4:45',
-    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop',
-    preview: 'https://p.scdn.co/mp3-preview/example5'
+    preview: null
   }
 ]
+
+// Initialize demo songs
+const DEMO_SONGS = getPopularDemoSongs()
 
 const WEDDING_MOMENTS = [
   { id: 'ceremony', label: 'Ceremony', icon: Heart, color: 'from-pink-500 to-rose-500' },

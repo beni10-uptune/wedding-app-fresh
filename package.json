@@ -38,6 +38,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.2.1",
     "firebase": "^11.10.0",
     "firebase-admin": "^13.4.0",
     "framer-motion": "^12.23.7",
@@ -58,6 +59,7 @@
     "remark-gfm": "^4.0.1",
     "resend": "^4.7.0",
     "sonner": "^2.0.6",
+    "spotify-web-api-node": "^5.0.2",
     "stripe": "^18.3.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
@@ -74,6 +76,7 @@
     "firebase-tools": "^14.11.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.20.3",
     "typescript": "^5",
     "vercel": "^44.2.13"
   }

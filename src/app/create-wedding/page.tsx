@@ -5,7 +5,7 @@ import { ArrowRight, ArrowLeft, Music, Heart, MapPin, Users, Crown, CheckCircle,
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { db } from '@/lib/firebase'
-import { collection, addDoc, Timestamp, query, where, getDocs, updateDoc, doc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, Timestamp, query, where, getDocs, updateDoc, doc, serverTimestamp, getDoc } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
 import { playlistTemplates } from '@/data/playlistTemplates'
 
@@ -26,6 +26,7 @@ export default function CreateWeddingPage() {
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [checkingExisting, setCheckingExisting] = useState(true)
+  const [error, setError] = useState('')
   const [weddingData, setWeddingData] = useState<WeddingData>({
     coupleName1: '',
     coupleName2: '',
@@ -41,6 +42,29 @@ export default function CreateWeddingPage() {
 
   useEffect(() => {
     checkExistingWedding()
+  }, [user])
+
+  // Load user data to pre-populate names
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (user) {
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid))
+          if (userDoc.exists()) {
+            const userData = userDoc.data()
+            // Pre-populate names from signup
+            setWeddingData(prev => ({
+              ...prev,
+              coupleName1: userData.displayName || '',
+              coupleName2: userData.partnerName || ''
+            }))
+          }
+        } catch (error) {
+          console.error('Error loading user data:', error)
+        }
+      }
+    }
+    loadUserData()
   }, [user])
 
   const checkExistingWedding = async () => {
@@ -104,20 +128,22 @@ export default function CreateWeddingPage() {
   }
 
   const handleSubmit = async () => {
+    setError('')
+    
     if (!user) {
       console.error('No user found')
-      alert('Please sign in to create a wedding')
+      setError('Please sign in to create a wedding')
       return
     }
     
     // Validate required fields
     if (!weddingData.coupleName1 || !weddingData.coupleName2) {
-      alert('Please enter both partner names')
+      setError('Please enter both partner names')
       return
     }
     
     if (!weddingData.weddingDate) {
-      alert('Please select a wedding date')
+      setError('Please select a wedding date')
       return
     }
     
@@ -200,14 +226,28 @@ export default function CreateWeddingPage() {
       router.push('/dashboard')
     } catch (error: any) {
       console.error('Error creating wedding:', error)
-      alert(`Failed to create wedding: ${error.message || 'Unknown error'}`)
+      // Check for specific Firebase errors
+      if (error.code === 'permission-denied') {
+        setError('Unable to create wedding. Please make sure you are logged in and try again.')
+      } else if (error.message?.includes('permission')) {
+        setError('Permission error. Please refresh the page and try again.')
+      } else {
+        setError(`Failed to create wedding: ${error.message || 'Please try again'}`)
+      }
     } finally {
       setLoading(false)
     }
   }
 
-  const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 5))
-  const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1))
+  const nextStep = () => {
+    setCurrentStep(prev => Math.min(prev + 1, 5))
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+  
+  const prevStep = () => {
+    setCurrentStep(prev => Math.max(prev - 1, 1))
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   if (checkingExisting) {
     return (
@@ -284,6 +324,13 @@ export default function CreateWeddingPage() {
       <main className="px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="glass rounded-2xl p-8">
+            
+            {/* Error Display */}
+            {error && (
+              <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+                <p className="text-red-400 text-sm">{error}</p>
+              </div>
+            )}
             
             {/* Step 1: Basic Details */}
             {currentStep === 1 && (

@@ -52,6 +52,41 @@ service cloud.firestore {
       match /guests/{guestId} {
         allow read, write: if request.auth != null;
       }
+      
+      // Playlists subcollection
+      match /playlists/{playlistId} {
+        allow read: if request.auth != null 
+          && request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners;
+        allow create, update, delete: if request.auth != null 
+          && request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners;
+          
+        // Songs within playlists
+        match /songs/{songId} {
+          allow read, write: if request.auth != null 
+            && request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners;
+        }
+      }
+      
+      // Invitations subcollection
+      match /invitations/{invitationId} {
+        allow read, write: if request.auth != null 
+          && request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners;
+      }
+      
+      // Suggestions subcollection
+      match /suggestions/{suggestionId} {
+        allow read: if true; // Public can read
+        allow create: if true; // Public can create suggestions
+        allow update, delete: if request.auth != null 
+          && request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners;
+      }
+      
+      // Votes subcollection
+      match /votes/{voteId} {
+        allow read, create: if true; // Public can read and vote
+        allow update, delete: if request.auth != null 
+          && request.auth.uid in get(/databases/$(database)/documents/weddings/$(weddingId)).data.owners;
+      }
     }
     
     // Invitations collection

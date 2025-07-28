@@ -86,13 +86,14 @@ export default function SignUpPage() {
         throw new Error(formatFirestoreError(firestoreError))
       }
 
-      console.log('User created successfully, auth state should update')
+      console.log('User created successfully, redirecting to wedding creation')
       
       // Track signup event
       GTMEvents.signUp('email')
       
-      // Don't manually redirect - let the auth state listener handle it
-      // The useEffect hook will catch the auth state change and redirect
+      // Navigate directly to create-wedding after successful signup
+      // This prevents the re-login issue
+      router.push('/create-wedding')
     } catch (err) {
       console.error('Signup error:', err)
       const error = err as any
@@ -134,12 +135,13 @@ export default function SignUpPage() {
         throw new Error(formatFirestoreError(firestoreError))
       }
 
-      console.log('Google signup successful, auth state should update')
+      console.log('Google signup successful, redirecting to wedding creation')
       
       // Track signup event
       GTMEvents.signUp('google')
       
-      // Don't manually redirect - let the auth state listener handle it
+      // Navigate directly to create-wedding
+      router.push('/create-wedding')
     } catch (err) {
       console.error('Google signup error:', err)
       const error = err as any

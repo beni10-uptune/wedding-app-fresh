@@ -1,7 +1,7 @@
 'use client'
 
 import { ArrowRight, Heart, Music, Users, CheckCircle, Play, Sparkles, Download, Shield, Star, Calendar, Menu, X } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 
 export default function Home() {

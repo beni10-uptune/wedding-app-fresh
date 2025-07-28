@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
           from: 'UpTune Blog <blog@uptune.xyz>',
           to: [email],
           subject: 'Welcome to UpTune Wedding Music Tips! 🎵',
-          react: NewsletterWelcomeEmail({ email })
+          react: await NewsletterWelcomeEmail({ email })
         })
       } catch (emailError) {
         logger.error('Failed to send welcome email:', { error: emailError, email })

@@ -70,9 +70,8 @@ export async function POST(request: NextRequest) {
           
           // Track purchase event
           GTMEvents.purchase(
-            paymentIntent.amount / 100, // Convert from cents to pounds
-            paymentIntent.currency.toUpperCase(),
-            paymentIntent.id
+            weddingId,
+            paymentIntent.amount
           )
         } catch (error) {
           logError(error, { context: 'Error updating wedding payment status', weddingId })
@@ -127,9 +126,8 @@ export async function POST(request: NextRequest) {
             
             // Track purchase event for checkout session
             GTMEvents.purchase(
-              (session.amount_total || 0) / 100, // Convert from cents to pounds
-              (session.currency || 'GBP').toUpperCase(),
-              session.id
+              session.metadata.weddingId || '',
+              session.amount_total || 0
             )
           } catch (error) {
             logError(error, { context: 'Error updating wedding from checkout session', weddingId: session.metadata.weddingId })
@@ -179,9 +177,8 @@ export async function POST(request: NextRequest) {
               
               // Track refund event
               GTMEvents.refund(
-                charge.amount_refunded / 100, // Convert from cents to pounds
-                charge.currency.toUpperCase(),
-                paymentIntentId
+                weddingId,
+                charge.amount_refunded
               )
             }
           } catch (error) {

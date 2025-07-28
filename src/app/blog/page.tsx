@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Music, Calendar, Users, TrendingUp, Sparkles, Heart } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { BlogPostCard } from '@/components/blog/BlogPostCard'
 import { NewsletterSignup } from '@/components/blog/NewsletterSignup'
 import { TrendingSongsWidget } from '@/components/blog/TrendingSongsWidget'

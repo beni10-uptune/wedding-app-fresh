@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import { getServerSession } from 'next-auth'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { auth } from '@/lib/firebase-admin'
 import { logger } from '@/lib/logger'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16'
+  apiVersion: '2025-06-30.basil'
 })
 
 export async function POST(request: NextRequest) {
@@ -16,6 +15,10 @@ export async function POST(request: NextRequest) {
     const authHeader = request.headers.get('authorization')
     if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    if (!auth) {
+      return NextResponse.json({ error: 'Authentication service unavailable' }, { status: 503 })
     }
 
     const token = authHeader.split('Bearer ')[1]

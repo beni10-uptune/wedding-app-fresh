@@ -1,5 +1,4 @@
 import { loadStripe } from '@stripe/stripe-js'
-import { getEnvVar } from './env-validation'
 
 // Initialize Stripe with validated environment variable
 const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY

@@ -9,7 +9,7 @@ import { WEDDING_MOMENTS } from '@/data/weddingMoments'
 import { Timeline } from '@/types/wedding-v2'
 import { 
   Music, Plus, Users, 
-  LogOut, Settings, ChevronRight, Heart, 
+  ChevronRight, Heart, 
   Sparkles, Gift,
   CheckCircle2, Zap, PartyPopper,
   HeartHandshake, Timer,

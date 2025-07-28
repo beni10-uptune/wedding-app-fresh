@@ -24,9 +24,8 @@ function PaymentSuccessContent() {
       if (paymentIntentSecret || paymentIntent) {
         // Track purchase complete event
         GTMEvents.purchase(
-          25, // Premium plan price in GBP
-          'GBP',
-          paymentIntent || 'unknown'
+          weddingId || '',
+          2500 // Premium plan price in pence
         )
         
         // Trigger confetti only on client side

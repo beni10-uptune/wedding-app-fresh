@@ -4,13 +4,12 @@ interface NewsletterWelcomeEmailProps {
   email: string
 }
 
-export const NewsletterWelcomeEmail: React.FC<NewsletterWelcomeEmailProps> = ({
-  email,
-}) => {
+export const NewsletterWelcomeEmail: React.FC<NewsletterWelcomeEmailProps> = () => {
   const previewText = `Welcome to UpTune's Wedding Music Newsletter!`
 
   return (
     <html>
+      {/* eslint-disable-next-line @next/next/no-head-element */}
       <head>
         <meta content="text/html; charset=UTF-8" httpEquiv="Content-Type" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

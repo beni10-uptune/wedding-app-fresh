@@ -1,4 +1,6 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 import { BlogNavigation } from '@/components/BlogNavigation'
 
 export const metadata: Metadata = {

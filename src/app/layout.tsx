@@ -4,7 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Analytics } from "@vercel/analytics/next";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { GoogleTagManager } from "@/components/GoogleTagManager";
+import { GoogleTagManagerWrapper } from "@/components/GoogleTagManagerWrapper";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -50,7 +50,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${dancing.variable}`}>
       <body className={`${inter.className} antialiased`}>
-        <GoogleTagManager gtmId={gtmId} />
+        <GoogleTagManagerWrapper gtmId={gtmId} />
         <ErrorBoundary>
           <AuthProvider>
             {children}

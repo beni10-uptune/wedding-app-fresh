@@ -3,6 +3,7 @@ import { Inter, Playfair_Display, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { GoogleTagManagerWrapper } from "@/components/GoogleTagManagerWrapper";
 import { CookieConsent } from "@/components/CookieConsent";
@@ -66,6 +67,7 @@ export default function RootLayout({
             {children}
             <CookieConsent />
             <Analytics />
+            <SpeedInsights />
           </AuthProvider>
         </ErrorBoundary>
       </body>

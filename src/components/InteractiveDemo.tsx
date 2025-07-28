@@ -51,7 +51,7 @@ function getPopularDemoSongs(): SpotifyTrack[] {
     artist: song.artist,
     album: song.album || '',
     duration: formatDuration(song.duration || 0),
-    image: song.albumImage || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop',
+    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop',
     preview: song.previewUrl || null
   }))
   
@@ -72,7 +72,7 @@ const FALLBACK_SONGS: SpotifyTrack[] = [
     artist: 'Ed Sheeran',
     album: 'Divide',
     duration: '4:23',
-    image: song.albumImage || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop',
+    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop',
     preview: null
   },
   {
@@ -81,7 +81,7 @@ const FALLBACK_SONGS: SpotifyTrack[] = [
     artist: 'John Legend',
     album: 'Love in the Future',
     duration: '4:29',
-    image: song.albumImage || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop',
+    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop',
     preview: null
   }
 ]

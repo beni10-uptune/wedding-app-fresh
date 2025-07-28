@@ -9,7 +9,7 @@ import { EnhancedSongSearch } from '@/components/EnhancedSongSearch'
 import { CuratedSongCollections, SongDatabaseStats } from '@/components/CuratedSongCollections'
 import { SongPreviewPlayer } from '@/components/SongPreviewPlayer'
 import { Song, WeddingMoment } from '@/types/wedding-v2'
-import { weddingMoments } from '@/data/weddingMoments'
+import { WEDDING_MOMENTS } from '@/data/weddingMoments'
 
 export default function SongToolsPage() {
   const [activeTab, setActiveTab] = useState<'search' | 'timer' | 'energy' | 'generation' | 'collections'>('search')
@@ -124,7 +124,7 @@ export default function SongToolsPage() {
 
         {activeTab === 'energy' && (
           <EnergyFlowVisualizer
-            weddingMoments={weddingMoments}
+            weddingMoments={WEDDING_MOMENTS}
             selectedSongs={selectedSongs}
             onSuggestSong={(moment, song) => handleSelectSong(song, moment)}
           />

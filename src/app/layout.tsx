@@ -24,10 +24,21 @@ const dancing = Dancing_Script({
 });
 
 export const metadata: Metadata = {
-  title: "UpTune for Weddings - Transform Your Wedding Music Planning",
-  description: "The joyful way to plan your wedding music. Collaborate with your partner and guests to create the perfect soundtrack. £25 per wedding.",
-  keywords: "wedding music, wedding playlist, wedding DJ, wedding planning, music curation",
-  authors: [{ name: "UpTune" }],
+  metadataBase: new URL('https://weddings.uptune.xyz'),
+  title: {
+    default: "UpTune for Weddings - Create Your Perfect Wedding Playlist | £25",
+    template: "%s | UpTune Weddings"
+  },
+  description: "Plan your wedding music effortlessly with UpTune. Collaborate with your partner, get guest song requests, and create the perfect soundtrack for your special day. One simple price: £25.",
+  keywords: ["wedding music planner", "wedding playlist creator", "wedding DJ alternative", "wedding music app", "wedding song requests", "wedding music timeline", "UK wedding music", "wedding planning tool"],
+  authors: [{ name: "UpTune", url: "https://weddings.uptune.xyz" }],
+  creator: "UpTune",
+  publisher: "UpTune",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   icons: {
     icon: [
       { url: '/icon.svg', type: 'image/svg+xml' },
@@ -38,16 +49,44 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "UpTune for Weddings - Transform Your Wedding Music Planning",
-    description: "The joyful way to plan your wedding music. Collaborate with your partner and guests to create the perfect soundtrack.",
+    title: "UpTune for Weddings - Create Your Perfect Wedding Playlist",
+    description: "The joyful way to plan your wedding music. Collaborate with your partner and guests to create the perfect soundtrack. Just £25 per wedding.",
     url: "https://weddings.uptune.xyz",
     siteName: "UpTune for Weddings",
+    images: [
+      {
+        url: "/og-image.svg",
+        width: 1200,
+        height: 630,
+        alt: "UpTune for Weddings - Wedding Music Planning Made Easy",
+      }
+    ],
+    locale: "en_GB",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "UpTune for Weddings - Transform Your Wedding Music Planning",
-    description: "The joyful way to plan your wedding music. Collaborate with your partner and guests to create the perfect soundtrack.",
+    title: "UpTune for Weddings - Create Your Perfect Wedding Playlist",
+    description: "Plan your wedding music effortlessly. One simple price: £25 per wedding.",
+    images: ["/og-image.svg"],
+    creator: "@uptune",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: "https://weddings.uptune.xyz",
+  },
+  verification: {
+    google: "googlebd103d2c5b7686b4",
   },
 };
 

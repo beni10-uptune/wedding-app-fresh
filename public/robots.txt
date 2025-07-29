@@ -1,10 +1,19 @@
 User-agent: *
 Allow: /
+Allow: /blog/
+Allow: /pricing
+Allow: /help
+Allow: /contact
+Allow: /about
+Allow: /song-tools
 Disallow: /api/
 Disallow: /wedding/*/builder/
-Disallow: /auth/
+Disallow: /wedding/*/settings/
+Disallow: /wedding/*/payment/
 Disallow: /dashboard/
 Disallow: /admin/
+Disallow: /auth/forgot-password
+Crawl-delay: 1
 
 # Block AI crawlers from scraping content
 User-agent: GPTBot

@@ -9,9 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@uptune/ui": "workspace:*",
-    "@uptune/auth": "workspace:*",
-    "@uptune/music-core": "workspace:*",
     "next": "15.1.0",
     "react": "^18",
     "react-dom": "^18",

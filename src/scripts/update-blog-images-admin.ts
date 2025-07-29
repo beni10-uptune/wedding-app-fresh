@@ -1,17 +1,19 @@
-// Load environment variables for local execution
+import { initializeApp, cert, getApps } from 'firebase-admin/app'
+import { getFirestore } from 'firebase-admin/firestore'
 import * as dotenv from 'dotenv'
 import * as path from 'path'
 
+// Load environment variables
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
 
-import { 
-  doc, 
-  updateDoc,
-  getDoc
-} from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+// Initialize admin SDK
+if (!getApps().length) {
+  initializeApp({
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  })
+}
 
-const BLOG_POSTS_COLLECTION = 'blogPosts'
+const db = getFirestore()
 
 // Map of blog slugs to their featured images
 const blogImageUpdates = [
@@ -42,24 +44,25 @@ const blogImageUpdates = [
   }
 ]
 
-export async function updateBlogImages() {
-  console.log('Starting blog image updates...')
+async function updateBlogImages() {
+  console.log('Starting blog image updates using Admin SDK...')
   
   for (const update of blogImageUpdates) {
     try {
-      const docRef = doc(db, BLOG_POSTS_COLLECTION, update.slug)
+      const docRef = db.collection('blogPosts').doc(update.slug)
       
       // First check if the document exists
-      const docSnap = await getDoc(docRef)
+      const doc = await docRef.get()
       
-      if (!docSnap.exists()) {
+      if (!doc.exists) {
         console.log(`⚠️  Blog post not found: ${update.slug}`)
         continue
       }
       
       // Update only the featuredImage field
-      await updateDoc(docRef, {
-        featuredImage: update.featuredImage
+      await docRef.update({
+        featuredImage: update.featuredImage,
+        featuredImageAlt: update.altText
       })
       
       console.log(`✅ Updated featured image for: ${update.slug}`)
@@ -71,7 +74,7 @@ export async function updateBlogImages() {
   console.log('✨ Blog image updates completed!')
 }
 
-// Run this script with: npx tsx src/scripts/update-blog-images.ts
+// Run the update
 updateBlogImages()
   .then(() => {
     console.log('Script completed successfully')

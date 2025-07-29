@@ -1722,6 +1722,12 @@ export const mockBlogPosts: BlogPost[] = [
     status: 'published',
     readTime: 10,
     views: 0,
+    featuredImage: '/images/blog/wedding_timeline_music.png',
+    seo: {
+      metaTitle: 'Perfect Wedding Timeline with Music | UpTune',
+      metaDescription: 'Design a flawless wedding day timeline with perfectly timed music for each special moment.',
+      focusKeyword: 'wedding timeline music'
+    }
   },
   {
     id: '3',
@@ -1741,6 +1747,12 @@ export const mockBlogPosts: BlogPost[] = [
     status: 'published',
     readTime: 8,
     views: 0,
+    featuredImage: '/images/blog/guests_music_collaboration.png',
+    seo: {
+      metaTitle: '10 Ways to Get Guests Involved in Wedding Music | UpTune',
+      metaDescription: 'Discover creative ways to include your guests in choosing your wedding music while maintaining your vision.',
+      focusKeyword: 'wedding guest music selection'
+    }
   },
   {
     id: '4',
@@ -1760,6 +1772,12 @@ export const mockBlogPosts: BlogPost[] = [
     status: 'published',
     readTime: 7,
     views: 0,
+    featuredImage: '/images/blog/sarah_tom_wedding_story.png',
+    seo: {
+      metaTitle: 'Real Wedding: Sarah & Tom\'s Perfect Soundtrack | UpTune',
+      metaDescription: 'Follow Sarah and Tom\'s journey as they navigated different musical tastes to create a wedding playlist that had everyone dancing.',
+      focusKeyword: 'real wedding music story'
+    }
   },
   {
     id: '5',
@@ -1779,5 +1797,11 @@ export const mockBlogPosts: BlogPost[] = [
     status: 'published',
     readTime: 9,
     views: 0,
+    featuredImage: '/images/blog/reception_music_guide.png',
+    seo: {
+      metaTitle: 'Wedding Reception Music Guide | UpTune',
+      metaDescription: 'Master the art of reception music planning with this detailed guide from cocktail hour to last dance.',
+      focusKeyword: 'wedding reception music'
+    }
   },
 ]

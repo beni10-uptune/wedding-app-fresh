@@ -1,0 +1,39 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9333ea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  
+  <!-- Background rounded square -->
+  <rect x="32" y="32" width="448" height="448" rx="96" fill="url(#gradient)" filter="url(#shadow)"/>
+  
+  <!-- Music note design -->
+  <g transform="translate(256, 256)">
+    <!-- Note head 1 -->
+    <ellipse cx="-80" cy="60" rx="48" ry="36" fill="white" transform="rotate(-20 -80 60)"/>
+    
+    <!-- Note head 2 -->
+    <ellipse cx="80" cy="20" rx="48" ry="36" fill="white" transform="rotate(-20 80 20)"/>
+    
+    <!-- Stem 1 -->
+    <rect x="-44" y="-120" width="16" height="180" fill="white" rx="8"/>
+    
+    <!-- Stem 2 -->
+    <rect x="116" y="-120" width="16" height="140" fill="white" rx="8"/>
+    
+    <!-- Beam connecting notes -->
+    <path d="M -36 -120 L 124 -120 L 124 -80 L -36 -80 Z" fill="white"/>
+    
+    <!-- Heart accent -->
+    <g transform="translate(0, -140) scale(2)">
+      <path d="M 0 10 C -10 -5 -30 -5 -30 5 C -30 15 -15 25 0 35 C 15 25 30 15 30 5 C 30 -5 10 -5 0 10 Z" 
+            fill="white" 
+            opacity="0.9"/>
+    </g>
+  </g>
+</svg>

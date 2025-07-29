@@ -1,0 +1,29 @@
+{
+  "name": "@uptune/celebrations",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3002",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@uptune/ui": "workspace:*",
+    "@uptune/auth": "workspace:*",
+    "@uptune/music-core": "workspace:*",
+    "next": "15.1.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "lucide-react": "^0.378.0",
+    "tailwindcss": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8"
+  }
+}

@@ -9,9 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@uptune/ui": "workspace:*",
-    "@uptune/auth": "workspace:*",
-    "@uptune/music-core": "workspace:*",
     "next": "15.1.0",
     "react": "^18",
     "react-dom": "^18",
@@ -24,6 +21,7 @@
     "@types/react-dom": "^18",
     "typescript": "^5",
     "autoprefixer": "^10.4.0",
-    "postcss": "^8"
+    "postcss": "^8",
+    "vercel": "^32.0.0"
   }
 }

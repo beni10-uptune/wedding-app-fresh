@@ -32,3 +32,4 @@ User-agent: Claude-Web
 Disallow: /
 
 Sitemap: https://weddings.uptune.xyz/sitemap.xml
+Sitemap: https://weddings.uptune.xyz/sitemap2.xml

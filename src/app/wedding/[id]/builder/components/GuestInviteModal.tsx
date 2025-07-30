@@ -5,6 +5,7 @@ import { X, Mail, Send, Copy, Check } from 'lucide-react'
 import { collection, addDoc, Timestamp, doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { generateInviteToken } from '@/lib/utils'
+import { config } from '@/lib/config'
 
 interface GuestInviteModalProps {
   weddingId: string
@@ -114,7 +115,7 @@ export default function GuestInviteModal({
   const handleCopyLink = () => {
     // Use slug if available, otherwise fall back to join URL
     const link = weddingSlug 
-      ? `${window.location.origin}/${weddingSlug}`
+      ? `${config.getWeddingDomain()}/${weddingSlug}`
       : `${window.location.origin}/join/${weddingId}`
     navigator.clipboard.writeText(link)
     setCopiedLink(true)

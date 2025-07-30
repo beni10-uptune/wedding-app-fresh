@@ -11,6 +11,7 @@ import Link from 'next/link'
 import { ArrowLeft, Mail, Copy, Users, Check, X, Clock, Share2, Crown } from 'lucide-react'
 import UpgradeModal from '@/components/UpgradeModal'
 import { getUserTier, SUBSCRIPTION_TIERS } from '@/lib/subscription-tiers'
+import { config } from '@/lib/config'
 
 export default function GuestsManagementPage({ params }: { params: Promise<{ id: string }> }) {
   const [wedding, setWedding] = useState<Wedding | null>(null)
@@ -279,13 +280,13 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
                 <div className="flex gap-3 items-center">
                   <div className="flex-1 glass-darker rounded-lg px-4 py-3">
                     <code className="text-sm text-purple-300 break-all">
-                      {wedding?.slug ? `${window.location.origin}/${wedding.slug}` : `${window.location.origin}/join/${weddingId}`}
+                      {wedding?.slug ? `${config.getWeddingDomain()}/${wedding.slug}` : `${window.location.origin}/join/${weddingId}`}
                     </code>
                   </div>
                   <button
                     onClick={() => {
                       const shareUrl = wedding?.slug 
-                        ? `${window.location.origin}/${wedding.slug}`
+                        ? `${config.getWeddingDomain()}/${wedding.slug}`
                         : `${window.location.origin}/join/${weddingId}`
                       navigator.clipboard.writeText(shareUrl)
                       setCopiedId('share-link')

@@ -14,6 +14,7 @@ import {
 import UpgradeModal from '@/components/UpgradeModal'
 import { getUserTier } from '@/lib/subscription-tiers'
 import { isValidSlug, isSlugAvailable, sanitizeSlug } from '@/lib/slug-utils'
+import { config } from '@/lib/config'
 
 interface Wedding {
   id: string
@@ -334,13 +335,13 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
                   <div className="flex-1">
                     <p className="text-sm text-white/60 mb-1">Your wedding URL</p>
                     <p className="text-white font-mono">
-                      {window.location.origin}/{wedding.slug || weddingId}
+                      {config.getWeddingDomain()}/{wedding.slug || weddingId}
                     </p>
                   </div>
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
-                        const url = `${window.location.origin}/${wedding.slug || weddingId}`
+                        const url = `${config.getWeddingDomain()}/${wedding.slug || weddingId}`
                         navigator.clipboard.writeText(url)
                         setCopiedId('wedding-url')
                         setTimeout(() => setCopiedId(null), 2000)
@@ -373,7 +374,7 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
                       Custom URL
                     </label>
                     <div className="flex items-center gap-2">
-                      <span className="text-white/60">{window.location.origin}/</span>
+                      <span className="text-white/60">{config.getWeddingDomain()}/</span>
                       <input
                         type="text"
                         value={newSlug}

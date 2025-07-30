@@ -11,6 +11,7 @@ import { playlistTemplates } from '@/data/playlistTemplates'
 import { ProgressBar } from '@/components/onboarding/ProgressBar'
 import { WeddingCreatedSuccess } from '@/components/WeddingCreatedSuccess'
 import { generateSlugFromNames, isValidSlug, isSlugAvailable, generateUniqueSlug, sanitizeSlug } from '@/lib/slug-utils'
+import { config } from '@/lib/config'
 
 interface WeddingData {
   coupleName1: string
@@ -426,7 +427,7 @@ export default function CreateWeddingPage() {
                     Choose your wedding URL
                   </label>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-white/60">uptune.xyz/</span>
+                    <span className="text-white/60">weddings.uptune.xyz/</span>
                     <input
                       type="text"
                       value={weddingData.slug}

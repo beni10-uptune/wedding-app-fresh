@@ -1,7 +1,20 @@
 # Wedding App - Project Context for Claude
 
+<!-- Last Updated: 2025-01-30 -->
+
 ## Overview
 This is a wedding planning application built with Next.js 15, TypeScript, and Firebase. The app allows couples to create custom wedding playlists with Spotify integration.
+
+## 🚨 Critical Information - Read First
+
+### Recent Issues & Fixes
+- **2025-01-30**: Fixed Next.js 15 async params in dynamic routes - use `use()` hook to unwrap Promise-based params
+- **Known ESLint warnings**: Multiple `@typescript-eslint/no-explicit-any` warnings exist but don't block builds
+
+### Before Every Commit
+1. Run `npm run build` to check for compilation errors
+2. Run `npm run lint` to check for linting issues
+3. Fix any blocking errors (warnings can be addressed later)
 
 ## Important Technical Details
 
@@ -71,3 +84,50 @@ The project uses various environment variables for:
 - Keep components focused and reusable
 - Use Tailwind CSS for styling
 - No unnecessary comments in code
+
+## 📝 Development Log
+
+### Recent Changes
+<!-- Add new entries at the top -->
+- **2025-01-30**: Added CLAUDE.md documentation
+- **2025-01-30**: Fixed Next.js 15 async params in [slug]/page.tsx
+
+### TODO/Known Issues
+- [ ] Address ESLint warnings (non-blocking)
+- [ ] Complete next.config.mjs setup (currently untracked)
+
+## 🔧 Quick Reference
+
+### Common Patterns
+
+#### Dynamic Routes in Next.js 15
+```typescript
+// Client Component
+import { use } from 'react'
+
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
+  // ...
+}
+
+// Server Component
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  // ...
+}
+```
+
+#### Firebase Operations
+```typescript
+// Always use helpers from /src/lib/firestore-helpers.ts
+import { getDocument, updateDocument } from '@/lib/firestore-helpers'
+```
+
+### Debugging Commands
+- Check TypeScript errors: `npx tsc --noEmit`
+- Run specific linter: `npx eslint src/app/[slug]/page.tsx`
+- Test build locally: `npm run build && npm run start`
+
+### Deployment
+- Auto-deploys to Vercel on push to `main` branch
+- Preview deployments created for pull requests

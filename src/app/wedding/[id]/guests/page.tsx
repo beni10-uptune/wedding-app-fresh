@@ -261,44 +261,95 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
           </div>
         )}
 
-        {/* Share Link Section */}
+        {/* Quick Actions Banner */}
         <div className="glass-gradient rounded-xl p-6 mb-8 border border-purple-500/30">
-          <div className="flex items-start gap-4">
-            <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center flex-shrink-0">
-              <Share2 className="w-6 h-6 text-white" />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-bold text-white mb-2">
-                Share with your guests
-              </h3>
-              <p className="text-white/80 mb-4">
-                Share this link with your guests so they can suggest songs for your special day.
-              </p>
-              <div className="flex gap-3 items-center">
-                <div className="flex-1 glass-darker rounded-lg px-4 py-3">
-                  <code className="text-sm text-purple-300 break-all">
-                    {`${window.location.origin}/join/${weddingId}`}
-                  </code>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Share Link */}
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <Share2 className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-white mb-2">
+                  Share with your guests
+                </h3>
+                <p className="text-white/80 mb-4 text-sm">
+                  Share this link with your guests so they can suggest songs.
+                </p>
+                <div className="flex gap-3 items-center">
+                  <div className="flex-1 glass-darker rounded-lg px-4 py-3">
+                    <code className="text-sm text-purple-300 break-all">
+                      {`${window.location.origin}/join/${weddingId}`}
+                    </code>
+                  </div>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/join/${weddingId}`)
+                      setCopiedId('share-link')
+                      setTimeout(() => setCopiedId(null), 2000)
+                    }}
+                    className="btn-primary"
+                  >
+                    {copiedId === 'share-link' ? (
+                      <><Check className="w-4 h-4" /> Copied!</>
+                    ) : (
+                      <><Copy className="w-4 h-4" /> Copy</>  
+                    )}
+                  </button>
                 </div>
+              </div>
+            </div>
+
+            {/* Quick Invite */}
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 bg-gradient-to-r from-pink-600 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <Mail className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-white mb-2">
+                  Send personal invites
+                </h3>
+                <p className="text-white/80 mb-4 text-sm">
+                  Invite specific guests by email to collaborate on your playlist.
+                </p>
                 <button
                   onClick={() => {
-                    navigator.clipboard.writeText(`${window.location.origin}/join/${weddingId}`)
-                    setCopiedId('share-link')
-                    setTimeout(() => setCopiedId(null), 2000)
+                    const tier = getUserTier(wedding?.paymentStatus)
+                    if (tier.maxGuests > 0 && invitations.length >= tier.maxGuests) {
+                      setShowUpgradeModal(true)
+                    } else {
+                      setShowInviteForm(true)
+                    }
                   }}
-                  className="btn-primary"
+                  className="w-full btn-secondary justify-center"
                 >
-                  {copiedId === 'share-link' ? (
-                    <><Check className="w-4 h-4" /> Copied!</>
-                  ) : (
-                    <><Copy className="w-4 h-4" /> Copy</>  
-                  )}
+                  <Mail className="w-4 h-4" />
+                  Send Invite Email
                 </button>
               </div>
             </div>
           </div>
         </div>
         
+        {/* Guest Song Submissions Quick View */}
+        <div className="glass-gradient rounded-xl p-6 mb-8 border border-purple-500/30">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Music className="w-5 h-5 text-purple-400" />
+              Recent Guest Song Suggestions
+            </h3>
+            <Link 
+              href={`/wedding/${weddingId}/builder`}
+              className="text-sm text-purple-400 hover:text-purple-300 font-medium inline-flex items-center gap-1"
+            >
+              View All in Builder <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <p className="text-white/60 text-sm">
+            Your guests have suggested amazing songs! Check them out in the Music Builder under the "Guest Suggestions" tab.
+          </p>
+        </div>
+
         {/* Stats */}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
           <div className="card">

@@ -14,7 +14,8 @@ import {
   CheckCircle2, Zap, PartyPopper,
   HeartHandshake, Timer,
   Calendar, UserCheck, Share2, Play,
-  AlertCircle, RefreshCw, Crown
+  AlertCircle, RefreshCw, Crown,
+  BookOpen, Lightbulb, Clock, Compass
 } from 'lucide-react'
 import Link from 'next/link'
 import { DashboardSkeleton } from '@/components/LoadingSkeleton'
@@ -636,8 +637,110 @@ export default function Dashboard() {
             </div>
           </section>
 
+          {/* Planning Guides Section */}
+          <section className="px-4 py-6 relative z-10">
+            <div className="max-w-7xl mx-auto">
+              <h3 className="text-3xl font-serif font-bold text-white mb-8 flex items-center gap-3">
+                <BookOpen className="w-8 h-8 text-purple-400" />
+                Wedding Music Guides
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+                {/* First Dance Guide */}
+                <Link href={`/wedding/${activeWedding.id}/builder`} className="group">
+                  <div className="glass-gradient rounded-xl p-6 hover:scale-105 transform transition-all">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center">
+                        <Heart className="w-5 h-5 text-white" />
+                      </div>
+                      <h4 className="font-bold text-white">First Dance Guide</h4>
+                    </div>
+                    <p className="text-sm text-white/70 mb-3">Choose the perfect song for your first dance as newlyweds</p>
+                    <div className="flex items-center gap-2 text-xs text-white/60">
+                      <Clock className="w-3 h-3" />
+                      <span>5 min read</span>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Timeline Planning */}
+                <Link href={`/wedding/${activeWedding.id}/builder`} className="group">
+                  <div className="glass-gradient rounded-xl p-6 hover:scale-105 transform transition-all">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center">
+                        <Compass className="w-5 h-5 text-white" />
+                      </div>
+                      <h4 className="font-bold text-white">Timeline Planning</h4>
+                    </div>
+                    <p className="text-sm text-white/70 mb-3">Build the perfect flow from ceremony to last dance</p>
+                    <div className="flex items-center gap-2 text-xs text-white/60">
+                      <Clock className="w-3 h-3" />
+                      <span>8 min read</span>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Song Discovery Tips */}
+                <Link href={`/wedding/${activeWedding.id}/builder`} className="group">
+                  <div className="glass-gradient rounded-xl p-6 hover:scale-105 transform transition-all">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center">
+                        <Lightbulb className="w-5 h-5 text-white" />
+                      </div>
+                      <h4 className="font-bold text-white">Song Discovery Tips</h4>
+                    </div>
+                    <p className="text-sm text-white/70 mb-3">Find hidden gems and crowd favorites for every moment</p>
+                    <div className="flex items-center gap-2 text-xs text-white/60">
+                      <Clock className="w-3 h-3" />
+                      <span>6 min read</span>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Guest Collaboration */}
+                <Link href={`/wedding/${activeWedding.id}/guests`} className="group">
+                  <div className="glass-gradient rounded-xl p-6 hover:scale-105 transform transition-all">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center">
+                        <Users className="w-5 h-5 text-white" />
+                      </div>
+                      <h4 className="font-bold text-white">Guest Collaboration</h4>
+                    </div>
+                    <p className="text-sm text-white/70 mb-3">Let your guests help create the perfect party playlist</p>
+                    <div className="flex items-center gap-2 text-xs text-white/60">
+                      <Clock className="w-3 h-3" />
+                      <span>4 min read</span>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+
+              {/* Quick Tips Banner */}
+              <div className="glass-darker rounded-xl p-6 mb-12">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Lightbulb className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white mb-2">Pro Tip: Use Our Curated Playlists!</h4>
+                    <p className="text-white/70 text-sm mb-3">
+                      We've expanded our curated playlists with 10+ new collections including Indie Romance, Latin Fiesta, 
+                      Cultural Fusion, and Hidden Gems. Browse by vibe, genre, or moment to discover the perfect songs for your celebration.
+                    </p>
+                    <Link 
+                      href={`/wedding/${activeWedding.id}/builder`} 
+                      className="text-sm text-purple-400 hover:text-purple-300 font-medium inline-flex items-center gap-1"
+                    >
+                      Explore Playlists <ChevronRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Recent Activity Section */}
-          <section className="px-4 py-12 relative z-10">
+          <section className="px-4 py-6 relative z-10">
             <div className="max-w-7xl mx-auto">
               <h3 className="text-3xl font-serif font-bold text-white mb-8 flex items-center gap-3">
                 <Sparkles className="w-8 h-8 text-yellow-400 animate-pulse" />

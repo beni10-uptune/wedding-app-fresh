@@ -11,7 +11,6 @@ import { playlistTemplates } from '@/data/playlistTemplates'
 import { ProgressBar } from '@/components/onboarding/ProgressBar'
 import { WeddingCreatedSuccess } from '@/components/WeddingCreatedSuccess'
 import { generateSlugFromNames, isValidSlug, isSlugAvailable, generateUniqueSlug, sanitizeSlug } from '@/lib/slug-utils'
-import { config } from '@/lib/config'
 
 interface WeddingData {
   coupleName1: string

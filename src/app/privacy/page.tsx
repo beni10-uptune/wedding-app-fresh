@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50 py-12">
@@ -44,7 +46,7 @@ export default function PrivacyPage() {
               <li>Browser type and operating system</li>
               <li>Pages visited and time spent on our platform</li>
               <li>Referring website addresses</li>
-              <li>Cookies and usage data (see our <a href="/cookies" className="text-purple-600 hover:underline">Cookie Policy</a>)</li>
+              <li>Cookies and usage data (see our <Link href="/cookies" className="text-purple-600 hover:underline">Cookie Policy</Link>)</li>
             </ul>
 
             <h3 className="text-xl font-semibold mb-3">Third-Party Data</h3>

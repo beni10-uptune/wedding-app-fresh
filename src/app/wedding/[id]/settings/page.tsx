@@ -429,10 +429,9 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
                     <button
                       onClick={() => {
                         // Generate a suggestion based on couple names
-                        const names = wedding.coupleNames || 
-                          [wedding.coupleName1, wedding.coupleName2].filter(Boolean)
+                        const names = wedding.coupleNames || []
                         const suggestion = names.length > 0 
-                          ? names.map(name => name.toLowerCase().split(' ')[0]).join('-')
+                          ? names.map(name => name?.toLowerCase().split(' ')[0] || '').join('-')
                           : ''
                         setNewSlug(suggestion)
                         setIsEditingSlug(true)

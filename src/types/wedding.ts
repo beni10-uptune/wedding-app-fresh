@@ -22,6 +22,7 @@ export interface Wedding {
   status: 'planning' | 'active' | 'completed'
   paymentStatus: 'pending' | 'paid' | 'refunded'
   paymentId?: string
+  slug?: string // Custom URL slug for the wedding
   createdAt: Timestamp
   updatedAt: Timestamp
 }

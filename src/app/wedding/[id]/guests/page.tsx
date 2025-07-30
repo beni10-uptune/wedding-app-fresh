@@ -279,12 +279,15 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
                 <div className="flex gap-3 items-center">
                   <div className="flex-1 glass-darker rounded-lg px-4 py-3">
                     <code className="text-sm text-purple-300 break-all">
-                      {`${window.location.origin}/join/${weddingId}`}
+                      {wedding?.slug ? `${window.location.origin}/${wedding.slug}` : `${window.location.origin}/join/${weddingId}`}
                     </code>
                   </div>
                   <button
                     onClick={() => {
-                      navigator.clipboard.writeText(`${window.location.origin}/join/${weddingId}`)
+                      const shareUrl = wedding?.slug 
+                        ? `${window.location.origin}/${wedding.slug}`
+                        : `${window.location.origin}/join/${weddingId}`
+                      navigator.clipboard.writeText(shareUrl)
                       setCopiedId('share-link')
                       setTimeout(() => setCopiedId(null), 2000)
                     }}

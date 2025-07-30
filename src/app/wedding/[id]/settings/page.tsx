@@ -3,18 +3,21 @@
 import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import Link from 'next/link'
 import { 
   ArrowLeft, Users, Check, 
-  UserPlus, Shield, AlertCircle, Crown 
+  UserPlus, Shield, AlertCircle, Crown,
+  Globe, Copy, Edit2
 } from 'lucide-react'
 import UpgradeModal from '@/components/UpgradeModal'
 import { getUserTier } from '@/lib/subscription-tiers'
+import { isValidSlug, isSlugAvailable, sanitizeSlug } from '@/lib/slug-utils'
 
 interface Wedding {
   id: string
+  slug?: string
   coupleNames?: string[]
   coupleName1?: string
   coupleName2?: string
@@ -38,6 +41,12 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
   const [coOwners, setCoOwners] = useState<string[]>([])
   const [showAddCoOwner, setShowAddCoOwner] = useState(false)
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+
+  // Slug management
+  const [isEditingSlug, setIsEditingSlug] = useState(false)
+  const [newSlug, setNewSlug] = useState('')
+  const [slugError, setSlugError] = useState('')
+  const [isCheckingSlug, setIsCheckingSlug] = useState(false)
 
   useEffect(() => {
     if (!user) {
@@ -122,6 +131,54 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
       setTimeout(() => setCopiedId(null), 3000)
     } catch (error) {
       console.error('Error inviting co-owner:', error)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleSlugChange = async (value: string) => {
+    const sanitized = sanitizeSlug(value)
+    setNewSlug(sanitized)
+    setSlugError('')
+    
+    if (sanitized.length < 3) {
+      setSlugError('URL must be at least 3 characters')
+      return
+    }
+    
+    if (!isValidSlug(sanitized)) {
+      setSlugError('URL can only contain lowercase letters, numbers, and hyphens')
+      return
+    }
+    
+    setIsCheckingSlug(true)
+    try {
+      const available = await isSlugAvailable(sanitized, weddingId)
+      if (!available) {
+        setSlugError('This URL is already taken')
+      }
+    } catch (error) {
+      console.error('Error checking slug:', error)
+    } finally {
+      setIsCheckingSlug(false)
+    }
+  }
+
+  const handleSaveSlug = async () => {
+    if (!wedding || slugError || !newSlug) return
+    
+    setSaving(true)
+    try {
+      await updateDoc(doc(db, 'weddings', weddingId), {
+        slug: newSlug,
+        updatedAt: new Date()
+      })
+      
+      setWedding({ ...wedding, slug: newSlug })
+      setIsEditingSlug(false)
+    } catch (error) {
+      console.error('Error updating slug:', error)
+      setSlugError('Failed to update URL. Please try again.')
     } finally {
       setSaving(false)
     }
@@ -250,6 +307,139 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
                     <p className="text-green-300/80 text-sm mt-1">
                       Share this link with your partner. They'll need to create an account or sign in to join as a co-owner.
                     </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Wedding URL Management */}
+        <div className="glass-darker rounded-xl border border-white/10 mb-8">
+          <div className="px-6 py-4 border-b border-white/10">
+            <div className="flex items-center gap-3">
+              <Globe className="w-5 h-5 text-purple-400" />
+              <h2 className="text-lg font-semibold text-white">Wedding URL</h2>
+            </div>
+          </div>
+
+          <div className="p-6">
+            <p className="text-white/60 mb-6">
+              Your custom wedding URL makes it easy for guests to find and join your wedding playlist.
+            </p>
+
+            <div className="space-y-4">
+              {!isEditingSlug ? (
+                <div className="flex items-center justify-between p-4 glass rounded-lg">
+                  <div className="flex-1">
+                    <p className="text-sm text-white/60 mb-1">Your wedding URL</p>
+                    <p className="text-white font-mono">
+                      {window.location.origin}/{wedding.slug || weddingId}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        const url = `${window.location.origin}/${wedding.slug || weddingId}`
+                        navigator.clipboard.writeText(url)
+                        setCopiedId('wedding-url')
+                        setTimeout(() => setCopiedId(null), 2000)
+                      }}
+                      className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                    >
+                      {copiedId === 'wedding-url' ? (
+                        <Check className="w-5 h-5 text-green-400" />
+                      ) : (
+                        <Copy className="w-5 h-5 text-white" />
+                      )}
+                    </button>
+                    {wedding.slug && (
+                      <button
+                        onClick={() => {
+                          setNewSlug(wedding.slug || '')
+                          setIsEditingSlug(true)
+                        }}
+                        className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                      >
+                        <Edit2 className="w-5 h-5 text-white" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-white/80 mb-2">
+                      Custom URL
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <span className="text-white/60">{window.location.origin}/</span>
+                      <input
+                        type="text"
+                        value={newSlug}
+                        onChange={(e) => handleSlugChange(e.target.value)}
+                        className="input flex-1"
+                        placeholder="your-wedding-name"
+                      />
+                    </div>
+                    {slugError && (
+                      <p className="text-sm text-red-400 mt-2 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        {slugError}
+                      </p>
+                    )}
+                    {isCheckingSlug && (
+                      <p className="text-sm text-white/60 mt-2">Checking availability...</p>
+                    )}
+                  </div>
+
+                  <div className="flex gap-3 justify-end">
+                    <button
+                      onClick={() => {
+                        setIsEditingSlug(false)
+                        setNewSlug('')
+                        setSlugError('')
+                      }}
+                      className="px-4 py-2 text-white/70 hover:text-white"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleSaveSlug}
+                      disabled={saving || !!slugError || !newSlug || isCheckingSlug}
+                      className="btn-primary"
+                    >
+                      {saving ? 'Saving...' : 'Save URL'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {!wedding.slug && !isEditingSlug && (
+              <div className="mt-4 p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-purple-400 font-medium">No custom URL yet</p>
+                    <p className="text-purple-300/80 text-sm mt-1">
+                      Create a custom URL to make it easier for guests to find your wedding.
+                    </p>
+                    <button
+                      onClick={() => {
+                        // Generate a suggestion based on couple names
+                        const names = wedding.coupleNames || 
+                          [wedding.coupleName1, wedding.coupleName2].filter(Boolean)
+                        const suggestion = names.length > 0 
+                          ? names.map(name => name.toLowerCase().split(' ')[0]).join('-')
+                          : ''
+                        setNewSlug(suggestion)
+                        setIsEditingSlug(true)
+                      }}
+                      className="text-sm text-purple-400 hover:text-purple-300 mt-2 font-medium"
+                    >
+                      Create Custom URL →
+                    </button>
                   </div>
                 </div>
               </div>

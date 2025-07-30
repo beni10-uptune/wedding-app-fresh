@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ArrowRight, ArrowLeft, Music, Heart, MapPin, Users, Crown, CheckCircle, Sparkles } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Music, Heart, MapPin, Users, Crown, CheckCircle, Sparkles, Globe, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { db } from '@/lib/firebase'
@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation'
 import { playlistTemplates } from '@/data/playlistTemplates'
 import { ProgressBar } from '@/components/onboarding/ProgressBar'
 import { WeddingCreatedSuccess } from '@/components/WeddingCreatedSuccess'
+import { generateSlugFromNames, isValidSlug, isSlugAvailable, generateUniqueSlug, sanitizeSlug } from '@/lib/slug-utils'
 
 interface WeddingData {
   coupleName1: string
@@ -21,6 +22,7 @@ interface WeddingData {
   weddingStyle: string
   moments: string[]
   playlistTemplate?: string
+  slug?: string
 }
 
 export default function CreateWeddingPage() {
@@ -31,6 +33,9 @@ export default function CreateWeddingPage() {
   const [error, setError] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdWeddingId, setCreatedWeddingId] = useState('')
+  const [createdWeddingSlug, setCreatedWeddingSlug] = useState('')
+  const [slugError, setSlugError] = useState('')
+  const [isCheckingSlug, setIsCheckingSlug] = useState(false)
   const [weddingData, setWeddingData] = useState<WeddingData>({
     coupleName1: '',
     coupleName2: '',
@@ -40,7 +45,8 @@ export default function CreateWeddingPage() {
     guestCount: 50,
     weddingStyle: '',
     moments: ['ceremony', 'cocktail', 'dinner', 'dancing'],
-    playlistTemplate: ''
+    playlistTemplate: '',
+    slug: ''
   })
   const router = useRouter()
 
@@ -57,11 +63,20 @@ export default function CreateWeddingPage() {
           if (userDoc.exists()) {
             const userData = userDoc.data()
             // Pre-populate names from signup
+            const name1 = userData.displayName || ''
+            const name2 = userData.partnerName || ''
+            
             setWeddingData(prev => ({
               ...prev,
-              coupleName1: userData.displayName || '',
-              coupleName2: userData.partnerName || ''
+              coupleName1: name1,
+              coupleName2: name2
             }))
+            
+            // Generate initial slug from names
+            if (name1 && name2) {
+              const generatedSlug = generateSlugFromNames([name1, name2])
+              setWeddingData(prev => ({ ...prev, slug: generatedSlug }))
+            }
           }
         } catch (error) {
           console.error('Error loading user data:', error)
@@ -70,6 +85,14 @@ export default function CreateWeddingPage() {
     }
     loadUserData()
   }, [user])
+
+  // Auto-generate slug when names change
+  useEffect(() => {
+    if (weddingData.coupleName1 && weddingData.coupleName2 && !weddingData.slug) {
+      const generatedSlug = generateSlugFromNames([weddingData.coupleName1, weddingData.coupleName2])
+      setWeddingData(prev => ({ ...prev, slug: generatedSlug }))
+    }
+  }, [weddingData.coupleName1, weddingData.coupleName2])
 
   const checkExistingWedding = async () => {
     if (!user) {
@@ -122,6 +145,34 @@ export default function CreateWeddingPage() {
     }))
   }
 
+  const handleSlugChange = async (value: string) => {
+    const sanitized = sanitizeSlug(value)
+    setWeddingData(prev => ({ ...prev, slug: sanitized }))
+    setSlugError('')
+    
+    if (sanitized.length < 3) {
+      setSlugError('URL must be at least 3 characters')
+      return
+    }
+    
+    if (!isValidSlug(sanitized)) {
+      setSlugError('URL can only contain lowercase letters, numbers, and hyphens')
+      return
+    }
+    
+    setIsCheckingSlug(true)
+    try {
+      const available = await isSlugAvailable(sanitized)
+      if (!available) {
+        setSlugError('This URL is already taken')
+      }
+    } catch (error) {
+      console.error('Error checking slug:', error)
+    } finally {
+      setIsCheckingSlug(false)
+    }
+  }
+
   const handleMomentToggle = (momentId: string) => {
     setWeddingData(prev => ({
       ...prev,
@@ -146,13 +197,24 @@ export default function CreateWeddingPage() {
       return
     }
     
+    // Validate slug
+    if (slugError) {
+      setError('Please fix the URL errors before continuing')
+      return
+    }
+    
     console.log('Creating wedding with data:', weddingData)
     setLoading(true)
     
     try {
+      // Generate unique slug if not provided or if there's a conflict
+      let finalSlug = weddingData.slug || generateSlugFromNames([weddingData.coupleName1, weddingData.coupleName2])
+      finalSlug = await generateUniqueSlug(finalSlug)
+      
       // Create wedding document
       const weddingRef = await addDoc(collection(db, 'weddings'), {
         title: `${weddingData.coupleName1} & ${weddingData.coupleName2}'s Wedding`,
+        slug: finalSlug,
         coupleNames: [weddingData.coupleName1, weddingData.coupleName2],
         weddingDate: Timestamp.fromDate(new Date(weddingData.weddingDate)),
         venue: weddingData.venue || '',
@@ -223,6 +285,7 @@ export default function CreateWeddingPage() {
 
       // Show success modal instead of immediate redirect
       setCreatedWeddingId(weddingRef.id)
+      setCreatedWeddingSlug(finalSlug)
       setShowSuccess(true)
     } catch (error: any) {
       console.error('Error creating wedding:', error)
@@ -355,6 +418,41 @@ export default function CreateWeddingPage() {
                     className="input"
                     min={new Date().toISOString().split('T')[0]}
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-white mb-2">
+                    <Globe className="w-4 h-4 inline mr-1" />
+                    Choose your wedding URL
+                  </label>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-white/60">uptune.xyz/</span>
+                    <input
+                      type="text"
+                      value={weddingData.slug}
+                      onChange={(e) => handleSlugChange(e.target.value)}
+                      className="input flex-1"
+                      placeholder={generateSlugFromNames([weddingData.coupleName1, weddingData.coupleName2]) || "your-wedding-name"}
+                    />
+                  </div>
+                  {slugError && (
+                    <p className="text-sm text-red-400 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {slugError}
+                    </p>
+                  )}
+                  {isCheckingSlug && (
+                    <p className="text-sm text-white/60">Checking availability...</p>
+                  )}
+                  {!slugError && weddingData.slug && !isCheckingSlug && (
+                    <p className="text-sm text-green-400 flex items-center gap-1">
+                      <CheckCircle className="w-3 h-3" />
+                      This URL is available!
+                    </p>
+                  )}
+                  <p className="text-xs text-white/60 mt-1">
+                    This will be the link you share with guests
+                  </p>
                 </div>
 
                 <div className="glass-darker rounded-lg p-4 mt-6">
@@ -656,6 +754,7 @@ export default function CreateWeddingPage() {
       {showSuccess && (
         <WeddingCreatedSuccess
           weddingId={createdWeddingId}
+          weddingSlug={createdWeddingSlug}
           coupleName1={weddingData.coupleName1}
           coupleName2={weddingData.coupleName2}
           selectedMoments={weddingData.moments.length}

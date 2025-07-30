@@ -115,6 +115,7 @@ export interface Timeline {
 // Extended Wedding Type for V2
 export interface WeddingV2 {
   id: string;
+  slug: string; // Custom URL like "sarah-and-jane" for uptune.xyz/sarah-and-jane
   coupleNames: string[];
   weddingDate: Timestamp;
   venueType?: 'indoor' | 'outdoor' | 'beach' | 'garden' | 'ballroom' | 'other';

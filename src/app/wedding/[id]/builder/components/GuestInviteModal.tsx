@@ -9,6 +9,7 @@ import { generateInviteToken } from '@/lib/utils'
 interface GuestInviteModalProps {
   weddingId: string
   coupleNames: string[]
+  weddingSlug?: string
   onClose: () => void
   onSuccess: () => void
 }
@@ -16,6 +17,7 @@ interface GuestInviteModalProps {
 export default function GuestInviteModal({ 
   weddingId, 
   coupleNames,
+  weddingSlug,
   onClose, 
   onSuccess 
 }: GuestInviteModalProps) {
@@ -110,8 +112,10 @@ export default function GuestInviteModal({
   }
 
   const handleCopyLink = () => {
-    // In production, this would be the actual guest submission URL
-    const link = `${window.location.origin}/guest/${weddingId}`
+    // Use slug if available, otherwise fall back to join URL
+    const link = weddingSlug 
+      ? `${window.location.origin}/${weddingSlug}`
+      : `${window.location.origin}/join/${weddingId}`
     navigator.clipboard.writeText(link)
     setCopiedLink(true)
     setTimeout(() => setCopiedLink(false), 2000)

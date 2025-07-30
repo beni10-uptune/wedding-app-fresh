@@ -8,6 +8,7 @@ import { motion } from 'framer-motion'
 
 interface WeddingCreatedSuccessProps {
   weddingId: string
+  weddingSlug?: string
   coupleName1?: string
   coupleName2?: string
   selectedMoments?: number
@@ -16,6 +17,7 @@ interface WeddingCreatedSuccessProps {
 
 export function WeddingCreatedSuccess({ 
   weddingId, 
+  weddingSlug,
   coupleName1 = 'Partner 1',
   coupleName2 = 'Partner 2',
   selectedMoments = 4,

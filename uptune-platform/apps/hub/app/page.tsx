@@ -55,7 +55,7 @@ export default function HomePage() {
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-5xl md:text-6xl font-bold mb-6">
-            Music for Life's{' '}
+            Music for Life&apos;s{' '}
             <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
               Best Moments
             </span>
@@ -152,7 +152,7 @@ export default function HomePage() {
               <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
                 <Music className="w-5 h-5 text-white" />
               </div>
-              <span className="text-gray-600">© 2025 UpTune. All rights reserved.</span>
+              <span className="text-gray-600">&copy; 2025 UpTune. All rights reserved.</span>
             </div>
             <div className="flex gap-6">
               <Link href="/privacy" className="text-gray-600 hover:text-gray-900">Privacy</Link>

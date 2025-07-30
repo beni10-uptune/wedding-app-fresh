@@ -1,16 +1,17 @@
 'use client'
 
-import { useEffect } from 'react'
+import { use, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { getWeddingBySlug } from '@/lib/slug-utils'
 
-export default function WeddingSlugPage({ params }: { params: { slug: string } }) {
+export default function WeddingSlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const router = useRouter()
+  const { slug } = use(params)
   
   useEffect(() => {
     const redirectToWedding = async () => {
       try {
-        const wedding = await getWeddingBySlug(params.slug)
+        const wedding = await getWeddingBySlug(slug)
         
         if (wedding) {
           // Redirect to the guest join page
@@ -26,7 +27,7 @@ export default function WeddingSlugPage({ params }: { params: { slug: string } }
     }
     
     redirectToWedding()
-  }, [params.slug, router])
+  }, [slug, router])
   
   // Show loading state while redirecting
   return (

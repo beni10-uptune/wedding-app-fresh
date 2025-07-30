@@ -4,9 +4,13 @@ import { ArrowRight, Heart, Music, Users, CheckCircle, Play, Sparkles, Download,
 import { useState } from 'react'
 import Link from 'next/link'
 import { InteractiveDemo } from '@/components/InteractiveDemo'
+import { SPOTIFY_WEDDING_SONGS } from '@/data/spotify-wedding-songs'
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  
+  // Calculate total songs dynamically
+  const totalSongs = SPOTIFY_WEDDING_SONGS.length
   
   return (
     <div className="min-h-screen dark-gradient relative overflow-hidden">
@@ -95,26 +99,26 @@ export default function Home() {
 
             {/* Subheadline */}
             <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              Every great wedding has music that moves people. <br className="hidden md:block" />
-              Build yours with confidence, get your guests involved, and dance all night long.
+              Plan your wedding music in one afternoon. Get your guests involved. <br className="hidden md:block" />
+              Dance all night to songs that actually matter to you both.
             </p>
 
-            {/* Value Props */}
+            {/* Value Props - Enhanced with specifics */}
             <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-12">
               <div className="glass rounded-2xl p-6 hover:scale-105 transition-transform">
                 <Heart className="w-10 h-10 text-pink-400 mx-auto mb-4" />
-                <h3 className="font-bold text-lg mb-2">Feel Confident</h3>
-                <p className="text-white/70 text-sm">Know every moment has the perfect song. No awkward silences, no empty dance floors.</p>
+                <h3 className="font-bold text-lg mb-2">Build Together in Real-Time</h3>
+                <p className="text-white/70 text-sm">See each other's song choices instantly. From processional to last dance, create your timeline as a team.</p>
               </div>
               <div className="glass rounded-2xl p-6 hover:scale-105 transition-transform">
                 <Users className="w-10 h-10 text-blue-400 mx-auto mb-4" />
-                <h3 className="font-bold text-lg mb-2">Include Everyone</h3>
-                <p className="text-white/70 text-sm">Let loved ones contribute songs that matter. Everyone feels part of your special day.</p>
+                <h3 className="font-bold text-lg mb-2">One Link for Guests</h3>
+                <p className="text-white/70 text-sm">Send one link. Guests add their must-play songs. You keep full control over what makes the cut.</p>
               </div>
               <div className="glass rounded-2xl p-6 hover:scale-105 transition-transform">
                 <Sparkles className="w-10 h-10 text-purple-400 mx-auto mb-4" />
-                <h3 className="font-bold text-lg mb-2">Save Your Sanity</h3>
-                <p className="text-white/70 text-sm">No more spreadsheets or scattered notes. Everything organized, ready when you need it.</p>
+                <h3 className="font-bold text-lg mb-2">Export to Any DJ</h3>
+                <p className="text-white/70 text-sm">Drag songs into each moment. Time your processional. Download PDFs ready for any DJ or band.</p>
               </div>
             </div>
 
@@ -225,8 +229,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-bold mb-3">Create Your Timeline</h3>
               <p className="text-white/70">
-                Set up your wedding moments in minutes. From guest arrival to last dance, 
-                we've mapped out every moment that needs music.
+                Start with our 11 pre-set moments. From guest arrival to send-off, 
+                we've thought of everything. Add custom moments if you need them.
               </p>
             </div>
 
@@ -237,8 +241,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-bold mb-3">Share with Guests</h3>
               <p className="text-white/70">
-                Send one link. Guests suggest songs they'd love to hear. 
-                You stay in control while everyone feels included.
+                Send one link. Guests add songs without creating accounts. 
+                Uncle Jim gets his one song. You keep the vibe.
               </p>
             </div>
 
@@ -326,8 +330,8 @@ export default function Home() {
               <Sparkles className="w-12 h-12 text-yellow-400 mb-4" />
               <h3 className="text-xl font-bold mb-3">Curated Song Library</h3>
               <p className="text-white/70">
-                Start with proven songs for each moment. Filter by vibe, era, or genre. 
-                Add your own favorites. Skip the hours of research.
+                Browse {totalSongs.toLocaleString()} hand-picked wedding songs tested at real weddings. Filter by vibe, era, or genre. 
+                Never run out of ideas. Never get stuck.
               </p>
             </div>
 
@@ -349,6 +353,114 @@ export default function Home() {
                 Invite your partner as a co-owner. Both can edit and organize. 
                 See who added what. Make decisions together.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* One Afternoon Promise Section */}
+      <section className="section relative z-10 py-20 bg-gradient-to-r from-purple-900/20 to-pink-900/20">
+        <div className="container-max">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
+              Plan Your Music in One Joyful Afternoon
+            </h2>
+            <p className="text-xl text-white/70 max-w-3xl mx-auto">
+              Yes, really. Here's how couples do it:
+            </p>
+          </div>
+
+          <div className="max-w-3xl mx-auto">
+            <div className="space-y-4">
+              <div className="glass rounded-2xl p-6 flex items-center gap-4">
+                <div className="text-2xl font-bold text-purple-400 w-20">2:00</div>
+                <div>
+                  <h4 className="font-bold mb-1">Start Together with Coffee</h4>
+                  <p className="text-white/70">Create your wedding, invite your partner, set up the timeline</p>
+                </div>
+              </div>
+              <div className="glass rounded-2xl p-6 flex items-center gap-4">
+                <div className="text-2xl font-bold text-pink-400 w-20">2:30</div>
+                <div>
+                  <h4 className="font-bold mb-1">Add Your Must-Plays</h4>
+                  <p className="text-white/70">First dance, parents' songs, those non-negotiables</p>
+                </div>
+              </div>
+              <div className="glass rounded-2xl p-6 flex items-center gap-4">
+                <div className="text-2xl font-bold text-blue-400 w-20">3:00</div>
+                <div>
+                  <h4 className="font-bold mb-1">Browse Our {totalSongs.toLocaleString()} Tested Songs</h4>
+                  <p className="text-white/70">Filter by moment, vibe, era - find gems you forgot about</p>
+                </div>
+              </div>
+              <div className="glass rounded-2xl p-6 flex items-center gap-4">
+                <div className="text-2xl font-bold text-purple-400 w-20">3:30</div>
+                <div>
+                  <h4 className="font-bold mb-1">Perfect Your Timeline</h4>
+                  <p className="text-white/70">Drag, drop, check the flow - see it all come together</p>
+                </div>
+              </div>
+              <div className="glass rounded-2xl p-6 flex items-center gap-4">
+                <div className="text-2xl font-bold text-pink-400 w-20">4:00</div>
+                <div>
+                  <h4 className="font-bold mb-1">Send to Guests</h4>
+                  <p className="text-white/70">One link, done - they'll add songs over the coming weeks</p>
+                </div>
+              </div>
+              <div className="glass rounded-2xl p-6 flex items-center gap-4">
+                <div className="text-2xl font-bold text-green-400 w-20">4:30</div>
+                <div>
+                  <h4 className="font-bold mb-1">Done! Time for Cake</h4>
+                  <p className="text-white/70">Seriously, that's it - come back later to review guest suggestions</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Works With Everything Section */}
+      <section className="section relative z-10 py-20">
+        <div className="container-max">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
+              Yes, It Works With...
+            </h2>
+            <p className="text-xl text-white/70 max-w-3xl mx-auto">
+              Whatever your setup, we've got you covered
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            <div className="glass rounded-2xl p-6 text-center">
+              <div className="text-3xl mb-3">🎧</div>
+              <h4 className="font-bold mb-2">Spotify</h4>
+              <p className="text-white/70 text-sm">Export playlists with one click. Works with free or premium accounts.</p>
+            </div>
+            <div className="glass rounded-2xl p-6 text-center">
+              <div className="text-3xl mb-3">🎤</div>
+              <h4 className="font-bold mb-2">Any DJ or Band</h4>
+              <p className="text-white/70 text-sm">Download professional PDFs with all song details and timing notes.</p>
+            </div>
+            <div className="glass rounded-2xl p-6 text-center">
+              <div className="text-3xl mb-3">🎻</div>
+              <h4 className="font-bold mb-2">Live Musicians</h4>
+              <p className="text-white/70 text-sm">Share your timeline so they know exactly when to play.</p>
+            </div>
+            <div className="glass rounded-2xl p-6 text-center">
+              <div className="text-3xl mb-3">🏛️</div>
+              <h4 className="font-bold mb-2">Venue Sound Systems</h4>
+              <p className="text-white/70 text-sm">Standard formats that work everywhere. No technical headaches.</p>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <div className="inline-flex flex-col sm:flex-row gap-4 items-center p-6 glass rounded-2xl">
+              <Shield className="w-8 h-8 text-blue-400" />
+              <div className="text-left">
+                <h4 className="font-bold">Your Music Stays Yours</h4>
+                <p className="text-white/70">Export anytime. Works offline at your venue. We're here to help, not lock you in.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -593,7 +705,7 @@ export default function Home() {
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-green-400 mt-0.5" />
-                    <span>Curated song library (500+ songs)</span>
+                    <span>Curated song library ({totalSongs.toLocaleString()} songs)</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-green-400 mt-0.5" />

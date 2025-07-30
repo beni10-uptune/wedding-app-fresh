@@ -10,7 +10,7 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   
   // Calculate total songs dynamically
-  const totalSongs = SPOTIFY_WEDDING_SONGS.length
+  const totalSongs = Object.values(SPOTIFY_WEDDING_SONGS).reduce((total, songs) => total + songs.length, 0)
   
   return (
     <div className="min-h-screen dark-gradient relative overflow-hidden">

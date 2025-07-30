@@ -284,7 +284,7 @@ export const curatedPlaylists: CuratedPlaylist[] = [
   {
     id: 'country-wedding',
     name: 'Country Wedding Classics',
-    description: 'Boot-scootin' favorites for a down-home celebration',
+    description: 'Boot-scootin\' favorites for a down-home celebration',
     momentId: 'party',
     icon: '🤠',
     vibe: ['country', 'fun', 'line-dance'],

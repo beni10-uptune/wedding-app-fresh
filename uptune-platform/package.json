@@ -3,20 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "test": "turbo test"
+    "install:hub": "cd apps/hub && npm install",
+    "install:teams": "cd apps/teams && npm install",
+    "install:celebrations": "cd apps/celebrations && npm install",
+    "build:hub": "cd apps/hub && npm run build",
+    "build:teams": "cd apps/teams && npm run build",
+    "build:celebrations": "cd apps/celebrations && npm run build",
+    "dev:hub": "cd apps/hub && npm run dev",
+    "dev:teams": "cd apps/teams && npm run dev",
+    "dev:celebrations": "cd apps/celebrations && npm run dev"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
-    "turbo": "^2.0.0",
     "typescript": "^5.4.5"
-  },
-  "packageManager": "npm@10.0.0",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+  }
 }

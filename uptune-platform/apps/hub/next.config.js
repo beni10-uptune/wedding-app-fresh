@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['@uptune/ui', '@uptune/auth', '@uptune/music-core'],
+  // Removed transpilePackages since we're not using workspace packages yet
 }
 
 module.exports = nextConfig

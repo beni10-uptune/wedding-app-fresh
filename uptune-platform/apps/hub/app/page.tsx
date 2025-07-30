@@ -22,12 +22,12 @@ export default function HomePage() {
       status: 'coming-soon'
     },
     {
-      name: 'Celebrations',
-      icon: PartyPopper,
-      description: 'Music for every milestone and moment',
-      features: ['Birthday parties', 'Anniversaries', 'Holiday events'],
-      url: 'https://celebrations.uptune.xyz',
-      color: 'from-orange-600 to-yellow-600',
+      name: 'Memorials',
+      icon: Heart,
+      description: 'Honor loved ones with meaningful music',
+      features: ['Funeral service music', 'Family collaboration', 'Memory sharing'],
+      url: 'https://memorials.uptune.xyz',
+      color: 'from-slate-600 to-slate-800',
       status: 'coming-soon'
     }
   ]

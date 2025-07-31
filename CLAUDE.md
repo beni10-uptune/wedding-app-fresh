@@ -1,9 +1,38 @@
-# Wedding App - Project Context for Claude
+# Uptune Apps - Multi-Project Context for Claude
 
 <!-- Last Updated: 2025-01-30 -->
 
-## Overview
-This is a wedding planning application built with Next.js 15, TypeScript, and Firebase. The app allows couples to create custom wedding playlists with Spotify integration.
+## Apps Overview
+
+### 1. Wedding App (Current)
+- **Location**: `/wedding-app-fresh`
+- **URL**: weddings.uptune.xyz
+- **Stack**: Next.js 15, TypeScript, Firebase, Spotify API
+- **Purpose**: Wedding planning with custom playlists
+
+### 2. Uptune App
+- **Location**: `/uptune-app` (to be managed)
+- **URL**: uptune.xyz
+- **Stack**: TBD
+- **Purpose**: Main music platform
+
+## Monorepo Architecture (Planned)
+```
+uptune-monorepo/
+├── apps/
+│   ├── wedding/      # Wedding planning app
+│   ├── uptune/       # Main uptune platform
+│   └── admin/        # Admin dashboard
+├── packages/
+│   ├── ui/           # Shared UI components
+│   ├── utils/        # Shared utilities
+│   ├── types/        # Shared TypeScript types
+│   ├── config/       # Shared configs (ESLint, TS, etc.)
+│   └── api-client/   # Shared API client
+└── services/
+    ├── auth/         # Shared auth service
+    └── music/        # Shared music/Spotify service
+```
 
 ## 🚨 Critical Information - Read First
 
@@ -89,12 +118,16 @@ The project uses various environment variables for:
 
 ### Recent Changes
 <!-- Add new entries at the top -->
+- **2025-01-30**: Updated CLAUDE.md for multi-app management
+- **2025-01-30**: Fixed build errors and added slug property to Wedding type
 - **2025-01-30**: Added CLAUDE.md documentation
 - **2025-01-30**: Fixed Next.js 15 async params in [slug]/page.tsx
 
 ### TODO/Known Issues
 - [ ] Address ESLint warnings (non-blocking)
-- [ ] Complete next.config.mjs setup (currently untracked)
+- [ ] Set up shared utilities package
+- [ ] Migrate Uptune app to this workspace
+- [ ] Create unified auth system across apps
 
 ## 🔧 Quick Reference
 
@@ -131,3 +164,32 @@ import { getDocument, updateDocument } from '@/lib/firestore-helpers'
 ### Deployment
 - Auto-deploys to Vercel on push to `main` branch
 - Preview deployments created for pull requests
+
+## 📦 Shared Utilities
+
+The `/src/shared` directory contains utilities that will be shared across all Uptune apps:
+
+### Available Utilities
+```typescript
+import { 
+  // Date utilities
+  formatDate, formatDateTime, getRelativeTime,
+  
+  // String utilities  
+  slugify, truncate, formatCurrency, isValidEmail,
+  
+  // Hooks
+  useDebounce,
+  
+  // Types
+  ApiResponse, PaginatedResponse,
+  
+  // Constants
+  ROUTES, API_ENDPOINTS, HTTP_STATUS
+} from '@/shared'
+```
+
+### Migration Path
+1. Currently lives in wedding app at `/src/shared`
+2. Will be extracted to `@uptune/shared` package
+3. Eventually part of monorepo at `/packages/shared`

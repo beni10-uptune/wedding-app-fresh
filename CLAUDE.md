@@ -2,16 +2,30 @@
 
 <!-- Last Updated: 2025-01-30 -->
 
+## Workspace Structure
+
+This is now a multi-app workspace with the following structure:
+
+```
+/Users/bensmith/Desktop/wedding-app-fresh/ (uptune-workspace)
+├── apps/
+│   ├── wedding/     # Wedding app (weddings.uptune.xyz)
+│   └── uptune/      # Main platform (uptune.xyz) - to be added
+├── packages/
+│   └── shared/      # Shared utilities and components
+└── scripts/         # Workspace scripts
+```
+
 ## Apps Overview
 
-### 1. Wedding App (Current)
-- **Location**: `/wedding-app-fresh`
+### 1. Wedding App
+- **Location**: `/apps/wedding`
 - **URL**: weddings.uptune.xyz
 - **Stack**: Next.js 15, TypeScript, Firebase, Spotify API
 - **Purpose**: Wedding planning with custom playlists
 
 ### 2. Uptune App
-- **Location**: `/uptune-app` (to be managed)
+- **Location**: `/apps/uptune` (to be added)
 - **URL**: uptune.xyz
 - **Stack**: TBD
 - **Purpose**: Main music platform
@@ -118,6 +132,9 @@ The project uses various environment variables for:
 
 ### Recent Changes
 <!-- Add new entries at the top -->
+- **2025-01-30**: Reorganized into multi-app workspace structure
+- **2025-01-30**: Moved wedding app to /apps/wedding
+- **2025-01-30**: Created packages/shared for shared utilities
 - **2025-01-30**: Updated CLAUDE.md for multi-app management
 - **2025-01-30**: Fixed build errors and added slug property to Wedding type
 - **2025-01-30**: Added CLAUDE.md documentation

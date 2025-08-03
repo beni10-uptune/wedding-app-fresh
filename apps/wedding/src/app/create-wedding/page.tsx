@@ -400,11 +400,44 @@ export default function CreateWeddingPage() {
                     <Heart className="w-8 h-8 text-white" />
                   </div>
                   <h2 className="text-3xl font-serif font-bold text-white mb-2">
-                    Welcome {weddingData.coupleName1} & {weddingData.coupleName2}!
+                    {weddingData.coupleName1 && weddingData.coupleName2 
+                      ? `Welcome ${weddingData.coupleName1} & ${weddingData.coupleName2}!`
+                      : "Let's Create Your Perfect Wedding Music"
+                    }
                   </h2>
                   <p className="text-white/60">
-                    Let&apos;s set up your wedding music experience
+                    Tell us about your special day
                   </p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-white mb-2">
+                      Partner 1's Name
+                    </label>
+                    <input
+                      type="text"
+                      value={weddingData.coupleName1}
+                      onChange={(e) => handleInputChange('coupleName1', e.target.value)}
+                      className="input"
+                      placeholder="First name"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-white mb-2">
+                      Partner 2's Name
+                    </label>
+                    <input
+                      type="text"
+                      value={weddingData.coupleName2}
+                      onChange={(e) => handleInputChange('coupleName2', e.target.value)}
+                      className="input"
+                      placeholder="First name"
+                      required
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -425,6 +458,9 @@ export default function CreateWeddingPage() {
                     <Globe className="w-4 h-4 inline mr-1" />
                     Choose your wedding URL
                   </label>
+                  <p className="text-xs text-white/60 mb-2">
+                    This is the link you'll share with guests to submit song requests
+                  </p>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-white/60">weddings.uptune.xyz/</span>
                     <input
@@ -451,7 +487,7 @@ export default function CreateWeddingPage() {
                     </p>
                   )}
                   <p className="text-xs text-white/60 mt-1">
-                    This will be the link you share with guests
+                    Use lowercase letters, numbers, and hyphens only
                   </p>
                 </div>
 

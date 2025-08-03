@@ -59,8 +59,14 @@ export async function isSlugAvailable(slug: string, excludeWeddingId?: string): 
     }
     
     return false
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error checking slug availability:', error)
+    // If it's a permission error, assume the slug is available
+    // This can happen when a user is creating their first wedding
+    if (error.code === 'permission-denied') {
+      console.log('Permission denied when checking slug, assuming available')
+      return true
+    }
     return false
   }
 }

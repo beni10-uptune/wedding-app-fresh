@@ -11,6 +11,7 @@ import { playlistTemplates } from '@/data/playlistTemplates'
 import { ProgressBar } from '@/components/onboarding/ProgressBar'
 import { WeddingCreatedSuccess } from '@/components/WeddingCreatedSuccess'
 import { generateSlugFromNames, isValidSlug, isSlugAvailable, generateUniqueSlug, sanitizeSlug } from '@/lib/slug-utils'
+import { generateInviteCode } from '@/lib/invitations'
 
 interface WeddingData {
   coupleName1: string
@@ -227,6 +228,7 @@ export default function CreateWeddingPage() {
         collaborators: [],
         status: 'planning',
         paymentStatus: 'pending',
+        inviteCode: generateInviteCode(),
         subscriptionTier: 'free',
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()

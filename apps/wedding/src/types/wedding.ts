@@ -23,6 +23,7 @@ export interface Wedding {
   paymentStatus: 'pending' | 'paid' | 'refunded'
   paymentId?: string
   slug?: string // Custom URL slug for the wedding
+  inviteCode?: string // General invite code for guest access
   createdAt: Timestamp
   updatedAt: Timestamp
 }

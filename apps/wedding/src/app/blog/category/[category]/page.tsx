@@ -32,6 +32,11 @@ const categories = {
     description: 'Master the art of reception music from cocktail hour to last dance',
     color: 'from-indigo-600 to-purple-600',
   },
+  'music-by-genre': {
+    name: 'Music by Genre',
+    description: 'Curated wedding songs for every musical style - Hip Hop, Country, R&B, Rock, and more',
+    color: 'from-amber-600 to-orange-600',
+  },
 }
 
 interface CategoryPageProps {

@@ -39,17 +39,6 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: '16x16' },
-      { url: '/favicon.ico', sizes: '32x32' },
-      { url: '/icon.svg', type: 'image/svg+xml' },
-    ],
-    shortcut: '/favicon.ico',
-    apple: [
-      { url: '/icon.svg', sizes: '180x180', type: 'image/svg+xml' },
-    ],
-  },
   openGraph: {
     title: "UpTune for Weddings - Create Your Perfect Wedding Playlist",
     description: "The joyful way to plan your wedding music. Collaborate with your partner and guests to create the perfect soundtrack. Just £25 per wedding.",

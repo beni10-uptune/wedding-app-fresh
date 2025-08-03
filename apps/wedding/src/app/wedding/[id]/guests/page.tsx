@@ -280,14 +280,14 @@ export default function GuestsManagementPage({ params }: { params: Promise<{ id:
                 <div className="flex gap-3 items-center">
                   <div className="flex-1 glass-darker rounded-lg px-4 py-3">
                     <code className="text-sm text-purple-300 break-all">
-                      {wedding?.slug ? `${config.getWeddingDomain()}/${wedding.slug}` : `${window.location.origin}/join/${wedding.inviteCode || weddingId}`}
+                      {wedding?.slug ? `${config.getWeddingDomain()}/${wedding.slug}` : `${window.location.origin}/join/${wedding?.inviteCode || weddingId}`}
                     </code>
                   </div>
                   <button
                     onClick={() => {
                       const shareUrl = wedding?.slug 
                         ? `${config.getWeddingDomain()}/${wedding.slug}`
-                        : `${window.location.origin}/join/${wedding.inviteCode || weddingId}`
+                        : `${window.location.origin}/join/${wedding?.inviteCode || weddingId}`
                       navigator.clipboard.writeText(shareUrl)
                       setCopiedId('share-link')
                       setTimeout(() => setCopiedId(null), 2000)

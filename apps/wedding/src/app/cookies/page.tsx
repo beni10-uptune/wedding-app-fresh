@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function CookiePolicyPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50 py-12">
@@ -145,11 +147,11 @@ export default function CookiePolicyPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">6. Contact Us</h2>
             <p className="mb-4">
-              If you have questions about our use of cookies, please contact us:
+              If you have questions about our use of cookies, please use our <Link href="/contact" className="text-purple-600 hover:underline">contact form</Link>.
             </p>
             <div className="bg-gray-100 p-4 rounded-lg">
-              <p className="mb-2"><strong>Email:</strong> privacy@uptune.xyz</p>
-              <p><strong>Address:</strong> UpTune Ltd, London, United Kingdom</p>
+              <p className="mb-2"><strong>Company:</strong> UpTune Ltd</p>
+              <p><strong>Location:</strong> London, United Kingdom</p>
             </div>
           </section>
 

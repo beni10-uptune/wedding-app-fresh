@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ArrowLeft, Music, Mail, MessageCircle } from 'lucide-react'
+import ContactForm from '@/components/ContactForm'
 
 export default function HelpPage() {
   const faqs = [
@@ -64,11 +65,11 @@ export default function HelpPage() {
             <p className="text-sm text-white/60">We're here to help with any questions</p>
           </Link>
           
-          <a href="mailto:hello@weddings.uptune.xyz" className="glass rounded-xl p-6 hover:scale-[1.02] transition-transform">
+          <Link href="/contact" className="glass rounded-xl p-6 hover:scale-[1.02] transition-transform">
             <Mail className="w-8 h-8 text-blue-400 mb-3" />
-            <h3 className="font-semibold text-white mb-2">Email Us</h3>
-            <p className="text-sm text-white/60">hello@weddings.uptune.xyz</p>
-          </a>
+            <h3 className="font-semibold text-white mb-2">Send Message</h3>
+            <p className="text-sm text-white/60">Get in touch with our team</p>
+          </Link>
         </div>
 
         {/* FAQs */}
@@ -89,22 +90,10 @@ export default function HelpPage() {
         <div id="contact" className="glass rounded-2xl p-8 md:p-12 mt-8">
           <h2 className="text-2xl font-serif font-bold text-white mb-6">Still Need Help?</h2>
           <p className="text-white/70 mb-6">
-            We're here to make your wedding music planning as smooth as possible.
+            We're here to make your wedding music planning as smooth as possible. Send us a message and we'll get back to you within 24 hours.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <a 
-              href="mailto:hello@weddings.uptune.xyz" 
-              className="btn-primary inline-flex items-center justify-center"
-            >
-              <Mail className="w-5 h-5" />
-              Email Support
-            </a>
-            <Link 
-              href="https://uptune.xyz" 
-              className="btn-glass inline-flex items-center justify-center"
-            >
-              Visit Main Site
-            </Link>
+          <div className="glass-darker rounded-xl p-6">
+            <ContactForm category="support" subject="Help Request" />
           </div>
         </div>
       </div>

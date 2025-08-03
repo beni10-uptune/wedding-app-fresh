@@ -7,6 +7,7 @@ import Link from 'next/link'
 import confetti from 'canvas-confetti'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { GTMEvents } from '@/components/GoogleTagManager'
+import { trackPurchaseConversion } from '@/lib/google-ads'
 
 function PaymentSuccessContent() {
   const router = useRouter()
@@ -27,6 +28,15 @@ function PaymentSuccessContent() {
           weddingId || '',
           2500 // Premium plan price in pence
         )
+        
+        // Track Google Ads conversion
+        trackPurchaseConversion({
+          transactionId: paymentIntent || weddingId || `purchase_${Date.now()}`,
+          value: 25, // £25 in pounds
+          currency: 'GBP',
+          weddingName: searchParams.get('wedding_name') || undefined,
+          userEmail: searchParams.get('email') || undefined,
+        })
         
         // Trigger confetti only on client side
         if (typeof window !== 'undefined' && typeof confetti === 'function') {

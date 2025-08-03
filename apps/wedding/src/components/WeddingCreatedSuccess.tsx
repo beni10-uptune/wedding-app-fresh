@@ -5,6 +5,7 @@ import { CheckCircle, Music, Users, Download, Sparkles, ArrowRight, Play } from 
 import Link from 'next/link'
 import confetti from 'canvas-confetti'
 import { motion } from 'framer-motion'
+import { getClientPricing, type PricingInfo } from '@/lib/pricing-utils-client'
 
 interface WeddingCreatedSuccessProps {
   weddingId: string
@@ -24,6 +25,12 @@ export function WeddingCreatedSuccess({
   onClose 
 }: WeddingCreatedSuccessProps) {
   const [showUpsell, setShowUpsell] = useState(false)
+  const [pricing, setPricing] = useState<PricingInfo>({ 
+    amount: 25, 
+    currency: 'USD', 
+    symbol: '$', 
+    displayPrice: '$25' 
+  })
 
   useEffect(() => {
     // Trigger confetti
@@ -38,6 +45,9 @@ export function WeddingCreatedSuccess({
     const timer = setTimeout(() => {
       setShowUpsell(true)
     }, 2000)
+    
+    // Get client pricing
+    setPricing(getClientPricing())
 
     return () => clearTimeout(timer)
   }, [])
@@ -144,8 +154,8 @@ export function WeddingCreatedSuccess({
                     Your free plan includes 10 songs. Most couples need 50-100 songs for their full wedding.
                   </p>
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl font-bold text-white">£25</span>
-                    <span className="text-sm text-white/60 line-through">£50</span>
+                    <span className="text-2xl font-bold text-white">{pricing.displayPrice}</span>
+                    <span className="text-sm text-white/60 line-through">{pricing.symbol}{pricing.amount * 2}</span>
                     <span className="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded-full">
                       50% OFF
                     </span>

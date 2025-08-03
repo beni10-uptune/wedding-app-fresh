@@ -1,13 +1,24 @@
 'use client'
 
 import { ArrowRight, Heart, Music, Users, CheckCircle, Play, Sparkles, Download, Shield, Star, Calendar, Menu, X } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { InteractiveDemo } from '@/components/InteractiveDemo'
 import { SPOTIFY_WEDDING_SONGS } from '@/data/spotify-wedding-songs'
+import { getClientPricing, type PricingInfo } from '@/lib/pricing-utils-client'
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [pricing, setPricing] = useState<PricingInfo>({ 
+    amount: 25, 
+    currency: 'USD', 
+    symbol: '$', 
+    displayPrice: '$25' 
+  })
+
+  useEffect(() => {
+    setPricing(getClientPricing())
+  }, [])
   
   // Calculate total songs dynamically
   const totalSongs = Object.values(SPOTIFY_WEDDING_SONGS).reduce((total, songs) => total + songs.length, 0)
@@ -678,7 +689,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-2xl font-bold mb-2">Full Access</h3>
                 <div className="text-4xl font-bold gradient-text mb-4">
-                  £25
+                  {pricing.displayPrice}
                 </div>
                 <p className="text-white/60 mb-6">One-time payment • Lifetime access</p>
 

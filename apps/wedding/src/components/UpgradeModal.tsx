@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Sparkles, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
 import { UPGRADE_TRIGGERS } from '@/lib/subscription-tiers'
+import { getClientPricing, type PricingInfo } from '@/lib/pricing-utils-client'
 
 interface UpgradeModalProps {
   isOpen: boolean
@@ -14,8 +15,18 @@ interface UpgradeModalProps {
 
 export default function UpgradeModal({ isOpen, onClose, trigger, weddingId }: UpgradeModalProps) {
   const [isClosing, setIsClosing] = useState(false)
+  const [pricing, setPricing] = useState<PricingInfo>({ 
+    amount: 25, 
+    currency: 'USD', 
+    symbol: '$', 
+    displayPrice: '$25' 
+  })
   
   const triggerData = UPGRADE_TRIGGERS[trigger]
+  
+  useEffect(() => {
+    setPricing(getClientPricing())
+  }, [])
 
   const handleClose = () => {
     setIsClosing(true)
@@ -74,7 +85,7 @@ export default function UpgradeModal({ isOpen, onClose, trigger, weddingId }: Up
           </div>
           <div className="flex items-start gap-3">
             <CheckCircle className="w-5 h-5 text-green-400 mt-0.5" />
-            <span className="text-white/90">Lifetime access - £25 one time</span>
+            <span className="text-white/90">Lifetime access - {pricing.displayPrice} one time</span>
           </div>
         </div>
         

@@ -130,7 +130,7 @@ export default function PrivacyPage() {
               <li><strong>Withdraw consent:</strong> Withdraw consent at any time</li>
             </ul>
             <p className="mb-4">
-              To exercise these rights, email us at privacy@uptune.xyz. We will respond within 30 days.
+              To exercise these rights, please use our <Link href="/contact" className="text-purple-600 hover:underline">contact form</Link> and select "Privacy Concern" as the category. We will respond within 30 days.
             </p>
           </section>
 
@@ -185,11 +185,11 @@ export default function PrivacyPage() {
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">12. Contact Information</h2>
-            <p className="mb-4">For questions about this Privacy Policy or our data practices:</p>
+            <p className="mb-4">For questions about this Privacy Policy or our data practices, please use our <Link href="/contact" className="text-purple-600 hover:underline">contact form</Link>.</p>
             <div className="bg-gray-100 p-4 rounded-lg">
-              <p className="mb-2"><strong>Email:</strong> privacy@uptune.xyz</p>
-              <p className="mb-2"><strong>Address:</strong> UpTune Ltd, London, United Kingdom</p>
-              <p className="mb-2"><strong>Data Protection Officer:</strong> dpo@uptune.xyz</p>
+              <p className="mb-2"><strong>Company:</strong> UpTune Ltd</p>
+              <p className="mb-2"><strong>Location:</strong> London, United Kingdom</p>
+              <p className="mb-2"><strong>Data Protection Inquiries:</strong> Use our <Link href="/contact" className="text-purple-600 hover:underline">contact form</Link> and select "Privacy Concern"</p>
             </div>
           </section>
 

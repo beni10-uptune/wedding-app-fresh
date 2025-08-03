@@ -111,9 +111,5 @@ async function generateImages() {
   console.log('3. Update landing pages with optimized images')
 }
 
-// Run if called directly
-if (require.main === module) {
-  generateImages().catch(console.error)
-}
-
+// Export for use in other scripts
 export { generateImages }

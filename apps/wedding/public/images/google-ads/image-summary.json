@@ -1,0 +1,23 @@
+{
+  "generated": "2025-08-03T18:13:18.000Z",
+  "images": {
+    "square": [],
+    "landscape": [],
+    "portrait": [],
+    "wide": [],
+    "brand": []
+  },
+  "specs": {
+    "square": "1200x1200 (1:1)",
+    "landscape": "1200x628 (1.91:1)",
+    "portrait": "1200x1500 (4:5)",
+    "wide": "1920x1080 (16:9)",
+    "icon": "1200x1200 (1:1)"
+  },
+  "usage": {
+    "Performance Max": "Use all sizes for maximum reach",
+    "Discovery": "Square and landscape work best",
+    "Display": "All sizes supported",
+    "YouTube": "Wide (16:9) format recommended"
+  }
+}

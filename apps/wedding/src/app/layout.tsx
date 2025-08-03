@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { GoogleTagManagerWrapper } from "@/components/GoogleTagManagerWrapper";
+import { GoogleAdsScript } from "@/components/GoogleAdsScript";
 import { CookieConsent } from "@/components/CookieConsent";
 
 const inter = Inter({
@@ -93,6 +94,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${dancing.variable}`}>
       <body className={`${inter.className} antialiased`}>
         <GoogleTagManagerWrapper gtmId={gtmId} />
+        <GoogleAdsScript />
         <ErrorBoundary>
           <AuthProvider>
             {children}

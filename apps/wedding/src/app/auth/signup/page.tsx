@@ -8,7 +8,9 @@ import { auth } from '@/lib/firebase'
 import { useRouter } from 'next/navigation'
 import { ensureUserDocument, getUserDocument } from '@/lib/auth-utils'
 import { formatFirestoreError } from '@/lib/firestore-helpers'
+import { getClientPricing, type PricingInfo } from '@/lib/pricing-utils-client'
 import { GTMEvents } from '@/components/GoogleTagManager'
+import { trackSignUpConversion } from '@/lib/google-ads'
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('')
@@ -18,6 +20,12 @@ export default function SignUpPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [checkingAuth, setCheckingAuth] = useState(true)
+  const [pricing, setPricing] = useState<PricingInfo>({ 
+    amount: 25, 
+    currency: 'USD', 
+    symbol: '$', 
+    displayPrice: '$25' 
+  })
   const router = useRouter()
   
   // Check if user is already logged in
@@ -56,6 +64,11 @@ export default function SignUpPage() {
     return () => unsubscribe()
   }, [router])
 
+  // Get client pricing
+  useEffect(() => {
+    setPricing(getClientPricing())
+  }, [])
+
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -90,6 +103,9 @@ export default function SignUpPage() {
       
       // Track signup event
       GTMEvents.signUp('email')
+      
+      // Track Google Ads conversion
+      trackSignUpConversion(user.uid)
       
       // Navigate directly to create-wedding after successful signup
       // This prevents the re-login issue
@@ -139,6 +155,9 @@ export default function SignUpPage() {
       
       // Track signup event
       GTMEvents.signUp('google')
+      
+      // Track Google Ads conversion
+      trackSignUpConversion(user.uid)
       
       // Navigate directly to create-wedding
       router.push('/create-wedding')
@@ -315,7 +334,7 @@ export default function SignUpPage() {
             </p>
             <p className="text-xs text-white/40 max-w-sm mx-auto">
               By creating an account, you agree to our Terms of Service and Privacy Policy. 
-              <span className="text-purple-300">Free to start</span> - upgrade to premium for just £25 when you need more.
+              <span className="text-purple-300">Free to start</span> - upgrade to premium for just {pricing.displayPrice} when you need more.
             </p>
           </div>
         </div>

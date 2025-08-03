@@ -55,10 +55,11 @@ export default function TermsPage() {
 
             <h2 className="text-2xl font-semibold text-white mt-8 mb-4">6. Contact Information</h2>
             <p className="text-white/70">
-              For questions about these Terms, please contact us at{' '}
-              <a href="mailto:hello@weddings.uptune.xyz" className="text-purple-400 hover:text-purple-300">
-                hello@weddings.uptune.xyz
-              </a>
+              For questions about these Terms, please{' '}
+              <Link href="/contact" className="text-purple-400 hover:text-purple-300">
+                contact our support team
+              </Link>
+              {' '}using our contact form.
             </p>
           </div>
         </div>

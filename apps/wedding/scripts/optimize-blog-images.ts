@@ -32,8 +32,8 @@ const configs: Record<string, OptimizationConfig> = {
 async function optimizeImages() {
   console.log('🖼️  Starting image optimization...\n')
 
-  const inputDir = join(process.cwd(), 'public', 'images', 'lp')
-  const outputDir = join(process.cwd(), 'public', 'images', 'lp', 'optimized')
+  const inputDir = join(process.cwd(), 'public', 'images', 'blog')
+  const outputDir = join(process.cwd(), 'public', 'images', 'blog', 'optimized')
 
   // Create output directory
   if (!existsSync(outputDir)) {

@@ -24,9 +24,10 @@ service cloud.firestore {
     
     // Weddings collection
     match /weddings/{weddingId} {
-      // Allow read if user is an owner
-      allow read: if request.auth != null && 
-        request.auth.uid in resource.data.owners;
+      // Allow read if:
+      // 1. User is an owner OR
+      // 2. Any authenticated user (for guest access via join links)
+      allow read: if request.auth != null;
       
       // Allow create if user will be an owner
       allow create: if request.auth != null

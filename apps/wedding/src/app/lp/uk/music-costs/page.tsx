@@ -114,8 +114,8 @@ export default function UKMusicCostsPage() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/auth/signup" className="btn-primary">
-                Plan Your Music Budget
-                <Calculator className="w-5 h-5" />
+                Build Your Playlist
+                <Music className="w-5 h-5" />
               </Link>
               <Link href="#cost-breakdown" className="btn-glass">
                 View Cost Breakdown
@@ -335,32 +335,32 @@ export default function UKMusicCostsPage() {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-4">Plan Your Wedding Music Within Budget</h2>
+            <h2 className="text-3xl font-bold mb-4">Ready to Build Your Perfect Wedding Playlist?</h2>
             <p className="text-xl text-white/70 mb-8">
-              Use UpTune to organize your music and get accurate quotes from UK vendors
+              Join 15,000+ couples creating amazing wedding music with UpTune
             </p>
 
             <div className="glass-gradient rounded-2xl p-8 md:p-12">
               <div className="grid md:grid-cols-3 gap-6 mb-8">
                 <div>
-                  <TrendingUp className="w-8 h-8 text-emerald-400 mx-auto mb-3" />
-                  <h4 className="font-semibold mb-2">Budget Tracking</h4>
-                  <p className="text-white/70 text-sm">Monitor costs and stay on budget</p>
+                  <Music className="w-8 h-8 text-emerald-400 mx-auto mb-3" />
+                  <h4 className="font-semibold mb-2">Perfect Playlists</h4>
+                  <p className="text-white/70 text-sm">Create playlists for every moment</p>
                 </div>
                 <div>
                   <Users className="w-8 h-8 text-purple-400 mx-auto mb-3" />
-                  <h4 className="font-semibold mb-2">Vendor Network</h4>
-                  <p className="text-white/70 text-sm">Connect with UK music professionals</p>
+                  <h4 className="font-semibold mb-2">Guest Requests</h4>
+                  <p className="text-white/70 text-sm">Let guests add their favorite songs</p>
                 </div>
                 <div>
-                  <Music className="w-8 h-8 text-pink-400 mx-auto mb-3" />
-                  <h4 className="font-semibold mb-2">Music Planning</h4>
-                  <p className="text-white/70 text-sm">Organize every musical moment</p>
+                  <TrendingUp className="w-8 h-8 text-pink-400 mx-auto mb-3" />
+                  <h4 className="font-semibold mb-2">DJ Ready</h4>
+                  <p className="text-white/70 text-sm">Export to any music service</p>
                 </div>
               </div>
 
               <Link href="/auth/signup" className="btn-primary">
-                Start Planning Your Music
+                Build Your Playlist Free
                 <ChevronRight className="w-5 h-5" />
               </Link>
             </div>

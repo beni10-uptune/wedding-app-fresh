@@ -132,6 +132,9 @@ The project uses various environment variables for:
 
 ### Recent Changes
 <!-- Add new entries at the top -->
+- **2025-08-03**: Created 5 genre-based wedding song blog posts (Hip Hop, Country, R&B, Rock, Indie)
+- **2025-08-03**: Implemented blog content workflow with Firestore integration
+- **2025-08-03**: Fixed Imagen API integration and generated blog images
 - **2025-01-30**: Reorganized into multi-app workspace structure
 - **2025-01-30**: Moved wedding app to /apps/wedding
 - **2025-01-30**: Created packages/shared for shared utilities

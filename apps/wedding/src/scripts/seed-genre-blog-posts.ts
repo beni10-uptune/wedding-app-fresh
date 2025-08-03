@@ -105,21 +105,27 @@ async function seedGenreBlogPosts() {
   }
 }
 
-// Check if gray-matter is installed
-try {
-  require.resolve('gray-matter')
-} catch (e) {
-  console.log('📦 Installing required dependency: gray-matter')
-  require('child_process').execSync('npm install gray-matter', { stdio: 'inherit' })
-}
+// Main execution
+async function main() {
+  // Check if gray-matter is installed
+  try {
+    require.resolve('gray-matter')
+  } catch (e) {
+    console.log('📦 Installing required dependency: gray-matter')
+    // Use dynamic import instead of require to comply with ESLint rules
+    const cp = await import('child_process')
+    cp.execSync('npm install gray-matter', { stdio: 'inherit' })
+  }
 
-// Run the script
-seedGenreBlogPosts()
-  .then(() => {
+  // Run the script
+  try {
+    await seedGenreBlogPosts()
     console.log('\n✅ Script completed successfully')
     process.exit(0)
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error('\n❌ Script failed:', error)
     process.exit(1)
-  })
+  }
+}
+
+main()

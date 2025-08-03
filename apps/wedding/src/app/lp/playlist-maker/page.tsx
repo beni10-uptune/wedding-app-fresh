@@ -5,11 +5,11 @@ import { Music, Sparkles, Heart, Users, Clock, ChevronRight, CheckCircle, Play }
 
 export const metadata: Metadata = {
   title: 'Wedding Playlist Maker: Create Perfect Music for Every Moment | UpTune',
-  description: 'Build your perfect wedding playlist with our smart AI-powered maker. Organize songs for ceremony, reception, and every special moment. Free to start!',
+  description: 'Build your perfect wedding playlist with our smart playlist maker. Organize songs for ceremony, reception, and every special moment. Free to start!',
   keywords: 'wedding playlist maker, wedding music app, create wedding playlist, wedding songs organizer',
   openGraph: {
     title: 'Wedding Playlist Maker - Smart Music Planning for Your Big Day',
-    description: 'Create the perfect wedding soundtrack with our AI-powered playlist maker. Organize music for every moment from ceremony to last dance.',
+    description: 'Create the perfect wedding soundtrack with our smart playlist maker. Organize music for every moment from ceremony to last dance.',
     images: ['/images/lp/wedding-playlist-maker-hero.jpg'],
   },
 }
@@ -18,8 +18,8 @@ export default function PlaylistMakerPage() {
   const features = [
     {
       icon: Sparkles,
-      title: "AI-Powered Suggestions",
-      description: "Get personalized song recommendations based on your style and preferences"
+      title: "Curated Song Collections",
+      description: "Browse expert-curated playlists for every wedding moment and style"
     },
     {
       icon: Clock,
@@ -50,7 +50,7 @@ export default function PlaylistMakerPage() {
 
   const testimonials = [
     {
-      quote: "UpTune made organizing our wedding music so easy! The AI suggestions were spot-on.",
+      quote: "UpTune made organizing our wedding music so easy! The curated playlists were perfect for us.",
       author: "Sarah & Michael",
       location: "New York, NY",
       rating: 5
@@ -71,7 +71,7 @@ export default function PlaylistMakerPage() {
 
   const steps = [
     "Sign up for free and create your wedding profile",
-    "Add your favorite songs or let AI suggest them",
+    "Add your favorite songs or browse curated collections",
     "Organize music by wedding moments",
     "Share with guests for requests",
     "Export for your DJ or band"
@@ -100,7 +100,7 @@ export default function PlaylistMakerPage() {
                 </h1>
                 
                 <p className="text-xl text-white/80 mb-8">
-                  Create your perfect wedding soundtrack in minutes. AI-powered suggestions, 
+                  Create your perfect wedding soundtrack in minutes. Curated collections, 
                   timeline planning, and seamless collaboration with guests and vendors.
                 </p>
 
@@ -265,7 +265,7 @@ export default function PlaylistMakerPage() {
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                      <span>Get AI suggestions based on your taste</span>
+                      <span>Get suggestions from curated collections</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
@@ -331,18 +331,16 @@ export default function PlaylistMakerPage() {
             </p>
             
             <div className="glass-gradient rounded-2xl p-8 md:p-12 mb-8">
-              <div className="grid md:grid-cols-3 gap-8 mb-8">
+              <div className="grid md:grid-cols-2 gap-8 mb-8 max-w-2xl mx-auto">
                 <div>
                   <div className="text-3xl font-bold gradient-text mb-2">Free</div>
                   <p className="text-white/70">Start with 50 songs</p>
+                  <p className="text-sm text-white/50 mt-1">Perfect for trying it out</p>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold gradient-text mb-2">$12</div>
-                  <p className="text-white/70">Starter plan for 200 songs</p>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold gradient-text mb-2">$29</div>
-                  <p className="text-white/70">Pro plan with unlimited songs</p>
+                  <div className="text-3xl font-bold gradient-text mb-2">£25</div>
+                  <p className="text-white/70">One-time payment</p>
+                  <p className="text-sm text-white/50 mt-1">Unlimited songs forever</p>
                 </div>
               </div>
               

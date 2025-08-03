@@ -201,7 +201,13 @@ Ask your DJ/venue to:
 
 Want to start planning right now? Download our free template:
 
-**[Download Free Wedding Music Timeline Template]**
+<CTAButton 
+  text="Download Free Wedding Music Timeline Template" 
+  icon="download" 
+  download={true} 
+  fileName="wedding-music-timeline-template.txt" 
+  variant="primary" 
+/>
 
 Includes:
 - Moment-by-moment breakdown

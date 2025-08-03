@@ -107,6 +107,8 @@ For couples who want their first dance to reflect current music tastes while kee
 27. **"XO" - Beyoncé** (3:35)
 28. **"Just the Two of Us" - Bill Withers** (3:58)
 29. **"Is This Love" - Bob Marley** (3:52)
+
+<SamplePlaylist genre="romantic" />
 30. **"By Your Side" - Sade** (4:34)
 
 ## Indie & Alternative: Unique First Dances

@@ -271,8 +271,8 @@ export default function NoSpotifyPage() {
                   Try UpTune Free
                   <Music className="w-5 h-5" />
                 </Link>
-                <Link href="/" className="btn-glass">
-                  See All Features
+                <Link href="/blog/wedding-music-without-spotify-guide" className="btn-glass">
+                  Read Complete Guide
                   <ChevronRight className="w-5 h-5" />
                 </Link>
               </div>

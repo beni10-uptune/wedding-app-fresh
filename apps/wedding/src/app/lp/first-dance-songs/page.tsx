@@ -223,8 +223,8 @@ export default function FirstDanceSongsPage() {
                   Start Free Trial
                   <Sparkles className="w-5 h-5" />
                 </Link>
-                <Link href="/" className="btn-glass">
-                  Learn More About UpTune
+                <Link href="/blog" className="btn-glass">
+                  Read More Wedding Tips
                   <ChevronRight className="w-5 h-5" />
                 </Link>
               </div>

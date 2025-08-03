@@ -24,6 +24,10 @@ const CalloutBox = dynamic(() => import('./CalloutBox'))
 const InteractiveTimeline = dynamic(() => import('./InteractiveTimeline'), {
   loading: () => <div className="animate-pulse bg-white/10 h-96 rounded-xl" />
 })
+const CTAButton = dynamic(() => import('./CTAButton'))
+const SamplePlaylist = dynamic(() => import('./SamplePlaylist'), {
+  loading: () => <div className="animate-pulse bg-white/10 h-96 rounded-xl" />
+})
 
 // CTA Components
 const TrialCTA = () => (
@@ -201,6 +205,8 @@ const components = {
   InteractiveTimeline,
   TrialCTA,
   FeatureCTA,
+  CTAButton,
+  SamplePlaylist,
 }
 
 export const mdxComponents = components

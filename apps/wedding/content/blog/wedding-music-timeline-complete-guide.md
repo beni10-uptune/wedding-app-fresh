@@ -308,7 +308,7 @@ Don't let music planning overwhelm your wedding joy. Whether you're 12 months or
 
 **Ready to simplify your wedding music planning?**
 
-[Try UpTune Free →] Create your perfect wedding soundtrack in one afternoon.
+<CTAButton text="Try UpTune Free" href="/auth/signup" icon="sparkles" />
 
 ---
 

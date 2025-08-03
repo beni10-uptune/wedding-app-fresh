@@ -334,8 +334,8 @@ export default function WeddingTimelinePage() {
                   Start Your Timeline Free
                   <Sparkles className="w-5 h-5" />
                 </Link>
-                <Link href="/" className="btn-glass">
-                  Learn More About UpTune
+                <Link href="/blog/wedding-music-timeline-complete-guide" className="btn-glass">
+                  Read Full Timeline Guide
                   <ChevronRight className="w-5 h-5" />
                 </Link>
               </div>

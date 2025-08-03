@@ -152,10 +152,15 @@ export default function Dashboard() {
         // Ensure user document exists
         try {
           const userData = await ensureUserDocument(user)
-          setUserName(userData.displayName || user.displayName || 'Lovebird')
+          // Extract first name from full display name or email
+          const fullName = userData.displayName || user.displayName || user.email?.split('@')[0] || 'there'
+          const firstName = fullName.split(' ')[0]
+          setUserName(firstName)
         } catch (error) {
           console.error('Error ensuring user data:', error)
-          setUserName(user.displayName || 'Lovebird')
+          // Fallback to email-based name if available
+          const fallbackName = user.email?.split('@')[0] || 'there'
+          setUserName(fallbackName.charAt(0).toUpperCase() + fallbackName.slice(1))
           // Show user-friendly error but don't block dashboard
           setError('Having trouble loading your profile. Some features may be limited.')
         }

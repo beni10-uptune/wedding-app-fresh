@@ -265,8 +265,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-bold mb-3">Export & Celebrate</h3>
               <p className="text-white/70">
-                One click creates Spotify playlists and a detailed PDF for your DJ. 
-                Then relax and enjoy your perfect soundtrack.
+                Export to Spotify, create PDFs for DJs, or use with any music service. 
+                Works with or without Spotify - your choice!
               </p>
             </div>
           </div>

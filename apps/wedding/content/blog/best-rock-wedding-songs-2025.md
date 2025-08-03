@@ -8,7 +8,7 @@ author:
   avatar: "/images/authors/uptune-team.jpg"
 category: "Music by Genre"
 tags: ["rock", "wedding songs", "classic rock", "indie rock", "reception music"]
-featuredImage: "/images/blog/rock-wedding-songs.jpg"
+featuredImage: "/images/blog/optimized/rock-wedding-songs-hero.jpeg"
 publishedAt: "2025-01-31T13:00:00Z"
 updatedAt: "2025-01-31T13:00:00Z"
 status: "published"

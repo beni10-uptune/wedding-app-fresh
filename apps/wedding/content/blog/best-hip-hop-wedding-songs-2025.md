@@ -8,7 +8,7 @@ author:
   avatar: "/images/authors/uptune-team.jpg"
 category: "Music by Genre"
 tags: ["hip hop", "wedding songs", "reception music", "party songs", "first dance"]
-featuredImage: "/images/blog/hip-hop-wedding-songs.jpg"
+featuredImage: "/images/blog/optimized/hip-hop-wedding-songs-hero.jpeg"
 publishedAt: "2025-01-31T10:00:00Z"
 updatedAt: "2025-01-31T10:00:00Z"
 status: "published"

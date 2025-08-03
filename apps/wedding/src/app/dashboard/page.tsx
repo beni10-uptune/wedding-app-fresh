@@ -123,7 +123,13 @@ export default function Dashboard() {
       const submissionsSnapshot = await getDocs(
         collection(db, 'weddings', weddingId, 'guestSubmissions')
       )
-      const uniqueGuests = new Set(submissionsSnapshot.docs.map(doc => doc.data().guestEmail))
+      // Count unique guests by name or email (whichever is available)
+      const uniqueGuests = new Set(
+        submissionsSnapshot.docs.map(doc => {
+          const data = doc.data()
+          return data.guestEmail || data.guestName || 'unknown'
+        })
+      )
       const responded = uniqueGuests.size
       
       // For now, use guestCount as invited count (can be enhanced with actual invitations)

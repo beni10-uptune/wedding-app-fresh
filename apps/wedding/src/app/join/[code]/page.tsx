@@ -46,6 +46,50 @@ interface SpotifyTrack {
 export default function JoinPage() {
   const { code } = useParams()
   const router = useRouter()
+  
+  useEffect(() => {
+    // Redirect to the simple guest page
+    async function redirect() {
+      try {
+        // First try direct wedding ID
+        const weddingDoc = await getDoc(doc(db, 'weddings', code as string))
+        if (weddingDoc.exists()) {
+          router.push(`/guest/${code}/simple`)
+          return
+        }
+        
+        // Then try invite code
+        const weddingsQuery = query(
+          collection(db, 'weddings'),
+          where('inviteCode', '==', code)
+        )
+        const snapshot = await getDocs(weddingsQuery)
+        if (!snapshot.empty) {
+          router.push(`/guest/${snapshot.docs[0].id}/simple`)
+          return
+        }
+        
+        // Not found
+        router.push('/')
+      } catch (error) {
+        console.error('Error finding wedding:', error)
+        router.push('/')
+      }
+    }
+    redirect()
+  }, [code, router])
+  
+  return (
+    <div className="min-h-screen dark-gradient flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-400 border-t-transparent"></div>
+    </div>
+  )
+}
+
+// Old implementation below (keeping for reference but not used)
+function JoinPageOld() {
+  const { code } = useParams()
+  const router = useRouter()
   const [wedding, setWedding] = useState<WeddingWithPrompt | null>(null)
   const [moments] = useState<Moment[]>([
     { id: 'ceremony', name: 'Ceremony', description: 'Walk down the aisle', icon: '💒' },

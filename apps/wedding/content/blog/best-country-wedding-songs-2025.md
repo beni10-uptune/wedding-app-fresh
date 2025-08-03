@@ -8,7 +8,7 @@ author:
   avatar: "/images/authors/uptune-team.jpg"
 category: "Music by Genre"
 tags: ["country", "wedding songs", "first dance", "reception music", "line dancing"]
-featuredImage: "/images/blog/country-wedding-songs.jpg"
+featuredImage: "/images/blog/optimized/country-wedding-songs-hero.jpeg"
 publishedAt: "2025-01-31T11:00:00Z"
 updatedAt: "2025-01-31T11:00:00Z"
 status: "published"

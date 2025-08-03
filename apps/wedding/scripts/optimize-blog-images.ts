@@ -106,9 +106,15 @@ async function optimizeImages() {
   }
 }
 
-// Run if called directly
-if (require.main === module) {
-  optimizeImages().catch(console.error)
-}
+// Run the script
+optimizeImages()
+  .then(() => {
+    console.log('\n✅ Script completed successfully')
+    process.exit(0)
+  })
+  .catch((error) => {
+    console.error('\n❌ Script failed:', error)
+    process.exit(1)
+  })
 
 export { optimizeImages }

@@ -8,7 +8,7 @@ author:
   avatar: "/images/authors/uptune-team.jpg"
 category: "Music by Genre"
 tags: ["indie", "wedding songs", "indie rock", "indie folk", "alternative wedding"]
-featuredImage: "/images/blog/indie-wedding-songs.jpg"
+featuredImage: "/images/blog/optimized/indie-wedding-songs-hero.jpeg"
 publishedAt: "2025-01-31T14:00:00Z"
 updatedAt: "2025-01-31T14:00:00Z"
 status: "published"

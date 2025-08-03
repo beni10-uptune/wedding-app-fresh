@@ -8,7 +8,7 @@ author:
   avatar: "/images/authors/uptune-team.jpg"
 category: "Music by Genre"
 tags: ["r&b", "wedding songs", "soul music", "first dance", "reception music"]
-featuredImage: "/images/blog/rnb-wedding-songs.jpg"
+featuredImage: "/images/blog/optimized/rnb-wedding-songs-hero.jpeg"
 publishedAt: "2025-01-31T12:00:00Z"
 updatedAt: "2025-01-31T12:00:00Z"
 status: "published"

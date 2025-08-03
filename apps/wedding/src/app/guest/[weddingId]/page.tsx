@@ -15,7 +15,6 @@ import {
   updateDoc,
   setDoc,
   serverTimestamp,
-  Timestamp,
   orderBy
 } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
@@ -102,18 +101,35 @@ export default function GuestInterfacePage({ params }: { params: Promise<{ weddi
   useEffect(() => {
     if (!hasAccess || !user || !weddingId) return
 
-    // Subscribe to suggestions
-    const suggestionsQuery = query(
-      collection(db, 'weddings', weddingId, 'suggestions'),
-      orderBy('createdAt', 'desc')
+    // Subscribe to guest submissions
+    const submissionsQuery = query(
+      collection(db, 'weddings', weddingId, 'guestSubmissions'),
+      orderBy('submittedAt', 'desc')
     )
 
-    const unsubscribeSuggestions = onSnapshot(suggestionsQuery, (snapshot) => {
-      const suggestionsList: SongSuggestion[] = []
+    const unsubscribeSubmissions = onSnapshot(submissionsQuery, (snapshot) => {
+      const submissionsList: any[] = []
       snapshot.forEach((doc) => {
-        suggestionsList.push({ id: doc.id, ...doc.data() } as SongSuggestion)
+        const data = doc.data()
+        // Convert to SongSuggestion format for display
+        submissionsList.push({
+          id: doc.id,
+          weddingId: weddingId,
+          customSong: {
+            title: data.song.title,
+            artist: data.song.artist
+          },
+          spotifyId: data.song.spotifyId,
+          suggestedBy: data.userId || data.guestName,
+          suggestedFor: data.momentId,
+          message: data.guestMessage,
+          status: data.status,
+          votes: 0,
+          createdAt: data.submittedAt,
+          updatedAt: data.submittedAt
+        })
       })
-      setSuggestions(suggestionsList)
+      setSuggestions(submissionsList)
     })
 
     // Subscribe to user's votes
@@ -132,7 +148,7 @@ export default function GuestInterfacePage({ params }: { params: Promise<{ weddi
     })
 
     return () => {
-      unsubscribeSuggestions()
+      unsubscribeSubmissions()
       unsubscribeVotes()
     }
   }, [hasAccess, user, weddingId])
@@ -161,10 +177,13 @@ export default function GuestInterfacePage({ params }: { params: Promise<{ weddi
   }, [searchQuery])
 
 
+  const [selectedTrack, setSelectedTrack] = useState<any>(null)
+  
   const handleSelectSpotifySong = (track: any) => {
     setSongTitle(track.name)
     setArtist(track.artist)
     setSpotifyId(track.id)
+    setSelectedTrack(track) // Store full track info
     setSearchQuery('')
     setShowSearchResults(false)
   }
@@ -175,23 +194,29 @@ export default function GuestInterfacePage({ params }: { params: Promise<{ weddi
 
     setSubmitting(true)
     try {
-      const suggestionData: Omit<SongSuggestion, 'id'> = {
-        weddingId: weddingId,
-        customSong: {
+      // Get user display name
+      const displayName = user.displayName || user.email?.split('@')[0] || 'Guest'
+      
+      // Add to guestSubmissions collection instead of suggestions
+      await addDoc(collection(db, 'weddings', weddingId, 'guestSubmissions'), {
+        song: {
           title: songTitle,
-          artist: artist
+          artist: artist,
+          spotifyId: spotifyId || null,
+          album: selectedTrack?.album || null,
+          albumArt: selectedTrack?.albumArt || null,
+          previewUrl: selectedTrack?.previewUrl || null
         },
-        spotifyId: spotifyId || undefined,
-        suggestedBy: user.uid,
-        suggestedFor: moment,
-        message: message,
+        guestName: displayName,
+        guestEmail: user.email || null,
+        guestMessage: message || null,
+        momentId: moment || 'danceFloor',
         status: 'pending',
-        votes: 0,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now()
-      }
-
-      await addDoc(collection(db, 'weddings', weddingId, 'suggestions'), suggestionData)
+        submittedAt: serverTimestamp(),
+        approvedAt: null,
+        approvedBy: null,
+        userId: user.uid
+      })
 
       // Reset form
       setSongTitle('')
@@ -199,7 +224,11 @@ export default function GuestInterfacePage({ params }: { params: Promise<{ weddi
       setMessage('')
       setSpotifyId('')
       setSearchQuery('')
+      setSelectedTrack(null)
       setShowSuggestionForm(false)
+      
+      // Show success message
+      alert('Thank you! Your song suggestion has been submitted.')
     } catch (err) {
       console.error('Error suggesting song:', err)
     } finally {

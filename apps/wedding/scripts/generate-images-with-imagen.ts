@@ -113,3 +113,16 @@ async function generateImages() {
 
 // Export for use in other scripts
 export { generateImages }
+
+// Run the script if called directly
+if (require.main === module) {
+  generateImages()
+    .then(() => {
+      console.log('\n✅ Script completed successfully')
+      process.exit(0)
+    })
+    .catch((error) => {
+      console.error('\n❌ Script failed:', error)
+      process.exit(1)
+    })
+}

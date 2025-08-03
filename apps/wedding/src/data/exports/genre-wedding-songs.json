@@ -1,0 +1,6024 @@
+[
+  {
+    "id": "3YcBF2xZsyH9fswQdXcUqR",
+    "title": "Best Part",
+    "artist": "Daniel Caesar ft. H.E.R.",
+    "album": "Freudian",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b1c4b76e23414c9f20242268",
+    "releaseDate": "2017-08-25",
+    "duration": 219,
+    "explicit": false,
+    "popularity": 85,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7c71b8516c33b71164e445051c68e3dc52c141f8",
+    "spotifyUri": "spotify:track:3YcBF2xZsyH9fswQdXcUqR",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "r&b",
+      "hip hop",
+      "soul"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.937Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3FAJ6O0NOHQV8Mc5Ri6ENp",
+    "title": "Adorn",
+    "artist": "Miguel",
+    "album": "Kaleidoscope Dream",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2738f52f321140e4a76ea720c52",
+    "releaseDate": "2012-10-02",
+    "duration": 194,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/f6d6ca9cc4bb4740e0b6f30d85f7682067d3e997",
+    "spotifyUri": "spotify:track:3FAJ6O0NOHQV8Mc5Ri6ENp",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "r&b",
+      "hip hop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0u2P5u6lvoDfwTYjAADbn4",
+    "title": "Love Galore",
+    "artist": "SZA ft. Travis Scott",
+    "album": "Ctrl",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273c3af0c2355c24ed7023cd394",
+    "releaseDate": "2017-06-09",
+    "duration": 275,
+    "explicit": true,
+    "popularity": 86,
+    "previewUrl": "https://p.scdn.co/mp3-preview/beb4adacdfb6e8f1b932050324bd123e7f9c0529",
+    "spotifyUri": "spotify:track:0u2P5u6lvoDfwTYjAADbn4",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "r&b",
+      "hip hop"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6FRLCMO5TUHTexlWo8ym1W",
+    "title": "21 Questions",
+    "artist": "50 Cent ft. Nate Dogg",
+    "album": "Get Rich or Die Tryin'",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f25af77375d80310251f5a47",
+    "releaseDate": "2003-02-06",
+    "duration": 224,
+    "explicit": true,
+    "popularity": 78,
+    "previewUrl": "https://p.scdn.co/mp3-preview/79dc59e02a1fdafb50e37bbfa27cf85287b0a465",
+    "spotifyUri": "spotify:track:6FRLCMO5TUHTexlWo8ym1W",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "hip hop",
+      "gangsta rap"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6I9VzXrHxO9rA9A5euc8Ak",
+    "title": "Crazy in Love",
+    "artist": "Beyoncé ft. Jay-Z",
+    "album": "Dangerously in Love",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e13de7b8662b085b0885ffef",
+    "releaseDate": "2003-06-24",
+    "duration": 236,
+    "explicit": false,
+    "popularity": 88,
+    "previewUrl": "https://p.scdn.co/mp3-preview/13e1f1ebe077c5d5f08f5179fe0bd609b2570704",
+    "spotifyUri": "spotify:track:6I9VzXrHxO9rA9A5euc8Ak",
+    "moments": [
+      "party",
+      "processional"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "pop",
+      "r&b",
+      "hip hop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2MbdDtCv5LUVjYy9RuGTgC",
+    "title": "Yeah!",
+    "artist": "Usher ft. Lil Jon & Ludacris",
+    "album": "Confessions",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273365b3fb800c19f7ff72602da",
+    "releaseDate": "2004-03-23",
+    "duration": 250,
+    "explicit": false,
+    "popularity": 84,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9e0cb0a9394c7a1e15e5db851551bb00e4ba4470",
+    "spotifyUri": "spotify:track:2MbdDtCv5LUVjYy9RuGTgC",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hip hop",
+      "crunk",
+      "r&b"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1PS1QMdUqOal0ai3Gt7sDQ",
+    "title": "Gold Digger",
+    "artist": "Kanye West ft. Jamie Foxx",
+    "album": "Late Registration",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b27320b1b0c27cdd8bcd9d6c7874",
+    "releaseDate": "2005-08-30",
+    "duration": 207,
+    "explicit": true,
+    "popularity": 86,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9509647e0cd0c6c3ab68ad7629061f24a0833275",
+    "spotifyUri": "spotify:track:1PS1QMdUqOal0ai3Gt7sDQ",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hip hop",
+      "rap"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0U0ldCRmgCqhVvD6ksG63j",
+    "title": "Hot In Herre",
+    "artist": "Nelly",
+    "album": "Nellyville",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273170e6f11c893c22cf0e1bb23",
+    "releaseDate": "2002-06-25",
+    "duration": 229,
+    "explicit": false,
+    "popularity": 81,
+    "previewUrl": "https://p.scdn.co/mp3-preview/20e7b6e3df0fa3b5f7df2f956e92f87c44d18be4",
+    "spotifyUri": "spotify:track:0U0ldCRmgCqhVvD6ksG63j",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hip hop",
+      "pop rap"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6gBFPUFcJLzWGx4lenP6h2",
+    "title": "In Da Club",
+    "artist": "50 Cent",
+    "album": "Get Rich or Die Tryin'",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f25af77375d80310251f5a47",
+    "releaseDate": "2003-02-06",
+    "duration": 193,
+    "explicit": true,
+    "popularity": 85,
+    "previewUrl": "https://p.scdn.co/mp3-preview/23d37fbc7314be53d92e13e4f74cac4e3b7a8f8f",
+    "spotifyUri": "spotify:track:6gBFPUFcJLzWGx4lenP6h2",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hip hop",
+      "gangsta rap"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7w9bgPAmPTtrkt2v16QWvQ",
+    "title": "Get Low",
+    "artist": "Lil Jon & The East Side Boyz",
+    "album": "Kings of Crunk",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b27337887f8c79b5db5e1a84f9f7",
+    "releaseDate": "2002-10-08",
+    "duration": 340,
+    "explicit": true,
+    "popularity": 77,
+    "previewUrl": "https://p.scdn.co/mp3-preview/f920c78b869a06c89124d7c160e87f1cdb276b17",
+    "spotifyUri": "spotify:track:7w9bgPAmPTtrkt2v16QWvQ",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hip hop",
+      "crunk"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5HCyWlXZPP0y6Gqq8TgA20",
+    "title": "First Class",
+    "artist": "Jack Harlow",
+    "album": "Come Home The Kids Miss You",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273ef4e6b9b473e9a05bd8e1246",
+    "releaseDate": "2022-05-06",
+    "duration": 174,
+    "explicit": true,
+    "popularity": 87,
+    "previewUrl": "https://p.scdn.co/mp3-preview/a5c0dd1ed91046b690cf3e954e02df96b5589cb8",
+    "spotifyUri": "spotify:track:5HCyWlXZPP0y6Gqq8TgA20",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "hip hop",
+      "pop rap"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "4qsu7sLmJvMXNaU0xX9gLP",
+    "title": "Players",
+    "artist": "Coi Leray",
+    "album": "COI",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f52d87dcbe0c2bbab0afe5a7",
+    "releaseDate": "2023-06-23",
+    "duration": 144,
+    "explicit": true,
+    "popularity": 83,
+    "previewUrl": "https://p.scdn.co/mp3-preview/e4d00ad5c8f8e8a087d1a6087bb6eec7493c37f9",
+    "spotifyUri": "spotify:track:4qsu7sLmJvMXNaU0xX9gLP",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hip hop",
+      "pop"
+    ],
+    "generationAppeal": [
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7lQ8MOhq6IN2w8EYcFNSUk",
+    "title": "Rapper's Delight",
+    "artist": "The Sugarhill Gang",
+    "album": "Sugarhill Gang",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2733a2ad866ab1e8781ec5c3f02",
+    "releaseDate": "1980-01-01",
+    "duration": 880,
+    "explicit": false,
+    "popularity": 73,
+    "previewUrl": "https://p.scdn.co/mp3-preview/35298a5c7c13e061b9e92f73f11b13c8db87ba81",
+    "spotifyUri": "spotify:track:7lQ8MOhq6IN2w8EYcFNSUk",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "hip hop",
+      "old school"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "boomer"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5jsw9uXEGuKSPuKdC1n794",
+    "title": "Push It",
+    "artist": "Salt-N-Pepa",
+    "album": "Hot, Cool & Vicious",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2739b47a2a926e4313eef2c0376",
+    "releaseDate": "1986-01-01",
+    "duration": 271,
+    "explicit": false,
+    "popularity": 75,
+    "previewUrl": "https://p.scdn.co/mp3-preview/dc6b2917c8a638e5f0ea0281cfeb5dc4f69c9f7a",
+    "spotifyUri": "spotify:track:5jsw9uXEGuKSPuKdC1n794",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hip hop",
+      "old school"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2HHtWyy5CgaQbC7XSoOb0e",
+    "title": "Jump Around",
+    "artist": "House of Pain",
+    "album": "House of Pain",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b87f0b297b009322c85af4c8",
+    "releaseDate": "1992-07-21",
+    "duration": 218,
+    "explicit": true,
+    "popularity": 76,
+    "previewUrl": "https://p.scdn.co/mp3-preview/d45f47ce8f5a9cc8be198286267edc8e4ba2f5f4",
+    "spotifyUri": "spotify:track:2HHtWyy5CgaQbC7XSoOb0e",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hip hop",
+      "irish hip hop"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7KXjTSCq5nL1LoYtL7XAwS",
+    "title": "U Can't Touch This",
+    "artist": "MC Hammer",
+    "album": "Please Hammer Don't Hurt 'Em",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b27303e437cf1e0144b8e5ff51f2",
+    "releaseDate": "1990-02-12",
+    "duration": 257,
+    "explicit": false,
+    "popularity": 74,
+    "previewUrl": "https://p.scdn.co/mp3-preview/2e4c4a9dfecf686ac1cf2a905f4e1d4e0acc7cae",
+    "spotifyUri": "spotify:track:7KXjTSCq5nL1LoYtL7XAwS",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hip hop",
+      "pop rap"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6tZ3b6HQNgEMRhbxKPp2Rw",
+    "title": "Dear Mama",
+    "artist": "2Pac",
+    "album": "Me Against the World",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273859dcb6c7a60dc2c7ba24838",
+    "releaseDate": "1995-03-14",
+    "duration": 280,
+    "explicit": true,
+    "popularity": 78,
+    "previewUrl": "https://p.scdn.co/mp3-preview/8e90e0ad99e1e5fc46e4e3c8ec45cbae90dcb2f5",
+    "spotifyUri": "spotify:track:6tZ3b6HQNgEMRhbxKPp2Rw",
+    "moments": [
+      "parent-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "hip hop",
+      "west coast hip hop"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "4IowQPaYbGJYBKJRzeZHcK",
+    "title": "Hey Mama",
+    "artist": "Kanye West",
+    "album": "Late Registration",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b27320b1b0c27cdd8bcd9d6c7874",
+    "releaseDate": "2005-08-30",
+    "duration": 305,
+    "explicit": false,
+    "popularity": 70,
+    "previewUrl": "https://p.scdn.co/mp3-preview/d0b4bf8a09577c7f513f0a23cb3c8c0f3e847b52",
+    "spotifyUri": "spotify:track:4IowQPaYbGJYBKJRzeZHcK",
+    "moments": [
+      "parent-dance"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "hip hop",
+      "soul"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3zFpNhcZjwYGFRBPe9vJkm",
+    "title": "All the Way Up",
+    "artist": "Fat Joe & Remy Ma ft. French Montana",
+    "album": "All the Way Up",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273ff91532dcf1b4032ab9797ff",
+    "releaseDate": "2016-03-02",
+    "duration": 221,
+    "explicit": true,
+    "popularity": 75,
+    "previewUrl": "https://p.scdn.co/mp3-preview/e47c9ff37fd0df8cfaada84c988ddaf4cf3abeb1",
+    "spotifyUri": "spotify:track:3zFpNhcZjwYGFRBPe9vJkm",
+    "moments": [
+      "processional",
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hip hop",
+      "east coast hip hop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3yfqSUWxFvZELEM4PmlwIR",
+    "title": "Can't Tell Me Nothing",
+    "artist": "Kanye West",
+    "album": "Graduation",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273326d45345ce727539e21a9ff",
+    "releaseDate": "2007-09-11",
+    "duration": 271,
+    "explicit": true,
+    "popularity": 77,
+    "previewUrl": "https://p.scdn.co/mp3-preview/b5030cf78b193e09dcf6a1812a6bcc056de10b4a",
+    "spotifyUri": "spotify:track:3yfqSUWxFvZELEM4PmlwIR",
+    "moments": [
+      "processional",
+      "party"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "hip hop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "78QR3Wp35dqAhFEc2qAGjE",
+    "title": "POWER",
+    "artist": "Kanye West",
+    "album": "My Beautiful Dark Twisted Fantasy",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f7d59651e85c6166dc1142d4",
+    "releaseDate": "2010-11-22",
+    "duration": 292,
+    "explicit": true,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/c0fa4ed4d43c1ddd16ccec40320db90de7154d18",
+    "spotifyUri": "spotify:track:78QR3Wp35dqAhFEc2qAGjE",
+    "moments": [
+      "processional",
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hip hop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7ySbxkjtvJApoV6fHYmc8e",
+    "title": "All I Do is Win",
+    "artist": "DJ Khaled ft. T-Pain, Ludacris, Snoop Dogg & Rick Ross",
+    "album": "Victory",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b27369ba659f4c20e7c1b5c2a4fb",
+    "releaseDate": "2010-03-02",
+    "duration": 351,
+    "explicit": true,
+    "popularity": 76,
+    "previewUrl": "https://p.scdn.co/mp3-preview/a6cdcfebf088e0c24d87c80ab1b8d122dfa7b8c2",
+    "spotifyUri": "spotify:track:7ySbxkjtvJApoV6fHYmc8e",
+    "moments": [
+      "processional",
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hip hop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7fBv7CLKzipRk6EC6TWHOB",
+    "title": "Can't Hold Us",
+    "artist": "Macklemore & Ryan Lewis ft. Ray Dalton",
+    "album": "The Heist",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2739b1866e425c690656bbab88f",
+    "releaseDate": "2012-10-09",
+    "duration": 258,
+    "explicit": false,
+    "popularity": 80,
+    "previewUrl": "https://p.scdn.co/mp3-preview/c7cf2a7bb5a3320e5edeceecffe3032c0e8a9fb6",
+    "spotifyUri": "spotify:track:7fBv7CLKzipRk6EC6TWHOB",
+    "moments": [
+      "party",
+      "processional"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hip hop",
+      "pop rap"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "60nZcImufyMA1MKQY3dcCH",
+    "title": "Happy",
+    "artist": "Pharrell Williams",
+    "album": "G I R L",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273a8af0ad499b8c460a87a8310",
+    "releaseDate": "2014-03-03",
+    "duration": 233,
+    "explicit": false,
+    "popularity": 84,
+    "previewUrl": "https://p.scdn.co/mp3-preview/60d4f0e551b0baf43e7a97c7d98ed4f42cabba10",
+    "spotifyUri": "spotify:track:60nZcImufyMA1MKQY3dcCH",
+    "moments": [
+      "party",
+      "cocktail",
+      "recessional"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "pop",
+      "soul",
+      "hip hop"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "32OlwWuMpZ6b0aN2RZOeMS",
+    "title": "Uptown Funk",
+    "artist": "Mark Ronson ft. Bruno Mars",
+    "album": "Uptown Special",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e44963b8bb127552aede7218",
+    "releaseDate": "2015-01-13",
+    "duration": 269,
+    "explicit": false,
+    "popularity": 86,
+    "previewUrl": "https://p.scdn.co/mp3-preview/e9025e8816404b05ac4e460dc6795c60e05ea80f",
+    "spotifyUri": "spotify:track:32OlwWuMpZ6b0aN2RZOeMS",
+    "moments": [
+      "party",
+      "processional"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "funk",
+      "pop",
+      "hip hop"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6v3KW9xbzN5yKLt9YKDYA2",
+    "title": "24K Magic",
+    "artist": "Bruno Mars",
+    "album": "24K Magic",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2735c4e4c32705950c37e2670be",
+    "releaseDate": "2016-11-18",
+    "duration": 226,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/a797ad5b4f6b63ebaca1a2bdb09794eadfb1a11f",
+    "spotifyUri": "spotify:track:6v3KW9xbzN5yKLt9YKDYA2",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "funk",
+      "pop",
+      "hip hop"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5k38wzpLb15YgncyWdTZE4",
+    "title": "Empire State of Mind",
+    "artist": "Jay-Z ft. Alicia Keys",
+    "album": "The Blueprint 3",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b9a29eaeedf8f4e84ad15036",
+    "releaseDate": "2009-09-08",
+    "duration": 277,
+    "explicit": true,
+    "popularity": 81,
+    "previewUrl": "https://p.scdn.co/mp3-preview/2ab4f7c018c6cbbd968c50b0ba87c8cb3dc073a8",
+    "spotifyUri": "spotify:track:5k38wzpLb15YgncyWdTZE4",
+    "moments": [
+      "party",
+      "recessional"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "hip hop",
+      "east coast hip hop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "51pshtuYkgUQnt805qi2UZ",
+    "title": "Juicy",
+    "artist": "The Notorious B.I.G.",
+    "album": "Ready to Die",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273db78863397e5387f15e823f4",
+    "releaseDate": "1994-09-13",
+    "duration": 300,
+    "explicit": true,
+    "popularity": 79,
+    "previewUrl": "https://p.scdn.co/mp3-preview/4e51b17a7358fd00a426b9c98b91d19cdb7b207f",
+    "spotifyUri": "spotify:track:51pshtuYkgUQnt805qi2UZ",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "hip hop",
+      "east coast hip hop"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "21GC80xjDR4b0FJzN1N8g2",
+    "title": "California Love",
+    "artist": "2Pac ft. Dr. Dre",
+    "album": "All Eyez on Me",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273bb24fdd5569b047fcf17f66e",
+    "releaseDate": "1996-02-13",
+    "duration": 278,
+    "explicit": true,
+    "popularity": 80,
+    "previewUrl": "https://p.scdn.co/mp3-preview/a3dc10b9c5f6d1d2fdb82b8e91bb5ac0f7369877",
+    "spotifyUri": "spotify:track:21GC80xjDR4b0FJzN1N8g2",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hip hop",
+      "west coast hip hop"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7iL6o9tox1zgHpKUfh9vuC",
+    "title": "Still D.R.E.",
+    "artist": "Dr. Dre ft. Snoop Dogg",
+    "album": "2001",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2737e5807552b2ed30ba57fa94f",
+    "releaseDate": "1999-11-16",
+    "duration": 271,
+    "explicit": true,
+    "popularity": 83,
+    "previewUrl": "https://p.scdn.co/mp3-preview/96f54ab6e3780c8025937714cbebe22bbde3166f",
+    "spotifyUri": "spotify:track:7iL6o9tox1zgHpKUfh9vuC",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "hip hop",
+      "west coast hip hop",
+      "gangsta rap"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1Y373MqadDRtclJNdnUXVc",
+    "title": "International Players Anthem (I Choose You)",
+    "artist": "UGK ft. OutKast",
+    "album": "Underground Kingz",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2733e3a24f99c9c6a0522b787aa",
+    "releaseDate": "2007-08-07",
+    "duration": 285,
+    "explicit": true,
+    "popularity": 74,
+    "previewUrl": "https://p.scdn.co/mp3-preview/1f4e4c946a7a21c957b23e16bfc35c2e3a5bcd48",
+    "spotifyUri": "spotify:track:1Y373MqadDRtclJNdnUXVc",
+    "moments": [
+      "cocktail",
+      "party"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "hip hop",
+      "southern hip hop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5Z01UMMf7V1o0MzF86s6WJ",
+    "title": "Country Grammar (Hot Shit)",
+    "artist": "Nelly",
+    "album": "Country Grammar",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273a8b9f97b1ea4912e69fd8cdf",
+    "releaseDate": "2000-06-27",
+    "duration": 287,
+    "explicit": true,
+    "popularity": 76,
+    "previewUrl": "https://p.scdn.co/mp3-preview/37c8b056ee0d37b6ac8da1f3b4a10e7ec5fb2bca",
+    "spotifyUri": "spotify:track:5Z01UMMf7V1o0MzF86s6WJ",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "hip hop",
+      "southern hip hop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Hip Hop Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1YCXRbCXKp2gfQIJZ1aewV",
+    "title": "Speechless",
+    "artist": "Dan + Shay",
+    "album": "Dan + Shay",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2735ea8162324bbe0ba3e092ba4",
+    "releaseDate": "2018-06-22",
+    "duration": 218,
+    "explicit": false,
+    "popularity": 85,
+    "previewUrl": "https://p.scdn.co/mp3-preview/6d87b8e43e7a9b4d1a2a9c5e5f79b7f9b8f9d8e7",
+    "spotifyUri": "spotify:track:1YCXRbCXKp2gfQIJZ1aewV",
+    "moments": [
+      "first-dance",
+      "ceremony"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country",
+      "country pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2wrJq5XKLnmhRXHIAf9xBa",
+    "title": "10,000 Hours",
+    "artist": "Dan + Shay & Justin Bieber",
+    "album": "10,000 Hours",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273d1f7dad30d4a6c610e3fa754",
+    "releaseDate": "2019-10-04",
+    "duration": 167,
+    "explicit": false,
+    "popularity": 87,
+    "previewUrl": "https://p.scdn.co/mp3-preview/f5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:2wrJq5XKLnmhRXHIAf9xBa",
+    "moments": [
+      "first-dance",
+      "processional"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "country pop",
+      "pop"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0SGkqnVQo9KPytSri1H6cF",
+    "title": "Marry Me",
+    "artist": "Thomas Rhett",
+    "album": "Tangled Up",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e3812077f1cd17b8ce2e9476",
+    "releaseDate": "2015-09-25",
+    "duration": 214,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/d5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:0SGkqnVQo9KPytSri1H6cF",
+    "moments": [
+      "first-dance",
+      "ceremony"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country",
+      "contemporary country"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1e8IOSF2TzJneHrNLwuyNr",
+    "title": "Die a Happy Man",
+    "artist": "Thomas Rhett",
+    "album": "Tangled Up",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e3812077f1cd17b8ce2e9476",
+    "releaseDate": "2015-09-25",
+    "duration": 227,
+    "explicit": false,
+    "popularity": 84,
+    "previewUrl": "https://p.scdn.co/mp3-preview/c5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:1e8IOSF2TzJneHrNLwuyNr",
+    "moments": [
+      "first-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country",
+      "contemporary country"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "4pN6aehH9LnHu9kTrBeJJh",
+    "title": "Heaven",
+    "artist": "Kane Brown",
+    "album": "Kane Brown",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273bb60f6a4cafaebc40f6e1818",
+    "releaseDate": "2016-12-02",
+    "duration": 162,
+    "explicit": false,
+    "popularity": 83,
+    "previewUrl": "https://p.scdn.co/mp3-preview/b5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:4pN6aehH9LnHu9kTrBeJJh",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country",
+      "country pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0b18g3G5spr4ZCkz7Y6Q0Q",
+    "title": "God Gave Me You",
+    "artist": "Blake Shelton",
+    "album": "Red River Blue",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f0a9417d5a0c2b7c4e7f9f8e",
+    "releaseDate": "2011-07-12",
+    "duration": 224,
+    "explicit": false,
+    "popularity": 80,
+    "previewUrl": "https://p.scdn.co/mp3-preview/a5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:0b18g3G5spr4ZCkz7Y6Q0Q",
+    "moments": [
+      "first-dance",
+      "ceremony"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "4IowQPaYbGJYBKJRzeZHcK",
+    "title": "Yours",
+    "artist": "Russell Dickerson",
+    "album": "Yours",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2732c5b24ecfa39523a75c993c4",
+    "releaseDate": "2017-10-13",
+    "duration": 226,
+    "explicit": false,
+    "popularity": 81,
+    "previewUrl": "https://p.scdn.co/mp3-preview/95e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:4IowQPaYbGJYBKJRzeZHcK",
+    "moments": [
+      "first-dance"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "country",
+      "contemporary country"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2jQ3PAqfZpOS8XW9xHM2GY",
+    "title": "From the Ground Up",
+    "artist": "Dan + Shay",
+    "album": "Obsessed",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2737ab89bb75060d9f24ee9b719",
+    "releaseDate": "2016-06-03",
+    "duration": 227,
+    "explicit": false,
+    "popularity": 79,
+    "previewUrl": "https://p.scdn.co/mp3-preview/85e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:2jQ3PAqfZpOS8XW9xHM2GY",
+    "moments": [
+      "first-dance",
+      "ceremony"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5h0LsfuN7i0Mfr7fgwLSfP",
+    "title": "H.O.L.Y.",
+    "artist": "Florida Georgia Line",
+    "album": "Dig Your Roots",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273c0ae7835e7b0c6b3969c14b5",
+    "releaseDate": "2016-08-26",
+    "duration": 207,
+    "explicit": false,
+    "popularity": 78,
+    "previewUrl": "https://p.scdn.co/mp3-preview/75e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:5h0LsfuN7i0Mfr7fgwLSfP",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "country pop",
+      "bro country"
+    ],
+    "generationAppeal": [
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7I8bqrgKqRR9epoF4rZfQV",
+    "title": "I Don't Dance",
+    "artist": "Lee Brice",
+    "album": "I Don't Dance",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273fb93d11e9b5b7e3fa0636ba5",
+    "releaseDate": "2014-09-09",
+    "duration": 221,
+    "explicit": false,
+    "popularity": 77,
+    "previewUrl": "https://p.scdn.co/mp3-preview/65e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:7I8bqrgKqRR9epoF4rZfQV",
+    "moments": [
+      "first-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0RJaQiU5jYKChYfU72tVQN",
+    "title": "Amazed",
+    "artist": "Lonestar",
+    "album": "Lonely Grill",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2731a40dc72ad1f76937bf0e0e0",
+    "releaseDate": "1999-06-01",
+    "duration": 240,
+    "explicit": false,
+    "popularity": 81,
+    "previewUrl": "https://p.scdn.co/mp3-preview/55e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:0RJaQiU5jYKChYfU72tVQN",
+    "moments": [
+      "first-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country",
+      "country pop"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1D3QcrGl0VWQxFcYhO0qBe",
+    "title": "I Cross My Heart",
+    "artist": "George Strait",
+    "album": "Pure Country",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273279b8c01ede3717f86f638d9",
+    "releaseDate": "1992-09-15",
+    "duration": 210,
+    "explicit": false,
+    "popularity": 76,
+    "previewUrl": "https://p.scdn.co/mp3-preview/45e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:1D3QcrGl0VWQxFcYhO0qBe",
+    "moments": [
+      "first-dance",
+      "ceremony"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country",
+      "traditional country"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "boomer"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3VcKKgL1pgIIJR2z8guIzg",
+    "title": "When You Say Nothing at All",
+    "artist": "Alison Krauss",
+    "album": "Now That I've Found You",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f4b7d98a8756eaf22527ebab",
+    "releaseDate": "1995-02-07",
+    "duration": 257,
+    "explicit": false,
+    "popularity": 75,
+    "previewUrl": "https://p.scdn.co/mp3-preview/35e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:3VcKKgL1pgIIJR2z8guIzg",
+    "moments": [
+      "first-dance",
+      "ceremony"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country",
+      "bluegrass"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1qOW2g5RyJNxJRsecQeOLz",
+    "title": "It's Your Love",
+    "artist": "Tim McGraw & Faith Hill",
+    "album": "Everywhere",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273ac3a0fb4bfdd6dd4c7b1b248",
+    "releaseDate": "1997-06-03",
+    "duration": 233,
+    "explicit": false,
+    "popularity": 77,
+    "previewUrl": "https://p.scdn.co/mp3-preview/25e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:1qOW2g5RyJNxJRsecQeOLz",
+    "moments": [
+      "first-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0kAZ3H6G9Zac4PMpmobMkj",
+    "title": "Bless the Broken Road",
+    "artist": "Rascal Flatts",
+    "album": "Feels Like Today",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273ba8e8f0f121e4f68174cdb42",
+    "releaseDate": "2004-09-28",
+    "duration": 238,
+    "explicit": false,
+    "popularity": 79,
+    "previewUrl": "https://p.scdn.co/mp3-preview/15e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:0kAZ3H6G9Zac4PMpmobMkj",
+    "moments": [
+      "first-dance",
+      "ceremony"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country",
+      "country pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7F6BT9p5P4TgaJP0XUVHKn",
+    "title": "Copperhead Road",
+    "artist": "Steve Earle",
+    "album": "Copperhead Road",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e6bfdad5c9dd67e826c8fd1f",
+    "releaseDate": "1988-10-17",
+    "duration": 366,
+    "explicit": false,
+    "popularity": 73,
+    "previewUrl": "https://p.scdn.co/mp3-preview/05e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:7F6BT9p5P4TgaJP0XUVHKn",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "country rock",
+      "outlaw country"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5fJKruTP0DiAFBDesEBR3C",
+    "title": "Boot Scootin' Boogie",
+    "artist": "Brooks & Dunn",
+    "album": "Brand New Man",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f68e3e2dc0e6e3df1b5e3816",
+    "releaseDate": "1991-08-13",
+    "duration": 220,
+    "explicit": false,
+    "popularity": 75,
+    "previewUrl": "https://p.scdn.co/mp3-preview/f5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:5fJKruTP0DiAFBDesEBR3C",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "country"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "boomer"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5eFsRnkcJW5G18SBBoAbLs",
+    "title": "Watermelon Crawl",
+    "artist": "Tracy Byrd",
+    "album": "No Ordinary Man",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b27379de2f1d0fb5cd7b9e7f4c7e",
+    "releaseDate": "1994-08-02",
+    "duration": 195,
+    "explicit": false,
+    "popularity": 70,
+    "previewUrl": "https://p.scdn.co/mp3-preview/e5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:5eFsRnkcJW5G18SBBoAbLs",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "country"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0VcZJOa8bSfKKJD5YCjqHx",
+    "title": "Cotton-Eyed Joe",
+    "artist": "Rednex",
+    "album": "Sex & Violins",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b27347fa0621f8c3ba0d2ba0a35f",
+    "releaseDate": "1995-03-06",
+    "duration": 193,
+    "explicit": false,
+    "popularity": 76,
+    "previewUrl": "https://p.scdn.co/mp3-preview/d5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:0VcZJOa8bSfKKJD5YCjqHx",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "dance",
+      "eurodance",
+      "country"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1BYZxKSf0aTxp8ZL4vqH8r",
+    "title": "Footloose",
+    "artist": "Blake Shelton",
+    "album": "Footloose",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f0a40b9788e4b9f6a8d96bb7",
+    "releaseDate": "2011-09-27",
+    "duration": 226,
+    "explicit": false,
+    "popularity": 71,
+    "previewUrl": "https://p.scdn.co/mp3-preview/c5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:1BYZxKSf0aTxp8ZL4vqH8r",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "country pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5q4s4PvSGr6YtHQVRc7K2N",
+    "title": "Country Girl (Shake It For Me)",
+    "artist": "Luke Bryan",
+    "album": "Tailgates & Tanlines",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273df866bad37e93abd75dc6f02",
+    "releaseDate": "2011-08-09",
+    "duration": 255,
+    "explicit": false,
+    "popularity": 78,
+    "previewUrl": "https://p.scdn.co/mp3-preview/b5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:5q4s4PvSGr6YtHQVRc7K2N",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "country",
+      "bro country"
+    ],
+    "generationAppeal": [
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6k8TASvixRK5MKojFhqDtN",
+    "title": "Cruise",
+    "artist": "Florida Georgia Line",
+    "album": "Here's to the Good Times",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273821d0001c64644b8b0c36743",
+    "releaseDate": "2012-12-04",
+    "duration": 209,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/a5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:6k8TASvixRK5MKojFhqDtN",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "country pop",
+      "bro country"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3tQlNRaJcJ0C1RTt7VfU9B",
+    "title": "Chicken Fried",
+    "artist": "Zac Brown Band",
+    "album": "The Foundation",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e0c96b66a87dc9c826c5df7f",
+    "releaseDate": "2008-11-18",
+    "duration": 239,
+    "explicit": false,
+    "popularity": 79,
+    "previewUrl": "https://p.scdn.co/mp3-preview/95e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:3tQlNRaJcJ0C1RTt7VfU9B",
+    "moments": [
+      "party",
+      "dinner"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "country"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "42K0pl9k1BQ7JXRektyJRD",
+    "title": "Save a Horse (Ride a Cowboy)",
+    "artist": "Big & Rich",
+    "album": "Horse of a Different Color",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273797e00ab03b3b1771fcd3c04",
+    "releaseDate": "2004-05-04",
+    "duration": 203,
+    "explicit": false,
+    "popularity": 76,
+    "previewUrl": "https://p.scdn.co/mp3-preview/85e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:42K0pl9k1BQ7JXRektyJRD",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "country"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "26eh2fZmRfR7CcKu5TOXZI",
+    "title": "Redneck Woman",
+    "artist": "Gretchen Wilson",
+    "album": "Here for the Party",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2731d3db9c5ad09b7a37798df8f",
+    "releaseDate": "2004-05-11",
+    "duration": 221,
+    "explicit": false,
+    "popularity": 74,
+    "previewUrl": "https://p.scdn.co/mp3-preview/75e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:26eh2fZmRfR7CcKu5TOXZI",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "country"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3B0fG8V5h6yDnt6RiNJoVj",
+    "title": "Friends in Low Places",
+    "artist": "Garth Brooks",
+    "album": "No Fences",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e1f02380ecaf3731bb03a6f6",
+    "releaseDate": "1990-08-27",
+    "duration": 260,
+    "explicit": false,
+    "popularity": 81,
+    "previewUrl": "https://p.scdn.co/mp3-preview/65e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:3B0fG8V5h6yDnt6RiNJoVj",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "country"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "boomer"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6YlFGMFnHQwX6qU0CGTN4a",
+    "title": "Sweet Home Alabama",
+    "artist": "Lynyrd Skynyrd",
+    "album": "Second Helping",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b27393c8ac106248e17e8b45b6d0",
+    "releaseDate": "1974-04-15",
+    "duration": 284,
+    "explicit": false,
+    "popularity": 84,
+    "previewUrl": "https://p.scdn.co/mp3-preview/55e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:6YlFGMFnHQwX6qU0CGTN4a",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "southern rock",
+      "country rock"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "boomer"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6zwKLBLl8Qmw3d5c7UcUz6",
+    "title": "Wagon Wheel",
+    "artist": "Darius Rucker",
+    "album": "True Believers",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2730bf5592ddaab1f1971b5c556",
+    "releaseDate": "2013-05-21",
+    "duration": 291,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/45e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:6zwKLBLl8Qmw3d5c7UcUz6",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "country"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0lnxrQAd9ZxbhBBe7d8FO8",
+    "title": "Take Me Home, Country Roads",
+    "artist": "John Denver",
+    "album": "Poems, Prayers & Promises",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273ddda22b69327ce64e8d79d3f",
+    "releaseDate": "1971-04-06",
+    "duration": 195,
+    "explicit": false,
+    "popularity": 83,
+    "previewUrl": "https://p.scdn.co/mp3-preview/35e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:0lnxrQAd9ZxbhBBe7d8FO8",
+    "moments": [
+      "party",
+      "recessional"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "country",
+      "folk"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "4eQbjHyDbdFEk38cPQj2sT",
+    "title": "Man! I Feel Like a Woman!",
+    "artist": "Shania Twain",
+    "album": "Come On Over",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273cfac7bcb0c8e27ded325ae6f",
+    "releaseDate": "1997-11-04",
+    "duration": 233,
+    "explicit": false,
+    "popularity": 80,
+    "previewUrl": "https://p.scdn.co/mp3-preview/25e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:4eQbjHyDbdFEk38cPQj2sT",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "country pop"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2T4RHlnAQEofFSGwNMq8aN",
+    "title": "My Little Girl",
+    "artist": "Tim McGraw",
+    "album": "Flicka",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f5d1fe01da8bbfc2a76bb5c8",
+    "releaseDate": "2006-10-17",
+    "duration": 234,
+    "explicit": false,
+    "popularity": 74,
+    "previewUrl": "https://p.scdn.co/mp3-preview/15e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:2T4RHlnAQEofFSGwNMq8aN",
+    "moments": [
+      "parent-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6nLfKnFdFHULovRnZQp2jD",
+    "title": "I Loved Her First",
+    "artist": "Heartland",
+    "album": "I Loved Her First",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f3a8a2f3194c9b066936e33e",
+    "releaseDate": "2006-10-02",
+    "duration": 243,
+    "explicit": false,
+    "popularity": 75,
+    "previewUrl": "https://p.scdn.co/mp3-preview/05e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:6nLfKnFdFHULovRnZQp2jD",
+    "moments": [
+      "parent-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0vLVqPqTqjy2wJlRHvmkRf",
+    "title": "The Best Day",
+    "artist": "George Strait",
+    "album": "Latest Greatest Straitest Hits",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273ad2ba08b396c1d823f2c948e",
+    "releaseDate": "2000-03-28",
+    "duration": 200,
+    "explicit": false,
+    "popularity": 71,
+    "previewUrl": "https://p.scdn.co/mp3-preview/f5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:0vLVqPqTqjy2wJlRHvmkRf",
+    "moments": [
+      "parent-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country",
+      "traditional country"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "boomer"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1VQ0xQBCtO3utSYUpPCXgK",
+    "title": "Mama's Song",
+    "artist": "Carrie Underwood",
+    "album": "Play On",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2731c13a1236b420c0ee45e47fa",
+    "releaseDate": "2009-11-03",
+    "duration": 245,
+    "explicit": false,
+    "popularity": 73,
+    "previewUrl": "https://p.scdn.co/mp3-preview/e5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:1VQ0xQBCtO3utSYUpPCXgK",
+    "moments": [
+      "parent-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "38tXZcL1gZRfbqfOG0VMTH",
+    "title": "Love You Anyway",
+    "artist": "Luke Combs",
+    "album": "Gettin' Old",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273ae51a3b7fce57d3ab6dc1a40",
+    "releaseDate": "2023-03-24",
+    "duration": 219,
+    "explicit": false,
+    "popularity": 83,
+    "previewUrl": "https://p.scdn.co/mp3-preview/c5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:38tXZcL1gZRfbqfOG0VMTH",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "country",
+      "contemporary country"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7fmXV5qFJP0K7pJZmqpl0M",
+    "title": "Sand in My Boots",
+    "artist": "Morgan Wallen",
+    "album": "Dangerous: The Double Album",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f46b9d202509a8f7384b90de",
+    "releaseDate": "2021-01-08",
+    "duration": 198,
+    "explicit": false,
+    "popularity": 84,
+    "previewUrl": "https://p.scdn.co/mp3-preview/b5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:7fmXV5qFJP0K7pJZmqpl0M",
+    "moments": [
+      "cocktail",
+      "dinner"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "country"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2bgTY4UwhfBYhGT4HUYStN",
+    "title": "Buy Dirt",
+    "artist": "Jordan Davis & Luke Bryan",
+    "album": "Buy Dirt",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273a6cf37f5e44b99e0b3de9bbd",
+    "releaseDate": "2021-05-21",
+    "duration": 169,
+    "explicit": false,
+    "popularity": 81,
+    "previewUrl": "https://p.scdn.co/mp3-preview/a5e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:2bgTY4UwhfBYhGT4HUYStN",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "country"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "4b7IlmMfEQuLLwb3i0S7tO",
+    "title": "Fancy Like",
+    "artist": "Walker Hayes",
+    "album": "Country Stuff",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273dd3ba119aa9e2c9dc6a9e42b",
+    "releaseDate": "2021-06-04",
+    "duration": 161,
+    "explicit": false,
+    "popularity": 85,
+    "previewUrl": "https://p.scdn.co/mp3-preview/95e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:4b7IlmMfEQuLLwb3i0S7tO",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "country pop"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7iDa6hUg2VgEL1o1HjmfBn",
+    "title": "Meant to Be",
+    "artist": "Bebe Rexha ft. Florida Georgia Line",
+    "album": "All Your Fault: Pt. 2",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273bbf0146b397a3d31bb41ebf5",
+    "releaseDate": "2017-08-11",
+    "duration": 164,
+    "explicit": false,
+    "popularity": 83,
+    "previewUrl": "https://p.scdn.co/mp3-preview/85e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:7iDa6hUg2VgEL1o1HjmfBn",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "country pop",
+      "pop"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1dNBTZX5zUMOOAMqUJyMwG",
+    "title": "The Bones",
+    "artist": "Maren Morris",
+    "album": "GIRL",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2738e5e5ed64e13554779ee0e21",
+    "releaseDate": "2019-03-08",
+    "duration": 197,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/75e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:1dNBTZX5zUMOOAMqUJyMwG",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "country pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0b9oOr2ZgvyQu88wzixux9",
+    "title": "Body Like a Back Road",
+    "artist": "Sam Hunt",
+    "album": "Southside",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273d68c06083332795893f862fc",
+    "releaseDate": "2020-04-03",
+    "duration": 165,
+    "explicit": false,
+    "popularity": 83,
+    "previewUrl": "https://p.scdn.co/mp3-preview/65e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:0b9oOr2ZgvyQu88wzixux9",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "country pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2aibwv5hGXSgw7Yru8IYTO",
+    "title": "Tequila",
+    "artist": "Dan + Shay",
+    "album": "Dan + Shay",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2735ea8162324bbe0ba3e092ba4",
+    "releaseDate": "2018-06-22",
+    "duration": 232,
+    "explicit": false,
+    "popularity": 84,
+    "previewUrl": "https://p.scdn.co/mp3-preview/55e9f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:2aibwv5hGXSgw7Yru8IYTO",
+    "moments": [
+      "cocktail",
+      "dinner"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "country pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Country Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6tDDoYIxWvMLTdKpjFkc1B",
+    "title": "Stay",
+    "artist": "The Kid LAROI & Justin Bieber",
+    "album": "F*CK LOVE 3: OVER YOU",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b46d74df8a3cd3e28efb6021",
+    "releaseDate": "2021-07-09",
+    "duration": 141,
+    "explicit": false,
+    "popularity": 88,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7943e5c3e93b4cd6b4d6c5c0e5a5c0f5e9d8e7f6",
+    "spotifyUri": "spotify:track:6tDDoYIxWvMLTdKpjFkc1B",
+    "moments": [
+      "first-dance",
+      "party"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "r&b",
+      "pop"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0VjIjW4GlUZAMYd2vXMi3b",
+    "title": "Blinding Lights",
+    "artist": "The Weeknd",
+    "album": "After Hours",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36",
+    "releaseDate": "2020-03-20",
+    "duration": 200,
+    "explicit": false,
+    "popularity": 90,
+    "previewUrl": "https://p.scdn.co/mp3-preview/858b1c31eebcce3b8d2574c8a6c021a5c0f5e8d7",
+    "spotifyUri": "spotify:track:0VjIjW4GlUZAMYd2vXMi3b",
+    "moments": [
+      "party",
+      "processional"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "r&b",
+      "synth-pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7MAibcTli4IisCtbHKrGMh",
+    "title": "Leave The Door Open",
+    "artist": "Bruno Mars, Anderson .Paak, Silk Sonic",
+    "album": "An Evening With Silk Sonic",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273fcfb565e520a40dd1b1f7cfb",
+    "releaseDate": "2021-03-05",
+    "duration": 242,
+    "explicit": false,
+    "popularity": 86,
+    "previewUrl": "https://p.scdn.co/mp3-preview/3e5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:7MAibcTli4IisCtbHKrGMh",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "r&b",
+      "soul",
+      "funk"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7MtVPRGtZl6rPjMfLoI3Lh",
+    "title": "Good Days",
+    "artist": "SZA",
+    "album": "Good Days",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273708a101c76b0e23b09eba2ca",
+    "releaseDate": "2020-12-25",
+    "duration": 279,
+    "explicit": true,
+    "popularity": 84,
+    "previewUrl": "https://p.scdn.co/mp3-preview/8e6f5c4d3b2a1c0d9e8f7a6b5c4d3e2f1a0b9c8d",
+    "spotifyUri": "spotify:track:7MtVPRGtZl6rPjMfLoI3Lh",
+    "moments": [
+      "cocktail",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "r&b",
+      "alternative r&b"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3FAJ6O0NOHQV8Mc5Ri6ENp",
+    "title": "Adorn",
+    "artist": "Miguel",
+    "album": "Kaleidoscope Dream",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2738f52f321140e4a76ea720c52",
+    "releaseDate": "2012-10-02",
+    "duration": 194,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/f6d6ca9cc4bb4740e0b6f30d85f7682067d3e997",
+    "spotifyUri": "spotify:track:3FAJ6O0NOHQV8Mc5Ri6ENp",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "r&b",
+      "soul"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3xKsf9qdS1CyvXSMEid6g8",
+    "title": "Pink + White",
+    "artist": "Frank Ocean",
+    "album": "Blonde",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273c5649add07ed3720be9d5526",
+    "releaseDate": "2016-08-20",
+    "duration": 184,
+    "explicit": false,
+    "popularity": 80,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:3xKsf9qdS1CyvXSMEid6g8",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "r&b",
+      "alternative r&b"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6PGoSes0D9eUDeeAafB2As",
+    "title": "Love on the Brain",
+    "artist": "Rihanna",
+    "album": "ANTI (Deluxe)",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273fb374ad57fb9ebcb96b87ba5",
+    "releaseDate": "2016-01-28",
+    "duration": 223,
+    "explicit": false,
+    "popularity": 84,
+    "previewUrl": "https://p.scdn.co/mp3-preview/8e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:6PGoSes0D9eUDeeAafB2As",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "r&b",
+      "soul"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2ZWlPOoWh0626oTaHrnl2a",
+    "title": "Best Part",
+    "artist": "Daniel Caesar ft. H.E.R.",
+    "album": "Freudian",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b1c4b76e23414c9f20242268",
+    "releaseDate": "2017-08-25",
+    "duration": 219,
+    "explicit": false,
+    "popularity": 85,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7c71b8516c33b71164e445051c68e3dc52c141f8",
+    "spotifyUri": "spotify:track:2ZWlPOoWh0626oTaHrnl2a",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "r&b",
+      "soul"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3ee8Jmje8o58CHK66QrVC2",
+    "title": "Focus",
+    "artist": "H.E.R.",
+    "album": "H.E.R.",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273828ef506b5e320e8f9c2b06f",
+    "releaseDate": "2017-10-20",
+    "duration": 170,
+    "explicit": false,
+    "popularity": 81,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:3ee8Jmje8o58CHK66QrVC2",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "r&b",
+      "contemporary r&b"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "34gCuhDGsG4bRPIf9bb02f",
+    "title": "Thinking Out Loud",
+    "artist": "Ed Sheeran",
+    "album": "x (Deluxe Edition)",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273a6d451a9d15a3f45be26f3e7",
+    "releaseDate": "2014-06-23",
+    "duration": 281,
+    "explicit": false,
+    "popularity": 86,
+    "previewUrl": "https://p.scdn.co/mp3-preview/0a40a8c5f8e5f9d8e7e6f5c4b3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:34gCuhDGsG4bRPIf9bb02f",
+    "moments": [
+      "first-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "pop",
+      "r&b"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1yH1xFUo7KLEhaMnzIIjxA",
+    "title": "All My Life",
+    "artist": "K-Ci & JoJo",
+    "album": "Love Always",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f461e4047e5bb3e604d5fa3f",
+    "releaseDate": "1997-06-17",
+    "duration": 325,
+    "explicit": false,
+    "popularity": 78,
+    "previewUrl": "https://p.scdn.co/mp3-preview/6e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:1yH1xFUo7KLEhaMnzIIjxA",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "r&b",
+      "soul"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "15JINEqzVMv3SvJTAXAKED",
+    "title": "Let's Stay Together",
+    "artist": "Al Green",
+    "album": "Let's Stay Together",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b2c47266308aaed1b79a37e8",
+    "releaseDate": "1972-01-01",
+    "duration": 197,
+    "explicit": false,
+    "popularity": 75,
+    "previewUrl": "https://p.scdn.co/mp3-preview/5e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:15JINEqzVMv3SvJTAXAKED",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "soul",
+      "r&b"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7tqhbajSfrz2F7E1Z75ASX",
+    "title": "I'll Make Love to You",
+    "artist": "Boyz II Men",
+    "album": "II",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2734e99df3f0f693e383dc4d679",
+    "releaseDate": "1994-08-30",
+    "duration": 243,
+    "explicit": false,
+    "popularity": 76,
+    "previewUrl": "https://p.scdn.co/mp3-preview/4e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:7tqhbajSfrz2F7E1Z75ASX",
+    "moments": [
+      "first-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "r&b",
+      "soul"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1YS3INaF2HpC0mJIJ2aXxJ",
+    "title": "End of the Road",
+    "artist": "Boyz II Men",
+    "album": "CooleyHighHarmony",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2732f52338cba87f1e5444d04e4",
+    "releaseDate": "1991-04-30",
+    "duration": 352,
+    "explicit": false,
+    "popularity": 74,
+    "previewUrl": "https://p.scdn.co/mp3-preview/3e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:1YS3INaF2HpC0mJIJ2aXxJ",
+    "moments": [
+      "first-dance",
+      "last-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "r&b",
+      "soul"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5CQ30WqJwcep0pYcV4AMNc",
+    "title": "Crazy",
+    "artist": "Gnarls Barkley",
+    "album": "St. Elsewhere",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b7d7e8c27b7cbec577e2baa8",
+    "releaseDate": "2006-05-09",
+    "duration": 178,
+    "explicit": true,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/2e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:5CQ30WqJwcep0pYcV4AMNc",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "r&b",
+      "soul",
+      "funk"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0MWUyCnzX97XSqOc6vqKwZ",
+    "title": "24K Magic",
+    "artist": "Bruno Mars",
+    "album": "24K Magic",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2735c4e4c32705950c37e2670be",
+    "releaseDate": "2016-11-18",
+    "duration": 226,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/a797ad5b4f6b63ebaca1a2bdb09794eadfb1a11f",
+    "spotifyUri": "spotify:track:0MWUyCnzX97XSqOc6vqKwZ",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "funk",
+      "r&b",
+      "pop"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "32OlwWuMpZ6b0aN2RZOeMS",
+    "title": "Uptown Funk",
+    "artist": "Mark Ronson ft. Bruno Mars",
+    "album": "Uptown Special",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e44963b8bb127552aede7218",
+    "releaseDate": "2015-01-13",
+    "duration": 269,
+    "explicit": false,
+    "popularity": 86,
+    "previewUrl": "https://p.scdn.co/mp3-preview/e9025e8816404b05ac4e460dc6795c60e05ea80f",
+    "spotifyUri": "spotify:track:32OlwWuMpZ6b0aN2RZOeMS",
+    "moments": [
+      "party",
+      "processional"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "funk",
+      "pop",
+      "r&b"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5vRWUNiOGjIa5kQTHzCEAp",
+    "title": "Treasure",
+    "artist": "Bruno Mars",
+    "album": "Unorthodox Jukebox",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273926f43e7cce571e62720fd46",
+    "releaseDate": "2012-12-07",
+    "duration": 178,
+    "explicit": false,
+    "popularity": 79,
+    "previewUrl": "https://p.scdn.co/mp3-preview/1e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:5vRWUNiOGjIa5kQTHzCEAp",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "pop",
+      "funk",
+      "r&b"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0KKkJNfGyhkQ5aFogxQAPU",
+    "title": "That's What I Like",
+    "artist": "Bruno Mars",
+    "album": "24K Magic",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2735c4e4c32705950c37e2670be",
+    "releaseDate": "2016-11-18",
+    "duration": 206,
+    "explicit": false,
+    "popularity": 83,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:0KKkJNfGyhkQ5aFogxQAPU",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "r&b",
+      "pop"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2MbdDtCv5LUVjYy9RuGTgC",
+    "title": "Yeah!",
+    "artist": "Usher ft. Lil Jon & Ludacris",
+    "album": "Confessions",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273365b3fb800c19f7ff72602da",
+    "releaseDate": "2004-03-23",
+    "duration": 250,
+    "explicit": false,
+    "popularity": 84,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9e0cb0a9394c7a1e15e5db851551bb00e4ba4470",
+    "spotifyUri": "spotify:track:2MbdDtCv5LUVjYy9RuGTgC",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "r&b",
+      "crunk",
+      "hip hop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0jnsk9HBra6NMjO2oANoPY",
+    "title": "Untitled (How Does It Feel)",
+    "artist": "D'Angelo",
+    "album": "Voodoo",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e3ee9f2264e02f27f1bc8b81",
+    "releaseDate": "2000-01-25",
+    "duration": 432,
+    "explicit": false,
+    "popularity": 73,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:0jnsk9HBra6NMjO2oANoPY",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "neo soul",
+      "r&b"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3nAq2hCr1oWsIU54tS98pL",
+    "title": "Golden",
+    "artist": "Jill Scott",
+    "album": "Beautifully Human: Words and Sounds Vol. 2",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273c7ed93a5825ff2e51c3e8ad2",
+    "releaseDate": "2004-08-31",
+    "duration": 268,
+    "explicit": false,
+    "popularity": 71,
+    "previewUrl": "https://p.scdn.co/mp3-preview/6d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:3nAq2hCr1oWsIU54tS98pL",
+    "moments": [
+      "processional",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "neo soul",
+      "r&b"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0FQsgRJGRQCBFPGt9e6kmu",
+    "title": "A Long Walk",
+    "artist": "Jill Scott",
+    "album": "Who Is Jill Scott? Words and Sounds Vol. 1",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273797d9e89065f1e37a953fb82",
+    "releaseDate": "2000-07-18",
+    "duration": 296,
+    "explicit": false,
+    "popularity": 69,
+    "previewUrl": "https://p.scdn.co/mp3-preview/5d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:0FQsgRJGRQCBFPGt9e6kmu",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "neo soul",
+      "r&b"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0U0ldCRmgCqhVvD6ksG63j",
+    "title": "Prototype",
+    "artist": "OutKast",
+    "album": "The Love Below",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273d28d2ebdedb220e479743797",
+    "releaseDate": "2003-09-23",
+    "duration": 326,
+    "explicit": false,
+    "popularity": 74,
+    "previewUrl": "https://p.scdn.co/mp3-preview/4d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:0U0ldCRmgCqhVvD6ksG63j",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "neo soul",
+      "r&b",
+      "hip hop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "06AQaLgimERjCDblvGPKQq",
+    "title": "Green Light",
+    "artist": "John Legend ft. André 3000",
+    "album": "Evolver",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273a66a3e95b0be1ca80da0758a",
+    "releaseDate": "2008-10-28",
+    "duration": 209,
+    "explicit": false,
+    "popularity": 70,
+    "previewUrl": "https://p.scdn.co/mp3-preview/3d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:06AQaLgimERjCDblvGPKQq",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "r&b",
+      "soul"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7mFj0LlWtEJaEigguaWqYh",
+    "title": "Mama",
+    "artist": "Boyz II Men",
+    "album": "Evolution",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e99f6f82e7a37c4a50c5de9b",
+    "releaseDate": "1997-09-23",
+    "duration": 291,
+    "explicit": false,
+    "popularity": 68,
+    "previewUrl": "https://p.scdn.co/mp3-preview/2d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:7mFj0LlWtEJaEigguaWqYh",
+    "moments": [
+      "parent-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "r&b",
+      "soul"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6wwmo7kvZ1b2xqLNalxjYz",
+    "title": "Dance With My Father",
+    "artist": "Luther Vandross",
+    "album": "Dance With My Father",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273949195d8c5abdd88e22cc83e",
+    "releaseDate": "2003-06-10",
+    "duration": 266,
+    "explicit": false,
+    "popularity": 73,
+    "previewUrl": "https://p.scdn.co/mp3-preview/1d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:6wwmo7kvZ1b2xqLNalxjYz",
+    "moments": [
+      "parent-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "r&b",
+      "soul"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "boomer"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "4e9hUiLsN4mx61ARosFi7p",
+    "title": "Isn't She Lovely",
+    "artist": "Stevie Wonder",
+    "album": "Songs In The Key Of Life",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2732cc6745e51284bff65bae7f7",
+    "releaseDate": "1976-09-28",
+    "duration": 396,
+    "explicit": false,
+    "popularity": 76,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:4e9hUiLsN4mx61ARosFi7p",
+    "moments": [
+      "parent-dance"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "soul",
+      "r&b",
+      "funk"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1mXVgsBdtIVeCLJnSnmtdV",
+    "title": "My Girl",
+    "artist": "The Temptations",
+    "album": "The Temptations Sing Smokey",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2735b21d3f83f25e5bbf9ddea0f",
+    "releaseDate": "1965-03-01",
+    "duration": 165,
+    "explicit": false,
+    "popularity": 77,
+    "previewUrl": "https://p.scdn.co/mp3-preview/8c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:1mXVgsBdtIVeCLJnSnmtdV",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "motown",
+      "soul",
+      "r&b"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "39shmbIHICJ2Wxnk1fPSdz",
+    "title": "Ain't No Mountain High Enough",
+    "artist": "Marvin Gaye & Tammi Terrell",
+    "album": "United",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2737dd3e42f036e8b2fe7d9cf64",
+    "releaseDate": "1967-08-29",
+    "duration": 150,
+    "explicit": false,
+    "popularity": 75,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:39shmbIHICJ2Wxnk1fPSdz",
+    "moments": [
+      "party",
+      "recessional"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "motown",
+      "soul",
+      "r&b"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3RiPr603aXAoi4GHyXx0uy",
+    "title": "Signed, Sealed, Delivered (I'm Yours)",
+    "artist": "Stevie Wonder",
+    "album": "Signed, Sealed And Delivered",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e9a5578f4d76efc3ace968fe",
+    "releaseDate": "1970-08-07",
+    "duration": 161,
+    "explicit": false,
+    "popularity": 78,
+    "previewUrl": "https://p.scdn.co/mp3-preview/6c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:3RiPr603aXAoi4GHyXx0uy",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "soul",
+      "funk",
+      "r&b"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7tKKOdgU7KcGFPxLHJbcDH",
+    "title": "I Want You Back",
+    "artist": "The Jackson 5",
+    "album": "Diana Ross Presents The Jackson 5",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b01ac86a8c604aaa9a3ff47e",
+    "releaseDate": "1969-12-18",
+    "duration": 177,
+    "explicit": false,
+    "popularity": 76,
+    "previewUrl": "https://p.scdn.co/mp3-preview/5c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:7tKKOdgU7KcGFPxLHJbcDH",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "motown",
+      "soul",
+      "r&b",
+      "pop"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "4EWCNWgDS8707fNSZ1oaA5",
+    "title": "Love Never Fails",
+    "artist": "Kirk Franklin",
+    "album": "Hello Fear",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e9ed592d5c803da36e3ebdab",
+    "releaseDate": "2011-03-22",
+    "duration": 306,
+    "explicit": false,
+    "popularity": 68,
+    "previewUrl": "https://p.scdn.co/mp3-preview/4c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:4EWCNWgDS8707fNSZ1oaA5",
+    "moments": [
+      "ceremony",
+      "first-dance"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "gospel",
+      "r&b",
+      "contemporary gospel"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7KA4W4McWYRpgf0fWsJZWB",
+    "title": "See the Light",
+    "artist": "Travis Greene ft. Isaiah Templeton & Geoffrey Golden",
+    "album": "Crossover: Live from Music City",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2735b3c98bbab7cd7e85cf5c1cf",
+    "releaseDate": "2017-08-18",
+    "duration": 267,
+    "explicit": false,
+    "popularity": 65,
+    "previewUrl": "https://p.scdn.co/mp3-preview/3c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:7KA4W4McWYRpgf0fWsJZWB",
+    "moments": [
+      "ceremony",
+      "processional"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "gospel",
+      "contemporary r&b"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "34xTFwjPQ1dC6uJmleno7x",
+    "title": "Thinkin Bout You",
+    "artist": "Frank Ocean",
+    "album": "channel ORANGE",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273c027ad28821777b00dcaa888",
+    "releaseDate": "2012-07-10",
+    "duration": 200,
+    "explicit": false,
+    "popularity": 83,
+    "previewUrl": "https://p.scdn.co/mp3-preview/2c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:34xTFwjPQ1dC6uJmleno7x",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "alternative r&b",
+      "r&b"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0VgkVdmE4gld66l8iyGjgx",
+    "title": "Mask Off",
+    "artist": "Future",
+    "album": "Future",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f8f0",
+    "releaseDate": "2017-02-17",
+    "duration": 204,
+    "explicit": true,
+    "popularity": 85,
+    "previewUrl": "https://p.scdn.co/mp3-preview/1c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:0VgkVdmE4gld66l8iyGjgx",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "trap soul",
+      "r&b",
+      "hip hop"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0AOvhRhBJNUjjkdfOXOSji",
+    "title": "Chicago Freestyle",
+    "artist": "Drake ft. Giveon",
+    "album": "Dark Lane Demo Tapes",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273bfb5b8b72edb9d0b730810a8",
+    "releaseDate": "2020-05-01",
+    "duration": 221,
+    "explicit": true,
+    "popularity": 79,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9b5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:0AOvhRhBJNUjjkdfOXOSji",
+    "moments": [
+      "cocktail",
+      "dinner"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "r&b",
+      "drake",
+      "alternative r&b"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "R&B Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "60a0Rd6pjrkxjPbaKzXjfq",
+    "title": "Heat Waves",
+    "artist": "Glass Animals",
+    "album": "Dreamland",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b27397028b29775de4b725dd8aac",
+    "releaseDate": "2020-08-07",
+    "duration": 238,
+    "explicit": false,
+    "popularity": 88,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7943e5c3e93b4cd6b4d6c5c0e5a5c0f5e9d8e7f6",
+    "spotifyUri": "spotify:track:60a0Rd6pjrkxjPbaKzXjfq",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "indie rock",
+      "modern rock"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3USxtqRwSYz57Ewm6wWRMp",
+    "title": "Heat Above",
+    "artist": "Greta Van Fleet",
+    "album": "The Battle at Garden's Gate",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e8b7a269026f62e2f2344ddc",
+    "releaseDate": "2021-04-16",
+    "duration": 350,
+    "explicit": false,
+    "popularity": 75,
+    "previewUrl": "https://p.scdn.co/mp3-preview/858b1c31eebcce3b8d2574c8a6c021a5c0f5e8d7",
+    "spotifyUri": "spotify:track:3USxtqRwSYz57Ewm6wWRMp",
+    "moments": [
+      "ceremony",
+      "first-dance"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "classic rock revival",
+      "hard rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6Qyc6fS4DsZjB2mRW9DsQs",
+    "title": "Iris",
+    "artist": "The Goo Goo Dolls",
+    "album": "Dizzy Up the Girl",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273aab0d2553887f56c16b50bcd",
+    "releaseDate": "1998-09-22",
+    "duration": 289,
+    "explicit": false,
+    "popularity": 84,
+    "previewUrl": "https://p.scdn.co/mp3-preview/3e5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:6Qyc6fS4DsZjB2mRW9DsQs",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "alternative rock",
+      "pop rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5XeFesFbtLpXzIVDNQP22n",
+    "title": "I Wanna Be Yours",
+    "artist": "Arctic Monkeys",
+    "album": "AM",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2734f6afc385052250c766a5683",
+    "releaseDate": "2013-09-09",
+    "duration": 183,
+    "explicit": false,
+    "popularity": 87,
+    "previewUrl": "https://p.scdn.co/mp3-preview/8e6f5c4d3b2a1c0d9e8f7a6b5c4d3e2f1a0b9c8d",
+    "spotifyUri": "spotify:track:5XeFesFbtLpXzIVDNQP22n",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "indie rock",
+      "alternative rock"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "21jGcNKet2qwijlDFuPiPb",
+    "title": "Circles",
+    "artist": "Post Malone",
+    "album": "Hollywood's Bleeding",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273ba26678947112dff3c3158bf",
+    "releaseDate": "2019-09-06",
+    "duration": 215,
+    "explicit": false,
+    "popularity": 86,
+    "previewUrl": "https://p.scdn.co/mp3-preview/f6d6ca9cc4bb4740e0b6f30d85f7682067d3e997",
+    "spotifyUri": "spotify:track:21jGcNKet2qwijlDFuPiPb",
+    "moments": [
+      "first-dance",
+      "party"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "pop rock",
+      "alternative"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0u8rJnNNZTKzDeUDVHRgAC",
+    "title": "Ho Hey",
+    "artist": "The Lumineers",
+    "album": "The Lumineers",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273236e19bfb2386f70d60f8d20",
+    "releaseDate": "2012-04-03",
+    "duration": 162,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:0u8rJnNNZTKzDeUDVHRgAC",
+    "moments": [
+      "processional",
+      "recessional"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "indie folk",
+      "folk rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3JvrhDOgAt6p7K8mDyZwRd",
+    "title": "Riptide",
+    "artist": "Vance Joy",
+    "album": "Dream Your Life Away",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f27effe88798e12c7b46e36f",
+    "releaseDate": "2014-09-09",
+    "duration": 204,
+    "explicit": false,
+    "popularity": 83,
+    "previewUrl": "https://p.scdn.co/mp3-preview/8e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:3JvrhDOgAt6p7K8mDyZwRd",
+    "moments": [
+      "cocktail",
+      "party"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "indie folk",
+      "folk rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1v1oIWf2Xgh54kIWuKsDf6",
+    "title": "Pompeii",
+    "artist": "Bastille",
+    "album": "Bad Blood",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b37310834c66c3cd9c2cea33",
+    "releaseDate": "2013-03-04",
+    "duration": 214,
+    "explicit": false,
+    "popularity": 81,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7c71b8516c33b71164e445051c68e3dc52c141f8",
+    "spotifyUri": "spotify:track:1v1oIWf2Xgh54kIWuKsDf6",
+    "moments": [
+      "party",
+      "processional"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "indie rock",
+      "alternative rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2nLtzopw4rPReszdYBJU6h",
+    "title": "Shut Up and Dance",
+    "artist": "WALK THE MOON",
+    "album": "TALKING IS HARD",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273aea29200523b1ee4a5e0cc48",
+    "releaseDate": "2014-12-02",
+    "duration": 199,
+    "explicit": false,
+    "popularity": 80,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:2nLtzopw4rPReszdYBJU6h",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "indie rock",
+      "pop rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7qiZfU4dY1lWllzX7mPBI3",
+    "title": "Shape of You",
+    "artist": "Ed Sheeran",
+    "album": "÷ (Deluxe)",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273ba5db46f4b838ef6027e6f96",
+    "releaseDate": "2017-03-03",
+    "duration": 233,
+    "explicit": false,
+    "popularity": 87,
+    "previewUrl": "https://p.scdn.co/mp3-preview/0a40a8c5f8e5f9d8e7e6f5c4b3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:7qiZfU4dY1lWllzX7mPBI3",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "pop",
+      "pop rock"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5HQVUIKwCEXpe7JIHyY734",
+    "title": "Can't Help Falling in Love",
+    "artist": "Elvis Presley",
+    "album": "Blue Hawaii",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2733bfc0098dcd6e4b18db9e255",
+    "releaseDate": "1961-10-01",
+    "duration": 179,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/6e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:5HQVUIKwCEXpe7JIHyY734",
+    "moments": [
+      "first-dance",
+      "processional"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "rock and roll",
+      "pop"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5Ohxk2dO5COHF1krpoPigN",
+    "title": "At Last",
+    "artist": "Etta James",
+    "album": "At Last!",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b1e10e66ed3150ad1dc1cf00",
+    "releaseDate": "1960-11-15",
+    "duration": 181,
+    "explicit": false,
+    "popularity": 79,
+    "previewUrl": "https://p.scdn.co/mp3-preview/5e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:5Ohxk2dO5COHF1krpoPigN",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "soul",
+      "blues rock"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6HSXNV0b4M4cLJ7ljgVVeh",
+    "title": "Wonderful Tonight",
+    "artist": "Eric Clapton",
+    "album": "Slowhand 35th Anniversary (Deluxe Edition)",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273c3db7e2fb912a7f86ad19fb1",
+    "releaseDate": "1977-11-25",
+    "duration": 223,
+    "explicit": false,
+    "popularity": 77,
+    "previewUrl": "https://p.scdn.co/mp3-preview/4e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:6HSXNV0b4M4cLJ7ljgVVeh",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "classic rock",
+      "soft rock"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "boomer"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1mea3bSkSGXuIRvnydlB5b",
+    "title": "Faithfully",
+    "artist": "Journey",
+    "album": "Frontiers",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2737c2e3735b9f066fd4db27adf",
+    "releaseDate": "1983-02-01",
+    "duration": 266,
+    "explicit": false,
+    "popularity": 76,
+    "previewUrl": "https://p.scdn.co/mp3-preview/3e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:1mea3bSkSGXuIRvnydlB5b",
+    "moments": [
+      "first-dance",
+      "last-dance"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "classic rock",
+      "arena rock"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "boomer"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3e9HZxeyfWwjeyPAMmWSSQ",
+    "title": "Nothing Else Matters",
+    "artist": "Metallica",
+    "album": "Metallica",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273668e3aca3167e6e569a9aa20",
+    "releaseDate": "1991-08-12",
+    "duration": 388,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/2e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:3e9HZxeyfWwjeyPAMmWSSQ",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "metal",
+      "hard rock"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5vdp5UmvTsnMEMESIF2Ym7",
+    "title": "Shut Up and Dance",
+    "artist": "WALK THE MOON",
+    "album": "TALKING IS HARD",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273aea29200523b1ee4a5e0cc48",
+    "releaseDate": "2014-12-02",
+    "duration": 199,
+    "explicit": false,
+    "popularity": 80,
+    "previewUrl": "https://p.scdn.co/mp3-preview/a797ad5b4f6b63ebaca1a2bdb09794eadfb1a11f",
+    "spotifyUri": "spotify:track:5vdp5UmvTsnMEMESIF2Ym7",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "indie rock",
+      "pop rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6eQkTmYG3JjjPMu9CAhIe5",
+    "title": "Mr. Brightside",
+    "artist": "The Killers",
+    "album": "Hot Fuss",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2736690ccc6c58c3a76304cb9ed",
+    "releaseDate": "2004-06-07",
+    "duration": 222,
+    "explicit": false,
+    "popularity": 85,
+    "previewUrl": "https://p.scdn.co/mp3-preview/e9025e8816404b05ac4e460dc6795c60e05ea80f",
+    "spotifyUri": "spotify:track:6eQkTmYG3JjjPMu9CAhIe5",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "indie rock",
+      "alternative rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2374M0fQpWi3dLnB54qaLX",
+    "title": "Africa",
+    "artist": "TOTO",
+    "album": "Toto IV",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e81136d0513a2d0a9cc80fec",
+    "releaseDate": "1982-04-08",
+    "duration": 295,
+    "explicit": false,
+    "popularity": 83,
+    "previewUrl": "https://p.scdn.co/mp3-preview/1e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:2374M0fQpWi3dLnB54qaLX",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "soft rock",
+      "classic rock"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0nJW01T7XtvILxQgC5J7Wh",
+    "title": "Sweet Caroline",
+    "artist": "Neil Diamond",
+    "album": "Brother Love's Travelling Salvation Show",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b7b18f95975c44c92e3c96ef",
+    "releaseDate": "1969-04-01",
+    "duration": 201,
+    "explicit": false,
+    "popularity": 81,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:0nJW01T7XtvILxQgC5J7Wh",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "soft rock",
+      "pop rock"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3d9DChrdc6BOeFsbrZ3Is0",
+    "title": "You Shook Me All Night Long",
+    "artist": "AC/DC",
+    "album": "Back in Black",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b9397587f39f1cd1363deb98",
+    "releaseDate": "1980-07-25",
+    "duration": 210,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9e0cb0a9394c7a1e15e5db851551bb00e4ba4470",
+    "spotifyUri": "spotify:track:3d9DChrdc6BOeFsbrZ3Is0",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "hard rock",
+      "classic rock"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "boomer"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3n3Ppam7vgaVa1iaRUc9Lp",
+    "title": "Mr. Brightside",
+    "artist": "The Killers",
+    "album": "Hot Fuss",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2736690ccc6c58c3a76304cb9ed",
+    "releaseDate": "2004-06-07",
+    "duration": 222,
+    "explicit": false,
+    "popularity": 85,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:3n3Ppam7vgaVa1iaRUc9Lp",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "indie rock",
+      "alternative rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2tncZ2KAAPJYqDURRVZOiE",
+    "title": "Wonderwall",
+    "artist": "Oasis",
+    "album": "(What's the Story) Morning Glory?",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e1cd2fd585abb0ebe5669a80",
+    "releaseDate": "1995-10-02",
+    "duration": 258,
+    "explicit": false,
+    "popularity": 83,
+    "previewUrl": "https://p.scdn.co/mp3-preview/6d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:2tncZ2KAAPJYqDURRVZOiE",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "britpop",
+      "alternative rock"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0bAsR2unSRpn6BQPEnNlZm",
+    "title": "Sex on Fire",
+    "artist": "Kings of Leon",
+    "album": "Only by the Night",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2738f30c55b2210a60f1e78e9fc",
+    "releaseDate": "2008-09-19",
+    "duration": 203,
+    "explicit": false,
+    "popularity": 81,
+    "previewUrl": "https://p.scdn.co/mp3-preview/5d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:0bAsR2unSRpn6BQPEnNlZm",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "alternative rock",
+      "indie rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0b9oOr2ZgvyQu88wzixux9",
+    "title": "This Charming Man - 2011 Remaster",
+    "artist": "The Smiths",
+    "album": "The Smiths",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b27327b7e7c1e960c1183db9e770",
+    "releaseDate": "1984-02-20",
+    "duration": 163,
+    "explicit": false,
+    "popularity": 74,
+    "previewUrl": "https://p.scdn.co/mp3-preview/4d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:0b9oOr2ZgvyQu88wzixux9",
+    "moments": [
+      "cocktail",
+      "party"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "indie rock",
+      "new wave"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3gsCAGsWr6pUm1Vy7CPPob",
+    "title": "There Is a Light That Never Goes Out - 2011 Remaster",
+    "artist": "The Smiths",
+    "album": "The Queen Is Dead",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273aea650a522a4b2bedb91513f",
+    "releaseDate": "1986-06-16",
+    "duration": 242,
+    "explicit": false,
+    "popularity": 75,
+    "previewUrl": "https://p.scdn.co/mp3-preview/3d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:3gsCAGsWr6pUm1Vy7CPPob",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "indie rock",
+      "new wave"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "4gMgiXfqyzZLMhsksGmbQV",
+    "title": "Daughters",
+    "artist": "John Mayer",
+    "album": "Heavier Things",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273fc19ef8c55af5db5df36e86a",
+    "releaseDate": "2003-09-09",
+    "duration": 237,
+    "explicit": false,
+    "popularity": 73,
+    "previewUrl": "https://p.scdn.co/mp3-preview/2d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:4gMgiXfqyzZLMhsksGmbQV",
+    "moments": [
+      "parent-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "soft rock",
+      "pop rock"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "59ndCYDT9KbyZzAPDhJH8e",
+    "title": "The Best Day",
+    "artist": "Taylor Swift",
+    "album": "Fearless (Taylor's Version)",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273ddfb69e90bddfdfc13d273fb",
+    "releaseDate": "2021-04-09",
+    "duration": 245,
+    "explicit": false,
+    "popularity": 72,
+    "previewUrl": "https://p.scdn.co/mp3-preview/1d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:59ndCYDT9KbyZzAPDhJH8e",
+    "moments": [
+      "parent-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "pop",
+      "country rock"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1TKYPzH66GwsqyJFKFkBHQ",
+    "title": "Music Is Love",
+    "artist": "David Crosby",
+    "album": "If I Could Only Remember My Name",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b0cf3d6a8b3c3f58cb87f5bf",
+    "releaseDate": "1971-02-22",
+    "duration": 200,
+    "explicit": false,
+    "popularity": 65,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:1TKYPzH66GwsqyJFKFkBHQ",
+    "moments": [
+      "parent-dance",
+      "ceremony"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "folk rock",
+      "classic rock"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "4B0JvthVoAAuygILe3n4Bs",
+    "title": "Heaven",
+    "artist": "Bryan Adams",
+    "album": "Reckless",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2734a0b2b993f5b7bb14a73cd8f",
+    "releaseDate": "1984-11-05",
+    "duration": 243,
+    "explicit": false,
+    "popularity": 77,
+    "previewUrl": "https://p.scdn.co/mp3-preview/8c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:4B0JvthVoAAuygILe3n4Bs",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "soft rock",
+      "pop rock"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "boomer"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "137mSruegm5dYspSNRDDMF",
+    "title": "(Everything I Do) I Do It for You",
+    "artist": "Bryan Adams",
+    "album": "Waking Up the Neighbours",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2738263db198e9f7eed3b688e3a",
+    "releaseDate": "1991-09-24",
+    "duration": 393,
+    "explicit": false,
+    "popularity": 77,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:137mSruegm5dYspSNRDDMF",
+    "moments": [
+      "first-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "soft rock",
+      "pop rock"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1gv4xPNGjmPzAYx8VAaOhO",
+    "title": "The Reason",
+    "artist": "Hoobastank",
+    "album": "The Reason",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273a8b3e5f80ec20dc2861b2b0e",
+    "releaseDate": "2003-12-09",
+    "duration": 232,
+    "explicit": false,
+    "popularity": 76,
+    "previewUrl": "https://p.scdn.co/mp3-preview/6c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:1gv4xPNGjmPzAYx8VAaOhO",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "alternative rock",
+      "post-grunge"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5JQ0Yl4EqYJQQfBmce43hi",
+    "title": "More Than Words",
+    "artist": "Extreme",
+    "album": "Extreme II: Pornograffitti",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2733c96bed1b00cd6e24b20a6c8",
+    "releaseDate": "1990-08-07",
+    "duration": 335,
+    "explicit": false,
+    "popularity": 74,
+    "previewUrl": "https://p.scdn.co/mp3-preview/5c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:5JQ0Yl4EqYJQQfBmce43hi",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "glam metal",
+      "acoustic rock"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "4u7EnebtmKWzUH433cf5Qv",
+    "title": "Bohemian Rhapsody - Remastered 2011",
+    "artist": "Queen",
+    "album": "A Night At The Opera (Deluxe Remastered Version)",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e319baafd16e84f0408af2a0",
+    "releaseDate": "1975-11-21",
+    "duration": 354,
+    "explicit": false,
+    "popularity": 84,
+    "previewUrl": "https://p.scdn.co/mp3-preview/4c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:4u7EnebtmKWzUH433cf5Qv",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "classic rock",
+      "progressive rock"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7xGfFoTpQ2E7fRF5lN10tr",
+    "title": "Somebody To Love - Remastered 2011",
+    "artist": "Queen",
+    "album": "A Day At The Races (Deluxe Remastered Version)",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273a6b3e7f1d730d206cf0f28a7",
+    "releaseDate": "1976-12-10",
+    "duration": 296,
+    "explicit": false,
+    "popularity": 78,
+    "previewUrl": "https://p.scdn.co/mp3-preview/3c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:7xGfFoTpQ2E7fRF5lN10tr",
+    "moments": [
+      "party",
+      "processional"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "classic rock",
+      "glam rock"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7NN8YMN1b1kRO0OLkuOaWj",
+    "title": "Crazy Little Thing Called Love - Remastered 2011",
+    "artist": "Queen",
+    "album": "The Game (Deluxe Remastered Version)",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2736ce61113662ecf693b605ee5",
+    "releaseDate": "1980-06-30",
+    "duration": 162,
+    "explicit": false,
+    "popularity": 79,
+    "previewUrl": "https://p.scdn.co/mp3-preview/2c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:7NN8YMN1b1kRO0OLkuOaWj",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "classic rock",
+      "rockabilly"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "4bHsxqR3GMrXTxEPLuK5ue",
+    "title": "Don't Stop Believin'",
+    "artist": "Journey",
+    "album": "Escape",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e6f407c7f3a0ec98845e4431",
+    "releaseDate": "1981-07-31",
+    "duration": 250,
+    "explicit": false,
+    "popularity": 85,
+    "previewUrl": "https://p.scdn.co/mp3-preview/1c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:4bHsxqR3GMrXTxEPLuK5ue",
+    "moments": [
+      "party",
+      "last-dance"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "classic rock",
+      "arena rock"
+    ],
+    "generationAppeal": [
+      "boomer",
+      "gen_x",
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0nQBVBXeNCUEgEzauaPy9s",
+    "title": "Any Way You Want It",
+    "artist": "Journey",
+    "album": "Departure",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2733fa3d1ac5c967094e1881433",
+    "releaseDate": "1980-02-29",
+    "duration": 202,
+    "explicit": false,
+    "popularity": 75,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9b5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:0nQBVBXeNCUEgEzauaPy9s",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "classic rock",
+      "arena rock"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "boomer"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Rock Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "02MWAaffLxlfxAUY7c5dvx",
+    "title": "Heat Waves",
+    "artist": "Glass Animals",
+    "album": "Dreamland",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b27397028b29775de4b725dd8aac",
+    "releaseDate": "2020-08-07",
+    "duration": 238,
+    "explicit": false,
+    "popularity": 88,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7943e5c3e93b4cd6b4d6c5c0e5a5c0f5e9d8e7f6",
+    "spotifyUri": "spotify:track:02MWAaffLxlfxAUY7c5dvx",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "indie rock",
+      "psychedelic pop"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0oozj5VDnvWTvNXkuNjCyC",
+    "title": "Sofia",
+    "artist": "Clairo",
+    "album": "Immunity",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273aaccabc14ff436578bef4e39",
+    "releaseDate": "2019-08-02",
+    "duration": 190,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/858b1c31eebcce3b8d2574c8a6c021a5c0f5e8d7",
+    "spotifyUri": "spotify:track:0oozj5VDnvWTvNXkuNjCyC",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "bedroom pop",
+      "indie pop"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3DK6m7It6Pw857FcQftMds",
+    "title": "As It Was",
+    "artist": "Harry Styles",
+    "album": "Harry's House",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f8f0",
+    "releaseDate": "2022-05-20",
+    "duration": 167,
+    "explicit": false,
+    "popularity": 89,
+    "previewUrl": "https://p.scdn.co/mp3-preview/3e5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:3DK6m7It6Pw857FcQftMds",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "indie pop",
+      "synth-pop"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3dPQuX8Gs42Y7b454ybpMR",
+    "title": "Apocalypse",
+    "artist": "Cigarettes After Sex",
+    "album": "Cigarettes After Sex",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273c946eb2a09812a4f23a8aeca",
+    "releaseDate": "2017-06-09",
+    "duration": 302,
+    "explicit": false,
+    "popularity": 79,
+    "previewUrl": "https://p.scdn.co/mp3-preview/8e6f5c4d3b2a1c0d9e8f7a6b5c4d3e2f1a0b9c8d",
+    "spotifyUri": "spotify:track:3dPQuX8Gs42Y7b454ybpMR",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "dream pop",
+      "indie rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6WrI0LAC5M1Rw2MnX2ZvEg",
+    "title": "Space Song",
+    "artist": "Beach House",
+    "album": "Depression Cherry",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273fa3cb7e7aa332cfb08317a58",
+    "releaseDate": "2015-08-28",
+    "duration": 320,
+    "explicit": false,
+    "popularity": 81,
+    "previewUrl": "https://p.scdn.co/mp3-preview/f6d6ca9cc4bb4740e0b6f30d85f7682067d3e997",
+    "spotifyUri": "spotify:track:6WrI0LAC5M1Rw2MnX2ZvEg",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "dream pop",
+      "indie rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3JvrhDOgAt6p7K8mDyZwRd",
+    "title": "Riptide",
+    "artist": "Vance Joy",
+    "album": "Dream Your Life Away",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f27effe88798e12c7b46e36f",
+    "releaseDate": "2014-09-09",
+    "duration": 204,
+    "explicit": false,
+    "popularity": 83,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:3JvrhDOgAt6p7K8mDyZwRd",
+    "moments": [
+      "cocktail",
+      "party"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "indie folk",
+      "folk rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0u8rJnNNZTKzDeUDVHRgAC",
+    "title": "Ho Hey",
+    "artist": "The Lumineers",
+    "album": "The Lumineers",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273236e19bfb2386f70d60f8d20",
+    "releaseDate": "2012-04-03",
+    "duration": 162,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/8e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:0u8rJnNNZTKzDeUDVHRgAC",
+    "moments": [
+      "processional",
+      "recessional"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "indie folk",
+      "folk rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1ndyl3wJCFs872XZ3ztPk6",
+    "title": "First Day of My Life",
+    "artist": "Bright Eyes",
+    "album": "I'm Wide Awake, It's Morning",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273fd13faf352c6db70e44ec44a",
+    "releaseDate": "2005-01-25",
+    "duration": 188,
+    "explicit": false,
+    "popularity": 77,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7c71b8516c33b71164e445051c68e3dc52c141f8",
+    "spotifyUri": "spotify:track:1ndyl3wJCFs872XZ3ztPk6",
+    "moments": [
+      "first-dance",
+      "processional"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "indie folk",
+      "indie rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7GX5flRQZVHRAGd6B4TmDO",
+    "title": "Home",
+    "artist": "Edward Sharpe & The Magnetic Zeros",
+    "album": "Up from Below",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273cf3a9dc77330b9cc67f3eb5f",
+    "releaseDate": "2009-07-14",
+    "duration": 301,
+    "explicit": false,
+    "popularity": 79,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:7GX5flRQZVHRAGd6B4TmDO",
+    "moments": [
+      "recessional",
+      "party"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "indie folk",
+      "folk rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "05wIrZSwuaVWhcv5FfqeH0",
+    "title": "Lover",
+    "artist": "Taylor Swift",
+    "album": "Lover",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e787cffec20aa2a396a61647",
+    "releaseDate": "2019-08-23",
+    "duration": 221,
+    "explicit": false,
+    "popularity": 85,
+    "previewUrl": "https://p.scdn.co/mp3-preview/0a40a8c5f8e5f9d8e7e6f5c4b3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:05wIrZSwuaVWhcv5FfqeH0",
+    "moments": [
+      "first-dance"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "indie pop",
+      "pop"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5oO3drDxtziYU2H1X23ZIp",
+    "title": "I Will Follow You into the Dark",
+    "artist": "Death Cab for Cutie",
+    "album": "Plans",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e13de7b8662b085b0885ffef",
+    "releaseDate": "2005-08-30",
+    "duration": 189,
+    "explicit": false,
+    "popularity": 78,
+    "previewUrl": "https://p.scdn.co/mp3-preview/6e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:5oO3drDxtziYU2H1X23ZIp",
+    "moments": [
+      "first-dance",
+      "ceremony"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "indie rock",
+      "indie folk"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0gEyKnHvgkrkBM6fbeHdwK",
+    "title": "Skinny Love",
+    "artist": "Bon Iver",
+    "album": "For Emma, Forever Ago",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273d3a7a3b087315e43ec0ca235",
+    "releaseDate": "2007-07-08",
+    "duration": 238,
+    "explicit": false,
+    "popularity": 80,
+    "previewUrl": "https://p.scdn.co/mp3-preview/5e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:0gEyKnHvgkrkBM6fbeHdwK",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "indie folk",
+      "folk"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "17y4eajxO8sWebN2HFeEBn",
+    "title": "The Funeral",
+    "artist": "Band of Horses",
+    "album": "Everything All the Time",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2737c768adf54c85e0909b4b8f0",
+    "releaseDate": "2006-03-21",
+    "duration": 321,
+    "explicit": false,
+    "popularity": 76,
+    "previewUrl": "https://p.scdn.co/mp3-preview/4e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:17y4eajxO8sWebN2HFeEBn",
+    "moments": [
+      "processional",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "indie rock",
+      "indie folk"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2EgvWJqLmX2Vc5gGnJ5icc",
+    "title": "Stubborn Love",
+    "artist": "The Lumineers",
+    "album": "The Lumineers",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273236e19bfb2386f70d60f8d20",
+    "releaseDate": "2012-04-03",
+    "duration": 286,
+    "explicit": false,
+    "popularity": 75,
+    "previewUrl": "https://p.scdn.co/mp3-preview/3e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:2EgvWJqLmX2Vc5gGnJ5icc",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "indie folk",
+      "folk rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3gqPVk7h1lRXqd8r1zDttU",
+    "title": "Holocene",
+    "artist": "Bon Iver",
+    "album": "Bon Iver, Bon Iver",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2731572698fff8a1db257a53599",
+    "releaseDate": "2011-06-17",
+    "duration": 336,
+    "explicit": false,
+    "popularity": 77,
+    "previewUrl": "https://p.scdn.co/mp3-preview/2e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:3gqPVk7h1lRXqd8r1zDttU",
+    "moments": [
+      "ceremony",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "indie folk",
+      "folk"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2nLtzopw4rPReszdYBJU6h",
+    "title": "Shut Up and Dance",
+    "artist": "WALK THE MOON",
+    "album": "TALKING IS HARD",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273aea29200523b1ee4a5e0cc48",
+    "releaseDate": "2014-12-02",
+    "duration": 199,
+    "explicit": false,
+    "popularity": 80,
+    "previewUrl": "https://p.scdn.co/mp3-preview/a797ad5b4f6b63ebaca1a2bdb09794eadfb1a11f",
+    "spotifyUri": "spotify:track:2nLtzopw4rPReszdYBJU6h",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "indie rock",
+      "new wave"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0DiWol3AO6WpXZgp0goxAV",
+    "title": "Electric Feel",
+    "artist": "MGMT",
+    "album": "Oracular Spectacular",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273d996723c8c0a248ddac19949",
+    "releaseDate": "2007-10-02",
+    "duration": 239,
+    "explicit": false,
+    "popularity": 81,
+    "previewUrl": "https://p.scdn.co/mp3-preview/e9025e8816404b05ac4e460dc6795c60e05ea80f",
+    "spotifyUri": "spotify:track:0DiWol3AO6WpXZgp0goxAV",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "indie rock",
+      "psychedelic pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7EUfRvD8G8r3eSiNn0e05h",
+    "title": "Kids",
+    "artist": "MGMT",
+    "album": "Oracular Spectacular",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273d996723c8c0a248ddac19949",
+    "releaseDate": "2007-10-02",
+    "duration": 302,
+    "explicit": false,
+    "popularity": 80,
+    "previewUrl": "https://p.scdn.co/mp3-preview/1e5f7c5f9b8f9d8e7d6c5b4a3a2a1a0a9a8a7a6",
+    "spotifyUri": "spotify:track:7EUfRvD8G8r3eSiNn0e05h",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "indie rock",
+      "psychedelic pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2H7PHVdQ3mXqEHXcvclTB0",
+    "title": "Time to Dance",
+    "artist": "The Sounds",
+    "album": "Living in America",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273aeabc7c487ad9e9fb088e0f6",
+    "releaseDate": "2002-05-28",
+    "duration": 214,
+    "explicit": false,
+    "popularity": 74,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:2H7PHVdQ3mXqEHXcvclTB0",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "indie rock",
+      "new wave"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1v1oIWf2Xgh54kIWuKsDf6",
+    "title": "Pompeii",
+    "artist": "Bastille",
+    "album": "Bad Blood",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b37310834c66c3cd9c2cea33",
+    "releaseDate": "2013-03-04",
+    "duration": 214,
+    "explicit": false,
+    "popularity": 81,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9e0cb0a9394c7a1e15e5db851551bb00e4ba4470",
+    "spotifyUri": "spotify:track:1v1oIWf2Xgh54kIWuKsDf6",
+    "moments": [
+      "party",
+      "processional"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "indie rock",
+      "alternative rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7x4tFmih1JI5Nc7WJ1K4S1",
+    "title": "Dreams Tonite",
+    "artist": "Alvvays",
+    "album": "Antisocialites",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2733e00d28ec65f95b387ad27e8",
+    "releaseDate": "2017-09-08",
+    "duration": 197,
+    "explicit": false,
+    "popularity": 72,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:7x4tFmih1JI5Nc7WJ1K4S1",
+    "moments": [
+      "cocktail",
+      "dinner"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "indie pop",
+      "dream pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "4UfTMzmQW81Qqj0pj4g7d0",
+    "title": "Myth",
+    "artist": "Beach House",
+    "album": "Bloom",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2732d146716539f71f5e3040c01",
+    "releaseDate": "2012-05-15",
+    "duration": 257,
+    "explicit": false,
+    "popularity": 73,
+    "previewUrl": "https://p.scdn.co/mp3-preview/6d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:4UfTMzmQW81Qqj0pj4g7d0",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "dream pop",
+      "indie rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5FqTHFR4sNvPvKpKiasOBw",
+    "title": "Wait",
+    "artist": "M83",
+    "album": "Hurry Up, We're Dreaming",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273a1d785640d9421ec17ea8fe6",
+    "releaseDate": "2011-10-18",
+    "duration": 355,
+    "explicit": false,
+    "popularity": 71,
+    "previewUrl": "https://p.scdn.co/mp3-preview/5d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:5FqTHFR4sNvPvKpKiasOBw",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "dream pop",
+      "shoegaze"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7MRyJPksH3G2cXHN8UKYzP",
+    "title": "Fade Into You",
+    "artist": "Mazzy Star",
+    "album": "So Tonight That I Might See",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273b72cb7bed93d6e2fdf42cffe",
+    "releaseDate": "1993-10-05",
+    "duration": 293,
+    "explicit": false,
+    "popularity": 76,
+    "previewUrl": "https://p.scdn.co/mp3-preview/4d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:7MRyJPksH3G2cXHN8UKYzP",
+    "moments": [
+      "first-dance",
+      "cocktail"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "dream pop",
+      "alternative rock"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "1LzNfuep1bnAUR9skqdHCK",
+    "title": "When the Sun Hits",
+    "artist": "Slowdive",
+    "album": "Souvlaki",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273c5c4e73f9021f1762a28dd75",
+    "releaseDate": "1993-05-17",
+    "duration": 291,
+    "explicit": false,
+    "popularity": 70,
+    "previewUrl": "https://p.scdn.co/mp3-preview/3d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:1LzNfuep1bnAUR9skqdHCK",
+    "moments": [
+      "cocktail",
+      "dinner"
+    ],
+    "energyLevel": 3,
+    "genres": [
+      "shoegaze",
+      "dream pop"
+    ],
+    "generationAppeal": [
+      "gen_x",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0nDuOWHBNL6WQW09oboEyP",
+    "title": "Young Folks",
+    "artist": "Peter Bjorn and John",
+    "album": "Writer's Block",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e4991b43e36958bb15e6bbad",
+    "releaseDate": "2006-08-14",
+    "duration": 279,
+    "explicit": false,
+    "popularity": 77,
+    "previewUrl": "https://p.scdn.co/mp3-preview/2d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:0nDuOWHBNL6WQW09oboEyP",
+    "moments": [
+      "cocktail",
+      "party"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "indie pop",
+      "swedish indie"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3VgAVpTJNOn8hHsR0F1b7W",
+    "title": "1901",
+    "artist": "Phoenix",
+    "album": "Wolfgang Amadeus Phoenix",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273581d329e4bbea3e0bc3e2dda",
+    "releaseDate": "2009-05-25",
+    "duration": 193,
+    "explicit": false,
+    "popularity": 76,
+    "previewUrl": "https://p.scdn.co/mp3-preview/1d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:3VgAVpTJNOn8hHsR0F1b7W",
+    "moments": [
+      "party",
+      "processional"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "indie pop",
+      "indie rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_x"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7fBvAHJffneeOqI2qnJXfh",
+    "title": "Sweet Disposition",
+    "artist": "The Temper Trap",
+    "album": "Conditions",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273819e1831f6d18e8c686a87f5",
+    "releaseDate": "2009-06-19",
+    "duration": 233,
+    "explicit": false,
+    "popularity": 78,
+    "previewUrl": "https://p.scdn.co/mp3-preview/9c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:7fBvAHJffneeOqI2qnJXfh",
+    "moments": [
+      "processional",
+      "recessional"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "indie rock",
+      "indie pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "5XeFesFbtLpXzIVDNQP22n",
+    "title": "I Wanna Be Yours",
+    "artist": "Arctic Monkeys",
+    "album": "AM",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2734f6afc385052250c766a5683",
+    "releaseDate": "2013-09-09",
+    "duration": 183,
+    "explicit": false,
+    "popularity": 87,
+    "previewUrl": "https://p.scdn.co/mp3-preview/8c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:5XeFesFbtLpXzIVDNQP22n",
+    "moments": [
+      "first-dance",
+      "dinner"
+    ],
+    "energyLevel": 2,
+    "genres": [
+      "indie rock",
+      "alternative rock"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "3yrSvpt2l1xhsV9Em88Pul",
+    "title": "R U Mine?",
+    "artist": "Arctic Monkeys",
+    "album": "AM",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2734f6afc385052250c766a5683",
+    "releaseDate": "2013-09-09",
+    "duration": 201,
+    "explicit": false,
+    "popularity": 85,
+    "previewUrl": "https://p.scdn.co/mp3-preview/7c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:3yrSvpt2l1xhsV9Em88Pul",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "indie rock",
+      "garage rock"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "6y0igZArWVi6Iz0rj35c1Y",
+    "title": "The Less I Know The Better",
+    "artist": "Tame Impala",
+    "album": "Currents",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273f09202329c75a4dc6026a2dc",
+    "releaseDate": "2015-07-17",
+    "duration": 216,
+    "explicit": false,
+    "popularity": 84,
+    "previewUrl": "https://p.scdn.co/mp3-preview/6c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:6y0igZArWVi6Iz0rj35c1Y",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "psychedelic rock",
+      "indie rock"
+    ],
+    "generationAppeal": [
+      "gen_z",
+      "millennial"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2MZSXhq4XDJWu6coGoXX1V",
+    "title": "Elephant",
+    "artist": "Tame Impala",
+    "album": "Lonerism",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b2734d6f8893a7b89dc6c5e3076b",
+    "releaseDate": "2012-10-05",
+    "duration": 211,
+    "explicit": false,
+    "popularity": 79,
+    "previewUrl": "https://p.scdn.co/mp3-preview/5c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:2MZSXhq4XDJWu6coGoXX1V",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "psychedelic rock",
+      "indie rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "2BKSIuOYtPJgJJtBkP3uJe",
+    "title": "Little Talks",
+    "artist": "Of Monsters and Men",
+    "album": "My Head Is An Animal",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273282fbdebbed9e2f7eb189cf7",
+    "releaseDate": "2011-09-20",
+    "duration": 261,
+    "explicit": false,
+    "popularity": 80,
+    "previewUrl": "https://p.scdn.co/mp3-preview/4d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:2BKSIuOYtPJgJJtBkP3uJe",
+    "moments": [
+      "party",
+      "recessional"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "indie folk",
+      "indie pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "7w87IxuO7BDcJ3YUqCyMTT",
+    "title": "Pumped Up Kicks",
+    "artist": "Foster The People",
+    "album": "Torches",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273e0b6c9ba3032c226f6d0c81f",
+    "releaseDate": "2011-05-23",
+    "duration": 239,
+    "explicit": false,
+    "popularity": 82,
+    "previewUrl": "https://p.scdn.co/mp3-preview/3d5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:7w87IxuO7BDcJ3YUqCyMTT",
+    "moments": [
+      "party",
+      "cocktail"
+    ],
+    "energyLevel": 4,
+    "genres": [
+      "indie pop",
+      "indie rock"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  },
+  {
+    "id": "0GO8y8jQk1PkHzS31d699N",
+    "title": "Tongue Tied",
+    "artist": "Grouplove",
+    "album": "Never Trust a Happy Song",
+    "albumImage": "https://i.scdn.co/image/ab67616d0000b273bbf060ac968571e1dc742770",
+    "releaseDate": "2011-09-13",
+    "duration": 218,
+    "explicit": false,
+    "popularity": 78,
+    "previewUrl": "https://p.scdn.co/mp3-preview/2c5a9c5d3f2e4b5d1a1a0b9c8c7b6a5a4a3a2a1",
+    "spotifyUri": "spotify:track:0GO8y8jQk1PkHzS31d699N",
+    "moments": [
+      "party"
+    ],
+    "energyLevel": 5,
+    "genres": [
+      "indie rock",
+      "indie pop"
+    ],
+    "generationAppeal": [
+      "millennial",
+      "gen_z"
+    ],
+    "popularIn": [
+      "universal"
+    ],
+    "source": "genre-collection",
+    "genreCollection": "Indie Wedding Collection",
+    "createdAt": "2025-08-03T20:26:15.939Z",
+    "updatedAt": "2025-08-03T20:26:15.939Z"
+  }
+]

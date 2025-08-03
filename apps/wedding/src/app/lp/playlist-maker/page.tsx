@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Music, Sparkles, Heart, Users, Clock, ChevronRight, CheckCircle, Play } from 'lucide-react'
+import { getDynamicPricing } from '@/lib/pricing-utils-server'
 
 export const metadata: Metadata = {
   title: 'Wedding Playlist Maker: Create Perfect Music for Every Moment | UpTune',
@@ -14,7 +15,8 @@ export const metadata: Metadata = {
   },
 }
 
-export default function PlaylistMakerPage() {
+export default async function PlaylistMakerPage() {
+  const pricing = await getDynamicPricing()
   const features = [
     {
       icon: Sparkles,
@@ -338,7 +340,7 @@ export default function PlaylistMakerPage() {
                   <p className="text-sm text-white/50 mt-1">Perfect for trying it out</p>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold gradient-text mb-2">£25</div>
+                  <div className="text-3xl font-bold gradient-text mb-2">{pricing.displayPrice}</div>
                   <p className="text-white/70">One-time payment</p>
                   <p className="text-sm text-white/50 mt-1">Unlimited songs forever</p>
                 </div>

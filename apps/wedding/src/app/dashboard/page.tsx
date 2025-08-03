@@ -10,18 +10,18 @@ import { Timeline } from '@/types/wedding-v2'
 import { 
   Music, Plus, Users, 
   ChevronRight, Heart, 
-  Sparkles, Gift,
-  CheckCircle2, Zap, PartyPopper,
-  HeartHandshake, Timer,
+  Zap, Timer,
   Calendar, UserCheck, Share2, Play,
-  AlertCircle, RefreshCw, Crown,
-  BookOpen, Lightbulb, Clock, Compass
+  AlertCircle, RefreshCw, Crown
 } from 'lucide-react'
 import Link from 'next/link'
 import { DashboardSkeleton } from '@/components/LoadingSkeleton'
 import { DashboardNavigation } from '@/components/DashboardNavigation'
 import { ensureUserDocument } from '@/lib/auth-utils'
 import { formatFirestoreError } from '@/lib/firestore-helpers'
+import { GuidesSection } from '@/components/dashboard/GuidesSection'
+import { TimelineSection } from '@/components/dashboard/TimelineSection'
+import { getClientPricing } from '@/lib/pricing-utils-client'
 
 interface Wedding {
   id: string
@@ -51,6 +51,7 @@ export default function Dashboard() {
   const [userName, setUserName] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [retryCount, setRetryCount] = useState(0)
+  const [pricing] = useState(() => getClientPricing())
   const router = useRouter()
 
   // Get greeting based on time of day
@@ -79,12 +80,6 @@ export default function Dashboard() {
     }
   }
 
-  // Get moment completion percentage
-  const getMomentProgress = (moment: any) => {
-    const targetDuration = moment.duration * 60 // Convert minutes to seconds
-    const currentDuration = moment.songs?.reduce((sum: number, song: any) => sum + (song.duration || 0), 0) || 0
-    return Math.min((currentDuration / targetDuration) * 100, 100)
-  }
 
   // Get overall progress
   const getOverallProgress = () => {
@@ -357,25 +352,6 @@ export default function Dashboard() {
     }
   }
 
-  const momentIcons: { [key: string]: any } = {
-    'processional': HeartHandshake,
-    'first-dance': Heart,
-    'cocktail': Gift,
-    'dinner': Users,
-    'party': PartyPopper,
-    'ceremony': Heart,
-    'reception': Sparkles
-  }
-
-  const momentColors: { [key: string]: string } = {
-    'processional': 'from-pink-500 to-rose-500',
-    'first-dance': 'from-red-500 to-pink-500',
-    'cocktail': 'from-purple-500 to-pink-500',
-    'dinner': 'from-indigo-500 to-purple-500',
-    'party': 'from-purple-500 to-indigo-500',
-    'ceremony': 'from-rose-500 to-pink-500',
-    'reception': 'from-purple-600 to-pink-600'
-  }
 
   if (loading) {
     return (
@@ -626,7 +602,7 @@ export default function Dashboard() {
                       <div className="flex items-center gap-3">
                         <Crown className="w-5 h-5 text-yellow-400" />
                         <p className="text-white/80">
-                          You're on the free plan. Upgrade to unlock unlimited songs, exports, and more!
+                          You're on the free plan. Upgrade to unlock unlimited songs, exports, and more for just {pricing.displayPrice}!
                         </p>
                       </div>
                       <Link
@@ -643,189 +619,19 @@ export default function Dashboard() {
           </section>
 
           {/* Planning Guides Section */}
-          <section className="px-4 py-6 relative z-10">
-            <div className="max-w-7xl mx-auto">
-              <h3 className="text-3xl font-serif font-bold text-white mb-8 flex items-center gap-3">
-                <BookOpen className="w-8 h-8 text-purple-400" />
-                Wedding Music Guides
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-                {/* First Dance Guide */}
-                <Link href={`/wedding/${activeWedding.id}/builder`} className="group">
-                  <div className="glass-gradient rounded-xl p-6 hover:scale-105 transform transition-all">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center">
-                        <Heart className="w-5 h-5 text-white" />
-                      </div>
-                      <h4 className="font-bold text-white">First Dance Guide</h4>
-                    </div>
-                    <p className="text-sm text-white/70 mb-3">Choose the perfect song for your first dance as newlyweds</p>
-                    <div className="flex items-center gap-2 text-xs text-white/60">
-                      <Clock className="w-3 h-3" />
-                      <span>5 min read</span>
-                    </div>
-                  </div>
-                </Link>
+          <GuidesSection 
+            weddingId={activeWedding.id}
+            hasMusic={timeline ? Object.values(timeline).some(m => m?.songs?.length > 0) : false}
+            songCount={activeWedding.songCount || 0}
+            guestCount={guestStats.responded}
+          />
 
-                {/* Timeline Planning */}
-                <Link href={`/wedding/${activeWedding.id}/builder`} className="group">
-                  <div className="glass-gradient rounded-xl p-6 hover:scale-105 transform transition-all">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center">
-                        <Compass className="w-5 h-5 text-white" />
-                      </div>
-                      <h4 className="font-bold text-white">Timeline Planning</h4>
-                    </div>
-                    <p className="text-sm text-white/70 mb-3">Build the perfect flow from ceremony to last dance</p>
-                    <div className="flex items-center gap-2 text-xs text-white/60">
-                      <Clock className="w-3 h-3" />
-                      <span>8 min read</span>
-                    </div>
-                  </div>
-                </Link>
-
-                {/* Song Discovery Tips */}
-                <Link href={`/wedding/${activeWedding.id}/builder`} className="group">
-                  <div className="glass-gradient rounded-xl p-6 hover:scale-105 transform transition-all">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center">
-                        <Lightbulb className="w-5 h-5 text-white" />
-                      </div>
-                      <h4 className="font-bold text-white">Song Discovery Tips</h4>
-                    </div>
-                    <p className="text-sm text-white/70 mb-3">Find hidden gems and crowd favorites for every moment</p>
-                    <div className="flex items-center gap-2 text-xs text-white/60">
-                      <Clock className="w-3 h-3" />
-                      <span>6 min read</span>
-                    </div>
-                  </div>
-                </Link>
-
-                {/* Guest Collaboration */}
-                <Link href={`/wedding/${activeWedding.id}/guests`} className="group">
-                  <div className="glass-gradient rounded-xl p-6 hover:scale-105 transform transition-all">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center">
-                        <Users className="w-5 h-5 text-white" />
-                      </div>
-                      <h4 className="font-bold text-white">Guest Collaboration</h4>
-                    </div>
-                    <p className="text-sm text-white/70 mb-3">Let your guests help create the perfect party playlist</p>
-                    <div className="flex items-center gap-2 text-xs text-white/60">
-                      <Clock className="w-3 h-3" />
-                      <span>4 min read</span>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-
-              {/* Quick Tips Banner */}
-              <div className="glass-darker rounded-xl p-6 mb-12">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Lightbulb className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-white mb-2">Pro Tip: Use Our Curated Playlists!</h4>
-                    <p className="text-white/70 text-sm mb-3">
-                      We've expanded our curated playlists with 10+ new collections including Indie Romance, Latin Fiesta, 
-                      Cultural Fusion, and Hidden Gems. Browse by vibe, genre, or moment to discover the perfect songs for your celebration.
-                    </p>
-                    <Link 
-                      href={`/wedding/${activeWedding.id}/builder`} 
-                      className="text-sm text-purple-400 hover:text-purple-300 font-medium inline-flex items-center gap-1"
-                    >
-                      Explore Playlists <ChevronRight className="w-4 h-4" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Recent Activity Section */}
-          <section className="px-4 py-6 relative z-10">
-            <div className="max-w-7xl mx-auto">
-              <h3 className="text-3xl font-serif font-bold text-white mb-8 flex items-center gap-3">
-                <Sparkles className="w-8 h-8 text-yellow-400 animate-pulse" />
-                Recent Activity
-              </h3>
-              
-              <div className="grid gap-6">
-                {timeline && Object.entries(timeline).length > 0 ? (
-                  WEDDING_MOMENTS.filter(moment => timeline[moment.id]?.songs?.length > 0).map((moment) => {
-                    const momentData = timeline[moment.id]
-                    const progress = getMomentProgress(momentData)
-                    const Icon = momentIcons[moment.id] || Music
-                    const gradient = momentColors[moment.id] || 'from-purple-500 to-pink-500'
-                    const songCount = momentData.songs?.length || 0
-                    const duration = momentData.songs?.reduce((sum: number, song: any) => sum + (song.duration || 0), 0) || 0
-                    
-                    return (
-                      <Link
-                        key={moment.id}
-                        href={`/wedding/${activeWedding.id}/builder`}
-                        className="group"
-                      >
-                        <div className="glass-darker rounded-2xl p-6 hover:scale-[1.02] transform transition-all">
-                          <div className="flex items-center gap-6">
-                            <div className={`w-16 h-16 bg-gradient-to-r ${gradient} rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
-                              <span className="text-2xl">{moment.icon}</span>
-                            </div>
-                            
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between mb-2">
-                                <h4 className="text-xl font-bold text-white">{moment.name}</h4>
-                                <span className="text-sm text-white/60">
-                                  {songCount} songs • {formatDuration(duration)}
-                                </span>
-                              </div>
-                              <p className="text-white/70 text-sm mb-3">
-                                {moment.description || `Music for ${moment.name.toLowerCase()}`}
-                              </p>
-                              
-                              <div className="relative">
-                                <div className="w-full bg-white/10 rounded-full h-3">
-                                  <div 
-                                    className={`bg-gradient-to-r ${gradient} h-3 rounded-full transition-all relative overflow-hidden`}
-                                    style={{ width: `${progress}%` }}
-                                  >
-                                    <div className="absolute inset-0 bg-white/20 animate-shimmer"></div>
-                                  </div>
-                                </div>
-                                {progress >= 90 && progress <= 110 && (
-                                  <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                                    <CheckCircle2 className="w-3 h-3" />
-                                    Perfect!
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            
-                            <ChevronRight className="w-6 h-6 text-white/40 group-hover:text-white transition-colors" />
-                          </div>
-                        </div>
-                      </Link>
-                    )
-                  })
-                ) : (
-                  <div className="glass-darker rounded-2xl p-12 text-center">
-                    <Music className="w-16 h-16 text-purple-400 mx-auto mb-4" />
-                    <h4 className="text-xl font-bold text-white mb-2">No music added yet!</h4>
-                    <p className="text-white/60 mb-6">Start building your wedding soundtrack in the music builder.</p>
-                    <Link
-                      href={`/wedding/${activeWedding.id}/builder`}
-                      className="btn-primary inline-flex"
-                    >
-                      <Plus className="w-5 h-5" />
-                      Open Music Builder
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
+          {/* Timeline Section */}
+          <TimelineSection 
+            weddingId={activeWedding.id}
+            timeline={timeline}
+            paymentStatus={activeWedding.paymentStatus || 'pending'}
+          />
 
         </>
     ) : (

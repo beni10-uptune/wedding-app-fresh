@@ -27,7 +27,7 @@ export default async function BlogHomePage() {
           </div>
 
           {/* Feature Categories */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-16">
             <Link href="/blog/category/music-planning" className="group">
               <div className="card p-6 h-full">
                 <Music className="w-8 h-8 text-purple-400 mb-3" />
@@ -58,6 +58,14 @@ export default async function BlogHomePage() {
                 <h3 className="font-semibold mb-1">Reception Tips</h3>
                 <p className="text-sm text-white/60">Keep the party going</p>
                 <ArrowRight className="w-4 h-4 text-emerald-400 mt-2 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+            <Link href="/blog/category/music-by-genre" className="group">
+              <div className="card p-6 h-full">
+                <Sparkles className="w-8 h-8 text-amber-400 mb-3" />
+                <h3 className="font-semibold mb-1">Music by Genre</h3>
+                <p className="text-sm text-white/60">Hip hop, country & more</p>
+                <ArrowRight className="w-4 h-4 text-amber-400 mt-2 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
           </div>

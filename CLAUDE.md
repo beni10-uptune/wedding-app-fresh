@@ -210,3 +210,46 @@ import {
 1. Currently lives in wedding app at `/src/shared`
 2. Will be extracted to `@uptune/shared` package
 3. Eventually part of monorepo at `/packages/shared`
+
+## 🖼️ Image Generation Instructions
+
+### Using Google's Imagen 3 API
+The project includes scripts for generating high-quality images using Google's Imagen 3 (the latest and best model).
+
+#### Setup
+1. The Vertex AI credentials are already configured in the project
+2. Script location: `/apps/wedding/scripts/generate-images-with-imagen.ts`
+
+#### Image Generation Process
+1. **Always use Imagen 3** - it's the highest quality model available
+2. **Generate at high resolution**: 1024x1024 or 1280x720 for hero images
+3. **Create variations**: Generate 3-4 options and pick the best
+4. **Style guidelines**:
+   - Modern, professional wedding photography style
+   - Soft, romantic lighting
+   - Diverse representation of couples
+   - Authentic moments, not stock-photo feel
+
+#### SEO Optimization Process
+After generating images:
+1. **Optimize file size**: Use the optimization script to reduce to <500KB
+2. **Descriptive filenames**: `keyword-specific-descriptive-name.jpg`
+3. **Alt text**: Include primary keyword naturally
+4. **Multiple sizes**: Create responsive versions (mobile/desktop)
+
+#### Example Commands
+```bash
+# Generate new images
+cd apps/wedding
+npx tsx scripts/generate-images-with-imagen.ts
+
+# Optimize generated images
+npx tsx scripts/optimize-blog-images.ts
+```
+
+#### Prompt Engineering Tips
+- Include "professional wedding photography" in prompts
+- Specify lighting: "golden hour", "soft natural light"
+- Add context: "elegant venue", "outdoor garden", "modern ballroom"
+- Request emotions: "joyful", "romantic", "celebratory"
+- Avoid: logos, text, watermarks

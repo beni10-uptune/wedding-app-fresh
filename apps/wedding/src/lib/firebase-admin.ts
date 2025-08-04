@@ -33,4 +33,4 @@ if (
   console.log('Firebase Admin SDK not configured - some features may be limited')
 }
 
-export { auth, adminDb }
+export { auth as adminAuth, adminDb }

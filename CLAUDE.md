@@ -59,6 +59,45 @@ uptune-monorepo/
 2. Run `npm run lint` to check for linting issues
 3. Fix any blocking errors (warnings can be addressed later)
 
+## 🔥 Firebase Management
+
+### Firebase Admin SDK Setup
+To enable Claude to manage Firebase (seed data, manage users, etc.), you need to set up Firebase Admin SDK credentials:
+
+1. **Get Service Account Key**:
+   - Go to Firebase Console > Project Settings > Service Accounts
+   - Click "Generate new private key"
+   - Save the JSON file securely
+
+2. **Add to Environment Variables**:
+   ```bash
+   # In .env.local (for local development)
+   FIREBASE_PROJECT_ID=your-project-id
+   FIREBASE_CLIENT_EMAIL=your-client-email
+   FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...your-key...\n-----END PRIVATE KEY-----\n"
+   ```
+
+3. **For Vercel Deployment**:
+   - Add these same variables to Vercel Environment Variables
+   - Make sure FIREBASE_PRIVATE_KEY has proper line breaks (\n)
+
+### Firebase CLI Setup (for Claude)
+```bash
+# Install Firebase CLI globally
+npm install -g firebase-tools
+
+# Login to Firebase
+firebase login
+
+# Set the active project
+firebase use wedding-app-426623
+```
+
+### Common Firebase Tasks
+- **Seed blog posts**: Use `/api/seed-blogs` endpoint
+- **Check Firestore data**: Use Firebase Console or Admin SDK scripts
+- **Deploy rules**: `firebase deploy --only firestore:rules`
+
 ## Important Technical Details
 
 ### Next.js 15 Considerations

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seed Blog Posts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        button {
+            background: #8B5CF6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #7C3AED;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Seed Genre Blog Posts</h1>
+    <p>Click the button below to seed the genre blog posts to Firestore.</p>
+    
+    <button onclick="seedBlogs()">Seed Blog Posts</button>
+    
+    <div id="result"></div>
+    
+    <script>
+        async function seedBlogs() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Seeding blog posts...';
+            
+            try {
+                const response = await fetch('https://weddings.uptune.xyz/api/seed-blogs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        secret: 'uptune-seed-2025'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">✅ Success!</div>
+Total: ${data.total} posts
+Successful: ${data.successful} posts
+
+Results:
+${JSON.stringify(data.results, null, 2)}`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Error: ${data.error || 'Unknown error'}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

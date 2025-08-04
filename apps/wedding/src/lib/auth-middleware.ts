@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/firebase-admin'
+import { adminAuth } from '@/lib/firebase-admin'
 
 export async function authenticateRequest(request: NextRequest) {
   try {
     // If Firebase Admin is not configured, we can't authenticate server-side
-    if (!auth) {
+    if (!adminAuth) {
       return {
         authenticated: false,
         error: 'Server authentication not configured',
@@ -25,7 +25,7 @@ export async function authenticateRequest(request: NextRequest) {
     const token = authHeader.split('Bearer ')[1]
     
     try {
-      const decodedToken = await auth.verifyIdToken(token)
+      const decodedToken = await adminAuth.verifyIdToken(token)
       return {
         authenticated: true,
         error: null,

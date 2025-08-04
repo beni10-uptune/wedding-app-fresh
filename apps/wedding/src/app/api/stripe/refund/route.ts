@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import { auth } from '@/lib/firebase-admin'
+import { adminAuth } from '@/lib/firebase-admin'
 import { logger } from '@/lib/logger'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -17,12 +17,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    if (!auth) {
+    if (!adminAuth) {
       return NextResponse.json({ error: 'Authentication service unavailable' }, { status: 503 })
     }
 
     const token = authHeader.split('Bearer ')[1]
-    const decodedToken = await auth.verifyIdToken(token)
+    const decodedToken = await adminAuth.verifyIdToken(token)
     const userId = decodedToken.uid
 
     const body = await request.json()

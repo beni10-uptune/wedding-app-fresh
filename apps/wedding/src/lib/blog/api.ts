@@ -129,7 +129,36 @@ export async function getBlogPosts({
 
 export async function getBlogPost(slug: string): Promise<BlogPost | null> {
   try {
-    // First try to get from Firestore
+    // First try to get from Firestore by querying with slug field
+    const postsRef = collection(db, BLOG_POSTS_COLLECTION)
+    const q = query(postsRef, where('slug', '==', slug), firestoreLimit(1))
+    const snapshot = await getDocs(q)
+    
+    if (!snapshot.empty) {
+      const postDoc = snapshot.docs[0]
+      const data = postDoc.data()
+      const author = await getAuthor(data.authorId)
+      
+      if (author) {
+        // Increment view count
+        await updateDoc(postDoc.ref, {
+          views: increment(1)
+        }).catch(error => {
+          logger.warn('Failed to increment view count:', { error, slug })
+        })
+
+        return {
+          id: postDoc.id,
+          ...data,
+          author,
+          publishedAt: data.publishedAt?.toDate?.() || data.publishedAt,
+          updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
+          views: (data.views || 0) + 1, // Include the incremented view
+        } as BlogPost
+      }
+    }
+    
+    // Also try direct document access (for backward compatibility)
     const postDoc = await getDoc(doc(db, BLOG_POSTS_COLLECTION, slug))
     
     if (postDoc.exists()) {

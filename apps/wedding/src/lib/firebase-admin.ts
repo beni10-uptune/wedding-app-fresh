@@ -37,6 +37,7 @@ if (
     privateKey: !!process.env.FIREBASE_PRIVATE_KEY,
     privateKeyLength: process.env.FIREBASE_PRIVATE_KEY?.length || 0
   })
+  console.log('Note: Environment variables updated, redeploying...')
 }
 
 export { auth as adminAuth, adminDb }

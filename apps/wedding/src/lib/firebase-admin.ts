@@ -31,6 +31,12 @@ if (
   }
 } else {
   console.log('Firebase Admin SDK not configured - some features may be limited')
+  console.log('Missing env vars:', {
+    projectId: !!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    clientEmail: !!process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: !!process.env.FIREBASE_PRIVATE_KEY,
+    privateKeyLength: process.env.FIREBASE_PRIVATE_KEY?.length || 0
+  })
 }
 
 export { auth as adminAuth, adminDb }

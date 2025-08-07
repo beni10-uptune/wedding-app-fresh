@@ -107,25 +107,25 @@ const INITIAL_TIMELINE = [
   },
 ];
 
-// Regional transformations
+// Regional transformations - country level first, then specific regions
 const REGIONAL_CHANGES = {
-  'north-england': {
+  'uk': {
     cocktails: [
-      { old: 'Fly Me to the Moon', new: { title: 'There She Goes', artist: 'The La\'s' } },
-      { old: 'Golden', new: { title: 'This Charming Man', artist: 'The Smiths' } },
+      { old: 'Fly Me to the Moon', new: { title: 'Valerie', artist: 'Amy Winehouse' } },
+      { old: 'Golden', new: { title: 'Dreams', artist: 'Fleetwood Mac' } },
     ],
     party: [
-      { old: 'Mr. Brightside', new: { title: 'Mr. Brightside', artist: 'The Killers', note: '(keeping this - it\'s law!)' } },
-      { old: 'Uptown Funk', new: { title: 'Wonderwall', artist: 'Oasis', note: '(Manchester essential!)' } },
-      { old: "Can't Stop the Feeling", new: { title: 'Chelsea Dagger', artist: 'The Fratellis' } },
+      { old: 'Mr. Brightside', new: { title: 'Mr. Brightside', artist: 'The Killers', note: '(UK wedding essential!)' } },
+      { old: "Can't Stop the Feeling", new: { title: 'Dancing in the Moonlight', artist: 'Toploader' } },
     ],
   },
-  'london': {
+  'us': {
     cocktails: [
-      { old: 'Fly Me to the Moon', new: { title: 'Waterloo Sunset', artist: 'The Kinks' } },
+      { old: 'Valerie', new: { title: 'Fly Me to the Moon', artist: 'Sinatra' } },
     ],
     party: [
-      { old: 'Uptown Funk', new: { title: 'Pump It Up', artist: 'Endor' } },
+      { old: 'Mr. Brightside', new: { title: 'Sweet Caroline', artist: 'Neil Diamond' } },
+      { old: 'Wonderwall', new: { title: "Don't Stop Believin'", artist: 'Journey' } },
     ],
   },
 };
@@ -222,10 +222,10 @@ export default function TimelineFirstPage() {
                       <div>
                         <span className="font-medium">{song.title}</span>
                         <span className="text-gray-500 ml-2">- {song.artist}</span>
-                        {song.label && (
+                        {'label' in song && song.label && (
                           <span className="text-xs text-purple-600 ml-2">({song.label})</span>
                         )}
-                        {song.note && (
+                        {'note' in song && song.note && (
                           <span className="text-xs text-green-600 ml-2">{song.note}</span>
                         )}
                       </div>
@@ -279,37 +279,44 @@ export default function TimelineFirstPage() {
               className="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             >
               <h2 className="text-2xl font-bold mb-6">Where's your wedding?</h2>
-              <p className="text-gray-600 mb-6">This changes EVERYTHING about your music.</p>
+              <p className="text-gray-600 mb-6">Let's start with your country - we'll get more specific later.</p>
               
               <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold mb-3">UK Regions</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {['North England', 'South England', 'Scotland', 'Wales', 'London', 'Northern Ireland'].map((region) => (
-                      <button
-                        key={region}
-                        onClick={() => handleRegionSelect(region.toLowerCase().replace(' ', '-'))}
-                        className="p-3 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all"
-                      >
-                        {region}
-                      </button>
-                    ))}
-                  </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    onClick={() => handleRegionSelect('uk')}
+                    className="p-6 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all text-center"
+                  >
+                    <div className="text-3xl mb-2">🇬🇧</div>
+                    <div className="font-semibold">United Kingdom</div>
+                    <div className="text-sm text-gray-600 mt-1">England, Scotland, Wales, NI</div>
+                  </button>
+                  
+                  <button
+                    onClick={() => handleRegionSelect('us')}
+                    className="p-6 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all text-center"
+                  >
+                    <div className="text-3xl mb-2">🇺🇸</div>
+                    <div className="font-semibold">United States</div>
+                    <div className="text-sm text-gray-600 mt-1">All states</div>
+                  </button>
                 </div>
                 
-                <div>
-                  <h3 className="font-semibold mb-3">US Regions</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {['Northeast', 'South', 'Midwest', 'West Coast', 'Texas', 'Pacific Northwest'].map((region) => (
-                      <button
-                        key={region}
-                        className="p-3 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all"
-                      >
-                        {region}
-                      </button>
-                    ))}
-                  </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <button className="p-3 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all">
+                    🇨🇦 Canada
+                  </button>
+                  <button className="p-3 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all">
+                    🇦🇺 Australia
+                  </button>
+                  <button className="p-3 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all">
+                    🇮🇪 Ireland
+                  </button>
                 </div>
+                
+                <button className="text-gray-500 text-sm underline">
+                  Other country →
+                </button>
               </div>
 
               {selectedRegion && (
@@ -319,10 +326,10 @@ export default function TimelineFirstPage() {
                   className="mt-6 p-4 bg-green-50 rounded-xl"
                 >
                   <p className="text-green-800 font-medium">
-                    ✨ Adding {selectedRegion === 'north-england' ? 'Manchester' : selectedRegion} favorites!
+                    ✨ Adding {selectedRegion === 'uk' ? 'British' : 'American'} wedding favorites!
                   </p>
                   <p className="text-green-700 text-sm mt-1">
-                    Watch your timeline transform with local anthems...
+                    Watch your timeline transform with your country's classics...
                   </p>
                 </motion.div>
               )}

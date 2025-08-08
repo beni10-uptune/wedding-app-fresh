@@ -264,7 +264,7 @@ export class MultiModelAIOrchestrationService {
       const model = client.getGenerativeModel({ model: 'gemini-pro' });
       const promptText = this.buildUniversalPrompt(context, 'gemini');
       
-      const result = await model.generateContent(prompt);
+      const result = await model.generateContent(promptText);
       const response = await result.response;
       const text = response.text();
       

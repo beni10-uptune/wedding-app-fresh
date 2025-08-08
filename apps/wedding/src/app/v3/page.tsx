@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Timeline moments with generic songs (this would come from AI/database)
@@ -14,9 +14,9 @@ const INITIAL_TIMELINE = [
     energy: 3,
     description: 'Upbeat but relaxed as you prepare',
     songs: [
-      { id: '1', title: 'Sunday Morning', artist: 'Maroon 5' },
-      { id: '2', title: 'Here Comes the Sun', artist: 'Beatles' },
-      { id: '3', title: 'Lovely Day', artist: 'Bill Withers' },
+      { id: '1', title: 'Sunday Morning', artist: 'Maroon 5', label: '', note: '' },
+      { id: '2', title: 'Here Comes the Sun', artist: 'Beatles', label: '', note: '' },
+      { id: '3', title: 'Lovely Day', artist: 'Bill Withers', label: '', note: '' },
     ],
     expandable: 4, // "+4 more songs"
   },
@@ -222,11 +222,11 @@ export default function TimelineFirstPage() {
                       <div>
                         <span className="font-medium">{song.title}</span>
                         <span className="text-gray-500 ml-2">- {song.artist}</span>
-                        {'label' in song && song.label && (
-                          <span className="text-xs text-purple-600 ml-2">({song.label})</span>
+                        {'label' in song && (song as any).label && (
+                          <span className="text-xs text-purple-600 ml-2">({(song as any).label})</span>
                         )}
-                        {'note' in song && song.note && (
-                          <span className="text-xs text-green-600 ml-2">{song.note}</span>
+                        {'note' in song && (song as any).note && (
+                          <span className="text-xs text-green-600 ml-2">({(song as any).note})</span>
                         )}
                       </div>
                     </div>

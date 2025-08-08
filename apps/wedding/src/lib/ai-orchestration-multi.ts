@@ -192,8 +192,9 @@ export class MultiModelAIOrchestrationService {
     const client = getOpenAIClient();
     if (!client) return null;
     
+    const promptText = this.buildUniversalPrompt(context, 'gpt');
+    
     try {
-      const promptText = this.buildUniversalPrompt(context, 'gpt');
       
       const response = await client.chat.completions.create({
         model: 'gpt-5', // Using the latest GPT-5 model

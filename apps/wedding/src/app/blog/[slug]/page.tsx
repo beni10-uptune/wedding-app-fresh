@@ -13,6 +13,9 @@ import { ReadingProgress } from '@/components/blog/ReadingProgress'
 import { TableOfContents } from '@/components/blog/TableOfContents'
 import { mdxComponents } from '@/components/mdx'
 
+// Force dynamic rendering to avoid Firestore permission issues during build
+export const dynamic = 'force-dynamic'
+
 interface BlogPostPageProps {
   params: Promise<{
     slug: string
@@ -77,10 +80,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     3
   )
 
-  const publishedDate = (typeof post.publishedAt === 'string' 
-    ? new Date(post.publishedAt) 
-    : post.publishedAt.toDate()
-  ).toLocaleDateString('en-US', {
+  const publishedDate = (() => {
+    if (typeof post.publishedAt === 'string') {
+      return new Date(post.publishedAt);
+    } else if (post.publishedAt && typeof post.publishedAt === 'object' && 'toDate' in post.publishedAt) {
+      return (post.publishedAt as any).toDate();
+    } else if (post.publishedAt && Object.prototype.toString.call(post.publishedAt) === '[object Date]') {
+      return post.publishedAt as Date;
+    } else {
+      return new Date();
+    }
+  })().toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

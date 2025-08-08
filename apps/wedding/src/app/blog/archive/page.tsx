@@ -4,6 +4,9 @@ import { ArrowLeft, Calendar } from 'lucide-react'
 import { BlogPostCard } from '@/components/blog/BlogPostCard'
 import { getBlogPosts } from '@/lib/blog/api'
 
+// Force dynamic rendering to avoid Firestore permission issues during build
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'All Articles | UpTune Wedding Music Blog',
   description: 'Browse all wedding music planning articles, guides, and resources from the UpTune blog.',
@@ -14,9 +17,17 @@ export default async function ArchivePage() {
 
   // Group posts by month
   const postsByMonth = posts.reduce((acc, post) => {
-    const date = typeof post.publishedAt === 'string' 
-      ? new Date(post.publishedAt) 
-      : post.publishedAt.toDate()
+    const date = (() => {
+      if (typeof post.publishedAt === 'string') {
+        return new Date(post.publishedAt);
+      } else if (post.publishedAt && typeof post.publishedAt === 'object' && 'toDate' in post.publishedAt) {
+        return (post.publishedAt as any).toDate();
+      } else if (post.publishedAt && Object.prototype.toString.call(post.publishedAt) === '[object Date]') {
+        return post.publishedAt as Date;
+      } else {
+        return new Date();
+      }
+    })()
     const monthYear = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
     
     if (!acc[monthYear]) {

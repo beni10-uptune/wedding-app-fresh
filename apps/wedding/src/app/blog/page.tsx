@@ -6,6 +6,9 @@ import { NewsletterSignup } from '@/components/blog/NewsletterSignup'
 import { TrendingSongsWidget } from '@/components/blog/TrendingSongsWidget'
 import { getBlogPosts } from '@/lib/blog/api'
 
+// Force dynamic rendering to avoid Firestore permission issues during build
+export const dynamic = 'force-dynamic'
+
 export default async function BlogHomePage() {
   const { posts } = await getBlogPosts({ limit: 6, status: 'published' })
   const featuredPost = posts[0]

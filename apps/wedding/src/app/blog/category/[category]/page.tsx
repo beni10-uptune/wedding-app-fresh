@@ -6,6 +6,9 @@ import { BlogPostCard } from '@/components/blog/BlogPostCard'
 import { NewsletterSignup } from '@/components/blog/NewsletterSignup'
 import { getBlogPosts } from '@/lib/blog/api'
 
+// Force dynamic rendering to avoid Firestore permission issues during build
+export const dynamic = 'force-dynamic'
+
 const categories = {
   'music-planning': {
     name: 'Music Planning',

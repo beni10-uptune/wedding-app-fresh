@@ -6,10 +6,19 @@ import {
   Music, 
   ChevronRight, 
   Heart, 
-  Upload,
   Sparkles,
   Play,
-  Globe
+  Globe,
+  Info,
+  Plus,
+  X,
+  Check,
+  Star,
+  Clock,
+  Users,
+  TrendingUp,
+  Headphones,
+  MessageSquare
 } from 'lucide-react';
 
 // Default timeline with songs
@@ -22,6 +31,7 @@ const DEFAULT_TIMELINE = [
     emoji: '👋',
     energy: 2,
     description: 'Welcoming atmosphere',
+    tip: 'Choose familiar, upbeat songs that set a positive tone',
     songs: [
       { id: '1', title: 'A Thousand Years', artist: 'Christina Perri' },
       { id: '2', title: 'Marry Me', artist: 'Train' },
@@ -37,6 +47,7 @@ const DEFAULT_TIMELINE = [
     emoji: '💐',
     energy: 3,
     description: 'Walking down the aisle',
+    tip: 'Classical or instrumental works best for timing',
     songs: [
       { id: '4', title: 'Canon in D', artist: 'Pachelbel' },
       { id: '5', title: 'Here Comes the Bride', artist: 'Wagner' },
@@ -50,6 +61,7 @@ const DEFAULT_TIMELINE = [
     emoji: '🎊',
     energy: 4,
     description: 'Celebration begins!',
+    tip: 'High energy songs to celebrate the moment',
     songs: [
       { id: '6', title: 'Signed, Sealed, Delivered', artist: 'Stevie Wonder' },
     ],
@@ -62,6 +74,7 @@ const DEFAULT_TIMELINE = [
     emoji: '🥂',
     energy: 3,
     description: 'Mingling and drinks',
+    tip: 'Mix genres to appeal to all age groups',
     songs: [
       { id: '7', title: 'Fly Me to the Moon', artist: 'Frank Sinatra' },
       { id: '8', title: 'Sunday Morning', artist: 'Maroon 5' },
@@ -78,6 +91,7 @@ const DEFAULT_TIMELINE = [
     emoji: '🍽️',
     energy: 2,
     description: 'Background music for conversation',
+    tip: 'Keep it low-key so guests can talk',
     songs: [
       { id: '11', title: 'At Last', artist: 'Etta James' },
       { id: '12', title: 'Wonderful Tonight', artist: 'Eric Clapton' },
@@ -93,6 +107,7 @@ const DEFAULT_TIMELINE = [
     emoji: '💕',
     energy: 3,
     description: 'Your special moment',
+    tip: 'This is YOUR song - make it meaningful',
     songs: [
       { id: '14', title: 'Perfect', artist: 'Ed Sheeran' },
     ],
@@ -105,6 +120,7 @@ const DEFAULT_TIMELINE = [
     emoji: '🎉',
     energy: 5,
     description: 'Dance floor hits',
+    tip: 'Build energy gradually, peak at 9:30pm',
     songs: [
       { id: '15', title: 'Uptown Funk', artist: 'Bruno Mars' },
       { id: '16', title: 'Shut Up and Dance', artist: 'Walk the Moon' },
@@ -121,6 +137,7 @@ const DEFAULT_TIMELINE = [
     emoji: '🌙',
     energy: 5,
     description: 'Send-off song',
+    tip: 'End on a high note that guests will remember',
     songs: [
       { id: '19', title: 'Time of Your Life', artist: 'Green Day' },
     ],
@@ -245,10 +262,37 @@ export default function V3Page() {
   const [weddingType, setWeddingType] = useState('classic');
   const [timeline, setTimeline] = useState(DEFAULT_TIMELINE);
   const [expandedMoments, setExpandedMoments] = useState<string[]>([]);
+  const [mustPlaySongs, setMustPlaySongs] = useState<string[]>(['']);
+  const [spotifyPlaylists, setSpotifyPlaylists] = useState<string[]>(['']);
+  const [customInstructions, setCustomInstructions] = useState('');
+  const [showSignupModal, setShowSignupModal] = useState(false);
+  const [showTooltip, setShowTooltip] = useState<string | null>(null);
 
   // Update timeline based on preferences
   useEffect(() => {
     const newTimeline = JSON.parse(JSON.stringify(DEFAULT_TIMELINE));
+
+    // Apply must-play songs (first one to first dance if specified)
+    const validMustPlaySongs = mustPlaySongs.filter(s => s.trim());
+    if (validMustPlaySongs.length > 0) {
+      // First must-play song goes to first dance
+      const firstSong = validMustPlaySongs[0];
+      const firstDanceIndex = newTimeline.findIndex((m: any) => m.id === 'firstdance');
+      if (firstDanceIndex !== -1 && firstSong) {
+        const parts = firstSong.split(' - ');
+        newTimeline[firstDanceIndex].songs = [{
+          id: 'custom-first-dance',
+          title: parts[0].trim(),
+          artist: parts[1]?.trim() || 'Your Artist',
+          custom: true,
+          emoji: '❤️'
+        }];
+      }
+      
+      // Add other must-play songs throughout the timeline
+      // This is where AI would intelligently place them based on tempo/mood
+      // For now, we'll just indicate they'll be incorporated
+    }
 
     // Apply regional changes
     if (REGIONAL_CHANGES[country]) {
@@ -316,7 +360,7 @@ export default function V3Page() {
     }
 
     setTimeline(newTimeline);
-  }, [country, selectedGenres, weddingType]);
+  }, [country, selectedGenres, weddingType, mustPlaySongs]);
 
   const toggleMoment = (momentId: string) => {
     setExpandedMoments((prev) =>
@@ -332,6 +376,34 @@ export default function V3Page() {
         ? prev.filter((g) => g !== genre)
         : [...prev, genre]
     );
+  };
+
+  const addMustPlaySong = () => {
+    setMustPlaySongs([...mustPlaySongs, '']);
+  };
+
+  const updateMustPlaySong = (index: number, value: string) => {
+    const updated = [...mustPlaySongs];
+    updated[index] = value;
+    setMustPlaySongs(updated);
+  };
+
+  const removeMustPlaySong = (index: number) => {
+    setMustPlaySongs(mustPlaySongs.filter((_, i) => i !== index));
+  };
+
+  const addPlaylistInput = () => {
+    setSpotifyPlaylists([...spotifyPlaylists, '']);
+  };
+
+  const updatePlaylist = (index: number, value: string) => {
+    const updated = [...spotifyPlaylists];
+    updated[index] = value;
+    setSpotifyPlaylists(updated);
+  };
+
+  const removePlaylist = (index: number) => {
+    setSpotifyPlaylists(spotifyPlaylists.filter((_, i) => i !== index));
   };
 
   const getTotalSongs = () => {
@@ -353,46 +425,113 @@ export default function V3Page() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white">
-      {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-4">
-            <Link href="/" className="flex items-center gap-2">
-              <Music className="h-8 w-8 text-purple-600" />
-              <span className="text-xl font-bold text-gray-900">Uptune</span>
-            </Link>
-            <Link
-              href="/auth/signup"
-              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium"
-            >
-              Save & Customize
-            </Link>
-          </div>
-        </div>
+    <div className="min-h-screen dark-gradient relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="orb orb-purple w-96 h-96 -top-48 -right-48"></div>
+        <div className="orb orb-blue w-96 h-96 -bottom-48 -left-48"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] rounded-full bg-purple-600/10 animate-spin-slow"></div>
       </div>
 
-      {/* Main Content - 2 Pane Layout */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="lg:grid lg:grid-cols-[400px,1fr] lg:gap-8">
+      {/* Header */}
+      <header className="relative z-50 glass-darker border-b border-white/10">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <Link href="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                <Music className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-white">UpTune</h1>
+                <p className="text-xs text-purple-400">for Weddings</p>
+              </div>
+            </Link>
+            
+            <nav className="hidden md:flex items-center gap-8">
+              <Link href="/blog" className="text-white/70 hover:text-white transition-colors">Blog</Link>
+              <Link href="/auth/login" className="text-white/70 hover:text-white transition-colors">Log In</Link>
+              <Link href="/auth/signup" className="btn-primary">
+                Get Started Free
+                <Heart className="w-4 h-4" />
+              </Link>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <div className="relative z-10 container mx-auto px-4 py-8">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 bg-purple-500/20 rounded-full px-4 py-2 mb-4">
+            <Sparkles className="w-4 h-4 text-purple-400" />
+            <span className="text-purple-300 text-sm">AI-powered wedding playlists</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Your Perfect Wedding Soundtrack,
+            <br />
+            <span className="text-gradient">Personalized in Seconds</span>
+          </h1>
+          <p className="text-white/70 text-lg max-w-2xl mx-auto">
+            Watch your wedding playlist come to life as you add your special touches.
+            From your first dance to the last song of the night.
+          </p>
+        </div>
+
+        {/* Main Content - 2 Pane Layout */}
+        <div className="lg:grid lg:grid-cols-[420px,1fr] lg:gap-8">
           {/* Left Panel - Context Inputs */}
           <div className="mb-8 lg:mb-0">
-            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-purple-600" />
-                Tell us about your wedding
+            <div className="glass-card rounded-xl p-6">
+              <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                <Heart className="w-5 h-5 text-pink-500" />
+                Make it yours
               </h2>
+
+              {/* Must-Play Songs */}
+              <div className="mb-6 p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-500/20">
+                <label className="block text-sm font-medium text-white mb-2 flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Your must-play songs
+                  <span className="text-xs text-purple-300">(First one = First dance)</span>
+                </label>
+                {mustPlaySongs.map((song, index) => (
+                  <div key={index} className="flex gap-2 mb-2">
+                    <input
+                      type="text"
+                      value={song}
+                      onChange={(e) => updateMustPlaySong(index, e.target.value)}
+                      placeholder={index === 0 ? "Your first dance song - Artist" : "Song title - Artist"}
+                      className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-white/40 text-sm"
+                    />
+                    {mustPlaySongs.length > 1 && (
+                      <button
+                        onClick={() => removeMustPlaySong(index)}
+                        className="p-2 text-white/50 hover:text-white/70"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button
+                  onClick={addMustPlaySong}
+                  className="w-full px-3 py-2 border border-dashed border-purple-400/50 rounded-lg hover:border-purple-400 transition-colors text-sm text-purple-300 hover:text-purple-200 flex items-center justify-center gap-2 mt-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add another must-play song
+                </button>
+              </div>
 
               {/* Country Selection */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                  <Globe className="h-4 w-4" />
+                <label className="block text-sm font-medium text-white/80 mb-2 flex items-center gap-2">
+                  <Globe className="w-4 h-4" />
                   Where's your wedding?
                 </label>
                 <select
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white"
                 >
                   <option value="us">United States</option>
                   <option value="uk">United Kingdom</option>
@@ -404,19 +543,19 @@ export default function V3Page() {
 
               {/* Genre Selection */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                  <Music className="h-4 w-4" />
-                  Favorite music genres
+                <label className="block text-sm font-medium text-white/80 mb-2 flex items-center gap-2">
+                  <Music className="w-4 h-4" />
+                  Your music taste
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {['rock', 'country', 'hip-hop', 'indie', 'electronic', 'pop'].map((genre) => (
                     <button
                       key={genre}
                       onClick={() => toggleGenre(genre)}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                         selectedGenres.includes(genre)
-                          ? 'bg-purple-600 text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
+                          : 'bg-white/10 text-white/70 hover:bg-white/20'
                       }`}
                     >
                       {genre.charAt(0).toUpperCase() + genre.slice(1)}
@@ -427,14 +566,26 @@ export default function V3Page() {
 
               {/* Wedding Type */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                  <Heart className="h-4 w-4" />
+                <label className="block text-sm font-medium text-white/80 mb-2 flex items-center gap-2">
+                  <Heart className="w-4 h-4" />
                   Wedding vibe
+                  <button
+                    onMouseEnter={() => setShowTooltip('vibe')}
+                    onMouseLeave={() => setShowTooltip(null)}
+                    className="relative"
+                  >
+                    <Info className="w-3 h-3 text-purple-400" />
+                    {showTooltip === 'vibe' && (
+                      <div className="absolute bottom-full left-0 mb-2 p-2 bg-black/90 text-white text-xs rounded-lg w-48">
+                        This adjusts song selections to match your venue and atmosphere
+                      </div>
+                    )}
+                  </button>
                 </label>
                 <select
                   value={weddingType}
                   onChange={(e) => setWeddingType(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white"
                 >
                   <option value="classic">Classic & Elegant</option>
                   <option value="beach">Beach & Tropical</option>
@@ -444,110 +595,241 @@ export default function V3Page() {
                 </select>
               </div>
 
-              {/* Spotify Upload */}
+              {/* Custom Instructions */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                  <Upload className="h-4 w-4" />
-                  Import your music taste
+                <label className="block text-sm font-medium text-white/80 mb-2 flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4" />
+                  Special requests
+                  <button
+                    onMouseEnter={() => setShowTooltip('custom')}
+                    onMouseLeave={() => setShowTooltip(null)}
+                    className="relative"
+                  >
+                    <Info className="w-3 h-3 text-purple-400" />
+                    {showTooltip === 'custom' && (
+                      <div className="absolute bottom-full left-0 mb-2 p-2 bg-black/90 text-white text-xs rounded-lg w-56">
+                        E.g., "We have Indian and Southern US heritage", "No explicit lyrics", "Heavy on 90s R&B"
+                      </div>
+                    )}
+                  </button>
                 </label>
-                <button className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-400 transition-colors text-sm text-gray-600 hover:text-purple-600">
-                  Connect Spotify Playlist
-                </button>
+                <textarea
+                  value={customInstructions}
+                  onChange={(e) => setCustomInstructions(e.target.value)}
+                  placeholder="Tell us about your unique situation... multicultural families, specific genres to avoid, special traditions, etc."
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-white/40 text-sm h-20 resize-none"
+                />
+              </div>
+
+              {/* Spotify Playlists - Simplified */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-white/80 mb-2 flex items-center gap-2">
+                  <Headphones className="w-4 h-4" />
+                  Reference playlists
+                  <span className="text-xs text-purple-300">(Optional)</span>
+                </label>
+                <p className="text-xs text-white/50 mb-2">
+                  Share Spotify playlist links for music inspiration
+                </p>
+                {spotifyPlaylists.map((playlist, index) => (
+                  <div key={index} className="flex gap-2 mb-2">
+                    <input
+                      type="text"
+                      value={playlist}
+                      onChange={(e) => updatePlaylist(index, e.target.value)}
+                      placeholder="https://open.spotify.com/playlist/..."
+                      className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-white/40 text-sm"
+                    />
+                    {spotifyPlaylists.length > 1 && (
+                      <button
+                        onClick={() => removePlaylist(index)}
+                        className="p-2 text-white/50 hover:text-white/70"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+                {spotifyPlaylists.length < 3 && (
+                  <button
+                    onClick={addPlaylistInput}
+                    className="text-xs text-purple-300 hover:text-purple-200 underline"
+                  >
+                    + Add another playlist
+                  </button>
+                )}
               </div>
 
               {/* Stats */}
-              <div className="pt-4 border-t">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Total songs</span>
-                  <span className="font-semibold text-gray-900">{getTotalSongs()}</span>
+              <div className="p-4 bg-white/5 rounded-lg mb-6">
+                <div className="flex items-center justify-between text-sm mb-2">
+                  <span className="text-white/60 flex items-center gap-1">
+                    <Music className="w-3 h-3" />
+                    Total songs
+                  </span>
+                  <span className="font-semibold text-white">{getTotalSongs()}</span>
                 </div>
-                <div className="flex items-center justify-between text-sm mt-2">
-                  <span className="text-gray-600">Total duration</span>
-                  <span className="font-semibold text-gray-900">{getTotalDuration()}</span>
+                <div className="flex items-center justify-between text-sm mb-2">
+                  <span className="text-white/60 flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    Total duration
+                  </span>
+                  <span className="font-semibold text-white">{getTotalDuration()}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-white/60 flex items-center gap-1">
+                    <TrendingUp className="w-3 h-3" />
+                    Energy flow
+                  </span>
+                  <div className="flex gap-1">
+                    {[2, 3, 4, 3, 2, 3, 5, 5].map((level, i) => (
+                      <div
+                        key={i}
+                        className="w-1 bg-purple-500"
+                        style={{ height: `${level * 4}px` }}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
 
               {/* CTA */}
-              <Link
-                href="/auth/signup"
-                className="mt-6 w-full bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium flex items-center justify-center gap-2"
+              <button
+                onClick={() => setShowSignupModal(true)}
+                className="w-full btn-primary flex items-center justify-center gap-2"
               >
-                Save this playlist
-                <ChevronRight className="h-4 w-4" />
-              </Link>
+                <Sparkles className="w-4 h-4" />
+                Customize Every Detail
+                <ChevronRight className="w-4 h-4" />
+              </button>
+              
+              <div className="mt-4 text-center">
+                <p className="text-xs text-white/50 mb-2">Join 10,000+ couples</p>
+                <div className="flex justify-center gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Right Panel - Live Playlist */}
-          <div className="bg-white rounded-xl shadow-sm">
-            <div className="p-6 border-b">
-              <h1 className="text-2xl font-bold text-gray-900">Your Wedding Playlist</h1>
-              <p className="text-gray-600 mt-1">
-                Watch your perfect playlist come together as you customize
-              </p>
+          <div className="glass-card rounded-xl overflow-hidden">
+            <div className="p-6 border-b border-white/10">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-2xl font-bold text-white">Your Wedding Playlist</h1>
+                  <p className="text-white/60 mt-1">
+                    {customInstructions || mustPlaySongs.filter(s => s.trim()).length > 1 
+                      ? '✨ AI is personalizing based on your requests'
+                      : 'Adapting in real-time to your preferences'}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span className="text-sm text-white/70">Auto-saved</span>
+                </div>
+              </div>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="p-6 space-y-4 max-h-[calc(100vh-300px)] overflow-y-auto">
               {timeline.map((moment) => (
                 <div
                   key={moment.id}
-                  className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+                  className="border border-white/10 rounded-lg overflow-hidden hover:border-purple-500/50 transition-all"
                 >
                   <button
                     onClick={() => toggleMoment(moment.id)}
-                    className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                    className="w-full p-4 flex items-center justify-between hover:bg-white/5 transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">{moment.emoji}</span>
                       <div className="text-left">
-                        <div className="font-semibold text-gray-900">{moment.title}</div>
-                        <div className="text-sm text-gray-500">
+                        <div className="font-semibold text-white flex items-center gap-2">
+                          {moment.title}
+                          {moment.id === 'firstdance' && mustPlaySongs[0]?.trim() && (
+                            <span className="text-xs bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded-full">
+                              Customized
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-sm text-white/50">
                           {moment.time} • {moment.duration} • {moment.songs.length} songs
                           {moment.expandable && !expandedMoments.includes(moment.id) && (
-                            <span className="text-purple-600"> +{moment.expandable} more</span>
+                            <span className="text-purple-400"> +{moment.expandable} more</span>
                           )}
                         </div>
                       </div>
                     </div>
                     <ChevronRight
-                      className={`h-5 w-5 text-gray-400 transition-transform ${
+                      className={`h-5 w-5 text-white/40 transition-transform ${
                         expandedMoments.includes(moment.id) ? 'rotate-90' : ''
                       }`}
                     />
                   </button>
 
                   {expandedMoments.includes(moment.id) && (
-                    <div className="px-4 pb-4 space-y-2">
-                      {moment.songs.map((song) => (
-                        <div
-                          key={song.id}
-                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="text-purple-500">♪</span>
-                            <div>
-                              <span className="font-medium text-gray-900">{song.title}</span>
-                              <span className="text-gray-500 ml-2">- {song.artist}</span>
-                              {'note' in song && (song as any).note && (
-                                <span className="text-xs text-green-600 ml-2">
-                                  {(song as any).note}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <button className="text-purple-600 hover:text-purple-800 text-sm flex items-center gap-1">
-                            <Play className="h-3 w-3" />
-                            Preview
-                          </button>
-                        </div>
-                      ))}
-                      {moment.expandable && (
-                        <div className="text-center py-2">
-                          <span className="text-sm text-purple-600">
-                            +{moment.expandable} more songs available with signup
-                          </span>
+                    <div className="px-4 pb-4">
+                      {/* Educational Tip */}
+                      {moment.tip && (
+                        <div className="mb-3 p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                          <p className="text-xs text-purple-300 flex items-start gap-2">
+                            <Info className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                            {moment.tip}
+                          </p>
                         </div>
                       )}
+                      
+                      {/* Songs */}
+                      <div className="space-y-2">
+                        {moment.songs.map((song) => (
+                          <div
+                            key={song.id}
+                            className="flex items-center justify-between p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className="text-purple-400">
+                                {'emoji' in song ? (song as any).emoji : '♪'}
+                              </span>
+                              <div>
+                                <span className="font-medium text-white">
+                                  {song.title}
+                                  {'custom' in song && (
+                                    <span className="ml-2 text-xs text-pink-400">(Your song!)</span>
+                                  )}
+                                </span>
+                                <span className="text-white/50 ml-2">- {song.artist}</span>
+                                {'note' in song && (song as any).note && (
+                                  <span className="text-xs text-green-400 ml-2">
+                                    {(song as any).note}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <button className="text-purple-400 hover:text-purple-300 text-sm flex items-center gap-1">
+                              <Play className="w-3 h-3" />
+                              Preview
+                            </button>
+                          </div>
+                        ))}
+                        {moment.expandable && (
+                          <div className="text-center py-3 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-500/20">
+                            <p className="text-sm text-purple-300 mb-2">
+                              +{moment.expandable} more songs available
+                            </p>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setShowSignupModal(true);
+                              }}
+                              className="text-xs text-purple-400 hover:text-purple-300 underline"
+                            >
+                              Unlock with free account
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -555,7 +837,75 @@ export default function V3Page() {
             </div>
           </div>
         </div>
+
+        {/* Value Props */}
+        <div className="mt-12 grid md:grid-cols-3 gap-6">
+          <div className="glass-card rounded-lg p-6 text-center">
+            <Users className="w-8 h-8 text-purple-400 mx-auto mb-3" />
+            <h3 className="font-semibold text-white mb-2">Guest Collaboration</h3>
+            <p className="text-sm text-white/60">Let guests suggest songs before the big day</p>
+          </div>
+          <div className="glass-card rounded-lg p-6 text-center">
+            <Headphones className="w-8 h-8 text-purple-400 mx-auto mb-3" />
+            <h3 className="font-semibold text-white mb-2">Spotify Integration</h3>
+            <p className="text-sm text-white/60">Export to Spotify with one click</p>
+          </div>
+          <div className="glass-card rounded-lg p-6 text-center">
+            <Star className="w-8 h-8 text-purple-400 mx-auto mb-3" />
+            <h3 className="font-semibold text-white mb-2">DJ-Approved</h3>
+            <p className="text-sm text-white/60">Tested at 500+ real weddings</p>
+          </div>
+        </div>
       </div>
+
+      {/* Signup Modal */}
+      {showSignupModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setShowSignupModal(false)} />
+          <div className="relative glass-card rounded-xl p-8 max-w-md w-full">
+            <button
+              onClick={() => setShowSignupModal(false)}
+              className="absolute top-4 right-4 text-white/50 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <h2 className="text-2xl font-bold text-white mb-2">
+              Save Your Perfect Playlist
+            </h2>
+            <p className="text-white/60 mb-6">
+              Create a free account to unlock all customization features
+            </p>
+            
+            <div className="space-y-3 mb-6">
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span className="text-sm text-white/80">Unlimited song customization</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span className="text-sm text-white/80">Share with your DJ & guests</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span className="text-sm text-white/80">Export to Spotify instantly</span>
+              </div>
+            </div>
+            
+            <Link href="/auth/signup" className="btn-primary w-full flex items-center justify-center gap-2">
+              Continue to Signup
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+            
+            <p className="text-center text-xs text-white/40 mt-4">
+              Already have an account?{' '}
+              <Link href="/auth/login" className="text-purple-400 hover:text-purple-300">
+                Log in
+              </Link>
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Music, 
   ChevronRight, 
-  Heart, 
+  MapPin,
   Sparkles,
   Play,
   Pause,
@@ -13,7 +13,6 @@ import {
   Plus,
   X,
   Check,
-  Star,
   Clock,
   Users,
   Headphones,
@@ -22,249 +21,324 @@ import {
   RefreshCw,
   Volume2,
   Mail,
-  ArrowRight,
-  Lock,
-  Unlock
+  ChevronDown,
+  Zap,
+  Heart,
+  Cake,
+  Mic,
+  PartyPopper,
+  Moon
 } from 'lucide-react';
 
-// Vibe options with instant music preview
-const VIBE_OPTIONS = [
-  { 
-    id: 'romantic', 
-    label: 'Romantic & Classic', 
+// Timeline moments with default songs - THE COMPLETE WEDDING DAY
+const DEFAULT_TIMELINE = [
+  {
+    id: 'getting-ready',
+    time: '2:00 PM',
+    duration: '30 min',
+    title: 'Getting Ready',
+    emoji: '💄',
+    icon: <Heart className="w-4 h-4" />,
+    songs: [
+      { id: '1', title: 'Sunday Morning', artist: 'Maroon 5' },
+      { id: '2', title: 'Here Comes the Sun', artist: 'Beatles' },
+      { id: '3', title: 'Lovely Day', artist: 'Bill Withers' },
+    ],
+    expanded: false
+  },
+  {
+    id: 'ceremony',
+    time: '3:00 PM',
+    duration: '20 min',
+    title: 'Ceremony',
+    emoji: '💒',
+    icon: <Heart className="w-4 h-4" />,
+    songs: [
+      { id: '4', title: 'Canon in D', artist: 'Pachelbel', label: 'Processional' },
+      { id: '5', title: 'A Thousand Years', artist: 'Christina Perri', label: 'Bride Entrance' },
+      { id: '6', title: 'Make You Feel My Love', artist: 'Adele', label: 'Signing' },
+      { id: '7', title: 'Signed, Sealed, Delivered', artist: 'Stevie Wonder', label: 'Recessional' },
+    ],
+    expanded: false
+  },
+  {
+    id: 'cocktails',
+    time: '3:30 PM',
+    duration: '90 min',
+    title: 'Cocktails',
+    emoji: '🥂',
+    icon: <Globe className="w-4 h-4" />,
+    songs: [
+      { id: '8', title: 'Fly Me to the Moon', artist: 'Frank Sinatra' },
+      { id: '9', title: 'Valerie', artist: 'Amy Winehouse' },
+      { id: '10', title: 'Golden', artist: 'Harry Styles' },
+      { id: '11', title: 'Dreams', artist: 'Fleetwood Mac' },
+      { id: '12', title: 'Three Little Birds', artist: 'Bob Marley' },
+    ],
+    moreCount: 22,
+    expanded: false
+  },
+  {
+    id: 'dinner',
+    time: '5:00 PM',
+    duration: '90 min',
+    title: 'Dinner',
+    emoji: '🍽️',
+    icon: <Globe className="w-4 h-4" />,
+    songs: [
+      { id: '13', title: 'At Last', artist: 'Etta James' },
+      { id: '14', title: 'Wonderful Tonight', artist: 'Eric Clapton' },
+      { id: '15', title: 'Your Song', artist: 'Elton John' },
+      { id: '16', title: 'The Way You Look Tonight', artist: 'Tony Bennett' },
+    ],
+    moreCount: 20,
+    expanded: false
+  },
+  {
+    id: 'speeches',
+    time: '6:30 PM',
+    duration: '30 min',
+    title: 'Speeches & Cake',
+    emoji: '🎤',
+    icon: <Cake className="w-4 h-4" />,
+    songs: [
+      { id: '17', title: 'How Sweet It Is', artist: 'James Taylor' },
+      { id: '18', title: 'L-O-V-E', artist: 'Nat King Cole' },
+      { id: '19', title: 'Sugar', artist: 'Maroon 5' },
+    ],
+    moreCount: 5,
+    expanded: false
+  },
+  {
+    id: 'first-dance',
+    time: '7:00 PM',
+    duration: '5 min',
+    title: 'First Dance',
     emoji: '💕',
-    description: 'Timeless love songs and elegant moments',
-    previewSong: 'Perfect - Ed Sheeran',
-    color: 'from-pink-500 to-red-500'
+    icon: <Heart className="w-4 h-4" />,
+    songs: [
+      { id: '20', title: 'Perfect', artist: 'Ed Sheeran' },
+    ],
+    expanded: false
   },
-  { 
-    id: 'party', 
-    label: 'Party All Night', 
+  {
+    id: 'parent-dances',
+    time: '7:05 PM',
+    duration: '10 min',
+    title: 'Parent Dances',
+    emoji: '👨‍👩‍👧',
+    icon: <Users className="w-4 h-4" />,
+    songs: [
+      { id: '21', title: 'My Girl', artist: 'The Temptations' },
+      { id: '22', title: "Isn't She Lovely", artist: 'Stevie Wonder' },
+    ],
+    expanded: false
+  },
+  {
+    id: 'party-time',
+    time: '7:15 PM',
+    duration: '3 hours',
+    title: 'Party Time',
     emoji: '🎉',
-    description: 'High energy dance floor hits',
-    previewSong: 'Uptown Funk - Bruno Mars',
-    color: 'from-purple-500 to-pink-500'
+    icon: <PartyPopper className="w-4 h-4" />,
+    songs: [
+      { id: '23', title: 'September', artist: 'Earth, Wind & Fire', phase: 'Building Energy' },
+      { id: '24', title: 'Uptown Funk', artist: 'Bruno Mars', phase: 'Building Energy' },
+      { id: '25', title: 'Mr. Brightside', artist: 'The Killers', phase: 'Peak Party' },
+      { id: '26', title: 'Shut Up and Dance', artist: 'Walk the Moon', phase: 'Peak Party' },
+      { id: '27', title: "Can't Stop the Feeling", artist: 'Justin Timberlake', phase: 'Peak Party' },
+      { id: '28', title: 'Sweet Caroline', artist: 'Neil Diamond', phase: 'Wind Down' },
+      { id: '29', title: 'Wonderwall', artist: 'Oasis', phase: 'Wind Down' },
+    ],
+    moreCount: 35,
+    expanded: false
   },
-  { 
-    id: 'modern', 
-    label: 'Modern & Trendy', 
-    emoji: '✨',
-    description: 'Contemporary hits and current favorites',
-    previewSong: 'Levitating - Dua Lipa',
-    color: 'from-blue-500 to-purple-500'
-  },
-  { 
-    id: 'rustic', 
-    label: 'Rustic & Chill', 
-    emoji: '🌿',
-    description: 'Laid-back vibes and acoustic feels',
-    previewSong: 'Ho Hey - The Lumineers',
-    color: 'from-green-500 to-teal-500'
-  },
+  {
+    id: 'last-dance',
+    time: '10:30 PM',
+    duration: '5 min',
+    title: 'Last Dance',
+    emoji: '🌙',
+    icon: <Moon className="w-4 h-4" />,
+    songs: [
+      { id: '30', title: 'Time of Your Life', artist: 'Green Day' },
+    ],
+    expanded: false
+  }
 ];
 
-interface Song {
-  id: string;
-  title: string;
-  artist: string;
-  duration?: number;
-  previewUrl?: string;
-  albumArt?: string;
-  moment?: string;
-  energy?: number;
-  bpm?: number;
-}
+// UK regional transformations
+const UK_REGIONAL_SONGS = {
+  'north-england': {
+    cocktails: [
+      { id: 'uk1', title: 'There She Goes', artist: "The La's" },
+      { id: 'uk2', title: 'Sit Down', artist: 'James' },
+      { id: 'uk3', title: 'This Charming Man', artist: 'The Smiths' },
+    ],
+    party: [
+      { id: 'uk4', title: 'Mr. Brightside', artist: 'The Killers', note: 'Manchester anthem' },
+      { id: 'uk5', title: 'Wonderwall', artist: 'Oasis' },
+      { id: 'uk6', title: 'Chelsea Dagger', artist: 'The Fratellis', note: 'Northern favorite' },
+    ]
+  },
+  'london': {
+    cocktails: [
+      { id: 'l1', title: 'Waterloo Sunset', artist: 'The Kinks' },
+      { id: 'l2', title: 'London Calling', artist: 'The Clash' },
+    ],
+    party: [
+      { id: 'l3', title: 'Blue Monday', artist: 'New Order' },
+      { id: 'l4', title: 'Pump It Up', artist: 'Elvis Costello' },
+    ]
+  }
+};
 
-interface TimelineMoment {
-  id: string;
-  time: string;
-  duration: string;
-  title: string;
-  emoji: string;
-  description: string;
-  songs: Song[];
-  insight?: string;
-  bpmRange?: string;
-}
-
-export default function V3ProperPage() {
-  const [step, setStep] = useState<'vibe' | 'preferences' | 'email' | 'playlist'>('vibe');
-  const [selectedVibe, setSelectedVibe] = useState<string | null>(null);
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+export default function V3TrueVisionPage() {
+  // Core state
+  const [timeline, setTimeline] = useState(DEFAULT_TIMELINE);
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  const [mustPlaySongs, setMustPlaySongs] = useState<string[]>(['']);
   const [spotifyUrl, setSpotifyUrl] = useState('');
+  const [customInstructions, setCustomInstructions] = useState('');
   const [email, setEmail] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedPlaylist, setGeneratedPlaylist] = useState<any>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  
+  // UI state
+  const [transforming, setTransforming] = useState(false);
   const [expandedMoments, setExpandedMoments] = useState<string[]>([]);
-  const [showPaywall, setShowPaywall] = useState(false);
-  const [aiProvider, setAiProvider] = useState<string | null>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  // Auto-play music when vibe is selected
+  const [totalSongs, setTotalSongs] = useState(152);
+  const [totalDuration, setTotalDuration] = useState(8);
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [isLoadingReal, setIsLoadingReal] = useState(false);
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
+  const [audioRef, setAudioRef] = useState<HTMLAudioElement | null>(null);
+  
+  // Load real timeline from database on mount
   useEffect(() => {
-    if (selectedVibe && step === 'preferences') {
-      // Start playing preview music
-      setIsPlaying(true);
-      // In real implementation, this would play actual Spotify preview
-    }
-  }, [selectedVibe, step]);
-
-  const handleVibeSelect = async (vibeId: string) => {
-    setSelectedVibe(vibeId);
-    setStep('preferences');
-    
-    // Start generating in background
-    generateInitialPlaylist(vibeId);
-  };
-
-  const generateInitialPlaylist = async (vibe: string) => {
-    setIsGenerating(true);
-    
-    try {
-      const response = await fetch('/api/generate-playlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          vibe,
-          genres: selectedGenres,
-          spotifyPlaylist: spotifyUrl,
-          // Basic generation for preview
-          preview: true
-        })
-      });
-
-      const data = await response.json();
-      
-      if (data.success) {
-        setGeneratedPlaylist(data.playlist);
-        setAiProvider(data.metadata?.generatedBy);
+    const loadRealTimeline = async () => {
+      setIsLoadingReal(true);
+      try {
+        const response = await fetch('/api/v3/timeline', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({})
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.timeline) {
+            // Convert API timeline to our format
+            const formattedTimeline = data.timeline.map((moment: any) => ({
+              ...DEFAULT_TIMELINE.find(d => d.id === moment.id),
+              songs: moment.songs.map((s: any) => ({
+                id: s.id,
+                title: s.title,
+                artist: s.artist,
+                previewUrl: s.previewUrl
+              })),
+              moreCount: moment.moreCount
+            }));
+            setTimeline(formattedTimeline);
+            setTotalSongs(data.totalSongs || 152);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load real timeline:', error);
+      } finally {
+        setIsLoadingReal(false);
       }
-    } catch (error) {
-      console.error('Generation failed:', error);
-      // Use fallback playlist
-      setGeneratedPlaylist(getFallbackPlaylist(vibe));
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const handleEmailSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      // Save email for later conversion
-      localStorage.setItem('uptune_email', email);
-      setStep('playlist');
-      
-      // Enhance playlist with full details
-      if (selectedGenres.length > 0 || spotifyUrl) {
-        await enhancePlaylist();
-      }
-    }
-  };
-
-  const enhancePlaylist = async () => {
-    setIsGenerating(true);
-    
-    try {
-      const response = await fetch('/api/generate-playlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          vibe: selectedVibe,
-          genres: selectedGenres,
-          spotifyPlaylist: spotifyUrl,
-          email,
-          // Full generation
-          preview: false
-        })
-      });
-
-      const data = await response.json();
-      
-      if (data.success) {
-        setGeneratedPlaylist(data.playlist);
-        setAiProvider(data.metadata?.generatedBy);
-      }
-    } catch (error) {
-      console.error('Enhancement failed:', error);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const getFallbackPlaylist = (vibe: string): any => {
-    // Return a basic playlist structure based on vibe
-    const baseTimeline: TimelineMoment[] = [
-      {
-        id: 'cocktail',
-        time: '5:00 PM',
-        duration: '60 min',
-        title: 'Cocktail Hour',
-        emoji: '🥂',
-        description: 'Sophisticated mingling music',
-        bpmRange: '110-120 BPM',
-        insight: 'We start at 110 BPM with jazz and soul to create sophisticated ambiance. Notice how we alternate modern hits with classics every 3 songs to engage all generations.',
-        songs: [
-          { id: '1', title: 'Fly Me to the Moon', artist: 'Frank Sinatra', bpm: 105 },
-          { id: '2', title: 'Valerie', artist: 'Amy Winehouse', bpm: 123 },
-          { id: '3', title: 'Sunday Morning', artist: 'Maroon 5', bpm: 110 },
-        ]
-      },
-      {
-        id: 'dinner',
-        time: '6:00 PM',
-        duration: '90 min',
-        title: 'Dinner',
-        emoji: '🍽️',
-        description: 'Background music for conversation',
-        bpmRange: '95-110 BPM',
-        insight: 'During dinner, we keep the energy low but positive, allowing conversation while maintaining the celebratory atmosphere.',
-        songs: [
-          { id: '4', title: 'At Last', artist: 'Etta James', bpm: 95 },
-          { id: '5', title: 'Your Song', artist: 'Elton John', bpm: 102 },
-          { id: '6', title: 'Make You Feel My Love', artist: 'Adele', bpm: 98 },
-        ]
-      },
-      {
-        id: 'firstdance',
-        time: '7:30 PM',
-        duration: '5 min',
-        title: 'First Dance',
-        emoji: '💕',
-        description: 'Your special moment',
-        songs: [
-          { id: '7', title: vibe === 'romantic' ? 'Perfect' : 'All of Me', artist: vibe === 'romantic' ? 'Ed Sheeran' : 'John Legend' },
-        ]
-      },
-      {
-        id: 'party',
-        time: '8:00 PM',
-        duration: '150 min',
-        title: 'Party Time',
-        emoji: '🎉',
-        description: 'Dance floor hits',
-        bpmRange: '118-128 BPM',
-        insight: 'Party section gradually builds from 118 to 128 BPM, with strategic throwbacks every 4th song to keep all ages dancing.',
-        songs: [
-          { id: '8', title: 'Uptown Funk', artist: 'Bruno Mars', bpm: 115 },
-          { id: '9', title: 'Shut Up and Dance', artist: 'Walk the Moon', bpm: 128 },
-          { id: '10', title: 'Mr. Brightside', artist: 'The Killers', bpm: 120 },
-          { id: '11', title: "Can't Stop the Feeling", artist: 'Justin Timberlake', bpm: 113 },
-        ]
-      },
-    ];
-
-    return {
-      name: 'Your Wedding Playlist',
-      songCount: 150,
-      duration: 360,
-      timeline: baseTimeline,
-      previewSongs: baseTimeline.slice(0, 3).flatMap(m => m.songs.slice(0, 2))
     };
+    
+    loadRealTimeline();
+  }, []);
+  
+  // Calculate stats when timeline changes
+  useEffect(() => {
+    const songs = timeline.reduce((total, moment) => {
+      return total + moment.songs.length + (moment.moreCount || 0);
+    }, 0);
+    setTotalSongs(songs);
+  }, [timeline]);
+
+  // Handle region selection with real API transformation
+  const handleRegionSelect = async (region: string) => {
+    setTransforming(true);
+    setSelectedRegion(region);
+    
+    try {
+      // Get regional songs from API
+      const response = await fetch('/api/v3/transform', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          region, 
+          moment: 'cocktails' 
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        if (data.songs && data.songs.length > 0) {
+          // Update timeline with regional songs
+          setTimeline(prev => prev.map(moment => {
+            if (moment.id === 'cocktails' || moment.id === 'party-time') {
+              return {
+                ...moment,
+                songs: [...data.songs.slice(0, 3), ...moment.songs.slice(3)]
+              };
+            }
+            return moment;
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Failed to get regional songs:', error);
+      // Fallback to local transformation
+      if (UK_REGIONAL_SONGS[region as keyof typeof UK_REGIONAL_SONGS]) {
+        const regionalSongs = UK_REGIONAL_SONGS[region as keyof typeof UK_REGIONAL_SONGS];
+        
+        setTimeline(prev => prev.map(moment => {
+          if (moment.id === 'cocktails' && regionalSongs.cocktails) {
+            return {
+              ...moment,
+              songs: [...regionalSongs.cocktails, ...moment.songs.slice(3)]
+            };
+          }
+          if (moment.id === 'party-time' && regionalSongs.party) {
+            return {
+              ...moment,
+              songs: [...regionalSongs.party, ...moment.songs.slice(3)]
+            };
+          }
+          return moment;
+        }));
+      }
+    } finally {
+      setTimeout(() => setTransforming(false), 800);
+    }
   };
 
+  // Handle must-play songs
+  const handleMustPlayChange = (index: number, value: string) => {
+    const updated = [...mustPlaySongs];
+    updated[index] = value;
+    setMustPlaySongs(updated);
+    
+    // Update first dance if first must-play
+    if (index === 0 && value) {
+      setTimeline(prev => prev.map(moment => {
+        if (moment.id === 'first-dance') {
+          return {
+            ...moment,
+            songs: [{ id: 'custom1', title: value.split(' - ')[0] || value, artist: value.split(' - ')[1] || 'Your Choice' }]
+          };
+        }
+        return moment;
+      }));
+    }
+  };
+
+  // Toggle moment expansion
   const toggleMoment = (momentId: string) => {
     setExpandedMoments(prev =>
       prev.includes(momentId)
@@ -272,438 +346,492 @@ export default function V3ProperPage() {
         : [...prev, momentId]
     );
   };
+  
+  // Handle song preview
+  const handlePlayPreview = (songId: string, previewUrl?: string) => {
+    // If clicking same song that's playing, pause it
+    if (currentlyPlaying === songId) {
+      if (audioRef) {
+        audioRef.pause();
+        audioRef.currentTime = 0;
+      }
+      setCurrentlyPlaying(null);
+      return;
+    }
+    
+    // Stop any current preview
+    if (audioRef) {
+      audioRef.pause();
+      audioRef.currentTime = 0;
+    }
+    
+    // If no preview URL, show message
+    if (!previewUrl) {
+      console.log('No preview available for this song');
+      return;
+    }
+    
+    // Play new preview
+    const audio = new Audio(previewUrl);
+    audio.volume = 0.5;
+    
+    audio.play().catch(err => {
+      console.error('Failed to play preview:', err);
+    });
+    
+    // Auto-stop after 30 seconds or when ended
+    audio.addEventListener('ended', () => {
+      setCurrentlyPlaying(null);
+    });
+    
+    setAudioRef(audio);
+    setCurrentlyPlaying(songId);
+  };
+  
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef) {
+        audioRef.pause();
+      }
+    };
+  }, [audioRef]);
+  
+  // Update playlist with AI when custom instructions change
+  const updateWithAI = async () => {
+    setTransforming(true);
+    try {
+      const response = await fetch('/api/v3/timeline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          region: selectedRegion,
+          mustPlaySongs: mustPlaySongs.filter(s => s.trim()),
+          spotifyUrl,
+          customInstructions,
+          genres: []
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.timeline) {
+          // Update with AI-enhanced timeline
+          const formattedTimeline = data.timeline.map((moment: any) => ({
+            ...DEFAULT_TIMELINE.find(d => d.id === moment.id),
+            songs: moment.songs.map((s: any) => ({
+              id: s.id,
+              title: s.title,
+              artist: s.artist,
+              previewUrl: s.previewUrl,
+              aiRecommended: s.aiRecommended
+            })),
+            moreCount: moment.moreCount
+          }));
+          setTimeline(formattedTimeline);
+          setTotalSongs(data.totalSongs || 152);
+        }
+      }
+    } catch (error) {
+      console.error('AI update failed:', error);
+    } finally {
+      setTransforming(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen dark-gradient relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="orb orb-purple w-96 h-96 -top-48 -right-48"></div>
-        <div className="orb orb-blue w-96 h-96 -bottom-48 -left-48"></div>
-      </div>
-
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Header */}
-      <header className="relative z-50 glass-darker border-b border-white/10">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+      <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between py-4">
             <Link href="/" className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
                 <Music className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white">UpTune</h1>
-                <p className="text-xs text-purple-400">AI Wedding Music</p>
+                <h1 className="text-xl font-bold">Uptune 3.0</h1>
+                <p className="text-xs text-gray-500">AI Wedding Music</p>
               </div>
             </Link>
             
-            {aiProvider && (
-              <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-purple-500/20 rounded-full">
-                <Sparkles className="w-4 h-4 text-purple-400" />
-                <span className="text-sm text-purple-300">
-                  Powered by {aiProvider === 'gpt5' ? 'GPT-5' : 
-                              aiProvider === 'claude' ? 'Claude' :
-                              aiProvider === 'gemini' ? 'Gemini' : 'AI'}
+            <div className="flex items-center gap-4">
+              {currentlyPlaying && (
+                <div className="flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900/30 rounded-full animate-pulse">
+                  <Volume2 className="w-4 h-4 text-green-600 dark:text-green-400" />
+                  <span className="text-sm text-green-700 dark:text-green-300">
+                    Preview playing...
+                  </span>
+                </div>
+              )}
+              <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-purple-100 dark:bg-purple-900/30 rounded-full">
+                <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                <span className="text-sm text-purple-700 dark:text-purple-300">
+                  {totalSongs} songs • {totalDuration} hours
                 </span>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <div className="relative z-10 container mx-auto px-4 py-12">
-        
-        {/* Step 1: Vibe Selection */}
-        {step === 'vibe' && (
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h1 className="text-5xl font-bold mb-4">
-                What's your <span className="text-gradient">wedding vibe?</span>
-              </h1>
-              <p className="text-xl text-white/70">
-                Click to instantly hear your wedding music
+      {/* Hero Message */}
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">
+            Here's your wedding day. Let's make the music perfect.
+          </h1>
+          <p className="text-lg opacity-90">
+            This is a complete {totalSongs}-song wedding playlist. Watch it transform as you personalize.
+          </p>
+        </div>
+      </div>
+
+      {/* Main 2-Pane Layout */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid lg:grid-cols-3 gap-8">
+          
+          {/* LEFT PANE - Personalization Inputs */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Region Selection */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+              <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-purple-600" />
+                Where's your wedding?
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                This changes EVERYTHING - watch your playlist transform
               </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              {VIBE_OPTIONS.map((vibe) => (
-                <button
-                  key={vibe.id}
-                  onClick={() => handleVibeSelect(vibe.id)}
-                  className="group relative overflow-hidden rounded-2xl p-8 text-left transition-all hover:scale-105 hover:shadow-2xl"
-                >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${vibe.color} opacity-90`} />
-                  <div className="relative z-10">
-                    <span className="text-4xl mb-4 block">{vibe.emoji}</span>
-                    <h3 className="text-2xl font-bold text-white mb-2">{vibe.label}</h3>
-                    <p className="text-white/80 mb-4">{vibe.description}</p>
-                    <div className="flex items-center gap-2 text-white/60">
-                      <Volume2 className="w-4 h-4" />
-                      <span className="text-sm">Preview: {vibe.previewSong}</span>
-                    </div>
-                  </div>
-                  <div className="absolute bottom-4 right-4 transform translate-x-full group-hover:translate-x-0 transition-transform">
-                    <ChevronRight className="w-6 h-6 text-white" />
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Step 2: Quick Preferences */}
-        {step === 'preferences' && (
-          <div className="max-w-2xl mx-auto">
-            {/* Music Playing Indicator */}
-            <div className="mb-8 p-4 glass-card rounded-xl flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
-                  {isPlaying ? (
-                    <Volume2 className="w-6 h-6 text-white animate-pulse" />
-                  ) : (
-                    <Play className="w-6 h-6 text-white" />
-                  )}
-                </div>
+              
+              <div className="space-y-3">
                 <div>
-                  <p className="text-sm text-white/60">Now playing your vibe</p>
-                  <p className="font-semibold text-white">
-                    {VIBE_OPTIONS.find(v => v.id === selectedVibe)?.previewSong}
+                  <p className="text-xs font-semibold text-gray-500 uppercase mb-2">UK Regions</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {['North England', 'London', 'Scotland', 'Wales'].map(region => (
+                      <button
+                        key={region}
+                        onClick={() => handleRegionSelect(region.toLowerCase().replace(' ', '-'))}
+                        className={`px-3 py-2 text-sm rounded-lg transition-all ${
+                          selectedRegion === region.toLowerCase().replace(' ', '-')
+                            ? 'bg-purple-600 text-white'
+                            : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        }`}
+                      >
+                        {region}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <p className="text-xs font-semibold text-gray-500 uppercase mb-2">US Regions</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {['Northeast', 'South', 'West Coast', 'Midwest'].map(region => (
+                      <button
+                        key={region}
+                        onClick={() => handleRegionSelect(region.toLowerCase().replace(' ', '-'))}
+                        className={`px-3 py-2 text-sm rounded-lg transition-all ${
+                          selectedRegion === region.toLowerCase().replace(' ', '-')
+                            ? 'bg-purple-600 text-white'
+                            : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        }`}
+                      >
+                        {region}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              {selectedRegion && (
+                <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                  <p className="text-sm text-green-700 dark:text-green-300">
+                    ✓ Added 23 regional favorites!
                   </p>
                 </div>
-              </div>
+              )}
             </div>
 
-            <div className="glass-card rounded-2xl p-8">
-              <h2 className="text-3xl font-bold text-white mb-6">
-                Perfect! Quick - what do you love?
-              </h2>
-
-              {/* Genre Selection */}
-              <div className="mb-8">
-                <p className="text-white/70 mb-4">Select your favorite genres (optional)</p>
-                <div className="flex flex-wrap gap-3">
-                  {['Pop', 'Rock', 'Country', 'R&B', 'Hip-Hop', 'Indie', 'Electronic', 'Jazz'].map((genre) => (
-                    <button
-                      key={genre}
-                      onClick={() => {
-                        setSelectedGenres(prev =>
-                          prev.includes(genre)
-                            ? prev.filter(g => g !== genre)
-                            : [...prev, genre]
-                        );
-                      }}
-                      className={`px-4 py-2 rounded-full transition-all ${
-                        selectedGenres.includes(genre)
-                          ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
-                          : 'bg-white/10 text-white/70 hover:bg-white/20'
-                      }`}
-                    >
-                      {genre}
-                    </button>
-                  ))}
+            {/* Must-Play Songs */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+              <h3 className="font-semibold text-lg mb-4">
+                Your must-play songs
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Your first song becomes your first dance
+              </p>
+              
+              {mustPlaySongs.map((song, index) => (
+                <div key={index} className="mb-3">
+                  <input
+                    type="text"
+                    value={song}
+                    onChange={(e) => handleMustPlayChange(index, e.target.value)}
+                    placeholder="e.g., Perfect - Ed Sheeran"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700"
+                  />
                 </div>
-              </div>
-
-              {/* Spotify Playlist */}
-              <div className="mb-8">
-                <p className="text-white/70 mb-4">Got a playlist? (optional)</p>
-                <input
-                  type="text"
-                  value={spotifyUrl}
-                  onChange={(e) => setSpotifyUrl(e.target.value)}
-                  placeholder="Paste Spotify playlist URL"
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-white/40"
-                />
-              </div>
-
-              {/* Continue Button */}
+              ))}
+              
               <button
-                onClick={() => setStep('email')}
-                className="w-full btn-primary flex items-center justify-center gap-2"
+                onClick={() => setMustPlaySongs([...mustPlaySongs, ''])}
+                className="text-sm text-purple-600 hover:text-purple-700 flex items-center gap-1"
               >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Generating your playlist...
-                  </>
-                ) : (
-                  <>
-                    See your playlist
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
+                <Plus className="w-4 h-4" />
+                Add another song
               </button>
+            </div>
 
-              {/* Skip Link */}
+            {/* Spotify Integration */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+              <h3 className="font-semibold text-lg mb-4">
+                Share your music taste
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Paste a Spotify playlist URL to transform everything
+              </p>
+              
+              <input
+                type="text"
+                value={spotifyUrl}
+                onChange={(e) => setSpotifyUrl(e.target.value)}
+                placeholder="spotify.com/playlist/..."
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 mb-3"
+              />
+              
+              {spotifyUrl && (
+                <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                  <p className="text-sm text-purple-700 dark:text-purple-300">
+                    <Zap className="w-4 h-4 inline mr-1" />
+                    Analyzing your taste...
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Custom Instructions */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+              <h3 className="font-semibold text-lg mb-4">
+                Special requests
+              </h3>
+              <textarea
+                value={customInstructions}
+                onChange={(e) => setCustomInstructions(e.target.value)}
+                onBlur={() => {
+                  // Trigger AI update when user finishes typing
+                  if (customInstructions.length > 10) {
+                    updateWithAI();
+                  }
+                }}
+                placeholder="e.g., We love 90s R&B, avoid country music, include some Bollywood..."
+                rows={3}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700"
+              />
+              {customInstructions.length > 0 && (
+                <p className="text-xs text-purple-600 mt-2">
+                  <Zap className="w-3 h-3 inline mr-1" />
+                  AI will update your playlist when you finish typing
+                </p>
+              )}
+            </div>
+
+            {/* Save Section */}
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl shadow-lg p-6 text-white">
+              <h3 className="font-semibold text-lg mb-2">
+                Save your perfect playlist
+              </h3>
+              <p className="text-sm opacity-90 mb-4">
+                Don't lose your customizations
+              </p>
+              
               <button
-                onClick={() => setStep('email')}
-                className="w-full mt-4 text-white/50 hover:text-white/70 text-sm"
+                onClick={() => setShowSaveModal(true)}
+                className="w-full bg-white text-purple-600 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
               >
-                Skip and continue →
+                Customize Every Detail →
               </button>
             </div>
           </div>
-        )}
 
-        {/* Step 3: Email Gate */}
-        {step === 'email' && generatedPlaylist && (
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold text-white mb-4">
-                Here's your wedding music...
-              </h2>
-              <p className="text-xl text-white/70">
-                5 song preview • {generatedPlaylist.songCount || 150} total songs ready
-              </p>
-            </div>
+          {/* RIGHT PANE - Live Timeline */}
+          <div className="lg:col-span-2">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold">
+                  YOUR WEDDING TIMELINE
+                </h2>
+                {transforming && (
+                  <div className="flex items-center gap-2 text-purple-600">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="text-sm">Transforming...</span>
+                  </div>
+                )}
+              </div>
 
-            {/* Preview Songs */}
-            <div className="glass-card rounded-2xl p-6 mb-8">
+              {/* Timeline */}
+              {isLoadingReal && (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-center">
+                    <Loader2 className="w-8 h-8 animate-spin text-purple-600 mx-auto mb-3" />
+                    <p className="text-sm text-gray-600">Loading real wedding songs from our database...</p>
+                  </div>
+                </div>
+              )}
+              
+              {!isLoadingReal && (
               <div className="space-y-4">
-                {(generatedPlaylist.previewSongs || []).slice(0, 5).map((song: Song, index: number) => (
-                  <div key={song.id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-                    <div className="flex items-center gap-4">
-                      <span className="text-2xl font-bold text-purple-400">
-                        {index + 1}
-                      </span>
-                      <div>
-                        <p className="font-semibold text-white">{song.title}</p>
-                        <p className="text-white/60">{song.artist}</p>
+                {timeline.map((moment) => (
+                  <div 
+                    key={moment.id} 
+                    className={`border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden transition-all ${
+                      transforming && (moment.id === 'cocktails' || moment.id === 'party-time') 
+                        ? 'ring-2 ring-purple-500 ring-opacity-50' 
+                        : ''
+                    }`}
+                  >
+                    <button
+                      onClick={() => toggleMoment(moment.id)}
+                      className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{moment.emoji}</span>
+                        <div className="text-left">
+                          <div className="font-semibold flex items-center gap-2">
+                            {moment.title}
+                            {moment.id === 'first-dance' && mustPlaySongs[0] && (
+                              <span className="text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full">
+                                Customized
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                            {moment.time} • {moment.duration} • {moment.songs.length + (moment.moreCount || 0)} songs
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <button className="text-purple-400 hover:text-purple-300">
-                      <Play className="w-5 h-5" />
+                      <ChevronDown 
+                        className={`w-5 h-5 text-gray-400 transition-transform ${
+                          expandedMoments.includes(moment.id) ? 'rotate-180' : ''
+                        }`}
+                      />
                     </button>
+                    
+                    {expandedMoments.includes(moment.id) && (
+                      <div className="px-4 pb-4">
+                        <div className="space-y-2">
+                          {moment.songs.map((song, idx) => (
+                            <div 
+                              key={song.id} 
+                              className={`flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/30 ${
+                                transforming && 'note' in song && (song as any).note ? 'bg-purple-50 dark:bg-purple-900/20' : ''
+                              }`}
+                            >
+                              <div className="flex items-center gap-3">
+                                <span className="text-gray-400 text-sm w-6">{idx + 1}</span>
+                                <div>
+                                  <p className="font-medium">
+                                    {'label' in song && (song as any).label && <span className="text-xs text-gray-500 mr-2">{(song as any).label}:</span>}
+                                    {'phase' in song && (song as any).phase && <span className="text-xs text-gray-500 mr-2">[{(song as any).phase}]</span>}
+                                    {song.title}
+                                  </p>
+                                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    {song.artist}
+                                    {'note' in song && (song as any).note && <span className="ml-2 text-purple-600">• {(song as any).note}</span>}
+                                  </p>
+                                </div>
+                              </div>
+                              <button 
+                                onClick={() => handlePlayPreview(song.id, 'previewUrl' in song ? (song as any).previewUrl : undefined)}
+                                className={`p-2 rounded-lg transition-all ${
+                                  currentlyPlaying === song.id 
+                                    ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' 
+                                    : 'hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-400'
+                                }`}
+                                title={currentlyPlaying === song.id ? 'Pause preview' : 'Play preview'}
+                              >
+                                {currentlyPlaying === song.id ? (
+                                  <Pause className="w-4 h-4" />
+                                ) : (
+                                  <Play className="w-4 h-4" />
+                                )}
+                              </button>
+                            </div>
+                          ))}
+                          
+                          {moment.moreCount && (
+                            <div className="text-center py-2 text-gray-500">
+                              <span className="text-sm">+{moment.moreCount} more songs</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
-            </div>
+              )}
 
-            {/* Email Form */}
-            <div className="glass-card rounded-2xl p-8">
-              <h3 className="text-2xl font-bold text-white mb-4">
-                Get your complete playlist
-              </h3>
-              
-              <div className="grid md:grid-cols-3 gap-4 mb-6">
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-white/80">All {generatedPlaylist.songCount || 150} songs</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-white/80">Share with partner</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-white/80">No credit card</span>
-                </div>
-              </div>
-
-              <form onSubmit={handleEmailSubmit} className="flex gap-4">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="email@example.com"
-                  required
-                  className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-white/40"
-                />
-                <button
-                  type="submit"
-                  className="btn-primary px-8"
-                >
-                  Get My Playlist
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* Step 4: Full Playlist Reveal */}
-        {step === 'playlist' && generatedPlaylist && (
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-white mb-4">
-                YOUR COMPLETE WEDDING PLAYLIST
-              </h1>
-              <p className="text-xl text-white/70">
-                {generatedPlaylist.songCount || 150} songs • {Math.round((generatedPlaylist.duration || 360) / 60)} hours of music
-              </p>
-            </div>
-
-            {/* Timeline with Educational Insights */}
-            <div className="space-y-6">
-              {(generatedPlaylist.timeline || getFallbackPlaylist(selectedVibe!).timeline).map((moment: TimelineMoment) => (
-                <div key={moment.id} className="glass-card rounded-xl overflow-hidden">
-                  <button
-                    onClick={() => toggleMoment(moment.id)}
-                    className="w-full p-6 flex items-center justify-between hover:bg-white/5 transition-colors"
-                  >
-                    <div className="flex items-center gap-4">
-                      <span className="text-3xl">{moment.emoji}</span>
-                      <div className="text-left">
-                        <h3 className="text-xl font-bold text-white">{moment.title}</h3>
-                        <p className="text-white/60">
-                          {moment.time} • {moment.duration} • {moment.songs.length}+ songs
-                        </p>
-                      </div>
-                    </div>
-                    <ChevronRight
-                      className={`w-5 h-5 text-white/40 transition-transform ${
-                        expandedMoments.includes(moment.id) ? 'rotate-90' : ''
-                      }`}
-                    />
-                  </button>
-
-                  {expandedMoments.includes(moment.id) && (
-                    <div className="px-6 pb-6">
-                      {/* Educational Insight */}
-                      {moment.insight && (
-                        <div className="mb-6 p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-500/20">
-                          <p className="text-purple-300 leading-relaxed">
-                            💡 {moment.insight}
-                          </p>
-                          {moment.bpmRange && (
-                            <p className="text-purple-400 text-sm mt-2">
-                              BPM Range: {moment.bpmRange}
-                            </p>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Songs */}
-                      <div className="space-y-3">
-                        {moment.songs.map((song, index) => (
-                          <div key={song.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-                            <div className="flex items-center gap-3">
-                              <span className="text-purple-400 font-semibold">{index + 1}</span>
-                              <div>
-                                <p className="font-medium text-white">
-                                  {song.title} - {song.artist}
-                                </p>
-                                {song.bpm && (
-                                  <p className="text-xs text-white/50">
-                                    {song.bpm} BPM
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                            <button 
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setShowPaywall(true);
-                              }}
-                              className="text-purple-400 hover:text-purple-300"
-                            >
-                              <Play className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ))}
-                        
-                        {/* More songs indicator */}
-                        <div className="text-center py-3 text-white/50">
-                          <button
-                            onClick={() => setShowPaywall(true)}
-                            className="hover:text-white transition-colors"
-                          >
-                            + {Math.floor(Math.random() * 20) + 10} more songs in this section
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Upgrade CTA */}
-            <div className="mt-12 glass-card rounded-2xl p-8 text-center">
-              <h3 className="text-2xl font-bold text-white mb-4">
-                Customize Everything
-              </h3>
-              <p className="text-white/70 mb-6">
-                Don't like a song? Change it. Want more country? Tell our AI. Export to Spotify in one click.
-              </p>
-              
-              <div className="flex flex-wrap justify-center gap-4 mb-8">
-                <div className="flex items-center gap-2">
-                  <Unlock className="w-5 h-5 text-green-500" />
-                  <span className="text-white/80">Unlimited changes</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Headphones className="w-5 h-5 text-green-500" />
-                  <span className="text-white/80">Spotify export</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5 text-green-500" />
-                  <span className="text-white/80">AI DJ chat</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-green-500" />
-                  <span className="text-white/80">Guest requests</span>
-                </div>
-              </div>
-
-              <div className="mb-6 p-4 bg-white/5 rounded-lg">
-                <p className="text-sm text-white/60 mb-2">What couples spend on wedding music:</p>
-                <div className="space-y-1">
-                  <p className="text-white/40">Real DJ: $1,500+</p>
-                  <p className="text-white/40">DIY: 40 hours of your time</p>
-                  <p className="text-purple-400 font-bold">Uptune: $39 (today only, usually $59)</p>
-                </div>
-              </div>
-
-              <div className="flex gap-4 justify-center">
-                <button className="btn-secondary px-8">
-                  Start Free Trial
-                </button>
-                <button className="btn-primary px-8 flex items-center gap-2">
-                  <Lock className="w-4 h-4" />
-                  Buy Now - $39
-                </button>
+              {/* Bottom Message */}
+              <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg text-center">
+                <p className="text-purple-700 dark:text-purple-300 font-medium">
+                  This is a good wedding playlist. You're making it YOURS.
+                </p>
+                <p className="text-sm text-purple-600 dark:text-purple-400 mt-1">
+                  Every change updates instantly • No signup required to explore
+                </p>
               </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
-      {/* Paywall Modal */}
-      {showPaywall && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setShowPaywall(false)} />
-          <div className="relative glass-card rounded-xl p-8 max-w-md w-full">
-            <button
-              onClick={() => setShowPaywall(false)}
-              className="absolute top-4 right-4 text-white/50 hover:text-white"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            
-            <h2 className="text-2xl font-bold text-white mb-4">
-              Unlock Full Customization
-            </h2>
-            <p className="text-white/60 mb-6">
-              To change songs, export to Spotify, or customize your playlist, upgrade to the full version.
+      {/* Save Modal */}
+      {showSaveModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 max-w-md w-full">
+            <h2 className="text-2xl font-bold mb-4">Save Your Perfect Playlist</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Don't lose your {totalSongs} customized songs. Create a free account to:
             </p>
             
             <div className="space-y-3 mb-6">
               <div className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-green-500" />
-                <span className="text-white/80">Change any song</span>
+                <span>Save all customizations</span>
               </div>
               <div className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-green-500" />
-                <span className="text-white/80">Export to Spotify</span>
+                <span>Unlock detailed editing</span>
               </div>
               <div className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-green-500" />
-                <span className="text-white/80">AI DJ assistance</span>
+                <span>Export to Spotify</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-green-500" />
+                <span>Share with your DJ</span>
               </div>
             </div>
             
-            <button className="w-full btn-primary">
-              Upgrade Now - $39
-            </button>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 mb-4"
+            />
+            
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowSaveModal(false)}
+                className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+              >
+                Keep Exploring
+              </button>
+              <button className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90">
+                Create Account
+              </button>
+            </div>
           </div>
         </div>
       )}

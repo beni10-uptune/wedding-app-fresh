@@ -161,7 +161,7 @@ export class MultiModelAIOrchestrationService {
     if (!client) return null;
     
     try {
-      const prompt = this.buildUniversalPrompt(context, 'claude');
+      const promptText = this.buildUniversalPrompt(context, 'claude');
       
       const response = await client.messages.create({
         model: 'claude-3-opus-20240229',
@@ -169,7 +169,7 @@ export class MultiModelAIOrchestrationService {
         temperature: 0.7,
         messages: [{
           role: 'user',
-          content: prompt
+          content: promptText
         }]
       });
       
@@ -193,7 +193,7 @@ export class MultiModelAIOrchestrationService {
     if (!client) return null;
     
     try {
-      const prompt = this.buildUniversalPrompt(context, 'gpt');
+      const promptText = this.buildUniversalPrompt(context, 'gpt');
       
       const response = await client.chat.completions.create({
         model: 'gpt-5', // Using the latest GPT-5 model
@@ -202,7 +202,7 @@ export class MultiModelAIOrchestrationService {
           content: 'You are an expert wedding DJ and music curator with deep knowledge of all music genres and wedding traditions. Use your advanced reasoning capabilities to create the perfect wedding playlist.'
         }, {
           role: 'user',
-          content: prompt
+          content: promptText
         }],
         temperature: 0.7,
         max_tokens: 2000,
@@ -229,7 +229,7 @@ export class MultiModelAIOrchestrationService {
             content: 'You are an expert wedding DJ and music curator with deep knowledge of all music genres and wedding traditions.'
           }, {
             role: 'user',
-            content: prompt
+            content: promptText
           }],
           temperature: 0.7,
           max_tokens: 2000,
@@ -261,7 +261,7 @@ export class MultiModelAIOrchestrationService {
     
     try {
       const model = client.getGenerativeModel({ model: 'gemini-pro' });
-      const prompt = this.buildUniversalPrompt(context, 'gemini');
+      const promptText = this.buildUniversalPrompt(context, 'gemini');
       
       const result = await model.generateContent(prompt);
       const response = await result.response;

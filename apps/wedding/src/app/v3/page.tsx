@@ -248,7 +248,7 @@ export default function V3Page() {
 
   // Update timeline based on preferences
   useEffect(() => {
-    let newTimeline = JSON.parse(JSON.stringify(DEFAULT_TIMELINE));
+    const newTimeline = JSON.parse(JSON.stringify(DEFAULT_TIMELINE));
 
     // Apply regional changes
     if (REGIONAL_CHANGES[country]) {

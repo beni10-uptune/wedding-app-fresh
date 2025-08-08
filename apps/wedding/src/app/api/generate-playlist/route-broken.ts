@@ -34,30 +34,6 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // For preview mode, return quick response without full AI generation
-    if (body.preview) {
-      const fallbackPlaylist = await getFallbackPlaylist();
-      return NextResponse.json({
-        success: true,
-        playlist: {
-          ...fallbackPlaylist,
-          name: `${body.vibe || 'Wedding'} Playlist`,
-          songCount: 150,
-          duration: 360,
-          previewSongs: fallbackPlaylist.timeline?.slice(0, 3).flatMap((m: any) => 
-            m.songs.slice(0, 2).map((s: any) => ({
-              ...s,
-              moment: m.title
-            }))
-          )
-        },
-        metadata: {
-          generatedBy: 'preview',
-          generatedAt: new Date().toISOString()
-        }
-      });
-    }
-    
     // Build generation request
     const generationRequest: PlaylistGenerationRequest = {
       // Couple info
@@ -90,6 +66,38 @@ export async function POST(request: NextRequest) {
       request_source: 'web-v3'
     };
     
+    // For preview mode, use a simpler, faster generation
+    if (body.preview) {
+      // Return a quick preview without full AI generation
+      const fallbackPlaylist = await getFallbackPlaylist();
+      return NextResponse.json({
+        success: true,
+        playlist: {
+          ...fallbackPlaylist,
+          name: `${body.vibe || 'Wedding'} Playlist`,
+          songCount: 150,
+          duration: 360
+        },
+        metadata: {
+          generatedBy: 'preview',
+          generatedAt: new Date().toISOString()
+        }
+      });
+    }
+    
+    } catch (timeoutError) {
+      console.error('Playlist generation timed out:', timeoutError);
+      // Return fallback on timeout
+      return NextResponse.json({
+        success: true,
+        playlist: await getFallbackPlaylist(),
+        metadata: {
+          generatedBy: 'fallback',
+          generatedAt: new Date().toISOString(),
+          note: 'Used fallback due to timeout'
+        }
+      });
+    }
     // Use multi-model orchestration if available, otherwise fallback to single
     const useMultiModel = process.env.OPENAI_API_KEY || process.env.GOOGLE_AI_API_KEY;
     const orchestration = useMultiModel ? getMultiAIOrchestration() : getAIOrchestration();
@@ -101,26 +109,21 @@ export async function POST(request: NextRequest) {
       setTimeout(() => reject(new Error('Generation timeout')), 25000)
     );
     
-    let playlist;
-    try {
-      playlist = await Promise.race([
+      const playlist = await Promise.race([
         orchestration.generatePlaylist(generationRequest),
         timeoutPromise
       ]) as any;
-    } catch (timeoutError) {
-      console.error('Playlist generation timed out:', timeoutError);
-      // Return fallback on timeout
-      const fallback = await getFallbackPlaylist();
-      return NextResponse.json({
-        success: true,
-        playlist: fallback,
-        metadata: {
-          generatedBy: 'fallback',
-          generatedAt: new Date().toISOString(),
-          note: 'Used fallback due to timeout'
-        }
-      });
-    }
+    
+      // Save playlist to database if user is authenticated
+    // TODO: Implement saveGeneratedPlaylist method in MusicDatabaseService
+    // if (userId && playlist) {
+    //   const musicDb = getMusicDatabase();
+    //   await musicDb.saveGeneratedPlaylist({
+    //     ...playlist,
+    //     user_id: userId,
+    //     is_public: false
+    //   });
+    // }
     
     // Return simplified response for frontend
     const response = {
@@ -131,7 +134,7 @@ export async function POST(request: NextRequest) {
         description: playlist.description,
         songCount: playlist.song_count,
         duration: Math.round(playlist.total_duration_ms / 60000), // Convert to minutes
-        songs: playlist.songs.map((selection: any) => ({
+        songs: playlist.songs.map(selection => ({
           id: selection.song.spotify_id,
           title: selection.song.title,
           artist: selection.song.artist,
@@ -149,20 +152,12 @@ export async function POST(request: NextRequest) {
         insights: playlist.ai_insights,
         genres: playlist.genre_distribution,
         moods: playlist.mood_progression,
-        energyCurve: playlist.energy_curve,
-        timeline: formatTimeline(playlist),
-        previewSongs: playlist.songs.slice(0, 5).map((selection: any) => ({
-          id: selection.song.spotify_id,
-          title: selection.song.title,
-          artist: selection.song.artist,
-          previewUrl: selection.song.preview_url
-        }))
+        energyCurve: playlist.energy_curve
       },
       metadata: {
         generatedAt: playlist.generation_timestamp,
         generatedBy: playlist.generated_by,
-        requestId: playlist.request_id,
-        confidence: playlist.ai_confidence
+        requestId: playlist.request_id
       }
     };
     
@@ -187,11 +182,10 @@ export async function GET() {
     message: 'AI Playlist Generation API',
     usage: 'POST /api/generate-playlist with wedding details',
     requiredFields: {
-      vibe: 'string (romantic, party, modern, rustic)',
-      preview: 'boolean (true for quick preview)'
+      coupleNames: ['string', 'string'],
+      vibe: 'string (romantic, party, elegant, etc.)'
     },
     optionalFields: {
-      coupleNames: ['string', 'string'],
       mustPlaySongs: ['array of song names'],
       genres: ['array of genre preferences'],
       guestCount: 'number',
@@ -211,59 +205,6 @@ function getDefaultTimeline() {
     { moment: WeddingMoment.PARTY_PEAK, duration: 120, mood: WeddingMood.ENERGETIC },
     { moment: WeddingMoment.LAST_DANCE, duration: 5, mood: WeddingMood.EMOTIONAL }
   ];
-}
-
-// Helper: Format timeline for frontend
-function formatTimeline(playlist: any) {
-  const moments = [
-    { id: 'cocktail', time: '5:00 PM', duration: '60 min', title: 'Cocktail Hour', emoji: '🥂' },
-    { id: 'dinner', time: '6:00 PM', duration: '90 min', title: 'Dinner', emoji: '🍽️' },
-    { id: 'firstdance', time: '7:30 PM', duration: '5 min', title: 'First Dance', emoji: '💕' },
-    { id: 'party', time: '8:00 PM', duration: '150 min', title: 'Party Time', emoji: '🎉' }
-  ];
-  
-  return moments.map(moment => {
-    const songs = playlist.songs
-      .filter((s: any) => s.song.wedding_moments.includes(moment.id.toUpperCase()))
-      .slice(0, 5);
-    
-    return {
-      ...moment,
-      description: `${songs.length} songs selected`,
-      songs: songs.map((s: any) => ({
-        id: s.song.spotify_id,
-        title: s.song.title,
-        artist: s.song.artist,
-        bpm: s.song.audio_features?.tempo
-      })),
-      insight: getInsightForMoment(moment.id),
-      bpmRange: getBpmRangeForMoment(moment.id)
-    };
-  });
-}
-
-// Helper: Get insight for moment
-function getInsightForMoment(momentId: string): string {
-  const insights: Record<string, string> = {
-    cocktail: 'We start at 110 BPM with jazz and soul to create sophisticated ambiance. Notice how we alternate modern hits with classics every 3 songs to engage all generations.',
-    dinner: 'During dinner, we keep the energy low but positive, allowing conversation while maintaining the celebratory atmosphere.',
-    firstdance: 'This is your special moment. The song should reflect your relationship and set the romantic tone for the evening.',
-    party: 'Party section gradually builds from 118 to 128 BPM, with strategic throwbacks every 4th song to keep all ages dancing.'
-  };
-  
-  return insights[momentId] || '';
-}
-
-// Helper: Get BPM range for moment
-function getBpmRangeForMoment(momentId: string): string {
-  const ranges: Record<string, string> = {
-    cocktail: '110-120 BPM',
-    dinner: '95-110 BPM',
-    firstdance: '60-80 BPM',
-    party: '118-128 BPM'
-  };
-  
-  return ranges[momentId] || '';
 }
 
 // Helper: Get fallback playlist when AI fails
@@ -298,58 +239,12 @@ async function getFallbackPlaylist() {
     })));
   }
   
-  const timeline = [
-    {
-      id: 'cocktail',
-      time: '5:00 PM',
-      duration: '60 min',
-      title: 'Cocktail Hour',
-      emoji: '🥂',
-      description: 'Sophisticated mingling music',
-      bpmRange: '110-120 BPM',
-      insight: 'We start at 110 BPM with jazz and soul to create sophisticated ambiance.',
-      songs: songs.filter(s => s.moment === WeddingMoment.COCKTAIL || s.moment === WeddingMoment.DINNER).slice(0, 3)
-    },
-    {
-      id: 'dinner',
-      time: '6:00 PM',
-      duration: '90 min',
-      title: 'Dinner',
-      emoji: '🍽️',
-      description: 'Background music for conversation',
-      bpmRange: '95-110 BPM',
-      insight: 'During dinner, we keep the energy low but positive.',
-      songs: songs.filter(s => s.moment === WeddingMoment.DINNER).slice(0, 3)
-    },
-    {
-      id: 'firstdance',
-      time: '7:30 PM',
-      duration: '5 min',
-      title: 'First Dance',
-      emoji: '💕',
-      description: 'Your special moment',
-      songs: songs.filter(s => s.moment === WeddingMoment.FIRST_DANCE).slice(0, 1)
-    },
-    {
-      id: 'party',
-      time: '8:00 PM',
-      duration: '150 min',
-      title: 'Party Time',
-      emoji: '🎉',
-      description: 'Dance floor hits',
-      bpmRange: '118-128 BPM',
-      insight: 'Party section gradually builds from 118 to 128 BPM.',
-      songs: songs.filter(s => s.moment === WeddingMoment.PARTY_PEAK).slice(0, 4)
-    }
-  ];
-  
   return {
     name: 'Classic Wedding Playlist',
     description: 'A curated selection of wedding favorites',
     songCount: songs.length,
-    duration: songs.reduce((sum, s) => sum + (s.duration || 180000), 0) / 60000,
+    duration: songs.reduce((sum, s) => sum + s.duration, 0) / 60000,
     songs,
-    timeline,
     insights: {
       strengths: ['Classic crowd-pleasers', 'Tested wedding songs'],
       suggestions: ['Customize based on your preferences'],

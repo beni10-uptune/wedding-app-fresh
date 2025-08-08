@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // TEMPORARY RULES FOR IMPORT - REVERT AFTER USE
+    // Master Songs Database (Spotify-enriched)
+    match /songs_master/{songId} {
+      // Anyone can read song data (needed for browsing)
+      allow read: if true;
+      
+      // TEMPORARILY ALLOW ALL WRITES FOR IMPORT
+      allow write: if true;
+    }
+    
+    // Keep all other rules the same...
+    // (Copy the rest of your rules here)
+  }
+}

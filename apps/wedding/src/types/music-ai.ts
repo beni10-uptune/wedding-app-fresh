@@ -107,6 +107,7 @@ export interface MasterSong {
 export enum AIProvider {
   CLAUDE = 'claude',
   GPT = 'gpt',
+  GPT5 = 'gpt5',
   GEMINI = 'gemini',
   LLAMA = 'llama',
   MIXTRAL = 'mixtral'

@@ -163,5 +163,84 @@ service cloud.firestore {
       // Users can create/update interactions
       allow write: if request.auth != null;
     }
+    
+    // ============================================
+    // Uptune 3.0 Music AI Collections
+    // ============================================
+    
+    // Master Songs Database (Spotify-enriched)
+    match /songs_master/{songId} {
+      // Anyone can read song data (needed for browsing)
+      allow read: if true;
+      
+      // Only authenticated users can create/update songs
+      allow create: if request.auth != null;
+      
+      // Updates allowed for analytics and enrichment
+      allow update: if request.auth != null;
+      
+      // No deletion to preserve data integrity
+      allow delete: if false;
+    }
+    
+    // AI Generated Playlists
+    match /ai_playlists/{playlistId} {
+      // Users can read their own playlists or public ones
+      allow read: if request.auth != null 
+        && (request.auth.uid == resource.data.user_id || resource.data.is_public == true);
+      
+      // Users can create playlists
+      allow create: if request.auth != null
+        && request.auth.uid == request.resource.data.user_id;
+      
+      // Users can update their own playlists
+      allow update: if request.auth != null
+        && request.auth.uid == resource.data.user_id;
+      
+      // Users can delete their own playlists
+      allow delete: if request.auth != null
+        && request.auth.uid == resource.data.user_id;
+    }
+    
+    // User Music Preferences and DNA
+    match /user_preferences/{userId} {
+      // Users can read their own preferences
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // Users can create/update their own preferences
+      allow create, update: if request.auth != null && request.auth.uid == userId;
+      
+      // No deletion to preserve history
+      allow delete: if false;
+    }
+    
+    // Song Analytics (aggregated data)
+    match /song_analytics/{analyticsId} {
+      // Anyone can read analytics (for popular songs)
+      allow read: if true;
+      
+      // System updates analytics (via Cloud Functions or API)
+      allow write: if request.auth != null;
+    }
+    
+    // Playlist Analytics
+    match /playlist_analytics/{analyticsId} {
+      // Users can read analytics for their playlists
+      allow read: if request.auth != null;
+      
+      // System updates analytics
+      allow write: if request.auth != null;
+    }
+    
+    // Cache Collections (temporary storage)
+    match /cache_songs/{cacheId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    match /cache_playlists/{cacheId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
   }
 }

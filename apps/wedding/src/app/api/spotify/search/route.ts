@@ -2,11 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { logger, logError } from '@/lib/logger'
 import { ALL_WEDDING_SONGS } from '@/data/spotify-wedding-songs'
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
-  const query = searchParams.get('q')
-  const limit = parseInt(searchParams.get('limit') || '10')
-
+// Shared search logic
+async function handleSearch(query: string | null, limit: number) {
   if (!query) {
     return NextResponse.json({ error: 'Query parameter required' }, { status: 400 })
   }
@@ -122,5 +119,26 @@ export async function GET(request: NextRequest) {
       },
       { status: 500 }
     )
+  }
+}
+
+// GET handler
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams
+  const query = searchParams.get('q')
+  const limit = parseInt(searchParams.get('limit') || '10')
+  
+  return handleSearch(query, limit)
+}
+
+// POST handler for compatibility
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { query, limit = 10 } = body
+    
+    return handleSearch(query, limit)
+  } catch (error) {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
   }
 }

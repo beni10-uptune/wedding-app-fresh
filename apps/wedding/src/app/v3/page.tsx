@@ -411,15 +411,26 @@ export default function V3DJHarmonyPage() {
     
     setIsSearching(true);
     try {
-      const response = await fetch('/api/spotify/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, limit: 5 })
+      // Use GET request with query parameters
+      const params = new URLSearchParams({
+        q: query,
+        limit: '8'
+      });
+      
+      const response = await fetch(`/api/spotify/search?${params}`, {
+        method: 'GET',
       });
       
       const data = await response.json();
-      if (data.tracks) {
+      console.log('Search response:', data); // Debug log
+      
+      if (data.tracks && Array.isArray(data.tracks)) {
         setSearchResults(data.tracks);
+      } else if (data.error) {
+        console.error('Search API error:', data.error, data.details);
+        setSearchResults([]);
+      } else {
+        setSearchResults([]);
       }
     } catch (error) {
       console.error('Search error:', error);

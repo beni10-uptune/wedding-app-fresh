@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { 
   Music, 
@@ -24,7 +24,9 @@ import {
   Shield,
   Crown,
   MessageCircle,
-  Headphones
+  Headphones,
+  Search,
+  X
 } from 'lucide-react';
 
 // Complete song database with regional variations
@@ -226,6 +228,15 @@ export default function V3DJHarmonyPage() {
   // DJ Harmony state
   const [djHarmonyMessage, setDjHarmonyMessage] = useState("👋 Hi! I'm DJ Harmony, your AI wedding music expert. Let's create the perfect soundtrack for your big day!");
   const [showPricing, setShowPricing] = useState(false);
+  
+  // Spotify search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [selectedFirstDance, setSelectedFirstDance] = useState<any>(null);
+  const [customSearchQueries, setCustomSearchQueries] = useState<string[]>(['']);
+  const [selectedCustomSongs, setSelectedCustomSongs] = useState<any[]>([]);
 
   // Initialize timeline with complete songs
   useEffect(() => {
@@ -391,6 +402,57 @@ export default function V3DJHarmonyPage() {
     }
   };
 
+  // Search Spotify for songs
+  const searchSpotify = useCallback(async (query: string) => {
+    if (!query || query.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    
+    setIsSearching(true);
+    try {
+      const response = await fetch('/api/spotify/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, limit: 5 })
+      });
+      
+      const data = await response.json();
+      if (data.tracks) {
+        setSearchResults(data.tracks);
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  }, []);
+  
+  // Debounced search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchQuery) {
+        searchSpotify(searchQuery);
+      }
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, [searchQuery, searchSpotify]);
+  
+  // Click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.spotify-search-container')) {
+        setShowSearchDropdown(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+  
   // Handle song preview with real Spotify API
   const handlePlayPreview = async (songId: string, title?: string, artist?: string) => {
     if (currentlyPlaying === songId) {
@@ -718,40 +780,198 @@ export default function V3DJHarmonyPage() {
                       <label className="text-sm text-white/70 block mb-2">
                         First Dance Song (optional)
                       </label>
-                      <input
-                        type="text"
-                        value={firstDanceSong}
-                        onChange={(e) => setFirstDanceSong(e.target.value)}
-                        placeholder="e.g., Perfect - Ed Sheeran"
-                        className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40"
-                      />
+                      <div className="relative spotify-search-container">
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                          <input
+                            type="text"
+                            value={selectedFirstDance ? `${selectedFirstDance.name} - ${selectedFirstDance.artist}` : searchQuery}
+                            onChange={(e) => {
+                              setSearchQuery(e.target.value);
+                              setShowSearchDropdown(true);
+                              if (selectedFirstDance) {
+                                setSelectedFirstDance(null);
+                              }
+                            }}
+                            onFocus={() => setShowSearchDropdown(true)}
+                            placeholder="Search for a song..."
+                            className="w-full pl-10 pr-10 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40"
+                          />
+                          {selectedFirstDance && (
+                            <button
+                              onClick={() => {
+                                setSelectedFirstDance(null);
+                                setSearchQuery('');
+                                setFirstDanceSong('');
+                              }}
+                              className="absolute right-3 top-1/2 -translate-y-1/2"
+                            >
+                              <X className="w-4 h-4 text-white/40 hover:text-white/60" />
+                            </button>
+                          )}
+                        </div>
+                        
+                        {showSearchDropdown && searchQuery && !selectedFirstDance && (
+                          <div className="absolute z-10 w-full mt-2 bg-black/90 backdrop-blur-md border border-white/20 rounded-lg overflow-hidden">
+                            {isSearching ? (
+                              <div className="p-4 text-center">
+                                <Loader2 className="w-4 h-4 animate-spin mx-auto text-purple-400" />
+                                <p className="text-sm text-white/60 mt-2">Searching...</p>
+                              </div>
+                            ) : searchResults.length > 0 ? (
+                              <div className="max-h-60 overflow-y-auto">
+                                {searchResults.map((track: any) => (
+                                  <button
+                                    key={track.id}
+                                    onClick={() => {
+                                      setSelectedFirstDance(track);
+                                      setFirstDanceSong(`${track.name} - ${track.artist}`);
+                                      setSearchQuery('');
+                                      setShowSearchDropdown(false);
+                                      
+                                      // Update the timeline with the selected first dance
+                                      setTimeline(prev => prev.map(moment => 
+                                        moment.id === 'first-dance' 
+                                          ? { ...moment, songs: [{ 
+                                              id: track.id, 
+                                              title: track.name, 
+                                              artist: track.artist 
+                                            }] }
+                                          : moment
+                                      ));
+                                      
+                                      setDjHarmonyMessage(`Beautiful choice! "${track.name}" will be perfect for your first dance.`);
+                                    }}
+                                    className="w-full p-3 hover:bg-white/10 flex items-center gap-3 text-left transition-colors"
+                                  >
+                                    {track.image ? (
+                                      <img 
+                                        src={track.image} 
+                                        alt={track.name}
+                                        className="w-10 h-10 rounded object-cover"
+                                      />
+                                    ) : (
+                                      <div className="w-10 h-10 rounded bg-purple-500/20 flex items-center justify-center">
+                                        <Music className="w-5 h-5 text-purple-400" />
+                                      </div>
+                                    )}
+                                    <div className="flex-1">
+                                      <p className="text-sm font-medium text-white">{track.name}</p>
+                                      <p className="text-xs text-white/60">{track.artist}</p>
+                                    </div>
+                                    {track.preview_url && (
+                                      <Play className="w-4 h-4 text-purple-400" />
+                                    )}
+                                  </button>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="p-4 text-center">
+                                <p className="text-sm text-white/60">No results found</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                     
                     <div>
                       <label className="text-sm text-white/70 block mb-2">
                         Must-play songs
                       </label>
-                      {customSongs.map((song, idx) => (
-                        <input
-                          key={idx}
-                          type="text"
-                          value={song}
-                          onChange={(e) => {
-                            const updated = [...customSongs];
-                            updated[idx] = e.target.value;
-                            setCustomSongs(updated);
-                          }}
-                          placeholder="Song title - Artist"
-                          className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40 mb-2"
-                        />
-                      ))}
-                      <button
-                        onClick={() => setCustomSongs([...customSongs, ''])}
-                        className="text-sm text-purple-400 hover:text-purple-300"
-                      >
-                        <Plus className="w-4 h-4 inline mr-1" />
-                        Add another
-                      </button>
+                      <div className="space-y-2">
+                        {selectedCustomSongs.map((song, idx) => (
+                          <div key={`selected-${idx}`} className="flex items-center gap-2 p-2 bg-purple-500/10 rounded-lg">
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-white">{song.name}</p>
+                              <p className="text-xs text-white/60">{song.artist}</p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setSelectedCustomSongs(prev => prev.filter((_, i) => i !== idx));
+                              }}
+                              className="p-1 hover:bg-white/10 rounded"
+                            >
+                              <X className="w-4 h-4 text-white/40" />
+                            </button>
+                          </div>
+                        ))}
+                        
+                        {(selectedCustomSongs.length === 0 || customSearchQueries.length > 0) && (
+                          <div className="relative spotify-search-container">
+                            <div className="relative">
+                              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                              <input
+                                type="text"
+                                value={customSearchQueries[0] || ''}
+                                onChange={(e) => {
+                                  setCustomSearchQueries([e.target.value]);
+                                  setSearchQuery(e.target.value);
+                                  if (e.target.value.length > 2) {
+                                    searchSpotify(e.target.value);
+                                    setShowSearchDropdown(true);
+                                  }
+                                }}
+                                onFocus={() => setShowSearchDropdown(true)}
+                                placeholder="Search for must-play songs..."
+                                className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40"
+                              />
+                            </div>
+                            
+                            {showSearchDropdown && customSearchQueries[0] && customSearchQueries[0].length > 2 && (
+                              <div className="absolute z-10 w-full mt-2 bg-black/90 backdrop-blur-md border border-white/20 rounded-lg overflow-hidden">
+                                {isSearching ? (
+                                  <div className="p-4 text-center">
+                                    <Loader2 className="w-4 h-4 animate-spin mx-auto text-purple-400" />
+                                    <p className="text-sm text-white/60 mt-2">Searching...</p>
+                                  </div>
+                                ) : searchResults.length > 0 ? (
+                                  <div className="max-h-60 overflow-y-auto">
+                                    {searchResults.map((track: any) => (
+                                      <button
+                                        key={track.id}
+                                        onClick={() => {
+                                          setSelectedCustomSongs(prev => [...prev, track]);
+                                          setCustomSearchQueries(['']);
+                                          setSearchQuery('');
+                                          setShowSearchDropdown(false);
+                                          setDjHarmonyMessage(`Great choice! "${track.name}" added to your must-play list.`);
+                                        }}
+                                        className="w-full p-3 hover:bg-white/10 flex items-center gap-3 text-left transition-colors"
+                                      >
+                                        {track.image ? (
+                                          <img 
+                                            src={track.image} 
+                                            alt={track.name}
+                                            className="w-10 h-10 rounded object-cover"
+                                          />
+                                        ) : (
+                                          <div className="w-10 h-10 rounded bg-purple-500/20 flex items-center justify-center">
+                                            <Music className="w-5 h-5 text-purple-400" />
+                                          </div>
+                                        )}
+                                        <div className="flex-1">
+                                          <p className="text-sm font-medium text-white">{track.name}</p>
+                                          <p className="text-xs text-white/60">{track.artist}</p>
+                                        </div>
+                                        <Plus className="w-4 h-4 text-purple-400" />
+                                      </button>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <div className="p-4 text-center">
+                                    <p className="text-sm text-white/60">No results found</p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      
+                      {selectedCustomSongs.length >= 5 && (
+                        <p className="text-xs text-white/50 mt-2">Maximum 5 must-play songs</p>
+                      )}
                     </div>
                   </div>
                   

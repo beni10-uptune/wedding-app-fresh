@@ -69,6 +69,13 @@ const COMPLETE_PLAYLIST = {
   'first-dance': [
     { id: 'fd1', title: 'Perfect', artist: 'Ed Sheeran' },
   ],
+  'parent-dances': [
+    { id: 'pd1', title: 'My Girl', artist: 'The Temptations', label: 'Father-Daughter' },
+    { id: 'pd2', title: 'Isn\'t She Lovely', artist: 'Stevie Wonder', label: 'Father-Daughter Alt' },
+    { id: 'pd3', title: 'A Song for Mama', artist: 'Boyz II Men', label: 'Mother-Son' },
+    { id: 'pd4', title: 'Simple Man', artist: 'Lynyrd Skynyrd', label: 'Mother-Son Alt' },
+    { id: 'pd5', title: 'Unforgettable', artist: 'Nat King Cole', label: 'Parent Dance' },
+  ],
   'party': [
     { id: 'p1', title: 'September', artist: 'Earth, Wind & Fire' },
     { id: 'p2', title: 'Uptown Funk', artist: 'Bruno Mars' },
@@ -80,6 +87,12 @@ const COMPLETE_PLAYLIST = {
     { id: 'p8', title: 'Sweet Caroline', artist: 'Neil Diamond' },
     { id: 'p9', title: 'Don\'t Stop Believin\'', artist: 'Journey' },
     { id: 'p10', title: 'Wonderwall', artist: 'Oasis' },
+  ],
+  'last-dance': [
+    { id: 'ld1', title: 'Time of Your Life', artist: 'Green Day' },
+    { id: 'ld2', title: 'Closing Time', artist: 'Semisonic' },
+    { id: 'ld3', title: 'New York, New York', artist: 'Frank Sinatra' },
+    { id: 'ld4', title: 'Don\'t Stop Me Now', artist: 'Queen' },
   ]
 };
 
@@ -258,12 +271,28 @@ export default function V3DJHarmonyPage() {
         songs: COMPLETE_PLAYLIST['first-dance']
       },
       {
+        id: 'parent-dances',
+        time: '7:05 PM',
+        duration: '10 min',
+        title: 'Parent Dances',
+        emoji: '👨‍👩‍👧',
+        songs: COMPLETE_PLAYLIST['parent-dances']
+      },
+      {
         id: 'party',
         time: '7:15 PM',
         duration: '3 hours',
         title: 'Party Time',
         emoji: '🎉',
         songs: COMPLETE_PLAYLIST['party']
+      },
+      {
+        id: 'last-dance',
+        time: '10:15 PM',
+        duration: '5 min',
+        title: 'Last Dance',
+        emoji: '🌙',
+        songs: COMPLETE_PLAYLIST['last-dance']
       }
     ];
     setTimeline(initialTimeline);
@@ -297,26 +326,121 @@ export default function V3DJHarmonyPage() {
     }
   }, [selectedCountry, selectedRegion]);
 
-  // Handle genre selection
+  // Handle genre selection and update playlist
   const toggleGenre = (genreId: string) => {
-    setSelectedGenres(prev => prev.map(g => 
-      g.id === genreId ? { ...g, selected: !g.selected } : g
-    ));
+    setSelectedGenres(prev => {
+      const updated = prev.map(g => 
+        g.id === genreId ? { ...g, selected: !g.selected } : g
+      );
+      
+      // Update playlist based on selected genres
+      updatePlaylistForGenres(updated);
+      
+      return updated;
+    });
+  };
+  
+  // Update playlist based on selected genres
+  const updatePlaylistForGenres = (genres: typeof GENRES.popular) => {
+    const selectedGenreIds = genres.filter(g => g.selected).map(g => g.id);
+    
+    // Genre-specific song additions
+    const genreSongs: Record<string, any[]> = {
+      'country': [
+        { id: 'cs1', title: 'Tennessee Whiskey', artist: 'Chris Stapleton', tag: 'Country Pick' },
+        { id: 'cs2', title: 'Wagon Wheel', artist: 'Darius Rucker', tag: 'Country Favorite' }
+      ],
+      'electronic': [
+        { id: 'es1', title: 'Clarity', artist: 'Zedd', tag: 'Electronic Hit' },
+        { id: 'es2', title: 'Titanium', artist: 'David Guetta', tag: 'Dance Floor' }
+      ],
+      'indie': [
+        { id: 'is1', title: 'Electric Feel', artist: 'MGMT', tag: 'Indie Favorite' },
+        { id: 'is2', title: 'Pumped Up Kicks', artist: 'Foster The People', tag: 'Indie Hit' }
+      ],
+      'rock': [
+        { id: 'rs1', title: 'You Shook Me All Night Long', artist: 'AC/DC', tag: 'Rock Classic' },
+        { id: 'rs2', title: 'Livin\' on a Prayer', artist: 'Bon Jovi', tag: 'Rock Anthem' }
+      ]
+    };
+    
+    setTimeline(prev => prev.map(moment => {
+      if (moment.id === 'party') {
+        // Add genre-specific songs to party
+        let extraSongs: any[] = [];
+        selectedGenreIds.forEach(genreId => {
+          if (genreSongs[genreId]) {
+            extraSongs = [...extraSongs, ...genreSongs[genreId]];
+          }
+        });
+        
+        if (extraSongs.length > 0) {
+          return {
+            ...moment,
+            songs: [...extraSongs, ...COMPLETE_PLAYLIST.party]
+          };
+        }
+      }
+      return moment;
+    }));
+    
+    // Update DJ message
+    if (selectedGenreIds.length > 0) {
+      const genreNames = genres.filter(g => g.selected).map(g => g.label).join(', ');
+      setDjHarmonyMessage(`Nice taste! I've added some ${genreNames} tracks to really get the party going.`);
+    }
   };
 
-  // Handle song preview
-  const handlePlayPreview = (songId: string) => {
+  // Handle song preview with real Spotify API
+  const handlePlayPreview = async (songId: string, title?: string, artist?: string) => {
     if (currentlyPlaying === songId) {
       if (audioRef) {
         audioRef.pause();
+        audioRef.currentTime = 0;
       }
       setCurrentlyPlaying(null);
-    } else {
-      if (audioRef) {
-        audioRef.pause();
+      setAudioRef(null);
+      return;
+    }
+    
+    // Stop any current preview
+    if (audioRef) {
+      audioRef.pause();
+      audioRef.currentTime = 0;
+    }
+    
+    try {
+      // Fetch preview URL from Spotify API
+      const response = await fetch('/api/v3/spotify-preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ songId, title, artist })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success && data.previewUrl) {
+        const audio = new Audio(data.previewUrl);
+        audio.volume = 0.5;
+        
+        audio.play().catch(err => {
+          console.error('Failed to play preview:', err);
+          setCurrentlyPlaying(null);
+        });
+        
+        // Auto-stop after preview ends
+        audio.addEventListener('ended', () => {
+          setCurrentlyPlaying(null);
+          setAudioRef(null);
+        });
+        
+        setAudioRef(audio);
+        setCurrentlyPlaying(songId);
+      } else {
+        console.log('No preview available for this song');
       }
-      // In real app, would play actual preview
-      setCurrentlyPlaying(songId);
+    } catch (error) {
+      console.error('Failed to fetch preview:', error);
     }
   };
 
@@ -754,12 +878,13 @@ export default function V3DJHarmonyPage() {
                                   </div>
                                 </div>
                                 <button 
-                                  onClick={() => handlePlayPreview(song.id)}
+                                  onClick={() => handlePlayPreview(song.id, song.title, song.artist)}
                                   className={`p-2 rounded-lg transition-all ${
                                     currentlyPlaying === song.id 
                                       ? 'bg-purple-500/20 text-purple-400' 
                                       : 'hover:bg-white/10 text-white/40'
                                   }`}
+                                  title={currentlyPlaying === song.id ? 'Pause' : 'Preview on Spotify'}
                                 >
                                   {currentlyPlaying === song.id ? (
                                     <Pause className="w-4 h-4" />

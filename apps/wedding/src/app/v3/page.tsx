@@ -440,33 +440,39 @@ export default function V3TrueVisionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen dark-gradient relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="orb orb-purple w-96 h-96 -top-48 -right-48"></div>
+        <div className="orb orb-blue w-96 h-96 -bottom-48 -left-48"></div>
+      </div>
+
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-4">
+      <header className="sticky top-0 z-50 glass-darker backdrop-blur-md border-b border-white/10">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
                 <Music className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold">Uptune 3.0</h1>
-                <p className="text-xs text-gray-500">AI Wedding Music</p>
+                <h1 className="text-xl font-bold text-white">Uptune 3.0</h1>
+                <p className="text-xs text-purple-400">AI Wedding Music</p>
               </div>
             </Link>
             
             <div className="flex items-center gap-4">
               {currentlyPlaying && (
-                <div className="flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900/30 rounded-full animate-pulse">
-                  <Volume2 className="w-4 h-4 text-green-600 dark:text-green-400" />
-                  <span className="text-sm text-green-700 dark:text-green-300">
+                <div className="flex items-center gap-2 px-3 py-1 bg-green-500/20 rounded-full animate-pulse">
+                  <Volume2 className="w-4 h-4 text-green-400" />
+                  <span className="text-sm text-green-300">
                     Preview playing...
                   </span>
                 </div>
               )}
-              <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-purple-100 dark:bg-purple-900/30 rounded-full">
-                <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                <span className="text-sm text-purple-700 dark:text-purple-300">
+              <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-purple-500/20 rounded-full">
+                <Sparkles className="w-4 h-4 text-purple-400" />
+                <span className="text-sm text-purple-300">
                   {totalSongs} songs • {totalDuration} hours
                 </span>
               </div>
@@ -476,36 +482,36 @@ export default function V3TrueVisionPage() {
       </header>
 
       {/* Hero Message */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">
-            Here's your wedding day. Let's make the music perfect.
+      <div className="relative z-10 py-12">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Here's your <span className="text-gradient">wedding day</span>. Let's make the music perfect.
           </h1>
-          <p className="text-lg opacity-90">
+          <p className="text-xl text-white/70">
             This is a complete {totalSongs}-song wedding playlist. Watch it transform as you personalize.
           </p>
         </div>
       </div>
 
       {/* Main 2-Pane Layout */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="relative z-10 container mx-auto px-4 pb-12">
         <div className="grid lg:grid-cols-3 gap-8">
           
           {/* LEFT PANE - Personalization Inputs */}
           <div className="lg:col-span-1 space-y-6">
             {/* Region Selection */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-              <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-purple-600" />
+            <div className="glass-card rounded-xl p-6">
+              <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 text-white">
+                <MapPin className="w-5 h-5 text-purple-400" />
                 Where's your wedding?
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-sm text-white/70 mb-4">
                 This changes EVERYTHING - watch your playlist transform
               </p>
               
               <div className="space-y-3">
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase mb-2">UK Regions</p>
+                  <p className="text-xs font-semibold text-white/50 uppercase mb-2">UK Regions</p>
                   <div className="grid grid-cols-2 gap-2">
                     {['North England', 'London', 'Scotland', 'Wales'].map(region => (
                       <button
@@ -513,8 +519,8 @@ export default function V3TrueVisionPage() {
                         onClick={() => handleRegionSelect(region.toLowerCase().replace(' ', '-'))}
                         className={`px-3 py-2 text-sm rounded-lg transition-all ${
                           selectedRegion === region.toLowerCase().replace(' ', '-')
-                            ? 'bg-purple-600 text-white'
-                            : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
+                            ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
+                            : 'bg-white/10 text-white/70 hover:bg-white/20'
                         }`}
                       >
                         {region}
@@ -524,7 +530,7 @@ export default function V3TrueVisionPage() {
                 </div>
                 
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase mb-2">US Regions</p>
+                  <p className="text-xs font-semibold text-white/50 uppercase mb-2">US Regions</p>
                   <div className="grid grid-cols-2 gap-2">
                     {['Northeast', 'South', 'West Coast', 'Midwest'].map(region => (
                       <button
@@ -532,8 +538,8 @@ export default function V3TrueVisionPage() {
                         onClick={() => handleRegionSelect(region.toLowerCase().replace(' ', '-'))}
                         className={`px-3 py-2 text-sm rounded-lg transition-all ${
                           selectedRegion === region.toLowerCase().replace(' ', '-')
-                            ? 'bg-purple-600 text-white'
-                            : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
+                            ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
+                            : 'bg-white/10 text-white/70 hover:bg-white/20'
                         }`}
                       >
                         {region}
@@ -544,8 +550,8 @@ export default function V3TrueVisionPage() {
               </div>
               
               {selectedRegion && (
-                <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                  <p className="text-sm text-green-700 dark:text-green-300">
+                <div className="mt-4 p-3 bg-green-500/20 rounded-lg border border-green-500/30">
+                  <p className="text-sm text-green-300">
                     ✓ Added 23 regional favorites!
                   </p>
                 </div>
@@ -553,11 +559,11 @@ export default function V3TrueVisionPage() {
             </div>
 
             {/* Must-Play Songs */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-              <h3 className="font-semibold text-lg mb-4">
+            <div className="glass-card rounded-xl p-6">
+              <h3 className="font-semibold text-lg mb-4 text-white">
                 Your must-play songs
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-sm text-white/70 mb-4">
                 Your first song becomes your first dance
               </p>
               
@@ -568,14 +574,14 @@ export default function V3TrueVisionPage() {
                     value={song}
                     onChange={(e) => handleMustPlayChange(index, e.target.value)}
                     placeholder="e.g., Perfect - Ed Sheeran"
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700"
+                    className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-white/40"
                   />
                 </div>
               ))}
               
               <button
                 onClick={() => setMustPlaySongs([...mustPlaySongs, ''])}
-                className="text-sm text-purple-600 hover:text-purple-700 flex items-center gap-1"
+                className="text-sm text-purple-400 hover:text-purple-300 flex items-center gap-1"
               >
                 <Plus className="w-4 h-4" />
                 Add another song
@@ -583,11 +589,11 @@ export default function V3TrueVisionPage() {
             </div>
 
             {/* Spotify Integration */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-              <h3 className="font-semibold text-lg mb-4">
+            <div className="glass-card rounded-xl p-6">
+              <h3 className="font-semibold text-lg mb-4 text-white">
                 Share your music taste
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-sm text-white/70 mb-4">
                 Paste a Spotify playlist URL to transform everything
               </p>
               
@@ -596,12 +602,12 @@ export default function V3TrueVisionPage() {
                 value={spotifyUrl}
                 onChange={(e) => setSpotifyUrl(e.target.value)}
                 placeholder="spotify.com/playlist/..."
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 mb-3"
+                className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-white/40 mb-3"
               />
               
               {spotifyUrl && (
-                <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                  <p className="text-sm text-purple-700 dark:text-purple-300">
+                <div className="p-3 bg-purple-500/20 rounded-lg border border-purple-500/30">
+                  <p className="text-sm text-purple-300">
                     <Zap className="w-4 h-4 inline mr-1" />
                     Analyzing your taste...
                   </p>
@@ -610,8 +616,8 @@ export default function V3TrueVisionPage() {
             </div>
 
             {/* Custom Instructions */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-              <h3 className="font-semibold text-lg mb-4">
+            <div className="glass-card rounded-xl p-6">
+              <h3 className="font-semibold text-lg mb-4 text-white">
                 Special requests
               </h3>
               <textarea
@@ -625,10 +631,10 @@ export default function V3TrueVisionPage() {
                 }}
                 placeholder="e.g., We love 90s R&B, avoid country music, include some Bollywood..."
                 rows={3}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700"
+                className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-white/40"
               />
               {customInstructions.length > 0 && (
-                <p className="text-xs text-purple-600 mt-2">
+                <p className="text-xs text-purple-400 mt-2">
                   <Zap className="w-3 h-3 inline mr-1" />
                   AI will update your playlist when you finish typing
                 </p>
@@ -646,7 +652,7 @@ export default function V3TrueVisionPage() {
               
               <button
                 onClick={() => setShowSaveModal(true)}
-                className="w-full bg-white text-purple-600 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                className="w-full btn-primary"
               >
                 Customize Every Detail →
               </button>
@@ -655,13 +661,13 @@ export default function V3TrueVisionPage() {
 
           {/* RIGHT PANE - Live Timeline */}
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+            <div className="glass-card rounded-xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold">
+                <h2 className="text-2xl font-bold text-white">
                   YOUR WEDDING TIMELINE
                 </h2>
                 {transforming && (
-                  <div className="flex items-center gap-2 text-purple-600">
+                  <div className="flex items-center gap-2 text-purple-400">
                     <Loader2 className="w-4 h-4 animate-spin" />
                     <span className="text-sm">Transforming...</span>
                   </div>
@@ -672,8 +678,8 @@ export default function V3TrueVisionPage() {
               {isLoadingReal && (
                 <div className="flex items-center justify-center py-12">
                   <div className="text-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-purple-600 mx-auto mb-3" />
-                    <p className="text-sm text-gray-600">Loading real wedding songs from our database...</p>
+                    <Loader2 className="w-8 h-8 animate-spin text-purple-400 mx-auto mb-3" />
+                    <p className="text-sm text-white/60">Loading real wedding songs from our database...</p>
                   </div>
                 </div>
               )}
@@ -683,7 +689,7 @@ export default function V3TrueVisionPage() {
                 {timeline.map((moment) => (
                   <div 
                     key={moment.id} 
-                    className={`border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden transition-all ${
+                    className={`bg-white/5 border border-white/10 rounded-lg overflow-hidden transition-all ${
                       transforming && (moment.id === 'cocktails' || moment.id === 'party-time') 
                         ? 'ring-2 ring-purple-500 ring-opacity-50' 
                         : ''
@@ -691,26 +697,26 @@ export default function V3TrueVisionPage() {
                   >
                     <button
                       onClick={() => toggleMoment(moment.id)}
-                      className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                      className="w-full px-4 py-3 flex items-center justify-between hover:bg-white/5 transition-colors"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-2xl">{moment.emoji}</span>
                         <div className="text-left">
-                          <div className="font-semibold flex items-center gap-2">
+                          <div className="font-semibold flex items-center gap-2 text-white">
                             {moment.title}
                             {moment.id === 'first-dance' && mustPlaySongs[0] && (
-                              <span className="text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full">
+                              <span className="text-xs px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded-full">
                                 Customized
                               </span>
                             )}
                           </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                          <div className="text-sm text-white/60">
                             {moment.time} • {moment.duration} • {moment.songs.length + (moment.moreCount || 0)} songs
                           </div>
                         </div>
                       </div>
                       <ChevronDown 
-                        className={`w-5 h-5 text-gray-400 transition-transform ${
+                        className={`w-5 h-5 text-white/40 transition-transform ${
                           expandedMoments.includes(moment.id) ? 'rotate-180' : ''
                         }`}
                       />
@@ -722,21 +728,21 @@ export default function V3TrueVisionPage() {
                           {moment.songs.map((song, idx) => (
                             <div 
                               key={song.id} 
-                              className={`flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/30 ${
-                                transforming && 'note' in song && (song as any).note ? 'bg-purple-50 dark:bg-purple-900/20' : ''
+                              className={`flex items-center justify-between p-2 rounded-lg hover:bg-white/5 ${
+                                transforming && 'note' in song && (song as any).note ? 'bg-purple-500/10' : ''
                               }`}
                             >
                               <div className="flex items-center gap-3">
-                                <span className="text-gray-400 text-sm w-6">{idx + 1}</span>
+                                <span className="text-white/40 text-sm w-6">{idx + 1}</span>
                                 <div>
-                                  <p className="font-medium">
-                                    {'label' in song && (song as any).label && <span className="text-xs text-gray-500 mr-2">{(song as any).label}:</span>}
-                                    {'phase' in song && (song as any).phase && <span className="text-xs text-gray-500 mr-2">[{(song as any).phase}]</span>}
+                                  <p className="font-medium text-white">
+                                    {'label' in song && (song as any).label && <span className="text-xs text-white/50 mr-2">{(song as any).label}:</span>}
+                                    {'phase' in song && (song as any).phase && <span className="text-xs text-white/50 mr-2">[{(song as any).phase}]</span>}
                                     {song.title}
                                   </p>
-                                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                                  <p className="text-sm text-white/60">
                                     {song.artist}
-                                    {'note' in song && (song as any).note && <span className="ml-2 text-purple-600">• {(song as any).note}</span>}
+                                    {'note' in song && (song as any).note && <span className="ml-2 text-purple-400">• {(song as any).note}</span>}
                                   </p>
                                 </div>
                               </div>
@@ -744,8 +750,8 @@ export default function V3TrueVisionPage() {
                                 onClick={() => handlePlayPreview(song.id, 'previewUrl' in song ? (song as any).previewUrl : undefined)}
                                 className={`p-2 rounded-lg transition-all ${
                                   currentlyPlaying === song.id 
-                                    ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' 
-                                    : 'hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-400'
+                                    ? 'bg-purple-500/20 text-purple-400' 
+                                    : 'hover:bg-white/10 text-white/40'
                                 }`}
                                 title={currentlyPlaying === song.id ? 'Pause preview' : 'Play preview'}
                               >
@@ -759,7 +765,7 @@ export default function V3TrueVisionPage() {
                           ))}
                           
                           {moment.moreCount && (
-                            <div className="text-center py-2 text-gray-500">
+                            <div className="text-center py-2 text-white/50">
                               <span className="text-sm">+{moment.moreCount} more songs</span>
                             </div>
                           )}
@@ -772,11 +778,11 @@ export default function V3TrueVisionPage() {
               )}
 
               {/* Bottom Message */}
-              <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg text-center">
-                <p className="text-purple-700 dark:text-purple-300 font-medium">
+              <div className="mt-8 p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-500/20 text-center">
+                <p className="text-purple-300 font-medium">
                   This is a good wedding playlist. You're making it YOURS.
                 </p>
-                <p className="text-sm text-purple-600 dark:text-purple-400 mt-1">
+                <p className="text-sm text-purple-400 mt-1">
                   Every change updates instantly • No signup required to explore
                 </p>
               </div>
@@ -787,29 +793,29 @@ export default function V3TrueVisionPage() {
 
       {/* Save Modal */}
       {showSaveModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 max-w-md w-full">
-            <h2 className="text-2xl font-bold mb-4">Save Your Perfect Playlist</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="glass-card rounded-xl p-8 max-w-md w-full">
+            <h2 className="text-2xl font-bold mb-4 text-white">Save Your Perfect Playlist</h2>
+            <p className="text-white/70 mb-6">
               Don't lose your {totalSongs} customized songs. Create a free account to:
             </p>
             
             <div className="space-y-3 mb-6">
               <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-green-500" />
-                <span>Save all customizations</span>
+                <Check className="w-5 h-5 text-green-400" />
+                <span className="text-white">Save all customizations</span>
               </div>
               <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-green-500" />
-                <span>Unlock detailed editing</span>
+                <Check className="w-5 h-5 text-green-400" />
+                <span className="text-white">Unlock detailed editing</span>
               </div>
               <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-green-500" />
-                <span>Export to Spotify</span>
+                <Check className="w-5 h-5 text-green-400" />
+                <span className="text-white">Export to Spotify</span>
               </div>
               <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-green-500" />
-                <span>Share with your DJ</span>
+                <Check className="w-5 h-5 text-green-400" />
+                <span className="text-white">Share with your DJ</span>
               </div>
             </div>
             
@@ -818,17 +824,17 @@ export default function V3TrueVisionPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 mb-4"
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-white/40 mb-4"
             />
             
             <div className="flex gap-3">
               <button
                 onClick={() => setShowSaveModal(false)}
-                className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="flex-1 px-4 py-3 border border-white/20 rounded-lg hover:bg-white/10 text-white transition-colors"
               >
                 Keep Exploring
               </button>
-              <button className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90">
+              <button className="flex-1 btn-primary">
                 Create Account
               </button>
             </div>

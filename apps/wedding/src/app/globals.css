@@ -63,6 +63,10 @@
     @apply glass rounded-xl p-6 hover:bg-white/[0.15] transition-all duration-300;
   }
   
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-lg border border-white/20 shadow-xl;
+  }
+  
   /* Animated background orbs */
   .orb {
     @apply absolute rounded-full opacity-30 animate-pulse;
@@ -121,6 +125,10 @@
 @layer utilities {
   /* Text gradient */
   .gradient-text {
+    @apply bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent;
+  }
+  
+  .text-gradient {
     @apply bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent;
   }
   

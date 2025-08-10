@@ -58,7 +58,7 @@ export default function LandingPage() {
               Sign In
             </Link>
             <Link 
-              href="/v3"
+              href="/builder"
               className="px-5 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity"
             >
               Start Free
@@ -90,7 +90,7 @@ export default function LandingPage() {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Link 
-              href="/v3"
+              href="/builder"
               className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-lg rounded-xl font-semibold hover:opacity-90 transition-all transform hover:scale-105 shadow-2xl flex items-center justify-center gap-2"
             >
               Start Building - It's Free
@@ -211,7 +211,7 @@ export default function LandingPage() {
                 </li>
               </ul>
               <Link 
-                href="/v3"
+                href="/builder"
                 className="block w-full text-center px-6 py-3 bg-white/10 text-white rounded-lg font-semibold hover:bg-white/20 transition-colors"
               >
                 Start Free
@@ -258,7 +258,7 @@ export default function LandingPage() {
                 </li>
               </ul>
               <Link 
-                href="/v3"
+                href="/builder"
                 className="block w-full text-center px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity"
               >
                 Start with Pro
@@ -278,7 +278,7 @@ export default function LandingPage() {
             Join thousands of couples who've already built their dream playlists
           </p>
           <Link 
-            href="/v3"
+            href="/builder"
             className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-lg rounded-xl font-semibold hover:opacity-90 transition-all transform hover:scale-105 shadow-2xl"
           >
             Start Building Now

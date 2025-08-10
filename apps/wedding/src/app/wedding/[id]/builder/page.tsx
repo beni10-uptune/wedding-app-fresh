@@ -46,7 +46,7 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
     try {
       const weddingDoc = await getDoc(doc(db, 'weddings', weddingId))
       if (!weddingDoc.exists()) {
-        router.push('/dashboard')
+        router.push('/builder')
         return
       }
 
@@ -60,7 +60,7 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
       setWedding(weddingData)
     } catch (error) {
       console.error('Error loading wedding:', error)
-      router.push('/dashboard')
+      router.push('/builder')
     } finally {
       setLoading(false)
     }
@@ -85,11 +85,11 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
         <div className="px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link
-              href="/dashboard"
+              href="/builder"
               className="flex items-center gap-2 text-white/60 hover:text-white transition-colors"
             >
               <ChevronLeft className="w-4 h-4" />
-              Dashboard
+              Builder
             </Link>
             <div>
               <h1 className="text-lg font-semibold text-white">

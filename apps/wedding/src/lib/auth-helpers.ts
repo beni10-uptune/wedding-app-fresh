@@ -22,12 +22,12 @@ export async function getSmartRedirectPath(user: User): Promise<string> {
       const snapshot = await getDocs(q)
       
       if (snapshot.empty) {
-        return '/create-wedding'
+        return '/builder'
       }
       
-      // For freemium model, all users go to dashboard
+      // For freemium model, all users go to builder
       // They can upgrade from there if they want
-      return '/dashboard'
+      return '/builder'
     } catch (queryError) {
       logger.debug('Compound query failed, falling back to simple query', { error: queryError })
       // Fall through to simple query
@@ -42,11 +42,11 @@ export async function getSmartRedirectPath(user: User): Promise<string> {
       const simpleSnapshot = await getDocs(simpleQuery)
       
       if (!simpleSnapshot.empty) {
-        // User has a wedding, go to dashboard
-        return '/dashboard'
+        // User has a wedding, go to builder
+        return '/builder'
       } else {
         // No wedding found, create one
-        return '/create-wedding'
+        return '/builder'
       }
     } catch (simpleError) {
       logError(simpleError, { context: 'Simple query failed in smart redirect' })
@@ -57,5 +57,5 @@ export async function getSmartRedirectPath(user: User): Promise<string> {
   }
   
   // Default fallback
-  return '/dashboard'
+  return '/builder'
 }

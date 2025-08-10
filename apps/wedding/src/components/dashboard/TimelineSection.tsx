@@ -80,14 +80,14 @@ export function TimelineSection({ weddingId, timeline, paymentStatus }: Timeline
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href={`/wedding/${weddingId}/builder`}
+                href="/builder"
                 className="btn-primary inline-flex"
               >
                 <Plus className="w-5 h-5" />
                 Start Building
               </Link>
               <Link
-                href={`/wedding/${weddingId}/builder?tab=collections`}
+                href="/builder?tab=collections"
                 className="btn-secondary inline-flex"
               >
                 <Search className="w-5 h-5" />
@@ -127,7 +127,7 @@ export function TimelineSection({ weddingId, timeline, paymentStatus }: Timeline
             Your Wedding Timeline
           </h3>
           <Link
-            href={`/wedding/${weddingId}/builder?view=timeline`}
+            href="/builder?view=timeline"
             className="text-sm text-purple-400 hover:text-purple-300 font-medium inline-flex items-center gap-1"
           >
             View Full Timeline <ChevronRight className="w-4 h-4" />
@@ -144,7 +144,7 @@ export function TimelineSection({ weddingId, timeline, paymentStatus }: Timeline
               {incompleteMoments.slice(0, 3).map((moment) => (
                 <Link
                   key={moment.id}
-                  href={`/wedding/${weddingId}/builder?moment=${moment.id}`}
+                  href={`/builder?moment=${moment.id}`}
                   className="inline-flex items-center gap-2 px-3 py-1.5 glass rounded-full text-sm hover:bg-white/10 transition-colors"
                 >
                   <Plus className="w-3 h-3" />
@@ -153,7 +153,7 @@ export function TimelineSection({ weddingId, timeline, paymentStatus }: Timeline
               ))}
               {incompleteMoments.length > 3 && (
                 <Link
-                  href={`/wedding/${weddingId}/builder`}
+                  href="/builder"
                   className="inline-flex items-center gap-2 px-3 py-1.5 glass rounded-full text-sm hover:bg-white/10 transition-colors"
                 >
                   <Plus className="w-3 h-3" />
@@ -211,14 +211,14 @@ export function TimelineSection({ weddingId, timeline, paymentStatus }: Timeline
                     {/* Action buttons */}
                     <div className="flex gap-3">
                       <Link
-                        href={`/wedding/${weddingId}/builder?moment=${moment.id}`}
+                        href={`/builder?moment=${moment.id}`}
                         className="text-sm glass rounded-lg px-4 py-2 hover:bg-white/10 transition-colors inline-flex items-center gap-2"
                       >
                         <Music className="w-4 h-4" />
                         View Songs
                       </Link>
                       <Link
-                        href={`/wedding/${weddingId}/builder?moment=${moment.id}&action=add`}
+                        href={`/builder?moment=${moment.id}&action=add`}
                         className="text-sm glass rounded-lg px-4 py-2 hover:bg-white/10 transition-colors inline-flex items-center gap-2"
                       >
                         <Plus className="w-4 h-4" />
@@ -226,7 +226,7 @@ export function TimelineSection({ weddingId, timeline, paymentStatus }: Timeline
                       </Link>
                       {progress < 80 && (
                         <Link
-                          href={`/wedding/${weddingId}/builder?moment=${moment.id}&tab=collections`}
+                          href={`/builder?moment=${moment.id}&tab=collections`}
                           className="text-sm glass rounded-lg px-4 py-2 hover:bg-white/10 transition-colors inline-flex items-center gap-2 text-purple-400"
                         >
                           <Sparkles className="w-4 h-4" />
@@ -245,7 +245,7 @@ export function TimelineSection({ weddingId, timeline, paymentStatus }: Timeline
         {incompleteMoments.length > 0 && hasAnyMusic && (
           <div className="mt-6 text-center">
             <Link
-              href={`/wedding/${weddingId}/builder`}
+              href="/builder"
               className="btn-secondary inline-flex"
             >
               <Plus className="w-5 h-5" />

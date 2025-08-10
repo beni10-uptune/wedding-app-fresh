@@ -54,7 +54,11 @@ import {
   Trash2,
   MessageSquare,
   Upload,
-  Headphones
+  Headphones,
+  Calendar,
+  Settings,
+  Edit2,
+  LogOut
 } from 'lucide-react';
 import { DraggableSong } from '@/components/v3/DraggableSong';
 import { DroppableMoment } from '@/components/v3/DroppableMoment';
@@ -200,6 +204,11 @@ export default function V3ThreePanePage() {
   const [loading, setLoading] = useState(true);
   const [weddingData, setWeddingData] = useState<any>(null);
   const [hasChanges, setHasChanges] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [weddingDate, setWeddingDate] = useState<string | null>(null);
+  const [weddingName, setWeddingName] = useState<string>('Your Wedding');
+  const [isEditingName, setIsEditingName] = useState(false);
   
   // State
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
@@ -253,6 +262,12 @@ export default function V3ThreePanePage() {
             }
             if (data.selectedCountry) {
               setSelectedCountry(data.selectedCountry);
+            }
+            if (data.weddingDate) {
+              setWeddingDate(data.weddingDate);
+            }
+            if (data.partner1Name && data.partner2Name) {
+              setWeddingName(`${data.partner1Name} & ${data.partner2Name}`);
             }
           }
         } catch (error) {
@@ -349,6 +364,11 @@ export default function V3ThreePanePage() {
   const totalHours = Math.floor(totalDuration / 3600);
   const totalMinutes = Math.floor((totalDuration % 3600) / 60);
   
+  // Calculate days until wedding
+  const daysUntilWedding = weddingDate 
+    ? Math.ceil((new Date(weddingDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+    : null;
+  
   // Track changes
   useEffect(() => {
     if (timeline.length > 0 && !loading) {
@@ -370,6 +390,8 @@ export default function V3ThreePanePage() {
         selectedCountry,
         totalSongs,
         totalDuration,
+        weddingDate,
+        weddingName,
         updatedAt: new Date().toISOString(),
         userId: user.uid
       }, { merge: true });
@@ -655,46 +677,111 @@ export default function V3ThreePanePage() {
           <div className="orb orb-blue w-96 h-96 -bottom-48 -left-48"></div>
         </div>
 
-        {/* Header */}
+        {/* Enhanced Header */}
         <header className="sticky top-0 z-50 glass-darker backdrop-blur-md border-b border-white/10">
           <div className="container-fluid px-4">
-            <div className="flex items-center justify-between h-14">
-              <Link href="/" className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
-                  <Music className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-lg font-bold text-white">Uptune</h1>
-                </div>
-              </Link>
+            <div className="flex items-center justify-between h-16 gap-4">
+              {/* Left: Logo & Wedding Name */}
+              <div className="flex items-center gap-4">
+                <Link href="/" className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                    <Music className="w-5 h-5 text-white" />
+                  </div>
+                </Link>
+                
+                {user && (
+                  <div className="flex items-center gap-2">
+                    {isEditingName ? (
+                      <input
+                        type="text"
+                        value={weddingName}
+                        onChange={(e) => setWeddingName(e.target.value)}
+                        onBlur={() => {
+                          setIsEditingName(false);
+                          setHasChanges(true);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            setIsEditingName(false);
+                            setHasChanges(true);
+                          }
+                        }}
+                        className="px-2 py-1 bg-white/10 border border-white/20 rounded text-white text-sm"
+                        autoFocus
+                      />
+                    ) : (
+                      <button
+                        onClick={() => setIsEditingName(true)}
+                        className="flex items-center gap-1 hover:bg-white/10 px-2 py-1 rounded transition-colors"
+                      >
+                        <span className="text-white font-medium">{weddingName}</span>
+                        <Edit2 className="w-3 h-3 text-white/40" />
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
               
-              <div className="flex items-center gap-2">
-                <div className="text-sm text-white/60">
-                  {totalSongs} songs • {totalHours}h {totalMinutes}m
+              {/* Center: Stats */}
+              <div className="hidden md:flex items-center gap-6">
+                {daysUntilWedding !== null && daysUntilWedding > 0 && (
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-purple-400" />
+                    <span className="text-white font-medium">{daysUntilWedding}</span>
+                    <span className="text-white/60 text-sm">days to go</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-2">
+                  <Music className="w-4 h-4 text-purple-400" />
+                  <span className="text-white font-medium">{totalSongs}</span>
+                  <span className="text-white/60 text-sm">songs</span>
                 </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-purple-400" />
+                  <span className="text-white font-medium">{totalHours}h {totalMinutes}m</span>
+                  <span className="text-white/60 text-sm">playtime</span>
+                </div>
+              </div>
+              
+              {/* Right: Actions */}
+              <div className="flex items-center gap-2">
                 {hasChanges && (
                   <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
                     Unsaved
                   </span>
                 )}
                 {user ? (
-                  <div className="flex items-center gap-2">
+                  <>
                     <button
                       onClick={saveTimeline}
                       disabled={!hasChanges}
                       className={`px-4 py-1.5 text-white text-sm rounded-lg transition-all ${
                         hasChanges 
                           ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90' 
-                          : 'bg-white/10 cursor-not-allowed'
+                          : 'bg-white/10 cursor-not-allowed opacity-50'
                       }`}
                     >
-                      {hasChanges ? 'Save Changes' : 'Saved'}
+                      <Save className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => setShowShareModal(true)}
+                      className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+                      title="Share & Invite"
+                    >
+                      <Share2 className="w-4 h-4 text-white" />
+                    </button>
+                    <button
+                      onClick={() => setShowSettingsModal(true)}
+                      className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+                      title="Settings"
+                    >
+                      <Settings className="w-4 h-4 text-white" />
                     </button>
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
                       <div className="w-6 h-6 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full"></div>
-                      <span className="text-sm text-white">{user.email?.split('@')[0]}</span>
+                      <span className="text-sm text-white hidden sm:inline">{user.email?.split('@')[0]}</span>
                     </div>
-                  </div>
+                  </>
                 ) : (
                   <button
                     onClick={() => setShowAccountModal(true)}

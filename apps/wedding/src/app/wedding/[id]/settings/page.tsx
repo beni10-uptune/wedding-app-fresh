@@ -62,7 +62,7 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
     try {
       const weddingDoc = await getDoc(doc(db, 'weddings', weddingId))
       if (!weddingDoc.exists()) {
-        router.push('/dashboard')
+        router.push('/builder')
         return
       }
 
@@ -70,7 +70,7 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
       
       // Check if user has access
       if (!weddingData.owners.includes(user?.uid || '')) {
-        router.push('/dashboard')
+        router.push('/builder')
         return
       }
       
@@ -78,7 +78,7 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
       setCoOwners(weddingData.owners.filter(id => id !== user?.uid))
     } catch (error) {
       console.error('Error loading wedding:', error)
-      router.push('/dashboard')
+      router.push('/builder')
     } finally {
       setLoading(false)
     }
@@ -209,7 +209,7 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link
-                href="/dashboard"
+                href="/builder"
                 className="p-2 hover:bg-white/10 rounded-lg transition-colors"
               >
                 <ArrowLeft className="w-5 h-5 text-white" />

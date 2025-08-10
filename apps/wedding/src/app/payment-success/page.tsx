@@ -61,8 +61,8 @@ function PaymentSuccessContent() {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer)
-          // If we have a wedding ID, go to that wedding, otherwise dashboard
-          router.push(weddingId ? `/wedding/${weddingId}` : '/dashboard')
+          // If we have a wedding ID, go to that wedding, otherwise builder
+          router.push('/builder')
           return 0
         }
         return prev - 1
@@ -106,9 +106,9 @@ function PaymentSuccessContent() {
           </div>
 
           <div className="space-y-4">
-            <Link href="/dashboard" className="btn-primary w-full">
+            <Link href="/builder" className="btn-primary w-full">
               <Music className="w-5 h-5" />
-              Go to Dashboard
+              Go to Builder
             </Link>
             
             <p className="text-sm text-white/50">

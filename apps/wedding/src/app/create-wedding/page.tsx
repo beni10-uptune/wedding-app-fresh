@@ -1,5 +1,28 @@
 'use client'
 
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+
+// REDIRECT TO NEW BUILDER
+export default function CreateWeddingRedirect() {
+  const router = useRouter()
+  
+  useEffect(() => {
+    router.replace('/builder')
+  }, [router])
+  
+  return (
+    <div className="min-h-screen flex items-center justify-center dark-gradient">
+      <div className="text-center">
+        <div className="w-12 h-12 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-white/60">Redirecting to builder...</p>
+      </div>
+    </div>
+  )
+}
+
+// OLD CREATE WEDDING CODE - TO BE REMOVED
+/*
 import { useState, useEffect } from 'react'
 import { ArrowRight, ArrowLeft, Music, Heart, MapPin, Users, Crown, CheckCircle, Sparkles, Globe, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
@@ -110,8 +133,8 @@ export default function CreateWeddingPage() {
       const snapshot = await getDocs(weddingsQuery)
       
       if (!snapshot.empty) {
-        // User already has a wedding, redirect to dashboard
-        router.push('/dashboard')
+        // User already has a wedding, redirect to builder
+        router.push('/builder')
         return
       }
     } catch (error) {
@@ -796,9 +819,10 @@ export default function CreateWeddingPage() {
           coupleName1={weddingData.coupleName1}
           coupleName2={weddingData.coupleName2}
           selectedMoments={weddingData.moments.length}
-          onClose={() => router.push(`/wedding/${createdWeddingId}/builder`)}
+          onClose={() => router.push('/builder')}
         />
       )}
     </div>
   )
 }
+*/

@@ -19,8 +19,7 @@ export default function MobileNav() {
   }
 
   const navItems = [
-    { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/create-wedding', label: 'New Wedding', icon: Music },
+    { href: '/builder', label: 'Builder', icon: Home },
   ]
 
   return (

@@ -68,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Feature pages
   const featurePages = [
     '/song-tools',
-    '/create-wedding',
+    '/builder',
   ].map(route => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),

@@ -59,7 +59,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
 
       // Check if already paid
       if (weddingData.paymentStatus === 'paid') {
-        router.push(`/wedding/${weddingId}/builder`)
+        router.push('/builder')
         return
       }
 
@@ -148,11 +148,11 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
       <div className="relative z-10 max-w-2xl mx-auto px-4 py-12">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <Link href="/dashboard" className="inline-flex items-center gap-2 text-white/60 hover:text-white">
+          <Link href="/builder" className="inline-flex items-center gap-2 text-white/60 hover:text-white">
             <ArrowLeft className="w-5 h-5" />
             Back to Dashboard
           </Link>
-          <Link href="/dashboard" className="text-purple-400 hover:text-purple-300 transition-colors">
+          <Link href="/builder" className="text-purple-400 hover:text-purple-300 transition-colors">
             Continue with Free Plan →
           </Link>
         </div>
@@ -251,7 +251,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
           {/* Continue with Free Plan */}
           <div className="mt-6 text-center">
             <Link 
-              href="/dashboard" 
+              href="/builder" 
               className="text-white/60 hover:text-white transition-colors"
             >
               or continue with the free plan

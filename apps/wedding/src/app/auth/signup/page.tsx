@@ -39,22 +39,22 @@ export default function SignUpPage() {
           if (userData) {
             // If user just signed up (onboardingCompleted is false), go to create-wedding
             if (userData.onboardingCompleted === false) {
-              console.log('New user detected, redirecting to create-wedding')
-              router.push('/create-wedding')
+              console.log('New user detected, redirecting to builder')
+              router.push('/builder')
             } else {
-              console.log('Existing user detected, redirecting to dashboard')
-              router.push('/dashboard')
+              console.log('Existing user detected, redirecting to builder')
+              router.push('/builder')
             }
           } else {
             // No user document found, ensure it exists
             console.log('No user document found, creating one...')
             await ensureUserDocument(user)
-            router.push('/create-wedding')
+            router.push('/builder')
           }
         } catch (error) {
           console.error('Error in auth state observer:', error)
-          // Default to dashboard on error
-          router.push('/dashboard')
+          // Default to builder on error
+          router.push('/builder')
         }
       } else {
         setCheckingAuth(false)
@@ -107,9 +107,9 @@ export default function SignUpPage() {
       // Track Google Ads conversion
       trackSignUpConversion(user.uid)
       
-      // Navigate directly to create-wedding after successful signup
+      // Navigate directly to builder after successful signup
       // This prevents the re-login issue
-      router.push('/create-wedding')
+      router.push('/builder')
     } catch (err) {
       console.error('Signup error:', err)
       const error = err as any
@@ -159,8 +159,8 @@ export default function SignUpPage() {
       // Track Google Ads conversion
       trackSignUpConversion(user.uid)
       
-      // Navigate directly to create-wedding
-      router.push('/create-wedding')
+      // Navigate directly to builder
+      router.push('/builder')
     } catch (err) {
       console.error('Google signup error:', err)
       const error = err as any

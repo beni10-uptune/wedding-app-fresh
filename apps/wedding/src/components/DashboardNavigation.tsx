@@ -34,7 +34,7 @@ export function DashboardNavigation({ activeWeddingId, userName }: DashboardNavi
     <header className="glass sticky top-0 z-50 border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center space-x-3">
+          <Link href="/builder" className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center animate-pulse-slow">
               <Music className="w-6 h-6 text-white" />
             </div>
@@ -88,14 +88,14 @@ export function DashboardNavigation({ activeWeddingId, userName }: DashboardNavi
               </div>
             )}
             <Link
-              href="/dashboard"
+              href="/builder"
               className={cn(
                 "flex items-center gap-3 py-2 text-white/70 hover:text-white transition-colors",
-                pathname === '/dashboard' && "text-white"
+                pathname === '/builder' && "text-white"
               )}
             >
               <Home className="w-5 h-5" />
-              Dashboard
+              Builder
             </Link>
             {activeWeddingId && (
               <Link
@@ -110,7 +110,7 @@ export function DashboardNavigation({ activeWeddingId, userName }: DashboardNavi
               </Link>
             )}
             <Link
-              href="/create-wedding"
+              href="/builder"
               className="flex items-center gap-3 py-2 text-white/70 hover:text-white transition-colors"
             >
               <Plus className="w-5 h-5" />

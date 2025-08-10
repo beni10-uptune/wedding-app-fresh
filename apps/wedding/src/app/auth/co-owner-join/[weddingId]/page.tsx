@@ -33,9 +33,9 @@ export default function CoOwnerJoinPage({ params }: { params: Promise<{ weddingI
   }, [weddingId])
 
   useEffect(() => {
-    // If user is already signed in and is already an owner, redirect to dashboard
+    // If user is already signed in and is already an owner, redirect to builder
     if (user && wedding?.owners.includes(user.uid)) {
-      router.push('/dashboard')
+      router.push('/builder')
     }
   }, [user, wedding])
 
@@ -69,8 +69,8 @@ export default function CoOwnerJoinPage({ params }: { params: Promise<{ weddingI
         owners: arrayUnion(user.uid)
       })
 
-      // Redirect to dashboard
-      router.push('/dashboard')
+      // Redirect to builder
+      router.push('/builder')
     } catch (error) {
       console.error('Error joining as co-owner:', error)
       setError('Failed to join as co-owner')

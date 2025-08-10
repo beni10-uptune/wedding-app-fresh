@@ -72,20 +72,20 @@ export async function GET(request: NextRequest) {
     // Handle different actions based on state
     if (stateData.action === 'export') {
       // For export action, redirect back to builder with token in URL
-      const redirectUrl = new URL(`${process.env.NEXT_PUBLIC_APP_URL}/wedding/${stateData.weddingId}/builder`)
+      const redirectUrl = new URL(`${process.env.NEXT_PUBLIC_APP_URL}/builder`)
       redirectUrl.searchParams.set('spotify_token', tokenData.access_token)
       redirectUrl.searchParams.set('export_moments', JSON.stringify(stateData.moments || []))
       return NextResponse.redirect(redirectUrl.toString())
     } else {
       // Default redirect to wedding page
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/wedding/${stateData.weddingId || state}?spotify_connected=true`
+        `${process.env.NEXT_PUBLIC_APP_URL}/builder?spotify_connected=true`
       )
     }
   } catch (error) {
     console.error('Spotify callback error:', error)
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL}/wedding/${state}?spotify_error=auth_failed`
+      `${process.env.NEXT_PUBLIC_APP_URL}/builder?spotify_error=auth_failed`
     )
   }
 }

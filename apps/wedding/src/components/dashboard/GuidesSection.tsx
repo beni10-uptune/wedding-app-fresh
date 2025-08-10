@@ -46,7 +46,7 @@ export function GuidesSection({ weddingId, hasMusic, songCount, guestCount }: Gu
       category: 'getting-started',
       action: {
         label: 'Browse First Dance Songs',
-        href: `/wedding/${weddingId}/builder?collection=first-dance`,
+        href: '/builder?collection=first-dance',
         icon: Music
       },
       tips: [
@@ -66,7 +66,7 @@ export function GuidesSection({ weddingId, hasMusic, songCount, guestCount }: Gu
       category: 'planning',
       action: {
         label: 'Start Timeline Builder',
-        href: `/wedding/${weddingId}/builder?view=timeline`,
+        href: '/builder?view=timeline',
         icon: ListMusic
       },
       tips: [
@@ -86,7 +86,7 @@ export function GuidesSection({ weddingId, hasMusic, songCount, guestCount }: Gu
       category: 'planning',
       action: {
         label: 'Explore Curated Collections',
-        href: `/wedding/${weddingId}/builder?tab=collections`,
+        href: '/builder?tab=collections',
         icon: Sparkles
       },
       tips: [
@@ -106,7 +106,7 @@ export function GuidesSection({ weddingId, hasMusic, songCount, guestCount }: Gu
       category: 'collaboration',
       action: {
         label: guestCount > 0 ? 'View Guest Suggestions' : 'Invite Guests',
-        href: `/wedding/${weddingId}/guests`,
+        href: '/builder?tab=guests',
         icon: guestCount > 0 ? MessageSquare : Share2
       },
       tips: [
@@ -130,7 +130,7 @@ export function GuidesSection({ weddingId, hasMusic, songCount, guestCount }: Gu
       category: 'getting-started',
       action: {
         label: 'Start Adding Songs',
-        href: `/wedding/${weddingId}/builder`,
+        href: '/builder',
         icon: Plus
       },
       tips: [
@@ -153,7 +153,7 @@ export function GuidesSection({ weddingId, hasMusic, songCount, guestCount }: Gu
       category: 'advanced',
       action: {
         label: 'Export Options',
-        href: `/wedding/${weddingId}/export`,
+        href: '/builder?tab=export',
         icon: Share2
       },
       tips: [
@@ -303,21 +303,21 @@ export function GuidesSection({ weddingId, hasMusic, songCount, guestCount }: Gu
               </p>
               {songCount === 0 ? (
                 <Link 
-                  href={`/wedding/${weddingId}/builder`}
+                  href="/builder"
                   className="inline-flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 font-medium"
                 >
                   Open Music Builder <ChevronRight className="w-4 h-4" />
                 </Link>
               ) : songCount < 50 ? (
                 <Link 
-                  href={`/wedding/${weddingId}/builder?tab=collections`}
+                  href="/builder?tab=collections"
                   className="inline-flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 font-medium"
                 >
                   Browse Collections <ChevronRight className="w-4 h-4" />
                 </Link>
               ) : (
                 <Link 
-                  href={`/wedding/${weddingId}/export`}
+                  href="/builder?tab=export"
                   className="inline-flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 font-medium"
                 >
                   Export Options <ChevronRight className="w-4 h-4" />

@@ -176,7 +176,7 @@ export default function WeddingDashboard({ params }: { params: Promise<{ id: str
       <header className="glass border-b border-white/10 relative z-10">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
-            <Link href="/dashboard" className="flex items-center space-x-2">
+            <Link href="/builder" className="flex items-center space-x-2">
               <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
                 <Music className="w-6 h-6 text-white" />
               </div>

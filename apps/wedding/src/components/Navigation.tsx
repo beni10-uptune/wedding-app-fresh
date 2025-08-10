@@ -68,13 +68,13 @@ export function Navigation() {
             {user ? (
               <>
                 <Link 
-                  href="/dashboard" 
+                  href="/builder" 
                   className={cn(
                     "text-white/70 hover:text-white transition-colors",
-                    pathname.startsWith('/dashboard') || pathname.startsWith('/wedding') && "text-white"
+                    pathname.startsWith('/builder') || pathname.startsWith('/wedding') && "text-white"
                   )}
                 >
-                  Dashboard
+                  Builder
                 </Link>
                 <Button
                   variant="ghost"
@@ -145,14 +145,14 @@ export function Navigation() {
             {user ? (
               <>
                 <Link
-                  href="/dashboard"
+                  href="/builder"
                   className={cn(
                     "flex items-center gap-3 py-2 text-white/70 hover:text-white transition-colors",
-                    pathname.startsWith('/dashboard') || pathname.startsWith('/wedding') && "text-white"
+                    pathname.startsWith('/builder') || pathname.startsWith('/wedding') && "text-white"
                   )}
                 >
                   <Music className="w-5 h-5" />
-                  Dashboard
+                  Builder
                 </Link>
                 <button
                   onClick={handleSignOut}

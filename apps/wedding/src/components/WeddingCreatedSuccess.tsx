@@ -128,7 +128,7 @@ export function WeddingCreatedSuccess({
 
         {/* Action Buttons */}
         <div className="space-y-3">
-          <Link href={`/wedding/${weddingId}/builder`}>
+          <Link href="/builder">
             <button className="btn-primary w-full text-lg py-3 group">
               Start Adding Songs
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />

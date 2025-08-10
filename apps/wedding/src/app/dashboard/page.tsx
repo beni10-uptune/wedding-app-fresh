@@ -1,5 +1,28 @@
 'use client'
 
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+
+// REDIRECT TO NEW BUILDER
+export default function DashboardRedirect() {
+  const router = useRouter()
+  
+  useEffect(() => {
+    router.replace('/builder')
+  }, [router])
+  
+  return (
+    <div className="min-h-screen flex items-center justify-center dark-gradient">
+      <div className="text-center">
+        <div className="w-12 h-12 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-white/60">Redirecting to builder...</p>
+      </div>
+    </div>
+  )
+}
+
+// OLD DASHBOARD CODE - TO BE REMOVED
+/*
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { auth, db } from '@/lib/firebase'
@@ -483,7 +506,7 @@ export default function Dashboard() {
                   {/* Key Metrics */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                     {/* Songs Progress */}
-                    <Link href={`/wedding/${activeWedding.id}/builder`} className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all cursor-pointer group">
+                    <Link href="/builder" className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all cursor-pointer group">
                       <div className="flex items-center justify-between mb-2">
                         <Music className="w-8 h-8 text-purple-400" />
                         <span className="text-3xl font-bold text-white">
@@ -534,7 +557,7 @@ export default function Dashboard() {
                     </div>
                     
                     {/* Guest Responses */}
-                    <Link href={`/wedding/${activeWedding.id}/guests`} className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all cursor-pointer group">
+                    <Link href="/builder?tab=guests" className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all cursor-pointer group">
                       <div className="flex items-center justify-between mb-2">
                         <UserCheck className="w-8 h-8 text-green-400" />
                         <span className="text-3xl font-bold text-white">
@@ -558,7 +581,7 @@ export default function Dashboard() {
                     </Link>
                     
                     {/* Wedding Details */}
-                    <Link href={`/wedding/${activeWedding.id}`} className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all cursor-pointer group">
+                    <Link href="/builder" className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all cursor-pointer group">
                       <div className="flex items-center justify-between mb-2">
                         <Calendar className="w-8 h-8 text-pink-400" />
                         <span className="text-xl font-bold text-white">
@@ -571,7 +594,7 @@ export default function Dashboard() {
                     </Link>
                     
                     {/* Quick Play */}
-                    <Link href={`/wedding/${activeWedding.id}/builder`} className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all cursor-pointer group">
+                    <Link href="/builder" className="glass-darker rounded-2xl p-6 transform hover:scale-105 transition-all cursor-pointer group">
                       <div className="flex items-center justify-between mb-2">
                         <Play className="w-8 h-8 text-indigo-400" />
                         <span className="text-lg font-bold text-white">
@@ -587,14 +610,14 @@ export default function Dashboard() {
                   {/* Quick Actions */}
                   <div className="flex flex-wrap gap-4 mt-8">
                     <Link
-                      href={`/wedding/${activeWedding.id}/builder`}
+                      href="/builder"
                       className="btn-primary group"
                     >
                       <Music className="w-5 h-5 group-hover:animate-pulse" />
                       Open Music Builder
                     </Link>
                     <Link
-                      href={`/wedding/${activeWedding.id}/guests`}
+                      href="/builder?tab=guests"
                       className="btn-secondary"
                     >
                       <Share2 className="w-5 h-5" />
@@ -655,7 +678,7 @@ export default function Dashboard() {
                 Ready to create the perfect soundtrack for your special day?
               </p>
               <Link
-                href="/create-wedding"
+                href="/builder"
                 className="btn-primary text-lg px-8 py-4 inline-flex"
               >
                 <Plus className="w-6 h-6" />
@@ -701,3 +724,4 @@ export default function Dashboard() {
     </div>
   )
 }
+*/

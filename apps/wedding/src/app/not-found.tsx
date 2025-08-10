@@ -31,10 +31,10 @@ export default function NotFound() {
               Back to Home
             </Button>
           </Link>
-          <Link href="/dashboard">
+          <Link href="/builder">
             <Button variant="outline" className="bg-white/5 border-white/20 hover:bg-white/10">
               <Music className="w-4 h-4 mr-2" />
-              Go to Dashboard
+              Go to Builder
             </Button>
           </Link>
         </div>

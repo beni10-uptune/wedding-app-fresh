@@ -42,7 +42,7 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
     try {
       const weddingDoc = await getDoc(doc(db, 'weddings', weddingId))
       if (!weddingDoc.exists()) {
-        router.push('/dashboard')
+        router.push('/builder')
         return
       }
 
@@ -50,7 +50,7 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
       
       // Check if user is owner
       if (!weddingData.owners.includes(user?.uid || '')) {
-        router.push('/dashboard')
+        router.push('/builder')
         return
       }
 
@@ -148,7 +148,7 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
       <div className="min-h-screen dark-gradient flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-white mb-4">Wedding not found</h2>
-          <Link href="/dashboard" className="btn-primary">
+          <Link href="/builder" className="btn-primary">
             Go to Dashboard
           </Link>
         </div>

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { getMusicDatabase } from '@/lib/music-database-service';
-import { MasterSong, WeddingMoment } from '@/types/wedding';
+import { MasterSong } from '@/types/music-ai';
+import { WeddingMoment } from '@/types/wedding-v2';
 
 // Realistic song counts for each moment based on duration
 export const MOMENT_SONG_COUNTS = {

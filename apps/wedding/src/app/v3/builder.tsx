@@ -2,11 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import {
   DndContext,
   DragEndEvent,
@@ -59,7 +54,6 @@ import {
 import { DraggableSong } from '@/components/v3/DraggableSong';
 import { DroppableMoment } from '@/components/v3/DroppableMoment';
 import { AddSongModal } from '@/components/v3/AddSongModal';
-import { AuthModal } from '@/components/v3/AuthModal';
 
 // Song type with BPM for flow analysis
 interface Song {
@@ -195,12 +189,6 @@ interface TimelineMoment {
 }
 
 export default function V3ThreePanePage() {
-  const router = useRouter();
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [weddingData, setWeddingData] = useState<any>(null);
-  const [hasChanges, setHasChanges] = useState(false);
-  
   // State
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
@@ -233,44 +221,8 @@ export default function V3ThreePanePage() {
     })
   );
   
-  // Auth listener
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUser(user);
-        // Load wedding data if exists
-        try {
-          const weddingDoc = await getDoc(doc(db, 'weddings', user.uid));
-          if (weddingDoc.exists()) {
-            const data = weddingDoc.data();
-            setWeddingData(data);
-            // Load saved timeline if exists
-            if (data.timeline) {
-              setTimeline(data.timeline);
-            }
-            if (data.selectedGenres) {
-              setSelectedGenres(data.selectedGenres);
-            }
-            if (data.selectedCountry) {
-              setSelectedCountry(data.selectedCountry);
-            }
-          }
-        } catch (error) {
-          console.error('Error loading wedding data:', error);
-        }
-      } else {
-        setUser(null);
-        setWeddingData(null);
-      }
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
   // Initialize timeline
   useEffect(() => {
-    if (weddingData?.timeline) return; // Don't initialize if we have saved data
     const initialTimeline: TimelineMoment[] = [
       {
         id: 'getting-ready',
@@ -338,7 +290,7 @@ export default function V3ThreePanePage() {
       }
     ];
     setTimeline(initialTimeline);
-  }, [weddingData]);
+  }, []);
 
   // Calculate stats
   const totalSongs = timeline.reduce((sum, moment) => sum + (moment.songs?.length || 0), 0);
@@ -349,37 +301,6 @@ export default function V3ThreePanePage() {
   const totalHours = Math.floor(totalDuration / 3600);
   const totalMinutes = Math.floor((totalDuration % 3600) / 60);
   
-  // Track changes
-  useEffect(() => {
-    if (timeline.length > 0 && !loading) {
-      setHasChanges(true);
-    }
-  }, [timeline, selectedGenres, selectedCountry, loading]);
-
-  // Save timeline to database
-  const saveTimeline = async () => {
-    if (!user) {
-      setShowAccountModal(true);
-      return;
-    }
-
-    try {
-      await setDoc(doc(db, 'weddings', user.uid), {
-        timeline,
-        selectedGenres,
-        selectedCountry,
-        totalSongs,
-        totalDuration,
-        updatedAt: new Date().toISOString(),
-        userId: user.uid
-      }, { merge: true });
-      
-      setHasChanges(false);
-    } catch (error) {
-      console.error('Error saving timeline:', error);
-    }
-  };
-
   // Spotify search for quick add
   const handleSearch = useCallback(async (query: string) => {
     if (!query.trim()) {
@@ -672,37 +593,12 @@ export default function V3ThreePanePage() {
                 <div className="text-sm text-white/60">
                   {totalSongs} songs • {totalHours}h {totalMinutes}m
                 </div>
-                {hasChanges && (
-                  <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
-                    Unsaved
-                  </span>
-                )}
-                {user ? (
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={saveTimeline}
-                      disabled={!hasChanges}
-                      className={`px-4 py-1.5 text-white text-sm rounded-lg transition-all ${
-                        hasChanges 
-                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90' 
-                          : 'bg-white/10 cursor-not-allowed'
-                      }`}
-                    >
-                      {hasChanges ? 'Save Changes' : 'Saved'}
-                    </button>
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
-                      <div className="w-6 h-6 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full"></div>
-                      <span className="text-sm text-white">{user.email?.split('@')[0]}</span>
-                    </div>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setShowAccountModal(true)}
-                    className="px-4 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm rounded-lg hover:opacity-90"
-                  >
-                    Save Playlist
-                  </button>
-                )}
+                <button
+                  onClick={() => setShowAccountModal(true)}
+                  className="px-4 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm rounded-lg hover:opacity-90"
+                >
+                  Save Playlist
+                </button>
               </div>
             </div>
           </div>
@@ -1146,13 +1042,61 @@ export default function V3ThreePanePage() {
           </div>
         )}
 
-        {/* Auth Modal */}
-        <AuthModal
-          isOpen={showAccountModal}
-          onClose={() => setShowAccountModal(false)}
-          onSuccess={saveTimeline}
-          totalSongs={totalSongs}
-        />
+        {/* Account Modal */}
+        {showAccountModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="fixed inset-0 bg-black/60" onClick={() => setShowAccountModal(false)} />
+            <div className="relative glass-darker rounded-2xl p-8 max-w-lg w-full">
+              <button
+                onClick={() => setShowAccountModal(false)}
+                className="absolute top-4 right-4 text-white/50 hover:text-white"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              
+              <h2 className="text-2xl font-bold text-white mb-2">
+                Save Your Playlist
+              </h2>
+              <p className="text-white/70 mb-6">
+                Create a free account to save your {totalSongs} songs and continue customizing.
+              </p>
+              
+              <div className="space-y-4 mb-6">
+                <button className="w-full px-4 py-3 bg-white text-gray-900 rounded-lg font-semibold hover:bg-gray-100">
+                  Continue with Google
+                </button>
+                
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-white/20"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-gray-900 text-white/50">or</span>
+                  </div>
+                </div>
+                
+                <input
+                  type="email"
+                  placeholder="Email address"
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40"
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40"
+                />
+              </div>
+              
+              <button className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90">
+                Create Free Account
+              </button>
+              
+              <p className="text-xs text-white/50 text-center mt-4">
+                Already have an account? <button className="text-purple-400 hover:text-purple-300">Sign in</button>
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Upgrade Modal */}
         {showUpgradeModal && (

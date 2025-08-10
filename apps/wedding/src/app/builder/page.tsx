@@ -211,6 +211,7 @@ export default function V3ThreePanePage() {
   const [weddingDate, setWeddingDate] = useState<string | null>(null);
   const [weddingName, setWeddingName] = useState<string>('Your Wedding');
   const [isEditingName, setIsEditingName] = useState(false);
+  const [mobileTab, setMobileTab] = useState<'customize' | 'timeline' | 'studio'>('timeline');
   
   // State
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
@@ -694,7 +695,7 @@ export default function V3ThreePanePage() {
                 </Link>
                 
                 {user && (
-                  <div className="flex items-center gap-2">
+                  <div className="hidden sm:flex items-center gap-2">
                     {isEditingName ? (
                       <input
                         type="text"
@@ -726,7 +727,7 @@ export default function V3ThreePanePage() {
                 )}
               </div>
               
-              {/* Center: Stats */}
+              {/* Center: Stats - Hide on mobile */}
               <div className="hidden md:flex items-center gap-6">
                 {daysUntilWedding !== null && daysUntilWedding > 0 && (
                   <div className="flex items-center gap-2">
@@ -799,10 +800,55 @@ export default function V3ThreePanePage() {
           </div>
         </header>
 
-        {/* Three-Pane Layout */}
-        <div className="flex h-[calc(100vh-3.5rem)] relative z-10">
+        {/* Mobile Bottom Tabs - Visible on small screens */}
+        <div className="fixed bottom-0 left-0 right-0 glass-darker border-t border-white/10 md:hidden z-50">
+          <div className="flex">
+            <button
+              onClick={() => setMobileTab('customize')}
+              className={`flex-1 py-3 text-xs font-medium transition-colors ${
+                mobileTab === 'customize'
+                  ? 'text-white border-t-2 border-purple-400'
+                  : 'text-white/60'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-1">
+                <Heart className="w-5 h-5" />
+                Customize
+              </div>
+            </button>
+            <button
+              onClick={() => setMobileTab('timeline')}
+              className={`flex-1 py-3 text-xs font-medium transition-colors ${
+                mobileTab === 'timeline'
+                  ? 'text-white border-t-2 border-purple-400'
+                  : 'text-white/60'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-1">
+                <Music className="w-5 h-5" />
+                Timeline
+              </div>
+            </button>
+            <button
+              onClick={() => setMobileTab('studio')}
+              className={`flex-1 py-3 text-xs font-medium transition-colors ${
+                mobileTab === 'studio'
+                  ? 'text-white border-t-2 border-purple-400'
+                  : 'text-white/60'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-1">
+                <Sparkles className="w-5 h-5" />
+                Studio
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* Three-Pane Layout - Desktop */}
+        <div className="hidden md:flex h-[calc(100vh-3.5rem)] relative z-10">
           
-          {/* LEFT PANE: Customization */}
+          {/* LEFT PANE: Customization (Desktop) */}
           <div className="w-80 glass-darker border-r border-white/10 flex flex-col">
             {/* Tab Navigation for Authenticated Users */}
             {user && (
@@ -1364,6 +1410,251 @@ export default function V3ThreePanePage() {
           </div>
         </div>
 
+        {/* Mobile Layout - Single pane view with bottom tabs */}
+        <div className="md:hidden h-[calc(100vh-3.5rem-3.5rem)] relative z-10 overflow-y-auto">
+          {mobileTab === 'customize' && (
+            <div className="p-4 space-y-4 pb-20">
+              {/* Mobile tabs for authenticated users */}
+              {user && (
+                <div className="flex gap-2 mb-4">
+                  <button
+                    onClick={() => setLeftPaneTab('build')}
+                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      leftPaneTab === 'build'
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-white/10 text-white/70'
+                    }`}
+                  >
+                    Build
+                  </button>
+                  <button
+                    onClick={() => setLeftPaneTab('manage')}
+                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      leftPaneTab === 'manage'
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-white/10 text-white/70'
+                    }`}
+                  >
+                    Manage
+                  </button>
+                  <button
+                    onClick={() => setLeftPaneTab('guests')}
+                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      leftPaneTab === 'guests'
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-white/10 text-white/70'
+                    }`}
+                  >
+                    Guests
+                  </button>
+                </div>
+              )}
+              
+              {/* Customize content - same as left pane */}
+              {(!user || leftPaneTab === 'build') && (
+                <>
+                  <div>
+                    <h2 className="text-sm font-semibold text-white/50 uppercase mb-3">Customize</h2>
+                  </div>
+                  
+                  {/* Location */}
+                  <div className="glass-card rounded-lg p-4">
+                    <h3 className="font-medium text-white mb-3 flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-purple-400" />
+                      Location
+                    </h3>
+                    <select 
+                      className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm mb-2"
+                      value={selectedCountry || ''}
+                      onChange={(e) => setSelectedCountry(e.target.value)}
+                    >
+                      <option value="">Select country</option>
+                      {Object.entries(COUNTRIES).map(([country, data]) => (
+                        <option key={country} value={country}>
+                          {data.flag} {country}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {/* Genres */}
+                  <div className="glass-card rounded-lg p-4">
+                    <h3 className="font-medium text-white mb-3 flex items-center gap-2">
+                      <Heart className="w-4 h-4 text-purple-400" />
+                      Music Taste
+                    </h3>
+                    <div className="grid grid-cols-2 gap-2">
+                      {GENRES.map(genre => (
+                        <button
+                          key={genre.id}
+                          onClick={() => {
+                            setSelectedGenres(prev => 
+                              prev.includes(genre.id)
+                                ? prev.filter(g => g !== genre.id)
+                                : [...prev, genre.id]
+                            );
+                          }}
+                          className={`px-3 py-2 rounded-lg text-sm transition-all ${
+                            selectedGenres.includes(genre.id)
+                              ? 'bg-purple-600 text-white'
+                              : 'bg-white/10 text-white/70 hover:bg-white/20'
+                          }`}
+                        >
+                          <span className="mr-1">{genre.emoji}</span>
+                          {genre.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Quick Add */}
+                  <div className="glass-card rounded-lg p-4">
+                    <h3 className="font-medium text-white mb-3 flex items-center gap-2">
+                      <Plus className="w-4 h-4 text-purple-400" />
+                      Quick Add
+                    </h3>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                      <input
+                        type="text"
+                        placeholder="Search for songs..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm placeholder-white/40"
+                      />
+                    </div>
+                    {searchQuery && searchResults.length > 0 && (
+                      <div className="mt-2 max-h-48 overflow-y-auto space-y-1">
+                        {searchResults.map((song) => (
+                          <button
+                            key={song.id}
+                            onClick={() => handleQuickAddSong(song)}
+                            className="w-full p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors text-left"
+                          >
+                            <p className="text-sm text-white font-medium">{song.title}</p>
+                            <p className="text-xs text-white/60">{song.artist}</p>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+              
+              {/* Manage/Guests tabs for mobile authenticated users */}
+              {user && leftPaneTab === 'manage' && (
+                <>
+                  <div>
+                    <h2 className="text-sm font-semibold text-white/50 uppercase mb-3">Wedding Settings</h2>
+                  </div>
+                  {/* Same manage content as desktop */}
+                </>
+              )}
+              
+              {user && leftPaneTab === 'guests' && (
+                <>
+                  <div>
+                    <h2 className="text-sm font-semibold text-white/50 uppercase mb-3">Guest Management</h2>
+                  </div>
+                  {/* Same guests content as desktop */}
+                </>
+              )}
+            </div>
+          )}
+          
+          {mobileTab === 'timeline' && (
+            <div className="overflow-y-auto bg-black/20">
+              {/* Timeline Header */}
+              <div className="sticky top-0 glass-darker backdrop-blur-md border-b border-white/10 px-4 py-3 z-10">
+                <h2 className="text-xl font-bold text-white">YOUR WEDDING TIMELINE</h2>
+                <p className="text-xs text-white/60">Tap to expand • Drag to reorder</p>
+              </div>
+              
+              {/* Timeline Content */}
+              <div className="p-4 space-y-4 pb-20">
+                {timeline.map((moment) => (
+                  <DroppableMoment
+                    key={moment.id}
+                    moment={moment}
+                    isExpanded={expandedMoments.includes(moment.id)}
+                    onToggle={() => {
+                      setExpandedMoments(prev =>
+                        prev.includes(moment.id)
+                          ? prev.filter(id => id !== moment.id)
+                          : [...prev, moment.id]
+                      );
+                    }}
+                    onAddSong={() => openAddSongModal(moment.id)}
+                    onRemoveSong={(songIndex) => handleRemoveSong(moment.id, songIndex)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {mobileTab === 'studio' && (
+            <div className="p-4 space-y-4 pb-20">
+              {/* AI Assistant */}
+              <div className="glass-gradient rounded-xl p-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-white">AI Assistant</h4>
+                    <p className="text-xs text-white/60">Get smart suggestions</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button className="glass-darker rounded-lg p-2 text-xs text-white">
+                    Generate Mix
+                  </button>
+                  <button className="glass-darker rounded-lg p-2 text-xs text-white">
+                    Fix Energy Flow
+                  </button>
+                </div>
+              </div>
+              
+              {/* BPM Analysis */}
+              <div className="glass-gradient rounded-xl p-4">
+                <h4 className="font-semibold text-white mb-3">Energy Flow</h4>
+                <div className="h-32 flex items-end justify-between gap-1">
+                  {timeline.map((moment, idx) => (
+                    <div key={moment.id} className="flex-1 flex flex-col items-center gap-1">
+                      <div 
+                        className="w-full bg-gradient-to-t from-purple-600 to-pink-600 rounded-t"
+                        style={{ height: `${(idx + 1) * 15}%` }}
+                      />
+                      <span className="text-xs text-white/40 rotate-45 origin-left">
+                        {moment.emoji}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Pro Features */}
+              <div className="glass-gradient rounded-xl p-4 border border-purple-500/30">
+                <h4 className="font-semibold text-white mb-2">
+                  <Lock className="w-4 h-4 inline mr-2" />
+                  Pro Features
+                </h4>
+                <ul className="text-xs text-white/60 space-y-1">
+                  <li>• AI Chat Assistant</li>
+                  <li>• Spotify Import</li>
+                  <li>• Unlimited saves</li>
+                </ul>
+                <button 
+                  onClick={() => setShowUpgradeModal(true)}
+                  className="w-full mt-3 px-3 py-2 bg-purple-600 text-white rounded-lg text-xs"
+                >
+                  Upgrade • $25
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Drag Overlay */}
         <DragOverlay>
           {draggedSong && (
@@ -1450,6 +1741,7 @@ export default function V3ThreePanePage() {
           <ShareModal
             onClose={() => setShowShareModal(false)}
             weddingId={user?.uid}
+            weddingData={weddingData}
           />
         )}
 

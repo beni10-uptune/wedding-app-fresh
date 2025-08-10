@@ -67,6 +67,14 @@ import { AuthModal } from '@/components/v3/AuthModal';
 import { ShareModal } from '@/components/v3/ShareModal';
 import { SettingsModal } from '@/components/v3/SettingsModal';
 import { UpgradeModal } from '@/components/v3/UpgradeModal';
+import { 
+  useTimelineWithDatabaseSongs, 
+  searchDatabaseSongs, 
+  addSongToDatabase,
+  useFeatureAccess,
+  loadMomentSongs,
+  MOMENT_SONG_COUNTS
+} from './BuilderFixes';
 
 // Song type with BPM for flow analysis
 interface Song {
@@ -231,6 +239,8 @@ export default function V3ThreePanePage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Song[]>([]);
+  const { hasAccess: canShare } = useFeatureAccess('share');
+  const [isLoadingDatabase, setIsLoadingDatabase] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
@@ -289,77 +299,49 @@ export default function V3ThreePanePage() {
     return () => unsubscribe();
   }, []);
 
-  // Initialize timeline
+  // Initialize timeline with database songs
   useEffect(() => {
     if (weddingData?.timeline) return; // Don't initialize if we have saved data
-    const initialTimeline: TimelineMoment[] = [
-      {
-        id: 'getting-ready',
-        time: '2:00 PM',
-        duration: '30 min',
-        title: 'Getting Ready',
-        emoji: '💄',
-        songs: COMPLETE_PLAYLIST['getting-ready']
-      },
-      {
-        id: 'ceremony',
-        time: '3:00 PM',
-        duration: '20 min',
-        title: 'Ceremony',
-        emoji: '💒',
-        songs: COMPLETE_PLAYLIST['ceremony']
-      },
-      {
-        id: 'cocktails',
-        time: '3:30 PM',
-        duration: '90 min',
-        title: 'Cocktails',
-        emoji: '🥂',
-        songs: COMPLETE_PLAYLIST['cocktails']
-      },
-      {
-        id: 'dinner',
-        time: '5:00 PM',
-        duration: '90 min',
-        title: 'Dinner',
-        emoji: '🍽️',
-        songs: COMPLETE_PLAYLIST['dinner']
-      },
-      {
-        id: 'first-dance',
-        time: '7:00 PM',
-        duration: '5 min',
-        title: 'First Dance',
-        emoji: '💕',
-        songs: COMPLETE_PLAYLIST['first-dance']
-      },
-      {
-        id: 'parent-dances',
-        time: '7:05 PM',
-        duration: '10 min',
-        title: 'Parent Dances',
-        emoji: '👨‍👩‍👧',
-        songs: COMPLETE_PLAYLIST['parent-dances']
-      },
-      {
-        id: 'party',
-        time: '7:15 PM',
-        duration: '3 hours',
-        title: 'Party Time',
-        emoji: '🎉',
-        songs: COMPLETE_PLAYLIST['party']
-      },
-      {
-        id: 'last-dance',
-        time: '10:15 PM',
-        duration: '5 min',
-        title: 'Last Dance',
-        emoji: '🌙',
-        songs: COMPLETE_PLAYLIST['last-dance']
-      }
-    ];
-    setTimeline(initialTimeline);
-  }, [weddingData]);
+    
+    const loadInitialTimeline = async () => {
+      setIsLoadingDatabase(true);
+      
+      const moments = [
+        { id: 'getting-ready', time: '2:00 PM', duration: '30 min', title: 'Getting Ready', emoji: '💄' },
+        { id: 'ceremony', time: '3:00 PM', duration: '20 min', title: 'Ceremony', emoji: '💒' },
+        { id: 'cocktails', time: '3:30 PM', duration: '90 min', title: 'Cocktails', emoji: '🥂' },
+        { id: 'dinner', time: '5:00 PM', duration: '90 min', title: 'Dinner', emoji: '🍽️' },
+        { id: 'first-dance', time: '7:00 PM', duration: '5 min', title: 'First Dance', emoji: '💕' },
+        { id: 'parent-dances', time: '7:05 PM', duration: '10 min', title: 'Parent Dances', emoji: '👨‍👩‍👧' },
+        { id: 'party', time: '7:15 PM', duration: '3 hours', title: 'Party Time', emoji: '🎉' },
+        { id: 'last-dance', time: '10:15 PM', duration: '10 min', title: 'Last Dance', emoji: '🌙' }
+      ];
+      
+      // Load songs from database for each moment
+      const timelineWithSongs = await Promise.all(
+        moments.map(async (moment) => {
+          const songs = await loadMomentSongs(
+            moment.id, 
+            selectedGenres.length > 0 ? selectedGenres : undefined,
+            selectedCountry || undefined
+          );
+          
+          // Use appropriate song count for each moment
+          const songCount = MOMENT_SONG_COUNTS[moment.id as keyof typeof MOMENT_SONG_COUNTS] || 10;
+          
+          return {
+            ...moment,
+            songs: songs.slice(0, songCount)
+          };
+        })
+      );
+      
+      setTimeline(timelineWithSongs);
+      setIsLoadingDatabase(false);
+    };
+    
+    loadInitialTimeline();
+  }, [weddingData, selectedGenres, selectedCountry]);
 
   // Calculate stats
   const totalSongs = timeline.reduce((sum, moment) => sum + (moment.songs?.length || 0), 0);
@@ -408,7 +390,7 @@ export default function V3ThreePanePage() {
     }
   };
 
-  // Spotify search for quick add
+  // Search database for songs (includes Spotify data)
   const handleSearch = useCallback(async (query: string) => {
     if (!query.trim()) {
       setSearchResults([]);
@@ -417,28 +399,23 @@ export default function V3ThreePanePage() {
     
     setIsSearching(true);
     try {
-      const response = await fetch(`/api/spotify/search?q=${encodeURIComponent(query)}&limit=5`);
-      if (!response.ok) {
-        console.error('Search response not ok:', response.status);
-        setSearchResults([]);
-        return;
-      }
+      // Search database first (has enriched songs with Spotify data)
+      const songs = await searchDatabaseSongs(query);
       
-      const data = await response.json();
-      console.log('Search response:', data);
-      
-      // Map tracks to songs format
-      const songs = (data.tracks || []).map((track: any) => ({
-        id: track.id || `song-${Date.now()}-${Math.random()}`,
-        title: track.name || track.title,
-        artist: track.artist,
-        album: track.album,
-        spotifyId: track.id,
-        previewUrl: track.preview_url,
-        duration: track.duration_ms ? Math.floor(track.duration_ms / 1000) : undefined
+      // Map to the format used by the builder
+      const mappedSongs = songs.map(song => ({
+        id: song.id || song.spotifyId || `song-${Date.now()}-${Math.random()}`,
+        title: song.title,
+        artist: song.artist,
+        album: song.album,
+        spotifyId: song.spotifyId,
+        previewUrl: song.previewUrl,
+        duration: song.durationMs ? Math.floor(song.durationMs / 1000) : undefined,
+        bpm: song.features?.tempo ? Math.round(song.features.tempo) : undefined,
+        albumArt: song.albumArt
       }));
       
-      setSearchResults(songs);
+      setSearchResults(mappedSongs);
     } catch (error) {
       console.error('Search error:', error);
       setSearchResults([]);
@@ -612,13 +589,33 @@ export default function V3ThreePanePage() {
   };
   
   // Add song from search/modal
-  const handleAddSongToMoment = (song: Song, momentId: string) => {
+  const handleAddSongToMoment = async (song: Song, momentId: string) => {
+    // Add song to timeline
     setTimeline(prev => prev.map(moment => {
       if (moment.id === momentId) {
         return { ...moment, songs: [...moment.songs, song] };
       }
       return moment;
     }));
+    
+    // Save song to database if it has a Spotify ID
+    if (song.spotifyId) {
+      try {
+        await addSongToDatabase({
+          id: song.id,
+          title: song.title,
+          artist: song.artist,
+          spotifyId: song.spotifyId,
+          previewUrl: song.previewUrl,
+          durationMs: song.duration ? song.duration * 1000 : undefined,
+          albumArt: song.albumArt,
+          features: song.bpm ? { tempo: song.bpm } : undefined
+        } as any);
+      } catch (error) {
+        console.error('Error adding song to database:', error);
+      }
+    }
+    
     setShowAddSongModal(false);
     setAddSongMomentId(null);
   };
@@ -770,7 +767,13 @@ export default function V3ThreePanePage() {
                       <Save className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => setShowShareModal(true)}
+                      onClick={() => {
+                        if (canShare) {
+                          setShowShareModal(true);
+                        } else {
+                          setShowUpgradeModal(true);
+                        }
+                      }}
                       className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
                       title="Share & Invite"
                     >
@@ -1152,11 +1155,17 @@ export default function V3ThreePanePage() {
                       Share access with your partner to build together
                     </p>
                     <button
-                      onClick={() => setShowShareModal(true)}
+                      onClick={() => {
+                        if (canShare) {
+                          setShowShareModal(true);
+                        } else {
+                          setShowUpgradeModal(true);
+                        }
+                      }}
                       className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
                     >
                       <Share2 className="w-4 h-4" />
-                      Invite Partner
+                      {canShare ? 'Invite Partner' : 'Upgrade to Share'}
                     </button>
                   </div>
                   
@@ -1198,11 +1207,17 @@ export default function V3ThreePanePage() {
                       </span>
                     </div>
                     <button
-                      onClick={() => setShowShareModal(true)}
+                      onClick={() => {
+                        if (canShare) {
+                          setShowShareModal(true);
+                        } else {
+                          setShowUpgradeModal(true);
+                        }
+                      }}
                       className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
                     >
                       <Share2 className="w-4 h-4" />
-                      Share Invite Link
+                      {canShare ? 'Share Invite Link' : 'Upgrade to Share'}
                     </button>
                   </div>
                   

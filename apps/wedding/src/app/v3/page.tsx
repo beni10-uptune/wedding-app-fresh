@@ -46,7 +46,10 @@ import {
   Save,
   Clock,
   GripVertical,
-  Trash2
+  Trash2,
+  MessageSquare,
+  Upload,
+  Headphones
 } from 'lucide-react';
 import { DraggableSong } from '@/components/v3/DraggableSong';
 import { DroppableMoment } from '@/components/v3/DroppableMoment';
@@ -133,12 +136,28 @@ const COMPLETE_PLAYLIST: Record<string, Song[]> = {
   ]
 };
 
-// Countries & regions
+// Countries & regions - Updated with correct UK regions and added Ireland
 const COUNTRIES = {
-  'UK': { flag: '🇬🇧', regions: ['London', 'Manchester', 'Birmingham', 'Scotland'] },
-  'US': { flag: '🇺🇸', regions: ['Northeast', 'South', 'West Coast', 'Midwest'] },
-  'Australia': { flag: '🇦🇺', regions: ['Sydney', 'Melbourne', 'Brisbane', 'Perth'] },
-  'Canada': { flag: '🇨🇦', regions: ['Toronto', 'Vancouver', 'Montreal', 'Calgary'] },
+  'UK': { 
+    flag: '🇬🇧', 
+    regions: ['London', 'North West', 'North East', 'South East', 'South West', 'Scotland', 'Wales'] 
+  },
+  'Ireland': { 
+    flag: '🇮🇪', 
+    regions: ['Dublin', 'Cork', 'Galway', 'Limerick', 'Belfast', 'Waterford'] 
+  },
+  'US': { 
+    flag: '🇺🇸', 
+    regions: ['Northeast', 'South', 'West Coast', 'Midwest'] 
+  },
+  'Australia': { 
+    flag: '🇦🇺', 
+    regions: ['Sydney', 'Melbourne', 'Brisbane', 'Perth'] 
+  },
+  'Canada': { 
+    flag: '🇨🇦', 
+    regions: ['Toronto', 'Vancouver', 'Montreal', 'Calgary'] 
+  },
 };
 
 // Genres
@@ -149,6 +168,15 @@ const GENRES = [
   { id: 'rnb', label: 'R&B', emoji: '💜' },
   { id: 'country', label: 'Country', emoji: '🤠' },
   { id: 'electronic', label: 'Electronic', emoji: '🎹' },
+];
+
+// Popular first dance songs
+const FIRST_DANCE_SUGGESTIONS = [
+  { id: 'fd-sug-1', title: 'Perfect', artist: 'Ed Sheeran', duration: 263 },
+  { id: 'fd-sug-2', title: 'At Last', artist: 'Etta James', duration: 180 },
+  { id: 'fd-sug-3', title: 'All of Me', artist: 'John Legend', duration: 269 },
+  { id: 'fd-sug-4', title: 'Thinking Out Loud', artist: 'Ed Sheeran', duration: 281 },
+  { id: 'fd-sug-5', title: 'Make You Feel My Love', artist: 'Adele', duration: 212 },
 ];
 
 interface TimelineMoment {
@@ -272,15 +300,23 @@ export default function V3ThreePanePage() {
   const totalMinutes = Math.floor((totalDuration % 3600) / 60);
   
   // Spotify search for quick add
-  const handleSearch = useCallback(async () => {
-    if (!searchQuery.trim()) return;
+  const handleSearch = useCallback(async (query: string) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
     
     setIsSearching(true);
     try {
-      const response = await fetch(`/api/spotify/search?q=${encodeURIComponent(searchQuery)}&limit=5`);
-      if (!response.ok) throw new Error('Search failed');
+      const response = await fetch(`/api/spotify/search?q=${encodeURIComponent(query)}&limit=5`);
+      if (!response.ok) {
+        console.error('Search response not ok:', response.status);
+        setSearchResults([]);
+        return;
+      }
       
       const data = await response.json();
+      console.log('Search results:', data);
       setSearchResults(data.songs || []);
     } catch (error) {
       console.error('Search error:', error);
@@ -288,12 +324,16 @@ export default function V3ThreePanePage() {
     } finally {
       setIsSearching(false);
     }
-  }, [searchQuery]);
+  }, []);
   
   // Debounced search
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (searchQuery) handleSearch();
+      if (searchQuery) {
+        handleSearch(searchQuery);
+      } else {
+        setSearchResults([]);
+      }
     }, 500);
     
     return () => clearTimeout(timer);
@@ -421,18 +461,25 @@ export default function V3ThreePanePage() {
       
       setTimeline(prev => {
         const newTimeline = [...prev];
-        const sourceMoment = newTimeline.find(m => m.id === sourceMomentId);
-        const targetMoment = newTimeline.find(m => m.id === targetMomentId);
+        const sourceMomentIndex = newTimeline.findIndex(m => m.id === sourceMomentId);
+        const targetMomentIndex = newTimeline.findIndex(m => m.id === targetMomentId);
         
-        if (sourceMoment && targetMoment) {
+        if (sourceMomentIndex !== -1 && targetMomentIndex !== -1) {
           if (sourceMomentId === targetMomentId) {
-            // Same moment - reorder
-            const newSongs = [...sourceMoment.songs];
-            const [movedSong] = newSongs.splice(sourceIndex, 1);
-            newSongs.splice(targetIndex, 0, movedSong);
-            sourceMoment.songs = newSongs;
+            // Same moment - reorder using arrayMove
+            const newSongs = arrayMove(
+              newTimeline[sourceMomentIndex].songs,
+              sourceIndex,
+              targetIndex
+            );
+            newTimeline[sourceMomentIndex] = {
+              ...newTimeline[sourceMomentIndex],
+              songs: newSongs
+            };
           } else {
-            // Different moments - move
+            // Different moments - move between
+            const sourceMoment = newTimeline[sourceMomentIndex];
+            const targetMoment = newTimeline[targetMomentIndex];
             const [movedSong] = sourceMoment.songs.splice(sourceIndex, 1);
             targetMoment.songs.splice(targetIndex, 0, movedSong);
           }
@@ -453,6 +500,24 @@ export default function V3ThreePanePage() {
     }));
     setShowAddSongModal(false);
     setAddSongMomentId(null);
+  };
+  
+  // Quick add song from search
+  const handleQuickAddSong = (song: Song) => {
+    // Default to adding to party section
+    handleAddSongToMoment(song, 'party');
+    setSearchQuery('');
+    setSearchResults([]);
+  };
+  
+  // Set first dance
+  const handleSetFirstDance = (song: Song) => {
+    setTimeline(prev => prev.map(moment => {
+      if (moment.id === 'first-dance') {
+        return { ...moment, songs: [song] };
+      }
+      return moment;
+    }));
   };
   
   // Open add song modal
@@ -573,6 +638,37 @@ export default function V3ThreePanePage() {
                   </button>
                 ))}
               </div>
+              {selectedGenres.length > 0 && (
+                <p className="text-xs text-purple-400 mt-2">
+                  ✓ Playlist customized for {selectedGenres.join(', ')}
+                </p>
+              )}
+            </div>
+            
+            {/* Choose Your First Dance */}
+            <div className="glass-card rounded-lg p-4 bg-gradient-to-r from-pink-600/10 to-purple-600/10">
+              <h3 className="font-medium text-white mb-3 flex items-center gap-2">
+                <Headphones className="w-4 h-4 text-pink-400" />
+                Choose Your First Dance
+              </h3>
+              <div className="space-y-2">
+                {FIRST_DANCE_SUGGESTIONS.slice(0, 3).map(song => (
+                  <button
+                    key={song.id}
+                    onClick={() => handleSetFirstDance(song)}
+                    className="w-full p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors text-left"
+                  >
+                    <p className="text-sm text-white font-medium">{song.title}</p>
+                    <p className="text-xs text-white/60">{song.artist}</p>
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() => openAddSongModal('first-dance')}
+                className="w-full mt-2 text-xs text-purple-400 hover:text-purple-300"
+              >
+                + Search for more
+              </button>
             </div>
             
             {/* Quick Add Songs */}
@@ -602,18 +698,21 @@ export default function V3ThreePanePage() {
                   ) : searchResults.length > 0 ? (
                     <div className="space-y-1">
                       {searchResults.map((song) => (
-                        <div
+                        <button
                           key={song.id}
-                          className="p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
+                          onClick={() => handleQuickAddSong(song)}
+                          className="w-full p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors text-left"
                         >
                           <p className="text-sm text-white font-medium">{song.title}</p>
                           <p className="text-xs text-white/60">{song.artist}</p>
-                        </div>
+                        </button>
                       ))}
                     </div>
-                  ) : searchQuery ? (
-                    <p className="text-xs text-white/40 text-center py-2">No results found</p>
-                  ) : null}
+                  ) : (
+                    <p className="text-xs text-white/40 text-center py-2">
+                      {searchQuery.length < 2 ? 'Keep typing...' : 'No results found'}
+                    </p>
+                  )}
                 </div>
               )}
               
@@ -644,9 +743,12 @@ export default function V3ThreePanePage() {
             
             {/* Trash Zone */}
             {isDragging && (
-              <div className={`glass-card rounded-lg p-4 border-2 border-dashed ${
-                isDraggingToTrash ? 'border-red-500 bg-red-500/20' : 'border-white/20'
-              } transition-all`}>
+              <div 
+                id="trash-zone"
+                className={`glass-card rounded-lg p-4 border-2 border-dashed ${
+                  isDraggingToTrash ? 'border-red-500 bg-red-500/20' : 'border-white/20'
+                } transition-all`}
+              >
                 <div className="flex items-center justify-center gap-2">
                   <Trash2 className={`w-5 h-5 ${isDraggingToTrash ? 'text-red-400' : 'text-white/40'}`} />
                   <span className={`text-sm ${isDraggingToTrash ? 'text-red-400' : 'text-white/40'}`}>
@@ -795,19 +897,23 @@ export default function V3ThreePanePage() {
               </h3>
               <ul className="text-sm text-white/70 space-y-2">
                 <li className="flex items-center gap-2">
-                  <Lock className="w-3 h-3 text-white/40" />
-                  AI BPM matching
+                  <MessageSquare className="w-3 h-3 text-white/40" />
+                  AI Assistant & Chat
                 </li>
                 <li className="flex items-center gap-2">
-                  <Lock className="w-3 h-3 text-white/40" />
-                  Energy optimization
+                  <TrendingUp className="w-3 h-3 text-white/40" />
+                  BPM & Energy matching
+                </li>
+                <li className="flex items-center gap-2">
+                  <Upload className="w-3 h-3 text-white/40" />
+                  Import Spotify playlists
                 </li>
                 <li className="flex items-center gap-2">
                   <Lock className="w-3 h-3 text-white/40" />
                   Unlimited saves
                 </li>
                 <li className="flex items-center gap-2">
-                  <Lock className="w-3 h-3 text-white/40" />
+                  <Users className="w-3 h-3 text-white/40" />
                   Guest requests
                 </li>
               </ul>
@@ -920,12 +1026,16 @@ export default function V3ThreePanePage() {
               
               <div className="space-y-3 mb-6">
                 <div className="flex items-center gap-3">
-                  <TrendingUp className="w-5 h-5 text-purple-400" />
-                  <span className="text-white">AI fixes all {analysisResults?.bpmJumps || 0} BPM jumps</span>
+                  <MessageSquare className="w-5 h-5 text-purple-400" />
+                  <span className="text-white">AI Assistant to help build your perfect playlist</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Zap className="w-5 h-5 text-purple-400" />
-                  <span className="text-white">Perfect energy flow guaranteed</span>
+                  <TrendingUp className="w-5 h-5 text-purple-400" />
+                  <span className="text-white">Smart BPM matching & energy flow</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Upload className="w-5 h-5 text-purple-400" />
+                  <span className="text-white">Import your Spotify playlists</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Music className="w-5 h-5 text-purple-400" />
@@ -956,13 +1066,6 @@ export default function V3ThreePanePage() {
             </div>
           </div>
         )}
-
-        {/* Trash Drop Zone (for DnD) */}
-        <div
-          id="trash-zone"
-          className="hidden"
-          style={{ position: 'absolute', top: 0, left: 0, width: 1, height: 1 }}
-        />
       </div>
     </DndContext>
   );

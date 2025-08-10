@@ -48,10 +48,28 @@ export function AddSongModal({ isOpen, onClose, onAddSong, momentId }: AddSongMo
     setIsSearching(true);
     try {
       const response = await fetch(`/api/spotify/search?q=${encodeURIComponent(searchQuery)}&limit=10`);
-      if (!response.ok) throw new Error('Search failed');
+      if (!response.ok) {
+        console.error('Search failed:', response.status);
+        throw new Error('Search failed');
+      }
       
       const data = await response.json();
-      setSearchResults(data.songs || []);
+      console.log('Search response:', data); // Debug log
+      
+      // API returns 'tracks' not 'songs'
+      const tracks = data.tracks || [];
+      const formattedSongs = tracks.map((track: any) => ({
+        id: track.id || `song-${Date.now()}-${Math.random()}`,
+        title: track.name || track.title,
+        artist: track.artist,
+        album: track.album,
+        albumArt: track.image,
+        previewUrl: track.preview_url,
+        duration: track.duration_ms,
+        spotifyId: track.id
+      }));
+      
+      setSearchResults(formattedSongs);
     } catch (error) {
       console.error('Search error:', error);
       setSearchResults([]);
@@ -63,7 +81,11 @@ export function AddSongModal({ isOpen, onClose, onAddSong, momentId }: AddSongMo
   // Debounced search
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (searchQuery) handleSearch();
+      if (searchQuery && searchQuery.length >= 2) {
+        handleSearch();
+      } else if (searchQuery.length < 2) {
+        setSearchResults([]);
+      }
     }, 500);
     
     return () => clearTimeout(timer);
@@ -173,6 +195,12 @@ export function AddSongModal({ isOpen, onClose, onAddSong, momentId }: AddSongMo
                   </div>
                 </button>
               ))}
+            </div>
+          ) : searchQuery && searchQuery.length < 2 ? (
+            <div className="text-center py-12">
+              <Search className="w-12 h-12 text-white/20 mx-auto mb-3" />
+              <p className="text-white/40">Keep typing...</p>
+              <p className="text-sm text-white/30 mt-1">Enter at least 2 characters to search</p>
             </div>
           ) : searchQuery ? (
             <div className="text-center py-12">

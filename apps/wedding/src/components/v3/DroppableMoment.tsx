@@ -4,7 +4,7 @@ import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { ChevronDown, ChevronRight, Plus } from 'lucide-react';
-import { DraggableSong } from './DraggableSong';
+import { SortableSong } from './SortableSong';
 
 interface Song {
   id: string;
@@ -96,26 +96,28 @@ export function DroppableMoment({
       {/* Songs List - Collapsible */}
       {isExpanded && (
         <div className="px-6 pb-6">
-          <SortableContext items={songIds} strategy={verticalListSortingStrategy}>
-            <div className="space-y-2">
-              {moment.songs?.map((song, idx) => {
-                const songKey = `${moment.id}-${song.id}-${idx}`;
-                return (
-                  <DraggableSong
-                    key={songKey}
-                    song={song}
-                    momentId={moment.id}
-                    index={idx}
-                    onPlay={() => onPlaySong(song, songKey)}
-                    onPause={onPauseSong}
-                    isPlaying={playingId === songKey}
-                  />
-                );
-              })}
-            </div>
-          </SortableContext>
-          
-          {moment.songs.length === 0 && (
+          {moment.songs.length > 0 ? (
+            <SortableContext items={songIds} strategy={verticalListSortingStrategy}>
+              <div className="space-y-2">
+                {moment.songs.map((song, idx) => {
+                  const songKey = `${moment.id}-${song.id}-${idx}`;
+                  const songId = `${moment.id}-song-${idx}`;
+                  return (
+                    <SortableSong
+                      key={songKey}
+                      id={songId}
+                      song={song}
+                      momentId={moment.id}
+                      index={idx}
+                      onPlay={() => onPlaySong(song, songKey)}
+                      onPause={onPauseSong}
+                      isPlaying={playingId === songKey}
+                    />
+                  );
+                })}
+              </div>
+            </SortableContext>
+          ) : (
             <div className="py-8 text-center">
               <p className="text-white/40 mb-3">No songs yet</p>
               <button

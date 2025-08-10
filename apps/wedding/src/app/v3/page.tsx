@@ -316,8 +316,20 @@ export default function V3ThreePanePage() {
       }
       
       const data = await response.json();
-      console.log('Search results:', data);
-      setSearchResults(data.songs || []);
+      console.log('Search response:', data);
+      
+      // Map tracks to songs format
+      const songs = (data.tracks || []).map((track: any) => ({
+        id: track.id || `song-${Date.now()}-${Math.random()}`,
+        title: track.name || track.title,
+        artist: track.artist,
+        album: track.album,
+        spotifyId: track.id,
+        previewUrl: track.preview_url,
+        duration: track.duration_ms ? Math.floor(track.duration_ms / 1000) : undefined
+      }));
+      
+      setSearchResults(songs);
     } catch (error) {
       console.error('Search error:', error);
       setSearchResults([]);
@@ -502,6 +514,18 @@ export default function V3ThreePanePage() {
     setAddSongMomentId(null);
   };
   
+  // Remove song from moment
+  const handleRemoveSong = (momentId: string, songIndex: number) => {
+    setTimeline(prev => prev.map(moment => {
+      if (moment.id === momentId) {
+        const newSongs = [...moment.songs];
+        newSongs.splice(songIndex, 1);
+        return { ...moment, songs: newSongs };
+      }
+      return moment;
+    }));
+  };
+  
   // Quick add song from search
   const handleQuickAddSong = (song: Song) => {
     // Default to adding to party section
@@ -596,18 +620,6 @@ export default function V3ThreePanePage() {
                   </option>
                 ))}
               </select>
-              {selectedCountry && (
-                <select 
-                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm"
-                  value={selectedRegion || ''}
-                  onChange={(e) => setSelectedRegion(e.target.value)}
-                >
-                  <option value="">Select region</option>
-                  {COUNTRIES[selectedCountry as keyof typeof COUNTRIES].regions.map(region => (
-                    <option key={region} value={region}>{region}</option>
-                  ))}
-                </select>
-              )}
             </div>
             
             {/* Genres */}
@@ -651,24 +663,37 @@ export default function V3ThreePanePage() {
                 <Headphones className="w-4 h-4 text-pink-400" />
                 Choose Your First Dance
               </h3>
-              <div className="space-y-2">
-                {FIRST_DANCE_SUGGESTIONS.slice(0, 3).map(song => (
-                  <button
-                    key={song.id}
-                    onClick={() => handleSetFirstDance(song)}
-                    className="w-full p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors text-left"
-                  >
-                    <p className="text-sm text-white font-medium">{song.title}</p>
-                    <p className="text-xs text-white/60">{song.artist}</p>
-                  </button>
-                ))}
-              </div>
               <button
                 onClick={() => openAddSongModal('first-dance')}
-                className="w-full mt-2 text-xs text-purple-400 hover:text-purple-300"
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white hover:bg-white/20 transition-colors flex items-center justify-center gap-2"
               >
-                + Search for more
+                <Plus className="w-4 h-4" />
+                <span className="text-sm">Add Your First Dance Song</span>
               </button>
+              <p className="text-xs text-white/40 mt-2 text-center">
+                This is your special moment - choose the perfect song
+              </p>
+            </div>
+            
+            {/* Import Spotify Playlist - Pro Feature */}
+            <div className="glass-card rounded-lg p-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 relative">
+              <div className="absolute top-2 right-2">
+                <span className="px-2 py-0.5 bg-purple-600 text-white text-xs rounded-full">PRO</span>
+              </div>
+              <h3 className="font-medium text-white mb-3 flex items-center gap-2">
+                <Upload className="w-4 h-4 text-purple-400" />
+                Import Spotify Playlist
+              </h3>
+              <button
+                onClick={() => setShowAccountModal(true)}
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white/50 hover:bg-white/20 hover:text-white transition-colors flex items-center justify-center gap-2 relative overflow-hidden"
+              >
+                <Lock className="w-4 h-4" />
+                <span className="text-sm">Upgrade to Import Playlists</span>
+              </button>
+              <p className="text-xs text-white/40 mt-2 text-center">
+                Import your existing Spotify playlists directly
+              </p>
             </div>
             
             {/* Quick Add Songs */}
@@ -735,7 +760,7 @@ export default function V3ThreePanePage() {
                 <div className="flex justify-between text-sm">
                   <span className="text-white/60">Customized</span>
                   <span className="text-white font-medium">
-                    {selectedRegion ? `✓ ${selectedRegion}` : 'Not yet'}
+                    {selectedGenres.length > 0 ? `✓ ${selectedGenres.length} genres` : 'Not yet'}
                   </span>
                 </div>
               </div>
@@ -778,6 +803,7 @@ export default function V3ThreePanePage() {
                   onAddSong={() => openAddSongModal(moment.id)}
                   onPlaySong={handlePlaySong}
                   onPauseSong={handlePauseSong}
+                  onRemoveSong={handleRemoveSong}
                   playingId={playingId}
                 />
               ))}

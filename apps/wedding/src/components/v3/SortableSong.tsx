@@ -3,7 +3,7 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Play, Pause, GripVertical } from 'lucide-react';
+import { Play, Pause, GripVertical, X, ExternalLink } from 'lucide-react';
 
 interface Song {
   id: string;
@@ -12,6 +12,7 @@ interface Song {
   bpm?: number;
   label?: string;
   previewUrl?: string;
+  spotifyId?: string;
   duration?: number;
 }
 
@@ -22,6 +23,7 @@ interface SortableSongProps {
   index: number;
   onPlay?: () => void;
   onPause?: () => void;
+  onRemove?: () => void;
   isPlaying?: boolean;
 }
 
@@ -32,6 +34,7 @@ export function SortableSong({
   index,
   onPlay,
   onPause,
+  onRemove,
   isPlaying = false,
 }: SortableSongProps) {
   const {
@@ -93,18 +96,41 @@ export function SortableSong({
         </p>
       </div>
       
-      {song.previewUrl && (
-        <button 
-          onClick={isPlaying ? onPause : onPlay}
-          className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-white/10 rounded transition-all"
-        >
-          {isPlaying ? (
-            <Pause className="w-4 h-4 text-white/60" />
-          ) : (
-            <Play className="w-4 h-4 text-white/60" />
-          )}
-        </button>
-      )}
+      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        {song.previewUrl ? (
+          <button 
+            onClick={isPlaying ? onPause : onPlay}
+            className="p-1.5 hover:bg-white/10 rounded transition-all"
+            title="Preview song"
+          >
+            {isPlaying ? (
+              <Pause className="w-4 h-4 text-white/60" />
+            ) : (
+              <Play className="w-4 h-4 text-white/60" />
+            )}
+          </button>
+        ) : song.spotifyId ? (
+          <a
+            href={`https://open.spotify.com/track/${song.spotifyId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-1.5 hover:bg-white/10 rounded transition-all"
+            title="Open in Spotify"
+          >
+            <ExternalLink className="w-4 h-4 text-white/60" />
+          </a>
+        ) : null}
+        
+        {onRemove && (
+          <button
+            onClick={onRemove}
+            className="p-1.5 hover:bg-white/10 rounded transition-all"
+            title="Remove song"
+          >
+            <X className="w-4 h-4 text-white/60 hover:text-red-400" />
+          </button>
+        )}
+      </div>
     </div>
   );
 }

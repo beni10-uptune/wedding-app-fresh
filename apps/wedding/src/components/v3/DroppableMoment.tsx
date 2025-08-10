@@ -32,6 +32,7 @@ interface DroppableMomentProps {
   onAddSong: () => void;
   onPlaySong: (song: Song, songId: string) => void;
   onPauseSong: () => void;
+  onRemoveSong: (momentId: string, songIndex: number) => void;
   playingId: string | null;
 }
 
@@ -42,6 +43,7 @@ export function DroppableMoment({
   onAddSong,
   onPlaySong,
   onPauseSong,
+  onRemoveSong,
   playingId
 }: DroppableMomentProps) {
   const { setNodeRef, isOver } = useDroppable({
@@ -111,6 +113,7 @@ export function DroppableMoment({
                       index={idx}
                       onPlay={() => onPlaySong(song, songKey)}
                       onPause={onPauseSong}
+                      onRemove={() => onRemoveSong(moment.id, idx)}
                       isPlaying={playingId === songKey}
                     />
                   );

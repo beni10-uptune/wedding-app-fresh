@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getMusicDatabase } from '@/lib/music-database-service';
-import { MasterSong } from '@/types/music-ai';
-import { WeddingMoment } from '@/types/wedding-v2';
+import { WeddingMoment } from '@/types/music-ai';
 
 // Realistic song counts for each moment based on duration
 export const MOMENT_SONG_COUNTS = {
@@ -18,19 +17,19 @@ export const MOMENT_SONG_COUNTS = {
 };
 
 // Load songs from database for each moment
-export async function loadMomentSongs(momentId: string, genres?: string[], country?: string): Promise<MasterSong[]> {
+export async function loadMomentSongs(momentId: string, genres?: string[], country?: string): Promise<any[]> {
   const db = getMusicDatabase();
   
   // Map moment IDs to WeddingMoment enum values
   const momentMap: { [key: string]: WeddingMoment } = {
-    'getting-ready': WeddingMoment.GettingReady,
-    'ceremony': WeddingMoment.Ceremony,
-    'cocktails': WeddingMoment.CocktailHour,
-    'dinner': WeddingMoment.Dinner,
-    'first-dance': WeddingMoment.FirstDance,
-    'parent-dances': WeddingMoment.ParentDances,
-    'party': WeddingMoment.Reception,
-    'last-dance': WeddingMoment.LastDance
+    'getting-ready': WeddingMoment.PRELUDE,
+    'ceremony': WeddingMoment.PROCESSIONAL,
+    'cocktails': WeddingMoment.COCKTAIL,
+    'dinner': WeddingMoment.DINNER,
+    'first-dance': WeddingMoment.FIRST_DANCE,
+    'parent-dances': WeddingMoment.PARENT_DANCE,
+    'party': WeddingMoment.PARTY_PEAK,
+    'last-dance': WeddingMoment.LAST_DANCE
   };
 
   const weddingMoment = momentMap[momentId];
@@ -43,23 +42,23 @@ export async function loadMomentSongs(momentId: string, genres?: string[], count
     // Get songs for this moment from the database
     const songs = await db.getSongsForMoment(
       weddingMoment,
-      MOMENT_SONG_COUNTS[momentId as keyof typeof MOMENT_SONG_COUNTS] || 10,
-      genres,
-      country
+      { 
+        limit: MOMENT_SONG_COUNTS[momentId as keyof typeof MOMENT_SONG_COUNTS] || 10,
+        excludeExplicit: false
+      }
     );
 
     // Convert to the format used by the builder
     return songs.map(song => ({
-      ...song,
-      id: song.id || song.spotifyId || `${momentId}-${Math.random()}`,
+      id: song.spotify_id || `${momentId}-${Math.random()}`,
       title: song.title,
       artist: song.artist,
-      bpm: song.features?.tempo ? Math.round(song.features.tempo) : undefined,
-      duration: song.durationMs ? Math.round(song.durationMs / 1000) : undefined,
-      previewUrl: song.previewUrl,
-      spotifyId: song.spotifyId,
-      albumArt: song.albumArt,
-      features: song.features
+      bpm: song.audio_features?.tempo ? Math.round(song.audio_features.tempo) : undefined,
+      duration: song.duration_ms ? Math.round(song.duration_ms / 1000) : undefined,
+      previewUrl: song.preview_url,
+      spotifyId: song.spotify_id,
+      albumArt: song.album_art_url,
+      features: song.audio_features
     }));
   } catch (error) {
     console.error(`Error loading songs for ${momentId}:`, error);
@@ -113,7 +112,7 @@ export function useTimelineWithDatabaseSongs(selectedGenres: string[], selectedC
 }
 
 // Search songs from database instead of direct Spotify
-export async function searchDatabaseSongs(query: string): Promise<MasterSong[]> {
+export async function searchDatabaseSongs(query: string): Promise<any[]> {
   try {
     const response = await fetch(`/api/search-songs?q=${encodeURIComponent(query)}&limit=20`);
     if (!response.ok) throw new Error('Search failed');
@@ -128,7 +127,7 @@ export async function searchDatabaseSongs(query: string): Promise<MasterSong[]> 
 }
 
 // Fallback Spotify search
-async function searchSpotifySongs(query: string): Promise<MasterSong[]> {
+async function searchSpotifySongs(query: string): Promise<any[]> {
   try {
     const response = await fetch(`/api/spotify/search?q=${encodeURIComponent(query)}&limit=10`);
     if (!response.ok) throw new Error('Spotify search failed');
@@ -142,7 +141,7 @@ async function searchSpotifySongs(query: string): Promise<MasterSong[]> {
 }
 
 // Add song to database when user adds a new song
-export async function addSongToDatabase(song: MasterSong): Promise<void> {
+export async function addSongToDatabase(song: any): Promise<void> {
   try {
     // First enrich the song with Spotify data if we have a Spotify ID
     if (song.spotifyId) {
@@ -160,7 +159,7 @@ export async function addSongToDatabase(song: MasterSong): Promise<void> {
 
     // Add to database
     const db = getMusicDatabase();
-    await db.addSong(song);
+    await db.saveSong(song);
   } catch (error) {
     console.error('Error adding song to database:', error);
   }

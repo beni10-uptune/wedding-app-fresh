@@ -86,6 +86,7 @@ interface Song {
   previewUrl?: string;
   spotifyId?: string;
   duration?: number;
+  albumArt?: string;
 }
 
 // Complete song database

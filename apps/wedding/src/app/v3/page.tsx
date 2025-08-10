@@ -209,6 +209,8 @@ export default function V3ThreePanePage() {
   const [isSearching, setIsSearching] = useState(false);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
+  const [quickAddSong, setQuickAddSong] = useState<Song | null>(null);
+  const [showQuickAddModal, setShowQuickAddModal] = useState(false);
   
   // Drag and drop sensors
   const sensors = useSensors(
@@ -526,12 +528,21 @@ export default function V3ThreePanePage() {
     }));
   };
   
-  // Quick add song from search
+  // Quick add song from search - show moment selector
   const handleQuickAddSong = (song: Song) => {
-    // Default to adding to party section
-    handleAddSongToMoment(song, 'party');
-    setSearchQuery('');
-    setSearchResults([]);
+    setQuickAddSong(song);
+    setShowQuickAddModal(true);
+  };
+  
+  // Add song to selected moment from quick add
+  const handleQuickAddToMoment = (momentId: string) => {
+    if (quickAddSong) {
+      handleAddSongToMoment(quickAddSong, momentId);
+      setQuickAddSong(null);
+      setShowQuickAddModal(false);
+      setSearchQuery('');
+      setSearchResults([]);
+    }
   };
   
   // Set first dance
@@ -675,24 +686,24 @@ export default function V3ThreePanePage() {
               </p>
             </div>
             
-            {/* Import Spotify Playlist - Pro Feature */}
+            {/* Analyze Spotify Taste - Pro Feature */}
             <div className="glass-card rounded-lg p-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 relative">
               <div className="absolute top-2 right-2">
                 <span className="px-2 py-0.5 bg-purple-600 text-white text-xs rounded-full">PRO</span>
               </div>
               <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                <Upload className="w-4 h-4 text-purple-400" />
-                Import Spotify Playlist
+                <Sparkles className="w-4 h-4 text-purple-400" />
+                AI Taste Analysis
               </h3>
               <button
                 onClick={() => setShowAccountModal(true)}
                 className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white/50 hover:bg-white/20 hover:text-white transition-colors flex items-center justify-center gap-2 relative overflow-hidden"
               >
                 <Lock className="w-4 h-4" />
-                <span className="text-sm">Upgrade to Import Playlists</span>
+                <span className="text-sm">Analyze Your Spotify</span>
               </button>
               <p className="text-xs text-white/40 mt-2 text-center">
-                Import your existing Spotify playlists directly
+                AI learns your music taste to create the perfect wedding flow with BPM matching
               </p>
             </div>
             
@@ -726,10 +737,15 @@ export default function V3ThreePanePage() {
                         <button
                           key={song.id}
                           onClick={() => handleQuickAddSong(song)}
-                          className="w-full p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors text-left"
+                          className="w-full p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors text-left group"
                         >
-                          <p className="text-sm text-white font-medium">{song.title}</p>
-                          <p className="text-xs text-white/60">{song.artist}</p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <p className="text-sm text-white font-medium">{song.title}</p>
+                              <p className="text-xs text-white/60">{song.artist}</p>
+                            </div>
+                            <Plus className="w-4 h-4 text-white/40 group-hover:text-white/60" />
+                          </div>
                         </button>
                       ))}
                     </div>
@@ -977,6 +993,54 @@ export default function V3ThreePanePage() {
           }}
           momentId={addSongMomentId}
         />
+
+        {/* Quick Add Moment Selector Modal */}
+        {showQuickAddModal && quickAddSong && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="fixed inset-0 bg-black/60" onClick={() => {
+              setShowQuickAddModal(false);
+              setQuickAddSong(null);
+            }} />
+            <div className="relative glass-darker rounded-2xl p-6 max-w-md w-full">
+              <button
+                onClick={() => {
+                  setShowQuickAddModal(false);
+                  setQuickAddSong(null);
+                }}
+                className="absolute top-4 right-4 text-white/50 hover:text-white"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              
+              <h2 className="text-xl font-bold text-white mb-2">
+                Where should this song go?
+              </h2>
+              <div className="mb-4">
+                <p className="text-white font-medium">{quickAddSong.title}</p>
+                <p className="text-sm text-white/60">{quickAddSong.artist}</p>
+              </div>
+              
+              <div className="space-y-2">
+                {timeline.map((moment) => (
+                  <button
+                    key={moment.id}
+                    onClick={() => handleQuickAddToMoment(moment.id)}
+                    className="w-full p-3 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-left group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{moment.emoji}</span>
+                      <div className="flex-1">
+                        <p className="text-white font-medium">{moment.title}</p>
+                        <p className="text-xs text-white/60">{moment.time} • {moment.songs.length} songs</p>
+                      </div>
+                      <Plus className="w-5 h-5 text-white/40 group-hover:text-white" />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Account Modal */}
         {showAccountModal && (

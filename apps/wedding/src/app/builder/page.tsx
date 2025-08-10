@@ -64,6 +64,8 @@ import { DraggableSong } from '@/components/v3/DraggableSong';
 import { DroppableMoment } from '@/components/v3/DroppableMoment';
 import { AddSongModal } from '@/components/v3/AddSongModal';
 import { AuthModal } from '@/components/v3/AuthModal';
+import { ShareModal } from '@/components/v3/ShareModal';
+import { SettingsModal } from '@/components/v3/SettingsModal';
 
 // Song type with BPM for flow analysis
 interface Song {
@@ -232,6 +234,8 @@ export default function V3ThreePanePage() {
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
   const [quickAddSong, setQuickAddSong] = useState<Song | null>(null);
   const [showQuickAddModal, setShowQuickAddModal] = useState(false);
+  const [leftPaneTab, setLeftPaneTab] = useState<'build' | 'manage' | 'guests'>('build');
+  const [guestList, setGuestList] = useState<any[]>([]);
   
   // Drag and drop sensors
   const sensors = useSensors(
@@ -799,10 +803,61 @@ export default function V3ThreePanePage() {
         <div className="flex h-[calc(100vh-3.5rem)] relative z-10">
           
           {/* LEFT PANE: Customization */}
-          <div className="w-80 glass-darker border-r border-white/10 overflow-y-auto p-4 space-y-4">
-            <div>
-              <h2 className="text-sm font-semibold text-white/50 uppercase mb-3">Customize</h2>
-            </div>
+          <div className="w-80 glass-darker border-r border-white/10 flex flex-col">
+            {/* Tab Navigation for Authenticated Users */}
+            {user && (
+              <div className="border-b border-white/10">
+                <div className="flex">
+                  <button
+                    onClick={() => setLeftPaneTab('build')}
+                    className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+                      leftPaneTab === 'build'
+                        ? 'text-white border-b-2 border-purple-400'
+                        : 'text-white/60 hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <Music className="w-4 h-4" />
+                      Build
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setLeftPaneTab('manage')}
+                    className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+                      leftPaneTab === 'manage'
+                        ? 'text-white border-b-2 border-purple-400'
+                        : 'text-white/60 hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <Settings className="w-4 h-4" />
+                      Manage
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setLeftPaneTab('guests')}
+                    className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+                      leftPaneTab === 'guests'
+                        ? 'text-white border-b-2 border-purple-400'
+                        : 'text-white/60 hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <Users className="w-4 h-4" />
+                      Guests
+                    </div>
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {/* Tab Content */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {(!user || leftPaneTab === 'build') && (
+                <>
+                  <div>
+                    <h2 className="text-sm font-semibold text-white/50 uppercase mb-3">Customize</h2>
+                  </div>
             
             {/* Location */}
             <div className="glass-card rounded-lg p-4">
@@ -973,22 +1028,171 @@ export default function V3ThreePanePage() {
               </div>
             </div>
             
-            {/* Trash Zone */}
-            {isDragging && (
-              <div 
-                id="trash-zone"
-                className={`glass-card rounded-lg p-4 border-2 border-dashed ${
-                  isDraggingToTrash ? 'border-red-500 bg-red-500/20' : 'border-white/20'
-                } transition-all`}
-              >
-                <div className="flex items-center justify-center gap-2">
-                  <Trash2 className={`w-5 h-5 ${isDraggingToTrash ? 'text-red-400' : 'text-white/40'}`} />
-                  <span className={`text-sm ${isDraggingToTrash ? 'text-red-400' : 'text-white/40'}`}>
-                    Drop here to remove
-                  </span>
-                </div>
-              </div>
-            )}
+                  {/* Trash Zone */}
+                  {isDragging && (
+                    <div 
+                      id="trash-zone"
+                      className={`glass-card rounded-lg p-4 border-2 border-dashed ${
+                        isDraggingToTrash ? 'border-red-500 bg-red-500/20' : 'border-white/20'
+                      } transition-all`}
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        <Trash2 className={`w-5 h-5 ${isDraggingToTrash ? 'text-red-400' : 'text-white/40'}`} />
+                        <span className={`text-sm ${isDraggingToTrash ? 'text-red-400' : 'text-white/40'}`}>
+                          Drop here to remove
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+              
+              {/* MANAGE TAB */}
+              {user && leftPaneTab === 'manage' && (
+                <>
+                  <div>
+                    <h2 className="text-sm font-semibold text-white/50 uppercase mb-3">Wedding Settings</h2>
+                  </div>
+                  
+                  <div className="glass-card rounded-lg p-4">
+                    <h3 className="font-medium text-white mb-3 flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-purple-400" />
+                      Wedding Details
+                    </h3>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-xs text-white/60">Wedding Date</label>
+                        <input
+                          type="date"
+                          value={weddingDate || ''}
+                          onChange={(e) => {
+                            setWeddingDate(e.target.value);
+                            setHasChanges(true);
+                          }}
+                          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-white/60">Venue</label>
+                        <input
+                          type="text"
+                          placeholder="Enter venue name"
+                          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm placeholder-white/40"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-white/60">Guest Count</label>
+                        <input
+                          type="number"
+                          placeholder="Expected guests"
+                          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm placeholder-white/40"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="glass-card rounded-lg p-4">
+                    <h3 className="font-medium text-white mb-3 flex items-center gap-2">
+                      <UserPlus className="w-4 h-4 text-purple-400" />
+                      Partner Access
+                    </h3>
+                    <p className="text-xs text-white/60 mb-3">
+                      Share access with your partner to build together
+                    </p>
+                    <button
+                      onClick={() => setShowShareModal(true)}
+                      className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Share2 className="w-4 h-4" />
+                      Invite Partner
+                    </button>
+                  </div>
+                  
+                  <div className="glass-card rounded-lg p-4">
+                    <h3 className="font-medium text-white mb-3 flex items-center gap-2">
+                      <Download className="w-4 h-4 text-purple-400" />
+                      Export Options
+                    </h3>
+                    <div className="space-y-2">
+                      <button className="w-full px-3 py-2 bg-white/10 rounded-lg text-white text-sm hover:bg-white/20 transition-colors text-left">
+                        Export to Spotify
+                      </button>
+                      <button className="w-full px-3 py-2 bg-white/10 rounded-lg text-white text-sm hover:bg-white/20 transition-colors text-left">
+                        Download for DJ
+                      </button>
+                      <button className="w-full px-3 py-2 bg-white/10 rounded-lg text-white text-sm hover:bg-white/20 transition-colors text-left">
+                        Print Timeline
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+              
+              {/* GUESTS TAB */}
+              {user && leftPaneTab === 'guests' && (
+                <>
+                  <div>
+                    <h2 className="text-sm font-semibold text-white/50 uppercase mb-3">Guest Management</h2>
+                  </div>
+                  
+                  <div className="glass-card rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-medium text-white flex items-center gap-2">
+                        <Users className="w-4 h-4 text-purple-400" />
+                        Guest List
+                      </h3>
+                      <span className="text-xs bg-purple-600/20 text-purple-400 px-2 py-1 rounded-full">
+                        {guestList.length} guests
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setShowShareModal(true)}
+                      className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Share2 className="w-4 h-4" />
+                      Share Invite Link
+                    </button>
+                  </div>
+                  
+                  {guestList.length > 0 ? (
+                    <div className="glass-card rounded-lg p-4">
+                      <h4 className="text-sm font-medium text-white mb-3">Recent Submissions</h4>
+                      <div className="space-y-2 max-h-64 overflow-y-auto">
+                        {guestList.slice(0, 5).map((guest: any, idx: number) => (
+                          <div key={idx} className="p-2 bg-white/5 rounded-lg">
+                            <p className="text-sm text-white font-medium">{guest.name}</p>
+                            <p className="text-xs text-white/60">{guest.songCount || 0} songs suggested</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="glass-card rounded-lg p-4">
+                      <div className="text-center py-4">
+                        <Users className="w-12 h-12 text-white/20 mx-auto mb-2" />
+                        <p className="text-sm text-white/60">No guests yet</p>
+                        <p className="text-xs text-white/40 mt-1">
+                          Share your wedding link to collect song suggestions
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="glass-card rounded-lg p-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20">
+                    <h3 className="font-medium text-white mb-2 flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4 text-purple-400" />
+                      Guest Features
+                    </h3>
+                    <ul className="space-y-1 text-xs text-white/60">
+                      <li>• Guests can suggest up to 5 songs</li>
+                      <li>• Vote on other suggestions</li>
+                      <li>• Leave special dedications</li>
+                      <li>• RSVP through the link</li>
+                    </ul>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
           {/* MIDDLE PANE: Timeline (The Hero) */}
@@ -1240,6 +1444,28 @@ export default function V3ThreePanePage() {
           onSuccess={saveTimeline}
           totalSongs={totalSongs}
         />
+
+        {/* Share Modal */}
+        {showShareModal && (
+          <ShareModal
+            onClose={() => setShowShareModal(false)}
+            weddingId={user?.uid}
+          />
+        )}
+
+        {/* Settings Modal */}
+        {showSettingsModal && (
+          <SettingsModal
+            onClose={() => setShowSettingsModal(false)}
+            weddingData={weddingData}
+            onUpdate={(data) => {
+              setWeddingData({ ...weddingData, ...data });
+              setWeddingName(data.weddingName || weddingName);
+              setWeddingDate(data.weddingDate || weddingDate);
+              setHasChanges(true);
+            }}
+          />
+        )}
 
         {/* Upgrade Modal */}
         {showUpgradeModal && (

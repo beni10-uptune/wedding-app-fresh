@@ -66,6 +66,7 @@ import { AddSongModal } from '@/components/v3/AddSongModal';
 import { AuthModal } from '@/components/v3/AuthModal';
 import { ShareModal } from '@/components/v3/ShareModal';
 import { SettingsModal } from '@/components/v3/SettingsModal';
+import { UpgradeModal } from '@/components/v3/UpgradeModal';
 
 // Song type with BPM for flow analysis
 interface Song {
@@ -914,7 +915,12 @@ export default function V3ThreePanePage() {
               <select 
                 className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm mb-2"
                 value={selectedCountry || ''}
-                onChange={(e) => setSelectedCountry(e.target.value)}
+                onChange={(e) => {
+                  setSelectedCountry(e.target.value);
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem('selectedCountry', e.target.value);
+                  }
+                }}
               >
                 <option value="">Select country</option>
                 {Object.entries(COUNTRIES).map(([country, data]) => (
@@ -1466,7 +1472,12 @@ export default function V3ThreePanePage() {
                     <select 
                       className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm mb-2"
                       value={selectedCountry || ''}
-                      onChange={(e) => setSelectedCountry(e.target.value)}
+                      onChange={(e) => {
+                        setSelectedCountry(e.target.value);
+                        if (typeof window !== 'undefined') {
+                          localStorage.setItem('selectedCountry', e.target.value);
+                        }
+                      }}
                     >
                       <option value="">Select country</option>
                       {Object.entries(COUNTRIES).map(([country, data]) => (
@@ -1585,7 +1596,10 @@ export default function V3ThreePanePage() {
                       );
                     }}
                     onAddSong={() => openAddSongModal(moment.id)}
-                    onRemoveSong={(songIndex) => handleRemoveSong(moment.id, songIndex)}
+                    onRemoveSong={(momentId, songIndex) => handleRemoveSong(momentId, songIndex)}
+                    onPlaySong={handlePlaySong}
+                    onPauseSong={handlePauseSong}
+                    playingId={playingId}
                   />
                 ))}
               </div>
@@ -1761,61 +1775,11 @@ export default function V3ThreePanePage() {
 
         {/* Upgrade Modal */}
         {showUpgradeModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="fixed inset-0 bg-black/60" onClick={() => setShowUpgradeModal(false)} />
-            <div className="relative glass-darker rounded-2xl p-8 max-w-lg w-full">
-              <button
-                onClick={() => setShowUpgradeModal(false)}
-                className="absolute top-4 right-4 text-white/50 hover:text-white"
-              >
-                <X className="w-6 h-6" />
-              </button>
-              
-              <h2 className="text-2xl font-bold text-white mb-4">
-                Unlock Pro Features
-              </h2>
-              
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center gap-3">
-                  <MessageSquare className="w-5 h-5 text-purple-400" />
-                  <span className="text-white">AI Assistant to help build your perfect playlist</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <TrendingUp className="w-5 h-5 text-purple-400" />
-                  <span className="text-white">Smart BPM matching & energy flow</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Upload className="w-5 h-5 text-purple-400" />
-                  <span className="text-white">Import your Spotify playlists</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Music className="w-5 h-5 text-purple-400" />
-                  <span className="text-white">Export directly to Spotify</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Users className="w-5 h-5 text-purple-400" />
-                  <span className="text-white">Guest request system</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Save className="w-5 h-5 text-purple-400" />
-                  <span className="text-white">Unlimited saves & versions</span>
-                </div>
-              </div>
-              
-              <div className="text-center mb-6">
-                <p className="text-3xl font-bold text-white">$25</p>
-                <p className="text-sm text-white/60">One-time payment • Lifetime access</p>
-              </div>
-              
-              <button className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90">
-                Upgrade to Pro
-              </button>
-              
-              <p className="text-xs text-white/50 text-center mt-4">
-                30-day money back guarantee • Instant access
-              </p>
-            </div>
-          </div>
+          <UpgradeModal
+            onClose={() => setShowUpgradeModal(false)}
+            weddingId={user?.uid}
+            user={user}
+          />
         )}
       </div>
     </DndContext>

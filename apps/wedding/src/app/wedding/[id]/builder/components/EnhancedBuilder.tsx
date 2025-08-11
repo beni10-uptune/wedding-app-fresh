@@ -24,7 +24,7 @@ import EnhancedTimeline from './EnhancedTimeline'
 import GuestSubmissions from './GuestSubmissions'
 import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import { Save, Undo, Redo, Trash2, FileMusic, BookOpen } from 'lucide-react'
+import { Save, Undo, Redo, Trash2, FileMusic, BookOpen, Music, Sparkles } from 'lucide-react'
 import SpotifyExport from './SpotifyExport'
 import EnhancedMobileBuilder from './EnhancedMobileBuilder'
 import WelcomeFlow from './WelcomeFlow'
@@ -597,6 +597,49 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
 
           {/* Timeline Moments */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4" data-tutorial="timeline">
+            {/* Show populate button if timeline is empty */}
+            {totalSongs === 0 && (
+              <div className="glass-card rounded-xl p-6 text-center">
+                <Music className="w-12 h-12 text-purple-400 mx-auto mb-3" />
+                <h3 className="text-lg font-semibold text-white mb-2">Start Your Wedding Playlist</h3>
+                <p className="text-white/60 text-sm mb-4">
+                  Get started with our curated collection of wedding songs
+                </p>
+                <button
+                  onClick={async () => {
+                    // Import and populate with default songs
+                    const { CURATED_SONGS } = await import('@/data/curatedSongs')
+                    const newTimeline = { ...timeline }
+                    
+                    WEDDING_MOMENTS.forEach(moment => {
+                      const momentSongs = CURATED_SONGS[moment.id as keyof typeof CURATED_SONGS]
+                      if (!newTimeline[moment.id]) {
+                        newTimeline[moment.id] = {
+                          id: moment.id,
+                          name: moment.name,
+                          order: moment.order,
+                          duration: moment.duration,
+                          songs: []
+                        }
+                      }
+                      
+                      if (momentSongs && momentSongs.length > 0) {
+                        // Add 2-3 default songs
+                        const defaultSongs = momentSongs.slice(0, Math.min(3, momentSongs.length))
+                        newTimeline[moment.id].songs = defaultSongs.map(songToTimelineSong)
+                      }
+                    })
+                    
+                    updateTimeline(newTimeline)
+                  }}
+                  className="btn-primary"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  Add Recommended Songs
+                </button>
+              </div>
+            )}
+            
             {WEDDING_MOMENTS.map((moment, index) => (
               <div key={moment.id} data-tutorial={index === 0 ? "timeline-moment" : undefined}>
                 <EnhancedTimeline

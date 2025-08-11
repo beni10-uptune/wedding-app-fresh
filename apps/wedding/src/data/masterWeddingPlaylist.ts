@@ -133,13 +133,13 @@ function getAcousticness(genres: string[]): number {
  * Pre-populated with the best wedding songs, organized by moment
  */
 export const MASTER_WEDDING_SONGS: MasterSong[] = [
-  // ========== PRELUDE / GUEST ARRIVAL ==========
+  // ========== GETTING READY ==========
   createSong('3n3Ppam7vgaVa1iaRUc9Lp', 'A Thousand Years', 'Christina Perri', 'The Twilight Saga: Breaking Dawn', {
     duration: 295,
     bpm: 139,
     energyLevel: 2,
     genres: ['pop', 'contemporary'],
-    moments: ['prelude', 'processional'],
+    moments: ['getting-ready', 'ceremony'],
     popularIn: ['US', 'UK', 'Australia', 'Canada'],
     decade: '2010s',
     moodTags: ['romantic', 'emotional', 'timeless'],
@@ -151,7 +151,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 68,
     energyLevel: 2,
     genres: ['pop', 'contemporary'],
-    moments: ['prelude', 'firstDance'],
+    moments: ['getting-ready', 'first-dance'],
     popularIn: ['US', 'UK', 'Australia', 'Canada', 'Ireland'],
     decade: '2010s',
     moodTags: ['romantic', 'sweet', 'intimate'],
@@ -163,7 +163,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 120,
     energyLevel: 2,
     genres: ['r&b', 'soul', 'pop'],
-    moments: ['prelude', 'dinner', 'firstDance'],
+    moments: ['getting-ready', 'dinner', 'first-dance'],
     popularIn: ['US', 'UK', 'Australia', 'Canada', 'Ireland'],
     decade: '2010s',
     moodTags: ['romantic', 'emotional', 'dedication'],
@@ -175,19 +175,19 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 91,
     energyLevel: 2,
     genres: ['pop', 'rock'],
-    moments: ['prelude', 'cocktail'],
+    moments: ['getting-ready', 'cocktails'],
     popularIn: ['US', 'UK', 'Australia'],
     decade: '2000s',
     moodTags: ['relaxed', 'happy', 'sunny']
   }),
 
-  // ========== PROCESSIONAL ==========
+  // ========== CEREMONY ==========
   createSong('5IVuqXILoxVWvWEPm82Jxr', 'Canon in D', 'Johann Pachelbel', 'Classical Wedding Music', {
     duration: 343,
     bpm: 64,
     energyLevel: 2,
     genres: ['classical'],
-    moments: ['processional', 'ceremony'],
+    moments: ['ceremony'],
     popularIn: ['US', 'UK', 'Australia', 'Canada', 'Ireland'],
     decade: 'classical',
     moodTags: ['traditional', 'elegant', 'timeless']
@@ -198,20 +198,20 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 95,
     energyLevel: 2,
     genres: ['pop'],
-    moments: ['processional', 'firstDance'],
+    moments: ['ceremony', 'first-dance'],
     popularIn: ['UK', 'Ireland', 'US', 'Australia', 'Canada'],
     decade: '2010s',
     moodTags: ['romantic', 'perfect', 'emotional'],
     albumArt: 'https://i.scdn.co/image/ab67616d0000b273ba025c59b0b8dfb88f0e8f0e'
   }),
 
-  // ========== FIRST DANCE ==========
+  // ========== FIRST-DANCE ==========
   createSong('1BxfuPKGuaTgP7aM0Bbdwr', 'Thinking Out Loud', 'Ed Sheeran', 'x', {
     duration: 281,
     bpm: 79,
     energyLevel: 2,
     genres: ['pop', 'soul'],
-    moments: ['firstDance', 'dinner'],
+    moments: ['first-dance', 'dinner'],
     popularIn: ['UK', 'Ireland', 'US', 'Australia', 'Canada'],
     decade: '2010s',
     moodTags: ['romantic', 'slow dance', 'intimate'],
@@ -223,7 +223,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 65,
     energyLevel: 2,
     genres: ['soul', 'jazz', 'blues'],
-    moments: ['firstDance', 'dinner'],
+    moments: ['first-dance', 'dinner'],
     popularIn: ['US', 'UK'],
     decade: '1960s',
     moodTags: ['classic', 'romantic', 'timeless']
@@ -234,7 +234,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 72,
     energyLevel: 2,
     genres: ['pop', 'soul'],
-    moments: ['firstDance', 'ceremony'],
+    moments: ['first-dance', 'ceremony'],
     popularIn: ['UK', 'Ireland', 'US', 'Australia'],
     decade: '2000s',
     moodTags: ['emotional', 'powerful', 'romantic']
@@ -246,7 +246,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 115,
     energyLevel: 5,
     genres: ['funk', 'pop'],
-    moments: ['danceFloor', 'party'],
+    moments: ['party'],
     popularIn: ['US', 'UK', 'Australia', 'Canada', 'Ireland'],
     decade: '2010s',
     moodTags: ['party', 'fun', 'energetic'],
@@ -258,7 +258,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 126,
     energyLevel: 5,
     genres: ['funk', 'disco', 'soul'],
-    moments: ['danceFloor', 'party'],
+    moments: ['party'],
     popularIn: ['US', 'UK', 'Australia'],
     decade: '1970s',
     moodTags: ['celebration', 'classic', 'fun']
@@ -269,7 +269,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 101,
     energyLevel: 4,
     genres: ['pop', 'disco'],
-    moments: ['danceFloor', 'party'],
+    moments: ['party'],
     popularIn: ['UK', 'Ireland', 'Australia', 'Sweden'],
     decade: '1970s',
     moodTags: ['classic', 'dance', 'celebration']
@@ -280,7 +280,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 119,
     energyLevel: 5,
     genres: ['pop', 'dance'],
-    moments: ['danceFloor', 'party'],
+    moments: ['party'],
     popularIn: ['US', 'UK', 'Australia'],
     decade: '1980s',
     moodTags: ['party', 'dance', 'energetic']
@@ -291,7 +291,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 148,
     energyLevel: 5,
     genres: ['rock', 'indie'],
-    moments: ['danceFloor', 'party'],
+    moments: ['party'],
     popularIn: ['UK', 'Ireland', 'US', 'Australia'],
     decade: '2000s',
     moodTags: ['anthem', 'singalong', 'energetic']
@@ -302,7 +302,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 128,
     energyLevel: 4,
     genres: ['pop', 'rock'],
-    moments: ['danceFloor', 'party'],
+    moments: ['party'],
     popularIn: ['US', 'UK', 'Ireland'],
     decade: '1960s',
     moodTags: ['singalong', 'classic', 'crowd-pleaser']
@@ -313,7 +313,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 119,
     energyLevel: 4,
     genres: ['rock', '80s'],
-    moments: ['danceFloor', 'lastDance'],
+    moments: ['party', 'last-dance'],
     popularIn: ['US', 'UK', 'Canada'],
     decade: '1980s',
     moodTags: ['anthem', 'singalong', 'classic']
@@ -324,7 +324,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 89,
     energyLevel: 3,
     genres: ['rock', 'britpop'],
-    moments: ['danceFloor', 'singalong'],
+    moments: ['party'],
     popularIn: ['UK', 'Ireland', 'Australia'],
     decade: '1990s',
     moodTags: ['anthem', 'singalong', 'british']
@@ -336,7 +336,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 116,
     energyLevel: 2,
     genres: ['jazz', 'standards'],
-    moments: ['dinner', 'cocktail'],
+    moments: ['dinner', 'cocktails'],
     popularIn: ['US', 'UK'],
     decade: '1960s',
     moodTags: ['classic', 'elegant', 'sophisticated']
@@ -347,7 +347,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 96,
     energyLevel: 2,
     genres: ['rock', 'ballad'],
-    moments: ['dinner', 'firstDance'],
+    moments: ['dinner', 'first-dance'],
     popularIn: ['UK', 'US'],
     decade: '1970s',
     moodTags: ['romantic', 'classic', 'gentle']
@@ -359,7 +359,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 123,
     energyLevel: 3,
     genres: ['soul', 'jazz'],
-    moments: ['cocktail', 'dinner'],
+    moments: ['cocktails', 'dinner'],
     popularIn: ['UK', 'Ireland', 'US'],
     decade: '2000s',
     moodTags: ['groovy', 'sophisticated', 'cool']
@@ -370,7 +370,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 90,
     energyLevel: 3,
     genres: ['pop', 'rock'],
-    moments: ['cocktail', 'prelude'],
+    moments: ['cocktails', 'getting-ready'],
     popularIn: ['UK', 'US', 'Australia'],
     decade: '2020s',
     moodTags: ['happy', 'sunny', 'feel-good']
@@ -382,7 +382,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 103,
     energyLevel: 3,
     genres: ['soul', 'motown'],
-    moments: ['parentDances'],
+    moments: ['parent-dances'],
     popularIn: ['US', 'UK'],
     decade: '1960s',
     moodTags: ['classic', 'sweet', 'father-daughter']
@@ -393,7 +393,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 116,
     energyLevel: 3,
     genres: ['soul', 'r&b'],
-    moments: ['parentDances'],
+    moments: ['parent-dances'],
     popularIn: ['US', 'UK'],
     decade: '1970s',
     moodTags: ['joyful', 'celebration', 'father-daughter']
@@ -405,7 +405,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 103,
     energyLevel: 4,
     genres: ['pop', '80s'],
-    moments: ['lastDance'],
+    moments: ['last-dance'],
     popularIn: ['US', 'UK', 'Australia'],
     decade: '1980s',
     moodTags: ['romantic', 'finale', 'memorable']
@@ -416,7 +416,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     bpm: 92,
     energyLevel: 3,
     genres: ['rock', '90s'],
-    moments: ['lastDance'],
+    moments: ['last-dance'],
     popularIn: ['US', 'UK', 'Canada'],
     decade: '1990s',
     moodTags: ['ending', 'bittersweet', 'finale']
@@ -473,15 +473,14 @@ export function getDefaultWeddingTimeline(
   const timeline: Record<string, MasterSong[]> = {};
   
   const moments = [
-    { id: 'prelude', count: 5 },
-    { id: 'processional', count: 2 },
+    { id: 'getting-ready', count: 5 },
     { id: 'ceremony', count: 3 },
-    { id: 'cocktail', count: 8 },
+    { id: 'cocktails', count: 8 },
     { id: 'dinner', count: 6 },
-    { id: 'firstDance', count: 1 },
-    { id: 'parentDances', count: 2 },
-    { id: 'danceFloor', count: 15 },
-    { id: 'lastDance', count: 2 }
+    { id: 'first-dance', count: 1 },
+    { id: 'parent-dances', count: 2 },
+    { id: 'party', count: 15 },
+    { id: 'last-dance', count: 2 }
   ];
 
   moments.forEach(({ id, count }) => {

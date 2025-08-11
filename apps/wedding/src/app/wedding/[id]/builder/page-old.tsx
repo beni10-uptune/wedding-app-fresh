@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { WeddingV2, Song, TimelineSong } from '@/types/wedding-v2'
-import { WEDDING_MOMENTS } from '@/data/weddingMoments'
+import { WEDDING_MOMENTS_V2 as WEDDING_MOMENTS } from '@/data/weddingMomentsV2'
 import { getCollectionsByMoment } from '@/data/curatedCollections'
 import { 
   Music, Users, Sparkles, 

@@ -5,7 +5,7 @@ import {
   Music, Plus, ChevronRight, CheckCircle2, Clock, 
   Sparkles, ListMusic, Search, TrendingUp, Heart
 } from 'lucide-react'
-import { WEDDING_MOMENTS } from '@/data/weddingMoments'
+import { WEDDING_MOMENTS_V2 as WEDDING_MOMENTS } from '@/data/weddingMomentsV2'
 import { Timeline } from '@/types/wedding-v2'
 
 interface TimelineSectionProps {

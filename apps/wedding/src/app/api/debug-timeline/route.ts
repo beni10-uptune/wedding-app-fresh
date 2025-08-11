@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { CURATED_SONGS } from '@/data/curatedSongs';
-import { WEDDING_MOMENTS } from '@/data/weddingMoments';
+import { WEDDING_MOMENTS_V2 as WEDDING_MOMENTS } from '@/data/weddingMomentsV2';
 import { TimelineSong, WeddingV2 } from '@/types/wedding-v2';
 import { Timestamp } from 'firebase/firestore';
 

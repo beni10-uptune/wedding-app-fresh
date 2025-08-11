@@ -1,7 +1,7 @@
 'use client'
 
 import { Song, Timeline } from '@/types/wedding-v2'
-import { WEDDING_MOMENTS } from '@/data/weddingMoments'
+import { WEDDING_MOMENTS_V2 as WEDDING_MOMENTS } from '@/data/weddingMomentsV2'
 import { 
   ChevronDown, ChevronUp, Play, Pause, X, 
   GripVertical, ExternalLink, Plus, AlertCircle 

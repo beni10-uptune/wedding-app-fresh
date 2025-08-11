@@ -9,7 +9,7 @@ import { EnhancedSongSearch } from '@/components/EnhancedSongSearch'
 import { CuratedSongCollections, SongDatabaseStats } from '@/components/CuratedSongCollections'
 import { SongPreviewPlayer } from '@/components/SongPreviewPlayer'
 import { Song, WeddingMoment } from '@/types/wedding-v2'
-import { WEDDING_MOMENTS } from '@/data/weddingMoments'
+import { WEDDING_MOMENTS_V2 as WEDDING_MOMENTS } from '@/data/weddingMomentsV2'
 
 export default function SongToolsPage() {
   const [activeTab, setActiveTab] = useState<'search' | 'timer' | 'energy' | 'generation' | 'collections'>('search')

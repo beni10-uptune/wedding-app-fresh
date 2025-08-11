@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Timestamp } from 'firebase/firestore'
 import { WeddingV2, Song, Timeline, TimelineSong } from '@/types/wedding-v2'
-import { WEDDING_MOMENTS } from '@/data/weddingMoments'
+import { WEDDING_MOMENTS_V2 as WEDDING_MOMENTS } from '@/data/weddingMomentsV2'
 import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { debounce } from 'lodash'

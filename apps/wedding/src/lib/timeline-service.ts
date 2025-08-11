@@ -6,7 +6,7 @@
  */
 
 import { WeddingV2, Timeline, TimelineSong } from '@/types/wedding-v2';
-import { WEDDING_MOMENTS } from '@/data/weddingMoments';
+import { WEDDING_MOMENTS_V2 as WEDDING_MOMENTS } from '@/data/weddingMomentsV2';
 import { 
   MASTER_WEDDING_SONGS, 
   getDefaultWeddingTimeline,
@@ -135,17 +135,14 @@ export function updateTimelineWithFilters(
  */
 function getSongCountForMoment(momentId: string): number {
   const counts: Record<string, number> = {
-    'prelude': 5,
-    'processional': 2,
+    'getting-ready': 5,
     'ceremony': 3,
-    'recessional': 2,
-    'cocktail': 10,
-    'entrance': 2,
+    'cocktails': 10,
     'dinner': 8,
-    'firstDance': 1,
-    'parentDances': 2,
-    'danceFloor': 20,
-    'lastDance': 2
+    'first-dance': 1,
+    'parent-dances': 2,
+    'party': 20,
+    'last-dance': 2
   };
   
   return counts[momentId] || 3;

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { CURATED_SONGS } from '@/data/curatedSongs';
-import { WEDDING_MOMENTS } from '@/data/weddingMoments';
+import { WEDDING_MOMENTS_V2 as WEDDING_MOMENTS } from '@/data/weddingMomentsV2';
 
 export async function GET(
   request: NextRequest,

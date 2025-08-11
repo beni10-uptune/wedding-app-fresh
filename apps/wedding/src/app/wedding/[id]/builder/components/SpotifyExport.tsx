@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { WeddingV2, Timeline } from '@/types/wedding-v2'
-import { WEDDING_MOMENTS } from '@/data/weddingMoments'
+import { WEDDING_MOMENTS_V2 as WEDDING_MOMENTS } from '@/data/weddingMomentsV2'
 import { Music, ExternalLink, CheckCircle, AlertCircle, Loader } from 'lucide-react'
 import { getSpotifyAuthUrl } from '@/lib/spotify'
 

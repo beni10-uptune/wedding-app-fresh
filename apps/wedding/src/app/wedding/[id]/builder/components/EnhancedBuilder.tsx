@@ -17,7 +17,7 @@ import {
   arrayMove
 } from '@dnd-kit/sortable'
 import { WeddingV2, Song, Timeline, TimelineSong } from '@/types/wedding-v2'
-import { WEDDING_MOMENTS } from '@/data/weddingMoments'
+import { WEDDING_MOMENTS_V2 as WEDDING_MOMENTS } from '@/data/weddingMomentsV2'
 import EnhancedSongSearch from './EnhancedSongSearch'
 import EnhancedCollectionBrowser from './EnhancedCollectionBrowser'
 import EnhancedTimeline from './EnhancedTimeline'

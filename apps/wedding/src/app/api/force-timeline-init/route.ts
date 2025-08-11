@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { CURATED_SONGS } from '@/data/curatedSongs';
-import { WEDDING_MOMENTS } from '@/data/weddingMoments';
+import { WEDDING_MOMENTS_V2 as WEDDING_MOMENTS } from '@/data/weddingMomentsV2';
 import { TimelineSong, WeddingV2 } from '@/types/wedding-v2';
 
 export async function POST(request: NextRequest) {

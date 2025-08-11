@@ -85,7 +85,7 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
   const [playingId, setPlayingId] = useState<string | null>(null)
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null)
   const [isDraggingToTrash, setIsDraggingToTrash] = useState(false)
-  const [history, setHistory] = useState<Timeline[]>([timeline])
+  const [history, setHistory] = useState<Timeline[]>([wedding.timeline || {}])
   const [historyIndex, setHistoryIndex] = useState(0)
   const [showSpotifyExport, setShowSpotifyExport] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -94,6 +94,15 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
   const [hasSeenWelcome, setHasSeenWelcome] = useState(false)
   const [showGuideViewer, setShowGuideViewer] = useState(false)
   const [selectedGuideMoment, setSelectedGuideMoment] = useState<string | undefined>()
+  
+  // Sync timeline when wedding prop changes
+  useEffect(() => {
+    if (wedding.timeline && Object.keys(wedding.timeline).length > 0) {
+      setTimeline(wedding.timeline)
+      setHistory([wedding.timeline])
+      setHistoryIndex(0)
+    }
+  }, [wedding.timeline])
 
   // Calculate total songs
   const totalSongs = Object.values(timeline).reduce((count, moment) => {

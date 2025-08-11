@@ -52,8 +52,14 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
 
       const weddingData = { id: weddingDoc.id, ...weddingDoc.data() } as WeddingV2
       
-      // Initialize timeline with default songs if it doesn't exist or is empty
-      if (!weddingData.timeline || Object.keys(weddingData.timeline).length === 0) {
+      // Check if timeline needs initialization (no timeline, empty timeline, or timeline with no songs)
+      const timelineNeedsInit = !weddingData.timeline || 
+        Object.keys(weddingData.timeline).length === 0 ||
+        Object.values(weddingData.timeline).every(moment => !moment.songs || moment.songs.length === 0)
+      
+      // Initialize timeline with default songs if needed
+      if (timelineNeedsInit) {
+        console.log('Initializing timeline with default songs...')
         // Import default songs for initial timeline
         const { CURATED_SONGS } = await import('@/data/curatedSongs')
         const { WEDDING_MOMENTS } = await import('@/data/weddingMoments')

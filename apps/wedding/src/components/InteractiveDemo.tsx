@@ -245,16 +245,13 @@ export function InteractiveDemo() {
         
         if (!response.ok) {
           const errorData = await response.json()
-          console.error('API error:', errorData)
           throw new Error('Search failed')
         }
         
         const data = await response.json()
-        console.log('API response:', data) // Debug log
         
         // Check if we have tracks in the response
         if (!data.tracks || !Array.isArray(data.tracks)) {
-          console.error('Invalid response format:', data)
           throw new Error('Invalid response format')
         }
         
@@ -271,7 +268,6 @@ export function InteractiveDemo() {
         setSearchResults(tracks)
         setShowResults(true)
       } catch (error) {
-        console.error('Search error:', error)
         setSearchError(true)
         // Always show demo songs on error
         const filtered = searchQuery.length > 0 

@@ -9,14 +9,14 @@ import { getMusicDatabase } from '@/lib/music-database-service';
 import type { MasterSong } from '@/types/music-ai';
 
 // Simple auth check - in production, use proper authentication
-const IMPORT_SECRET = process.env.IMPORT_SECRET || 'uptune-import-2025';
+const IMPORT_SECRET = process.env.IMPORT_SECRET;
 
 export async function POST(request: NextRequest) {
   try {
     // Check authorization
     const { secret, searchTerms, limit } = await request.json();
     
-    if (secret !== IMPORT_SECRET) {
+    if (!IMPORT_SECRET || secret !== IMPORT_SECRET) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     const maxPlaylists = limit || 3; // Limit playlists per search term
 
-    console.log(`Starting Spotify import for ${terms.length} search terms`);
+    // Starting Spotify import for search terms
 
     const spotifyService = getSpotifyService();
     const musicDatabase = getMusicDatabase();

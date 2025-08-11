@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
         const decodedToken = await adminAuth.verifyIdToken(token);
         userId = decodedToken.uid;
       } catch (error) {
-        console.log('Auth verification failed, continuing as anonymous:', error);
+        // Auth verification failed, continuing as anonymous
       }
     }
     
@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
     const useMultiModel = process.env.OPENAI_API_KEY || process.env.GOOGLE_AI_API_KEY;
     const orchestration = useMultiModel ? getMultiAIOrchestration() : getAIOrchestration();
     
-    console.log(`Using ${useMultiModel ? 'multi-model' : 'single-model'} AI orchestration`);
+    // Using multi-model or single-model AI orchestration based on API keys
     
     // Set a timeout for the generation
     const timeoutPromise = new Promise((_, reject) => 
@@ -108,7 +108,6 @@ export async function POST(request: NextRequest) {
         timeoutPromise
       ]) as any;
     } catch (timeoutError) {
-      console.error('Playlist generation timed out:', timeoutError);
       // Return fallback on timeout
       const fallback = await getFallbackPlaylist();
       return NextResponse.json({

@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
           }
         }
       } catch (error) {
-        console.error('AI enhancement failed, using database songs only:', error);
+        // AI enhancement failed, using database songs only
       }
     }
     

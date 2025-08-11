@@ -148,17 +148,13 @@ function JoinPageOld() {
         return
       }
       
-      console.log('Loading wedding with code:', codeStr)
-      
       // First try to use code as wedding ID directly (for share links)
       try {
         const directWeddingDoc = await getDoc(doc(db, 'weddings', codeStr))
         if (directWeddingDoc.exists()) {
-          console.log('Found wedding by direct ID')
           weddingId = codeStr
         } else {
           // Not a direct wedding ID, try to find an invitation with this code
-          console.log('Not a wedding ID, checking invitations...')
           const invitationsQuery = query(
             collection(db, 'invitations'),
             where('inviteCode', '==', codeStr)
@@ -167,7 +163,6 @@ function JoinPageOld() {
           
           if (!inviteSnapshot.empty) {
             // Found an invitation with personalized prompt
-            console.log('Found invitation with code')
             const inviteData = inviteSnapshot.docs[0].data()
             weddingId = inviteData.weddingId
             if (inviteData.personalizedPrompt) {
@@ -175,7 +170,6 @@ function JoinPageOld() {
             }
           } else {
             // Try finding wedding by general invite code
-            console.log('Checking for wedding invite code')
             const weddingsQuery = query(
               collection(db, 'weddings'),
               where('inviteCode', '==', codeStr)
@@ -183,7 +177,6 @@ function JoinPageOld() {
             const weddingSnapshot = await getDocs(weddingsQuery)
             
             if (weddingSnapshot.empty) {
-              console.error('No wedding or invitation found for code:', codeStr)
               setError('Invalid invitation code or link')
               setLoading(false)
               return
@@ -200,12 +193,10 @@ function JoinPageOld() {
       }
       
       // Load wedding data
-      console.log('Loading wedding data for ID:', weddingId)
       const weddingDoc = await getDoc(doc(db, 'weddings', weddingId))
       
       if (weddingDoc.exists()) {
         const weddingData = { id: weddingDoc.id, ...weddingDoc.data() } as WeddingWithPrompt
-        console.log('Wedding data loaded:', weddingData)
         
         // Add personalized prompt if we found one earlier
         if (personalizedPrompt) {
@@ -220,7 +211,6 @@ function JoinPageOld() {
           setSubmittedSongs(JSON.parse(storedSubmissions))
         }
       } else {
-        console.error('Wedding document does not exist for ID:', weddingId)
         setError('Wedding not found. Please check your invitation link.')
       }
     } catch (error: any) {

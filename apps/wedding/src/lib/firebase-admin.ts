@@ -26,18 +26,10 @@ if (
     auth = admin.auth()
     adminDb = admin.firestore()
   } catch (error) {
-    console.error('Failed to initialize Firebase Admin:', error)
-    // Continue without admin SDK - will fall back to client SDK
+    // Failed to initialize Firebase Admin - will fall back to client SDK
   }
 } else {
-  console.log('Firebase Admin SDK not configured - some features may be limited')
-  console.log('Missing env vars:', {
-    projectId: !!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    clientEmail: !!process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: !!process.env.FIREBASE_PRIVATE_KEY,
-    privateKeyLength: process.env.FIREBASE_PRIVATE_KEY?.length || 0
-  })
-  console.log('Note: Environment variables updated, redeploying...')
+  // Firebase Admin SDK not configured - some features may be limited
 }
 
 export { auth as adminAuth, adminDb }

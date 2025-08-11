@@ -32,7 +32,7 @@ export function SettingsModal({ onClose, weddingData, onUpdate }: SettingsModalP
       await signOut(auth);
       onClose();
     } catch (error) {
-      console.error('Error signing out:', error);
+      // Error signing out
     }
   };
 

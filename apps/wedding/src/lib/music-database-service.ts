@@ -30,6 +30,7 @@ import {
   CachedSong,
   CachedPlaylist
 } from '@/types/music-ai';
+import { mapCountryToCulture } from '@/lib/country-culture-mapping';
 
 // Collection names
 const COLLECTIONS = {
@@ -86,7 +87,7 @@ export class MusicDatabaseService {
 
       return null;
     } catch (error) {
-      console.error('Error getting song:', error);
+      // Error getting song
       return null;
     }
   }
@@ -141,7 +142,7 @@ export class MusicDatabaseService {
       this.songCache.set(song.spotify_id, song);
       await this.cacheSong(song);
     } catch (error) {
-      console.error('Error saving song:', error);
+      // Error saving song
       throw error;
     }
   }
@@ -219,7 +220,7 @@ export class MusicDatabaseService {
 
       return songs;
     } catch (error) {
-      console.error('Error searching songs:', error);
+      // Error searching songs
       return [];
     }
   }
@@ -233,11 +234,15 @@ export class MusicDatabaseService {
       limit?: number; 
       minScore?: number;
       excludeExplicit?: boolean;
+      genres?: string[];
+      country?: string;
     }
   ): Promise<MasterSong[]> {
     const filters: SongSearchFilters = {
       wedding_moments: [moment],
-      explicit: options?.excludeExplicit === true ? false : undefined
+      explicit: options?.excludeExplicit === true ? false : undefined,
+      genres: options?.genres,
+      cultural_fit: options?.country ? mapCountryToCulture(options.country) : undefined
     };
 
     const songs = await this.searchSongs(filters, options?.limit || 20);
@@ -270,7 +275,7 @@ export class MusicDatabaseService {
       
       return playlistRef.id;
     } catch (error) {
-      console.error('Error saving AI playlist:', error);
+      // Error saving AI playlist
       throw error;
     }
   }
@@ -302,7 +307,7 @@ export class MusicDatabaseService {
 
       return null;
     } catch (error) {
-      console.error('Error getting AI playlist:', error);
+      // Error getting AI playlist
       return null;
     }
   }
@@ -332,7 +337,7 @@ export class MusicDatabaseService {
         });
       }
     } catch (error) {
-      console.error('Error updating song analytics:', error);
+      // Error updating song analytics
     }
   }
 
@@ -363,7 +368,7 @@ export class MusicDatabaseService {
         });
       }
     } catch (error) {
-      console.error('Error updating playlist analytics:', error);
+      // Error updating playlist analytics
     }
   }
 
@@ -396,7 +401,7 @@ export class MusicDatabaseService {
 
       return songs;
     } catch (error) {
-      console.error('Error getting popular songs:', error);
+      // Error getting popular songs
       return [];
     }
   }
@@ -487,7 +492,7 @@ export class MusicDatabaseService {
       
       await setDoc(doc(db, COLLECTIONS.CACHE_SONGS, song.spotify_id), cacheData);
     } catch (error) {
-      console.error('Error caching song:', error);
+      // Error caching song
     }
   }
 
@@ -506,7 +511,7 @@ export class MusicDatabaseService {
       
       await setDoc(doc(db, COLLECTIONS.CACHE_PLAYLISTS, playlistId), cacheData);
     } catch (error) {
-      console.error('Error caching playlist:', error);
+      // Error caching playlist
     }
   }
 
@@ -532,7 +537,7 @@ export class MusicDatabaseService {
       
       return null;
     } catch (error) {
-      console.error('Error getting cached playlist:', error);
+      // Error getting cached playlist
       return null;
     }
   }

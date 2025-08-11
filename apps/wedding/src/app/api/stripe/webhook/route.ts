@@ -6,7 +6,7 @@ import { adminDb } from '@/lib/firebase-admin'
 import { logger, logError } from '@/lib/logger'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-07-30.basil' as any
+  apiVersion: '2024-11-20.acacia' as any
 })
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!

@@ -4,7 +4,7 @@ import { doc, setDoc, Timestamp } from 'firebase/firestore'
 import { signInAnonymously } from 'firebase/auth'
 
 // Simple auth check
-const SEED_SECRET = 'uptune-seed-2025'
+const SEED_SECRET = process.env.NEXT_PUBLIC_SEED_SECRET
 
 export async function POST(request: NextRequest) {
   if (process.env.NODE_ENV === 'production') {
@@ -13,6 +13,9 @@ export async function POST(request: NextRequest) {
   try {
     // Check authorization
     const { secret } = await request.json()
+    if (!SEED_SECRET) {
+      return NextResponse.json({ error: 'NEXT_PUBLIC_SEED_SECRET environment variable not set' }, { status: 500 })
+    }
     if (secret !== SEED_SECRET) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }

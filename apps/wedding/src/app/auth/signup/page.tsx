@@ -38,11 +38,9 @@ export default function SignUpPage() {
           
           if (userData) {
             // Always redirect to builder after signup
-            console.log('User signup completed, redirecting to builder')
             router.push('/builder')
           } else {
             // No user document found, ensure it exists
-            console.log('No user document found, creating one...')
             await ensureUserDocument(user)
             router.push('/builder')
           }
@@ -70,16 +68,12 @@ export default function SignUpPage() {
     setError('')
 
     try {
-      console.log('Starting signup process...')
-      
       // Create user account
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const user = userCredential.user
-      console.log('Firebase Auth user created:', user.uid)
 
       // Update display name
       await updateProfile(user, { displayName: name })
-      console.log('Display name updated')
 
       // Create user document in Firestore with retry logic
       try {
@@ -87,15 +81,12 @@ export default function SignUpPage() {
           displayName: name,
           partnerName: partnerName || undefined
         })
-        console.log('User document created successfully')
       } catch (firestoreError) {
         console.error('Firestore error:', firestoreError)
         // Format the error for the user
         throw new Error(formatFirestoreError(firestoreError))
       }
 
-      console.log('User created successfully, redirecting to wedding creation')
-      
       // Track signup event
       GTMEvents.signUp('email')
       
@@ -131,23 +122,18 @@ export default function SignUpPage() {
     setError('')
 
     try {
-      console.log('Starting Google signup...')
       const provider = new GoogleAuthProvider()
       const userCredential = await signInWithPopup(auth, provider)
       const user = userCredential.user
-      console.log('Google auth successful:', user.uid)
 
       // Ensure user document exists with retry logic
       try {
         await ensureUserDocument(user)
-        console.log('User document ensured in Firestore')
       } catch (firestoreError) {
         console.error('Firestore error:', firestoreError)
         throw new Error(formatFirestoreError(firestoreError))
       }
 
-      console.log('Google signup successful, redirecting to wedding creation')
-      
       // Track signup event
       GTMEvents.signUp('google')
       

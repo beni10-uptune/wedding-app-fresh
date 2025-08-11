@@ -39,12 +39,14 @@ export async function loadMomentSongs(momentId: string, genres?: string[], count
   }
 
   try {
-    // Get songs for this moment from the database
+    // Get songs for this moment from the database with filters
     const songs = await db.getSongsForMoment(
       weddingMoment,
       { 
         limit: MOMENT_SONG_COUNTS[momentId as keyof typeof MOMENT_SONG_COUNTS] || 10,
-        excludeExplicit: false
+        excludeExplicit: false,
+        genres: genres,
+        country: country
       }
     );
 
@@ -112,9 +114,22 @@ export function useTimelineWithDatabaseSongs(selectedGenres: string[], selectedC
 }
 
 // Search songs from database instead of direct Spotify
-export async function searchDatabaseSongs(query: string): Promise<any[]> {
+export async function searchDatabaseSongs(query: string, genres?: string[], country?: string): Promise<any[]> {
   try {
-    const response = await fetch(`/api/search-songs?q=${encodeURIComponent(query)}&limit=20`);
+    const params = new URLSearchParams({
+      q: query,
+      limit: '20'
+    });
+    
+    if (genres && genres.length > 0) {
+      params.append('genres', genres.join(','));
+    }
+    
+    if (country) {
+      params.append('country', country);
+    }
+    
+    const response = await fetch(`/api/search-songs?${params.toString()}`);
     if (!response.ok) throw new Error('Search failed');
     
     const data = await response.json();

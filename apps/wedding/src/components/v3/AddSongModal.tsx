@@ -49,12 +49,10 @@ export function AddSongModal({ isOpen, onClose, onAddSong, momentId }: AddSongMo
     try {
       const response = await fetch(`/api/spotify/search?q=${encodeURIComponent(searchQuery)}&limit=10`);
       if (!response.ok) {
-        console.error('Search failed:', response.status);
         throw new Error('Search failed');
       }
       
       const data = await response.json();
-      console.log('Search response:', data); // Debug log
       
       // API returns 'tracks' not 'songs'
       const tracks = data.tracks || [];
@@ -71,7 +69,6 @@ export function AddSongModal({ isOpen, onClose, onAddSong, momentId }: AddSongMo
       
       setSearchResults(formattedSongs);
     } catch (error) {
-      console.error('Search error:', error);
       setSearchResults([]);
     } finally {
       setIsSearching(false);

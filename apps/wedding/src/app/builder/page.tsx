@@ -273,7 +273,7 @@ export default function V3ThreePanePage() {
             setUserTier(userData.tier || 'free');
           }
         } catch (error) {
-          console.error('Error loading user tier:', error);
+          // Error loading user tier
         }
         // Load wedding data if exists
         try {
@@ -299,7 +299,7 @@ export default function V3ThreePanePage() {
             }
           }
         } catch (error) {
-          console.error('Error loading wedding data:', error);
+          // Error loading wedding data
         }
       } else {
         setUser(null);
@@ -398,7 +398,7 @@ export default function V3ThreePanePage() {
       
       setHasChanges(false);
     } catch (error) {
-      console.error('Error saving timeline:', error);
+      // Error saving timeline
     }
   };
 
@@ -412,7 +412,7 @@ export default function V3ThreePanePage() {
     setIsSearching(true);
     try {
       // Search database first (has enriched songs with Spotify data)
-      const songs = await searchDatabaseSongs(query);
+      const songs = await searchDatabaseSongs(query, selectedGenres, selectedCountry || undefined);
       
       // Map to the format used by the builder
       const mappedSongs = songs.map(song => ({
@@ -429,12 +429,12 @@ export default function V3ThreePanePage() {
       
       setSearchResults(mappedSongs);
     } catch (error) {
-      console.error('Search error:', error);
+      // Search error
       setSearchResults([]);
     } finally {
       setIsSearching(false);
     }
-  }, []);
+  }, [selectedGenres, selectedCountry]);
   
   // Debounced search
   useEffect(() => {
@@ -447,7 +447,7 @@ export default function V3ThreePanePage() {
     }, 500);
     
     return () => clearTimeout(timer);
-  }, [searchQuery, handleSearch]);
+  }, [searchQuery, handleSearch, selectedGenres, selectedCountry]);
   
   // Play/Pause functionality
   const handlePlaySong = (song: Song, songId: string) => {
@@ -458,7 +458,7 @@ export default function V3ThreePanePage() {
     if (song.previewUrl) {
       const audio = new Audio(song.previewUrl);
       audio.volume = 0.5;
-      audio.play().catch(err => console.error('Play failed:', err));
+      audio.play().catch(err => {});
       audio.addEventListener('ended', () => setPlayingId(null));
       
       setAudioElement(audio);
@@ -634,7 +634,7 @@ export default function V3ThreePanePage() {
           features: song.bpm ? { tempo: song.bpm } : undefined
         } as any);
       } catch (error) {
-        console.error('Error adding song to database:', error);
+        // Error adding song to database
       }
     }
     
@@ -936,6 +936,11 @@ export default function V3ThreePanePage() {
               <h3 className="font-medium text-white mb-3 flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-purple-400" />
                 Location
+                {selectedCountry && (
+                  <span className="ml-auto text-xs bg-purple-600/20 text-purple-400 px-2 py-0.5 rounded-full">
+                    Active
+                  </span>
+                )}
               </h3>
               <select 
                 className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm mb-2"
@@ -946,6 +951,7 @@ export default function V3ThreePanePage() {
                     localStorage.setItem('selectedCountry', e.target.value);
                   }
                 }}
+                disabled={isLoadingDatabase}
               >
                 <option value="">Select country</option>
                 {Object.entries(COUNTRIES).map(([country, data]) => (
@@ -954,6 +960,11 @@ export default function V3ThreePanePage() {
                   </option>
                 ))}
               </select>
+              {selectedCountry && (
+                <p className="text-xs text-purple-400 mt-2">
+                  ✓ Songs filtered for {selectedCountry}
+                </p>
+              )}
             </div>
             
             {/* Genres */}
@@ -961,6 +972,11 @@ export default function V3ThreePanePage() {
               <h3 className="font-medium text-white mb-3 flex items-center gap-2">
                 <Heart className="w-4 h-4 text-purple-400" />
                 Music Taste
+                {selectedGenres.length > 0 && (
+                  <span className="ml-auto text-xs bg-purple-600/20 text-purple-400 px-2 py-0.5 rounded-full">
+                    {selectedGenres.length} active
+                  </span>
+                )}
               </h3>
               <div className="grid grid-cols-2 gap-2">
                 {GENRES.map(genre => (
@@ -973,10 +989,13 @@ export default function V3ThreePanePage() {
                           : [...prev, genre.id]
                       );
                     }}
+                    disabled={isLoadingDatabase}
                     className={`px-3 py-2 rounded-lg text-sm transition-all ${
                       selectedGenres.includes(genre.id)
                         ? 'bg-purple-600 text-white'
                         : 'bg-white/10 text-white/70 hover:bg-white/20'
+                    } ${
+                      isLoadingDatabase ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >
                     <span className="mr-1">{genre.emoji}</span>
@@ -1099,10 +1118,27 @@ export default function V3ThreePanePage() {
                 <div className="flex justify-between text-sm">
                   <span className="text-white/60">Customized</span>
                   <span className="text-white font-medium">
-                    {selectedGenres.length > 0 ? `✓ ${selectedGenres.length} genres` : 'Not yet'}
+                    {selectedGenres.length > 0 || selectedCountry ? 
+                      `✓ ${[selectedGenres.length > 0 && `${selectedGenres.length} genres`, selectedCountry].filter(Boolean).join(', ')}` 
+                      : 'Not yet'}
                   </span>
                 </div>
               </div>
+              {(selectedGenres.length > 0 || selectedCountry) && (
+                <button
+                  onClick={() => {
+                    setSelectedGenres([]);
+                    setSelectedCountry(null);
+                    if (typeof window !== 'undefined') {
+                      localStorage.removeItem('selectedCountry');
+                    }
+                  }}
+                  className="w-full mt-3 px-3 py-1.5 bg-white/10 text-white/70 text-xs rounded-lg hover:bg-white/20 transition-colors flex items-center justify-center gap-1"
+                >
+                  <X className="w-3 h-3" />
+                  Clear Filters
+                </button>
+              )}
             </div>
             
                   {/* Trash Zone */}
@@ -1288,8 +1324,18 @@ export default function V3ThreePanePage() {
           <div className="flex-1 overflow-y-auto bg-black/20">
             {/* Timeline Header */}
             <div className="sticky top-0 glass-darker backdrop-blur-md border-b border-white/10 px-6 py-4 z-10">
-              <h2 className="text-2xl font-bold text-white">YOUR WEDDING TIMELINE</h2>
-              <p className="text-sm text-white/60">Drag songs between moments • Click to preview • Everything customizable</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-white">YOUR WEDDING TIMELINE</h2>
+                  <p className="text-sm text-white/60">Drag songs between moments • Click to preview • Everything customizable</p>
+                </div>
+                {isLoadingDatabase && (
+                  <div className="flex items-center gap-2 text-purple-400">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="text-sm">Loading songs...</span>
+                  </div>
+                )}
+              </div>
             </div>
             
             {/* Timeline Content */}

@@ -73,11 +73,9 @@ export default function QuickAddSongModal({
       if (data.tracks) {
         setSearchResults(data.tracks)
       } else {
-        console.error('No tracks in response:', data)
         setSearchResults([])
       }
     } catch (error) {
-      console.error('Search error:', error)
       setSearchResults([])
     } finally {
       setLoading(false)
@@ -212,7 +210,6 @@ export default function QuickAddSongModal({
       }
       
     } catch (error) {
-      console.error('Error adding song:', error)
       alert('Failed to add song. Please try again.')
       setAddingTrack(null)
     }

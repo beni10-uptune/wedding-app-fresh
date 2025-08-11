@@ -15,14 +15,12 @@ function isGtagAvailable(): boolean {
 // Track sign-up conversion
 export function trackSignUpConversion(userId?: string) {
   if (!isGtagAvailable()) {
-    console.log('Google Ads: gtag not available for sign-up conversion')
     return
   }
 
   // Check for cookie consent
   const consent = typeof window !== 'undefined' ? localStorage.getItem('cookieConsent') : null
   if (consent !== 'true') {
-    console.log('Google Ads: Skipping sign-up conversion - no cookie consent')
     return
   }
 
@@ -35,7 +33,7 @@ export function trackSignUpConversion(userId?: string) {
     })
   }
 
-  console.log('Google Ads: Sign-up conversion tracked')
+  // Sign-up conversion tracked
 }
 
 // Track purchase conversion with enhanced ecommerce data
@@ -47,14 +45,12 @@ export function trackPurchaseConversion(params: {
   userEmail?: string
 }) {
   if (!isGtagAvailable()) {
-    console.log('Google Ads: gtag not available for purchase conversion')
     return
   }
 
   // Check for cookie consent
   const consent = typeof window !== 'undefined' ? localStorage.getItem('cookieConsent') : null
   if (consent !== 'true') {
-    console.log('Google Ads: Skipping purchase conversion - no cookie consent')
     return
   }
 
@@ -93,13 +89,12 @@ export function trackPurchaseConversion(params: {
     })
   }
 
-  console.log('Google Ads: Purchase conversion tracked', { transactionId, value })
+  // Purchase conversion tracked
 }
 
 // Initialize Google Ads (to be called after gtag is loaded)
 export function initializeGoogleAds() {
   if (!isGtagAvailable()) {
-    console.log('Google Ads: gtag not available for initialization')
     return
   }
 
@@ -111,5 +106,5 @@ export function initializeGoogleAds() {
     })
   }
 
-  console.log('Google Ads: Initialized with ID', GOOGLE_ADS_ID)
+  // Google Ads initialized
 }

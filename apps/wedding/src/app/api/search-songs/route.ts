@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getMusicDatabase } from '@/lib/music-database-service';
 import { WeddingMoment } from '@/types/music-ai';
+import { mapCountryToCulture } from '@/lib/country-culture-mapping';
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,25 +15,37 @@ export async function GET(request: NextRequest) {
     const moment = searchParams.get('moment') as WeddingMoment | null;
     const limit = parseInt(searchParams.get('limit') || '20');
     const mood = searchParams.get('mood');
+    const genres = searchParams.get('genres')?.split(',').filter(g => g);
+    const country = searchParams.get('country');
     
     const musicDb = getMusicDatabase();
     
     let songs;
     
     if (moment) {
-      // Search by moment
-      songs = await musicDb.getSongsForMoment(moment, { limit });
+      // Search by moment with filters
+      songs = await musicDb.getSongsForMoment(moment, { 
+        limit,
+        genres,
+        country: country || undefined
+      });
     } else if (query) {
       // Text search - using filters interface
-      songs = await musicDb.searchSongs({}, limit);
+      songs = await musicDb.searchSongs({
+        genres,
+        cultural_fit: country ? mapCountryToCulture(country) : undefined
+      }, limit);
       // Filter by query in memory for now
       songs = songs.filter(song => 
         song.title.toLowerCase().includes(query.toLowerCase()) ||
         song.artist.toLowerCase().includes(query.toLowerCase())
       );
     } else {
-      // Get top songs
-      songs = await musicDb.getPopularSongs({ limit });
+      // Get top songs with filters
+      songs = await musicDb.searchSongs({
+        genres,
+        cultural_fit: country ? mapCountryToCulture(country) : undefined
+      }, limit);
     }
     
     // Filter by mood if specified

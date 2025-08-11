@@ -50,7 +50,63 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
         return
       }
 
-      const weddingData = { id: weddingDoc.id, ...weddingDoc.data() } as WeddingV2
+      const rawData = weddingDoc.data()
+      
+      // Check if we have the new timelineV2 format, otherwise use timeline
+      let timeline = rawData.timelineV2 || rawData.timeline
+      
+      // If timeline is an array (old format), convert it to object format
+      if (Array.isArray(timeline)) {
+        console.log('Converting old array timeline to V2 format')
+        const timelineObj: any = {}
+        timeline.forEach((moment: any, index: number) => {
+          const timelineSongs = (moment.songs || []).map((song: any, songIndex: number) => ({
+            id: `${moment.id}_${song.id}_${songIndex}`,
+            spotifyId: song.spotifyId || song.id,
+            title: song.title,
+            artist: song.artist,
+            album: song.album || '',
+            albumArt: song.albumArt || 'https://via.placeholder.com/300x300?text=' + encodeURIComponent(song.title || 'Song'),
+            previewUrl: song.previewUrl || null,
+            duration: song.duration || 0,
+            addedBy: 'couple',
+            addedAt: rawData.updatedAt || new Date(),
+            energy: song.bpm ? Math.min(5, Math.max(1, Math.round((song.bpm - 60) / 40))) : 3,
+            explicit: false
+          }))
+
+          timelineObj[moment.id] = {
+            id: moment.id,
+            name: moment.title,
+            order: index,
+            duration: parseInt(moment.duration) || 30,
+            songs: timelineSongs
+          }
+        })
+        timeline = timelineObj
+      }
+      
+      const weddingData = { 
+        id: weddingDoc.id, 
+        ...rawData,
+        timeline,
+        // Ensure required V2 fields exist
+        coupleNames: rawData.coupleNames || (rawData.weddingName ? rawData.weddingName.split(' & ') : ['Partner 1', 'Partner 2']),
+        weddingDate: rawData.weddingDate || new Date(),
+        createdAt: rawData.createdAt || new Date(),
+        updatedAt: rawData.updatedAt || new Date(),
+        paymentStatus: rawData.paymentStatus || 'unpaid',
+        slug: rawData.slug || weddingDoc.id
+      } as WeddingV2
+      
+      console.log('🔍 RAW WEDDING DATA FROM FIREBASE:', {
+        id: weddingDoc.id,
+        hasTimeline: !!weddingData.timeline,
+        timelineKeys: weddingData.timeline ? Object.keys(weddingData.timeline) : [],
+        firstMoment: weddingData.timeline ? Object.keys(weddingData.timeline)[0] : null,
+        firstMomentData: weddingData.timeline && Object.keys(weddingData.timeline)[0] ? 
+          weddingData.timeline[Object.keys(weddingData.timeline)[0]] : null
+      });
       
       // Import default songs for timeline
       const { CURATED_SONGS } = await import('@/data/curatedSongs')
@@ -59,21 +115,29 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
       
       // Check if timeline needs initialization - count total songs
       let totalExistingSongs = 0;
-      if (weddingData.timeline) {
+      let hasEmptyTimeline = false;
+      
+      if (weddingData.timeline && typeof weddingData.timeline === 'object') {
+        const timelineKeys = Object.keys(weddingData.timeline);
+        hasEmptyTimeline = timelineKeys.length === 0;
+        
         Object.values(weddingData.timeline).forEach(moment => {
-          if (moment && moment.songs) {
+          if (moment && moment.songs && Array.isArray(moment.songs)) {
             totalExistingSongs += moment.songs.length;
           }
         });
       }
       
-      const needsTimeline = !weddingData.timeline || totalExistingSongs === 0
+      const needsTimeline = !weddingData.timeline || hasEmptyTimeline || totalExistingSongs === 0
       
       console.log('Timeline check:', {
         hasTimeline: !!weddingData.timeline,
+        hasEmptyTimeline,
         totalExistingSongs,
         needsTimeline,
-        weddingId
+        weddingId,
+        timelineType: typeof weddingData.timeline,
+        timelineKeys: weddingData.timeline ? Object.keys(weddingData.timeline) : []
       });
       
       if (needsTimeline) {
@@ -95,7 +159,7 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
                 title: song.title,
                 artist: song.artist,
                 album: song.album || '',
-                albumArt: song.albumArt || '',
+                albumArt: song.albumArt || 'https://via.placeholder.com/300x300?text=' + encodeURIComponent(song.title || 'Song'),
                 previewUrl: song.previewUrl || null,
                 duration: song.duration,
                 addedBy: 'couple',
@@ -124,14 +188,30 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
             timeline: newTimeline,
             updatedAt: Timestamp.now()
           })
-          console.log('Timeline saved with', Object.values(newTimeline).reduce((acc, m) => acc + m.songs.length, 0), 'songs')
+          const savedSongCount = Object.values(newTimeline).reduce((acc, m) => acc + m.songs.length, 0);
+          console.log('✅ Timeline saved to Firebase with', savedSongCount, 'songs');
+          console.log('📊 Moments with songs:', Object.entries(newTimeline).map(([id, m]) => 
+            `${id}: ${m.songs.length} songs`
+          ).join(', '))
         } catch (error) {
           console.error('Failed to save timeline:', error)
         }
       } else {
-        console.log('Timeline already exists with songs')
+        const existingSongCount = Object.values(weddingData.timeline || {}).reduce((acc, m: any) => 
+          acc + (m?.songs?.length || 0), 0
+        );
+        console.log('ℹ️ Timeline already exists with', existingSongCount, 'songs');
+        console.log('📊 Existing moments:', Object.entries(weddingData.timeline || {}).map(([id, m]: [string, any]) => 
+          `${id}: ${m?.songs?.length || 0} songs`
+        ).join(', '));
       }
 
+      console.log('🎯 FINAL WEDDING DATA BEING SET:', {
+        hasTimeline: !!weddingData.timeline,
+        totalMoments: weddingData.timeline ? Object.keys(weddingData.timeline).length : 0,
+        totalSongs: weddingData.timeline ? 
+          Object.values(weddingData.timeline).reduce((acc, m: any) => acc + (m?.songs?.length || 0), 0) : 0
+      });
       setWedding(weddingData)
     } catch (error) {
       console.error('Error loading wedding:', error)

@@ -384,21 +384,57 @@ export default function V3ThreePanePage() {
     }
 
     try {
+      // Convert array timeline to WeddingV2 timeline object format
+      const timelineV2: any = {};
+      timeline.forEach((moment, index) => {
+        const timelineSongs = (moment.songs || []).map((song: any, songIndex: number) => ({
+          id: `${moment.id}_${song.id}_${songIndex}`,
+          spotifyId: song.spotifyId || song.id,
+          title: song.title,
+          artist: song.artist,
+          album: song.album || '',
+          albumArt: song.albumArt || '',
+          previewUrl: song.previewUrl || null,
+          duration: song.duration || 0,
+          addedBy: 'couple',
+          addedAt: new Date(),
+          energy: song.bpm ? Math.min(5, Math.max(1, Math.round((song.bpm - 60) / 40))) : 3,
+          explicit: false
+        }));
+
+        timelineV2[moment.id] = {
+          id: moment.id,
+          name: moment.title,
+          order: index,
+          duration: parseInt(moment.duration) || 30,
+          songs: timelineSongs
+        };
+      });
+
       await setDoc(doc(db, 'weddings', user.uid), {
+        // Keep old format for backward compatibility
         timeline,
+        // Add new V2 format
+        timelineV2,
         selectedGenres,
         selectedCountry,
         totalSongs,
         totalDuration,
         weddingDate,
         weddingName,
+        coupleNames: weddingName ? weddingName.split(' & ') : ['Partner 1', 'Partner 2'],
         updatedAt: new Date().toISOString(),
-        userId: user.uid
+        userId: user.uid,
+        // Add V2 required fields
+        createdAt: new Date(),
+        paymentStatus: 'unpaid',
+        slug: user.uid // Use uid as slug for now
       }, { merge: true });
       
       setHasChanges(false);
     } catch (error) {
       // Error saving timeline
+      console.error('Error saving timeline:', error);
     }
   };
 
@@ -806,6 +842,14 @@ export default function V3ThreePanePage() {
                     >
                       <Save className="w-4 h-4" />
                     </button>
+                    {weddingData && (
+                      <Link href={`/wedding/${user.uid}/builder`}>
+                        <button className="px-3 py-1.5 bg-purple-600/20 text-purple-400 text-sm rounded-lg hover:bg-purple-600/30 transition-colors flex items-center gap-2">
+                          <Sparkles className="w-4 h-4" />
+                          Enhanced
+                        </button>
+                      </Link>
+                    )}
                     <button
                       onClick={() => {
                         if (canShare) {

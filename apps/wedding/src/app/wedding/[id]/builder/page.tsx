@@ -57,6 +57,7 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
         // Import default songs for initial timeline
         const { CURATED_SONGS } = await import('@/data/curatedSongs')
         const { WEDDING_MOMENTS } = await import('@/data/weddingMoments')
+        const { updateDoc } = await import('firebase/firestore')
         
         const initialTimeline: WeddingV2['timeline'] = {}
         
@@ -98,6 +99,17 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
         })
         
         weddingData.timeline = initialTimeline
+        
+        // Persist the timeline to the database
+        try {
+          await updateDoc(doc(db, 'weddings', weddingId), {
+            timeline: initialTimeline,
+            updatedAt: Timestamp.now()
+          })
+          console.log('Timeline initialized with default songs')
+        } catch (error) {
+          console.error('Failed to save initial timeline:', error)
+        }
       }
 
       setWedding(weddingData)

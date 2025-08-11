@@ -687,6 +687,24 @@ export default function V3ThreePanePage() {
     setShowAddSongModal(true);
   };
 
+  // Get price display based on user's location
+  const getPriceDisplay = () => {
+    // Try to detect user's country from browser
+    const userLocale = typeof window !== 'undefined' ? navigator.language : 'en-US';
+    const userCountry = userLocale.split('-')[1] || 'US';
+    
+    // EU countries
+    const euCountries = ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE'];
+    
+    if (userCountry === 'GB' || userLocale.startsWith('en-GB')) {
+      return '£19';
+    } else if (euCountries.includes(userCountry) || userLocale.includes('de') || userLocale.includes('fr') || userLocale.includes('es') || userLocale.includes('it')) {
+      return '€23';
+    } else {
+      return '$25';
+    }
+  };
+
   return (
     <DndContext
       sensors={sensors}
@@ -1499,7 +1517,7 @@ export default function V3ThreePanePage() {
                 onClick={() => setShowUpgradeModal(true)}
                 className="w-full mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700"
               >
-                Upgrade to Pro • $25
+                Upgrade to Pro • {getPriceDisplay()}
               </button>
             </div>
           </div>

@@ -31,7 +31,6 @@ import WelcomeFlow from './WelcomeFlow'
 import InteractiveTutorial from './InteractiveTutorial'
 import GuideViewer from './GuideViewer'
 import CuratedPlaylistBrowser from './CuratedPlaylistBrowser'
-import TimelineDiagnostic from './TimelineDiagnostic'
 import { debounce } from 'lodash'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { logError, logger } from '@/lib/logger'
@@ -79,15 +78,6 @@ function timelineSongToSong(tlSong: TimelineSong): Song {
 }
 
 export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderProps) {
-  console.log('🎨 EnhancedBuilder RECEIVED WEDDING:', {
-    weddingId: wedding.id,
-    hasTimeline: !!wedding.timeline,
-    timelineKeys: wedding.timeline ? Object.keys(wedding.timeline) : [],
-    firstMomentInProp: wedding.timeline ? Object.keys(wedding.timeline)[0] : null,
-    firstMomentSongs: wedding.timeline && Object.keys(wedding.timeline)[0] ? 
-      wedding.timeline[Object.keys(wedding.timeline)[0]]?.songs?.length : 0
-  });
-  
   const [timeline, setTimeline] = useState<Timeline>(wedding.timeline || {})
   const [activeTab, setActiveTab] = useState<'search' | 'collections' | 'guests'>('collections')
   const [selectedMoment, setSelectedMoment] = useState('first-dance')
@@ -107,36 +97,9 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
   
   // Sync timeline when wedding prop changes
   useEffect(() => {
-    console.log('🔄 useEffect triggered for wedding.timeline sync');
-    if (wedding.timeline) {
-      const songCount = Object.values(wedding.timeline).reduce((acc, m) => 
-        acc + (m?.songs?.length || 0), 0
-      );
-      console.log('✅ Syncing timeline from wedding prop:', {
-        momentCount: Object.keys(wedding.timeline).length,
-        totalSongs: songCount,
-        moments: Object.entries(wedding.timeline).map(([id, m]) => 
-          `${id}: ${m?.songs?.length || 0} songs`
-        ).join(', ')
-      });
+    if (wedding.timeline && Object.keys(wedding.timeline).length > 0) {
       setTimeline(wedding.timeline)
       setHistory([wedding.timeline])
-      setHistoryIndex(0)
-    } else {
-      // Initialize empty timeline structure if not present
-      console.log('No timeline in wedding, initializing empty structure')
-      const emptyTimeline: Timeline = {}
-      WEDDING_MOMENTS.forEach(moment => {
-        emptyTimeline[moment.id] = {
-          id: moment.id,
-          name: moment.name,
-          order: moment.order,
-          duration: moment.duration,
-          songs: []
-        }
-      })
-      setTimeline(emptyTimeline)
-      setHistory([emptyTimeline])
       setHistoryIndex(0)
     }
   }, [wedding.timeline])
@@ -145,10 +108,6 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
   const totalSongs = Object.values(timeline).reduce((count, moment) => {
     return count + (moment?.songs?.length || 0)
   }, 0)
-  
-  console.log('📊 Current state - totalSongs:', totalSongs, 'from timeline:', 
-    Object.entries(timeline).map(([id, m]) => `${id}: ${m?.songs?.length || 0}`).join(', ')
-  )
 
   // Check if mobile on mount and resize
   useEffect(() => {
@@ -727,9 +686,6 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
         onSelectGuide={() => {}}
       />
     )}
-    
-    {/* Diagnostic Component - Remove in production */}
-    <TimelineDiagnostic timeline={timeline} wedding={wedding} />
   </>
   )
 }

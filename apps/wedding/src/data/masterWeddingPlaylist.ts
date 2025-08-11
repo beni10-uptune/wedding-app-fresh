@@ -41,7 +41,7 @@ function createSong(
     explicit = false,
     spotifyPopularity = 75,
     previewUrl = null,
-    albumArt = null
+    albumArt = undefined
   }: Partial<MasterSong> & { 
     duration: number; 
     bpm: number; 

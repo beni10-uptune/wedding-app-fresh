@@ -97,9 +97,26 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
   
   // Sync timeline when wedding prop changes
   useEffect(() => {
-    if (wedding.timeline && Object.keys(wedding.timeline).length > 0) {
+    if (wedding.timeline) {
+      console.log('Syncing timeline from wedding prop:', wedding.timeline)
       setTimeline(wedding.timeline)
       setHistory([wedding.timeline])
+      setHistoryIndex(0)
+    } else {
+      // Initialize empty timeline structure if not present
+      console.log('No timeline in wedding, initializing empty structure')
+      const emptyTimeline: Timeline = {}
+      WEDDING_MOMENTS.forEach(moment => {
+        emptyTimeline[moment.id] = {
+          id: moment.id,
+          name: moment.name,
+          order: moment.order,
+          duration: moment.duration,
+          songs: []
+        }
+      })
+      setTimeline(emptyTimeline)
+      setHistory([emptyTimeline])
       setHistoryIndex(0)
     }
   }, [wedding.timeline])

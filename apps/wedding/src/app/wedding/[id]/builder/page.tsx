@@ -52,69 +52,78 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
 
       const weddingData = { id: weddingDoc.id, ...weddingDoc.data() } as WeddingV2
       
-      // Check if timeline needs initialization (no timeline, empty timeline, or timeline with no songs)
-      const timelineNeedsInit = !weddingData.timeline || 
-        Object.keys(weddingData.timeline).length === 0 ||
-        Object.values(weddingData.timeline).every(moment => !moment.songs || moment.songs.length === 0)
+      // Always ensure timeline exists with proper structure
+      if (!weddingData.timeline) {
+        weddingData.timeline = {}
+      }
       
-      // Initialize timeline with default songs if needed
-      if (timelineNeedsInit) {
-        console.log('Initializing timeline with default songs...')
-        // Import default songs for initial timeline
-        const { CURATED_SONGS } = await import('@/data/curatedSongs')
-        const { WEDDING_MOMENTS } = await import('@/data/weddingMoments')
-        const { updateDoc } = await import('firebase/firestore')
-        
-        const initialTimeline: WeddingV2['timeline'] = {}
-        
-        // Initialize each moment in the timeline
-        WEDDING_MOMENTS.forEach(moment => {
-          const momentSongs = CURATED_SONGS[moment.id as keyof typeof CURATED_SONGS]
+      // Import default songs for timeline
+      const { CURATED_SONGS } = await import('@/data/curatedSongs')
+      const { WEDDING_MOMENTS } = await import('@/data/weddingMoments')
+      
+      // Check if we need to populate with default songs
+      const hasAnySongs = Object.values(weddingData.timeline).some(
+        moment => moment?.songs && moment.songs.length > 0
+      )
+      
+      // Initialize or update timeline structure
+      const updatedTimeline: WeddingV2['timeline'] = {}
+      let needsUpdate = false
+      
+      WEDDING_MOMENTS.forEach(moment => {
+        // Use existing moment data if available
+        if (weddingData.timeline[moment.id] && weddingData.timeline[moment.id].songs?.length > 0) {
+          updatedTimeline[moment.id] = weddingData.timeline[moment.id]
+        } else {
+          // Create moment with default songs
+          const momentSongs = CURATED_SONGS[moment.id as keyof typeof CURATED_SONGS] || []
           const timelineSongs: TimelineSong[] = []
           
-          if (momentSongs && momentSongs.length > 0) {
-            // Take first 2-3 songs as defaults
-            const defaultSongs = momentSongs.slice(0, Math.min(3, momentSongs.length))
+          // Add 2-3 default songs if this is the first time or moment has no songs
+          if (!hasAnySongs && momentSongs.length > 0) {
+            const defaultSongs = momentSongs.slice(0, Math.min(2, momentSongs.length))
             defaultSongs.forEach((song, index) => {
-              const timelineSong: TimelineSong = {
-                id: `${moment.id}_${song.id}_${index}`,
-                spotifyId: song.id,
+              timelineSongs.push({
+                id: `${moment.id}_${Date.now()}_${index}`,
+                spotifyId: song.spotifyUri || song.id,
                 title: song.title,
                 artist: song.artist,
-                album: song.album,
-                albumArt: song.albumArt,
-                previewUrl: song.previewUrl,
+                album: song.album || '',
+                albumArt: song.albumArt || `https://via.placeholder.com/300?text=${encodeURIComponent(song.title)}`,
+                previewUrl: song.previewUrl || null,
                 duration: song.duration,
                 addedBy: 'couple',
                 addedAt: Timestamp.now(),
                 energy: song.energyLevel,
-                explicit: song.explicit
-              }
-              timelineSongs.push(timelineSong)
+                explicit: song.explicit || false
+              })
             })
+            needsUpdate = true
           }
           
-          // Create the timeline entry for this moment
-          initialTimeline[moment.id] = {
+          updatedTimeline[moment.id] = {
             id: moment.id,
             name: moment.name,
             order: moment.order,
             duration: moment.duration,
             songs: timelineSongs
           }
-        })
-        
-        weddingData.timeline = initialTimeline
-        
-        // Persist the timeline to the database
+        }
+      })
+      
+      weddingData.timeline = updatedTimeline
+      
+      // Save to database if we added new songs
+      if (needsUpdate) {
+        const { updateDoc } = await import('firebase/firestore')
         try {
           await updateDoc(doc(db, 'weddings', weddingId), {
-            timeline: initialTimeline,
+            timeline: updatedTimeline,
             updatedAt: Timestamp.now()
           })
-          console.log('Timeline initialized with default songs')
+          console.log('Timeline populated with default songs')
         } catch (error) {
-          console.error('Failed to save initial timeline:', error)
+          console.error('Failed to save timeline:', error)
         }
       }
 

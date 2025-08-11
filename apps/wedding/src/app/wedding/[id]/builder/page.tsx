@@ -57,10 +57,24 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
       const { WEDDING_MOMENTS } = await import('@/data/weddingMoments')
       const { updateDoc } = await import('firebase/firestore')
       
-      // Check if timeline needs initialization
-      const needsTimeline = !weddingData.timeline || 
-        Object.keys(weddingData.timeline).length === 0 ||
-        Object.values(weddingData.timeline).every(m => !m.songs || m.songs.length === 0)
+      // Check if timeline needs initialization - count total songs
+      let totalExistingSongs = 0;
+      if (weddingData.timeline) {
+        Object.values(weddingData.timeline).forEach(moment => {
+          if (moment && moment.songs) {
+            totalExistingSongs += moment.songs.length;
+          }
+        });
+      }
+      
+      const needsTimeline = !weddingData.timeline || totalExistingSongs === 0
+      
+      console.log('Timeline check:', {
+        hasTimeline: !!weddingData.timeline,
+        totalExistingSongs,
+        needsTimeline,
+        weddingId
+      });
       
       if (needsTimeline) {
         console.log('Initializing timeline with default songs for wedding:', weddingId)

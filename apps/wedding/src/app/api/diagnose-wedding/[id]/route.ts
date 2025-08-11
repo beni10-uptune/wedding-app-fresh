@@ -27,7 +27,7 @@ export async function GET(
       hasTimeline: !!weddingData.timeline,
       timelineType: typeof weddingData.timeline,
       timelineKeys: weddingData.timeline ? Object.keys(weddingData.timeline) : [],
-      moments: {}
+      moments: {} as Record<string, any>
     };
     
     // 3. Analyze each moment

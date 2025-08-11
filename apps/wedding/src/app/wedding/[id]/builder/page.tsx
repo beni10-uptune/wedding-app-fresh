@@ -3,9 +3,9 @@
 import { useState, useEffect, use } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import { WeddingV2 } from '@/types/wedding-v2'
+import { WeddingV2, TimelineSong } from '@/types/wedding-v2'
 import { ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import EnhancedBuilder from './components/EnhancedBuilder'
@@ -52,9 +52,52 @@ export default function WeddingBuilderPage({ params }: { params: Promise<{ id: s
 
       const weddingData = { id: weddingDoc.id, ...weddingDoc.data() } as WeddingV2
       
-      // Initialize timeline if it doesn't exist
-      if (!weddingData.timeline) {
-        weddingData.timeline = {}
+      // Initialize timeline with default songs if it doesn't exist or is empty
+      if (!weddingData.timeline || Object.keys(weddingData.timeline).length === 0) {
+        // Import default songs for initial timeline
+        const { CURATED_SONGS } = await import('@/data/curatedSongs')
+        const { WEDDING_MOMENTS } = await import('@/data/weddingMoments')
+        
+        const initialTimeline: WeddingV2['timeline'] = {}
+        
+        // Initialize each moment in the timeline
+        WEDDING_MOMENTS.forEach(moment => {
+          const momentSongs = CURATED_SONGS[moment.id as keyof typeof CURATED_SONGS]
+          const timelineSongs: TimelineSong[] = []
+          
+          if (momentSongs && momentSongs.length > 0) {
+            // Take first 2-3 songs as defaults
+            const defaultSongs = momentSongs.slice(0, Math.min(3, momentSongs.length))
+            defaultSongs.forEach((song, index) => {
+              const timelineSong: TimelineSong = {
+                id: `${moment.id}_${song.id}_${index}`,
+                spotifyId: song.id,
+                title: song.title,
+                artist: song.artist,
+                album: song.album,
+                albumArt: song.albumArt,
+                previewUrl: song.previewUrl,
+                duration: song.duration,
+                addedBy: 'couple',
+                addedAt: Timestamp.now(),
+                energy: song.energyLevel,
+                explicit: song.explicit
+              }
+              timelineSongs.push(timelineSong)
+            })
+          }
+          
+          // Create the timeline entry for this moment
+          initialTimeline[moment.id] = {
+            id: moment.id,
+            name: moment.name,
+            order: moment.order,
+            duration: moment.duration,
+            songs: timelineSongs
+          }
+        })
+        
+        weddingData.timeline = initialTimeline
       }
 
       setWedding(weddingData)

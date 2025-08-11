@@ -37,14 +37,9 @@ export default function SignUpPage() {
           const userData = await getUserDocument(user.uid)
           
           if (userData) {
-            // If user just signed up (onboardingCompleted is false), go to create-wedding
-            if (userData.onboardingCompleted === false) {
-              console.log('New user detected, redirecting to builder')
-              router.push('/builder')
-            } else {
-              console.log('Existing user detected, redirecting to builder')
-              router.push('/builder')
-            }
+            // Always redirect to builder after signup
+            console.log('User signup completed, redirecting to builder')
+            router.push('/builder')
           } else {
             // No user document found, ensure it exists
             console.log('No user document found, creating one...')

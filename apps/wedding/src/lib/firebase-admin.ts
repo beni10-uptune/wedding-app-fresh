@@ -12,8 +12,8 @@ if (
   try {
     const firebaseAdminConfig = {
       credential: admin.credential.cert({
-        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'weddings-uptune-d12fa',
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL || 'firebase-adminsdk-b4qko@weddings-uptune-d12fa.iam.gserviceaccount.com',
+        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
       })
     }

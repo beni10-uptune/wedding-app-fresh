@@ -4,10 +4,9 @@ import { doc, updateDoc, collection, query, where, getDocs } from 'firebase/fire
 import { db } from '@/lib/firebase'
 import { adminDb } from '@/lib/firebase-admin'
 import { logger, logError } from '@/lib/logger'
-import { GTMEvents } from '@/components/GoogleTagManager'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-07-30.basil'
+  apiVersion: '2025-07-30.basil' as any
 })
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
@@ -67,12 +66,6 @@ export async function POST(request: NextRequest) {
           }
 
           logger.info('Wedding marked as paid', { weddingId, paymentIntentId: paymentIntent.id })
-          
-          // Track purchase event
-          GTMEvents.purchase(
-            weddingId,
-            paymentIntent.amount
-          )
         } catch (error) {
           logError(error, { context: 'Error updating wedding payment status', weddingId })
           // Don't return error to Stripe - we'll handle this separately
@@ -124,11 +117,7 @@ export async function POST(request: NextRequest) {
               })
             }
             
-            // Track purchase event for checkout session
-            GTMEvents.purchase(
-              session.metadata.weddingId || '',
-              session.amount_total || 0
-            )
+            // Purchase tracked server-side via logs/analytics pipeline
           } catch (error) {
             logError(error, { context: 'Error updating wedding from checkout session', weddingId: session.metadata.weddingId })
           }
@@ -174,12 +163,6 @@ export async function POST(request: NextRequest) {
                 weddingId, 
                 refundAmount: charge.amount_refunded 
               })
-              
-              // Track refund event
-              GTMEvents.refund(
-                weddingId,
-                charge.amount_refunded
-              )
             }
           } catch (error) {
             logError(error, { context: 'Error updating wedding refund status', paymentIntentId })

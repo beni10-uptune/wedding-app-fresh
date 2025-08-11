@@ -96,20 +96,8 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
   }
 
   const handlePaymentSuccess = async () => {
-    try {
-      // Update wedding payment status
-      await updateDoc(doc(db, 'weddings', weddingId), {
-        paymentStatus: 'paid',
-        paymentDate: new Date(),
-        updatedAt: new Date()
-      })
-
-      // Redirect to success page
-      router.push(`/wedding/${weddingId}/payment-success`)
-    } catch (err) {
-      console.error('Error updating payment status:', err)
-      setError('Payment successful but failed to update status')
-    }
+    // Let Stripe webhook update payment status; just navigate to success
+    router.push(`/wedding/${weddingId}/payment-success`)
   }
 
   if (loading) {

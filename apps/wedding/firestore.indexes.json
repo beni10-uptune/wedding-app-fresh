@@ -1,6 +1,48 @@
 {
   "indexes": [
     {
+      "collectionGroup": "songs_master",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "wedding_moments",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "wedding_score",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "songs_master",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "wedding_genres",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "wedding_score",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "songs_master",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "cultural_fit",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "wedding_score",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "weddings",
       "queryScope": "COLLECTION",
       "fields": [
@@ -19,45 +61,79 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "owners",
-          "arrayConfig": "CONTAINS"
-        },
-        {
-          "fieldPath": "paymentStatus",
+          "fieldPath": "slug",
           "order": "ASCENDING"
         }
       ]
     },
     {
-      "collectionGroup": "invitations",
+      "collectionGroup": "blogPosts",
       "queryScope": "COLLECTION",
       "fields": [
-        {
-          "fieldPath": "weddingId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "type",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "invitations",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "inviteCode",
-          "order": "ASCENDING"
-        },
         {
           "fieldPath": "status",
           "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
         }
       ]
     },
     {
-      "collectionGroup": "collaborators",
+      "collectionGroup": "blogPosts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "category",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "blogPosts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "featured",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "communitySongs",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "approved",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "email",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "guestSubmissions",
       "queryScope": "COLLECTION",
       "fields": [
         {
@@ -65,7 +141,17 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "userId",
+          "fieldPath": "submittedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "guestSubmissions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "weddingId",
           "order": "ASCENDING"
         },
         {
@@ -75,5 +161,24 @@
       ]
     }
   ],
-  "fieldOverrides": []
+  "fieldOverrides": [
+    {
+      "collectionGroup": "songs_master",
+      "fieldPath": "title",
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "arrayConfig": "CONTAINS",
+          "queryScope": "COLLECTION"
+        }
+      ]
+    }
+  ]
 }

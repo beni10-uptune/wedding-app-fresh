@@ -6,6 +6,9 @@ import { Timestamp } from 'firebase-admin/firestore'
 const SEED_SECRET = process.env.NEXT_PUBLIC_SEED_SECRET || 'uptune-seed-2025'
 
 export async function POST(request: NextRequest) {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not available in production' }, { status: 404 })
+  }
   try {
     // Check authorization
     const { secret } = await request.json()

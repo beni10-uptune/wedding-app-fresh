@@ -4,8 +4,8 @@ const nextConfig: NextConfig = {
   // Remove 'export' mode to support API routes
   // output: 'export',
   
-  // Keep trailing slash for consistency
-  trailingSlash: true,
+  // Avoid forcing trailing slashes; can break API endpoints and webhooks
+  // trailingSlash: true,
   
   images: {
     // Allow external images from various sources

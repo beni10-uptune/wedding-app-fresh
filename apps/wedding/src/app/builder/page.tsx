@@ -224,6 +224,7 @@ export default function V3ThreePanePage() {
   const [mobileTab, setMobileTab] = useState<'customize' | 'timeline' | 'studio'>('timeline');
   
   // State
+  const [userTier, setUserTier] = useState<string>('free');
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [selectedGenres, setSelectedGenres] = useState<string[]>(['pop', 'rnb']);
@@ -264,6 +265,16 @@ export default function V3ThreePanePage() {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
+        // Load user tier
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setUserTier(userData.tier || 'free');
+          }
+        } catch (error) {
+          console.error('Error loading user tier:', error);
+        }
         // Load wedding data if exists
         try {
           const weddingDoc = await getDoc(doc(db, 'weddings', user.uid));
@@ -591,6 +602,16 @@ export default function V3ThreePanePage() {
   
   // Add song from search/modal
   const handleAddSongToMoment = async (song: Song, momentId: string) => {
+    // Check tier limits for song addition
+    const moment = timeline.find(m => m.id === momentId);
+    if (!moment) return;
+    
+    // Check if user has reached song limit for free tier
+    if (userTier === 'free' && moment.songs.length >= 20) {
+      setShowUpgradeModal(true);
+      return;
+    }
+    
     // Add song to timeline
     setTimeline(prev => prev.map(moment => {
       if (moment.id === momentId) {
@@ -1360,7 +1381,7 @@ export default function V3ThreePanePage() {
               </h3>
               <div className="space-y-2">
                 <button 
-                  onClick={() => setShowAccountModal(true)}
+                  onClick={() => userTier === 'free' ? setShowUpgradeModal(true) : setShowAccountModal(true)}
                   className="w-full px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 flex items-center justify-center gap-2 text-sm"
                 >
                   <Music className="w-4 h-4" />
@@ -1380,11 +1401,17 @@ export default function V3ThreePanePage() {
                 Collaborate
               </h3>
               <div className="space-y-2">
-                <button className="w-full px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 flex items-center justify-center gap-2 text-sm">
+                <button 
+                  onClick={() => userTier === 'free' ? setShowUpgradeModal(true) : setShowShareModal(true)}
+                  className="w-full px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 flex items-center justify-center gap-2 text-sm"
+                >
                   <UserPlus className="w-4 h-4" />
                   Invite Partner
                 </button>
-                <button className="w-full px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 flex items-center justify-center gap-2 text-sm">
+                <button 
+                  onClick={() => userTier === 'free' ? setShowUpgradeModal(true) : setShowShareModal(true)}
+                  className="w-full px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 flex items-center justify-center gap-2 text-sm"
+                >
                   <Share2 className="w-4 h-4" />
                   Guest Requests
                 </button>

@@ -48,7 +48,6 @@ import {
   UserPlus,
   BarChart3,
   Shuffle,
-  Save,
   Clock,
   GripVertical,
   Trash2,
@@ -217,6 +216,8 @@ export default function V3ThreePanePage() {
   const [loading, setLoading] = useState(true);
   const [weddingData, setWeddingData] = useState<any>(null);
   const [hasChanges, setHasChanges] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [weddingDate, setWeddingDate] = useState<string | null>(null);
@@ -373,12 +374,75 @@ export default function V3ThreePanePage() {
     ? Math.ceil((new Date(weddingDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
     : null;
   
-  // Track changes
+  // Track changes and auto-save for authenticated users
   useEffect(() => {
     if (timeline.length > 0 && !loading) {
       setHasChanges(true);
     }
   }, [timeline, selectedGenres, selectedCountry, loading]);
+
+  // Auto-save functionality with debouncing
+  useEffect(() => {
+    if (!user || !hasChanges || isSaving || loading) return;
+
+    const autoSaveTimer = setTimeout(async () => {
+      setIsSaving(true);
+      try {
+        // Convert array timeline to WeddingV2 timeline object format
+        const timelineV2: any = {};
+        timeline.forEach((moment, index) => {
+          const timelineSongs = (moment.songs || []).map((song: any, songIndex: number) => ({
+            id: `${moment.id}_${song.id}_${songIndex}`,
+            spotifyId: song.spotifyId || song.id,
+            title: song.title,
+            artist: song.artist,
+            album: song.album || '',
+            albumArt: song.albumArt || '',
+            previewUrl: song.previewUrl || null,
+            duration: song.duration || 0,
+            addedBy: 'couple',
+            addedAt: new Date(),
+            energy: song.bpm ? Math.min(5, Math.max(1, Math.round((song.bpm - 60) / 40))) : 3,
+            explicit: false
+          }));
+
+          timelineV2[moment.id] = {
+            id: moment.id,
+            name: moment.title,
+            order: index,
+            duration: parseInt(moment.duration) || 30,
+            songs: timelineSongs
+          };
+        });
+
+        await setDoc(doc(db, 'weddings', user.uid), {
+          timeline,
+          timelineV2,
+          selectedGenres,
+          selectedCountry,
+          totalSongs,
+          totalDuration,
+          weddingDate,
+          weddingName,
+          coupleNames: weddingName ? weddingName.split(' & ') : ['Partner 1', 'Partner 2'],
+          updatedAt: new Date().toISOString(),
+          userId: user.uid,
+          createdAt: new Date(),
+          paymentStatus: 'unpaid',
+          slug: user.uid
+        }, { merge: true });
+        
+        setHasChanges(false);
+        setLastSaved(new Date());
+      } catch (error) {
+        console.error('Auto-save failed:', error);
+      } finally {
+        setIsSaving(false);
+      }
+    }, 2000); // 2 second debounce
+
+    return () => clearTimeout(autoSaveTimer);
+  }, [timeline, selectedGenres, selectedCountry, weddingDate, weddingName, totalSongs, totalDuration, user, hasChanges, isSaving, loading]);
 
   // Save timeline to database
   const saveTimeline = async () => {
@@ -834,24 +898,19 @@ export default function V3ThreePanePage() {
               
               {/* Right: Actions */}
               <div className="flex items-center gap-2">
-                {hasChanges && (
-                  <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
-                    Unsaved
+                {user && isSaving && (
+                  <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full flex items-center gap-1">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                    Saving...
+                  </span>
+                )}
+                {user && !isSaving && lastSaved && (
+                  <span className="px-2 py-0.5 text-white/40 text-xs">
+                    Saved
                   </span>
                 )}
                 {user ? (
                   <>
-                    <button
-                      onClick={saveTimeline}
-                      disabled={!hasChanges}
-                      className={`px-4 py-1.5 text-white text-sm rounded-lg transition-all ${
-                        hasChanges 
-                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90' 
-                          : 'bg-white/10 cursor-not-allowed opacity-50'
-                      }`}
-                    >
-                      <Save className="w-4 h-4" />
-                    </button>
                     {weddingData && (
                       <Link href={`/wedding/${user.uid}/builder`}>
                         <button className="px-3 py-1.5 bg-purple-600/20 text-purple-400 text-sm rounded-lg hover:bg-purple-600/30 transition-colors flex items-center gap-2">

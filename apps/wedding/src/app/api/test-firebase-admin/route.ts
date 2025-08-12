@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/lib/firebase-admin';
 
 export async function GET() {
-  const status = {
+  const status: any = {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
     firebase_admin: {

@@ -100,8 +100,8 @@ export function formatPrice(amount: number, currency: 'GBP' | 'USD' | 'EUR'): st
 export const PRICE_AMOUNTS = {
   professional: {
     GBP: 25,
-    USD: 29,
-    EUR: 29
+    USD: 25,
+    EUR: 25
   },
   addons: {
     djPack: {

@@ -18,7 +18,7 @@ const PricingPage = () => {
   
   const pricing = {
     free: selectedCurrency === 'GBP' ? '£0' : selectedCurrency === 'EUR' ? '€0' : '$0',
-    professional: selectedCurrency === 'GBP' ? '£25' : selectedCurrency === 'EUR' ? '€29' : '$29'
+    professional: selectedCurrency === 'GBP' ? '£25' : selectedCurrency === 'EUR' ? '€25' : '$25'
   };
 
   useEffect(() => {

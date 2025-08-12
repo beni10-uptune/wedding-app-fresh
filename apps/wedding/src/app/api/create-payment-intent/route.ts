@@ -57,19 +57,19 @@ export async function POST(request: NextRequest) {
     
     // Determine currency based on country
     let currency = 'gbp'
-    let amount = STRIPE_CONFIG.amount
+    let amount = STRIPE_CONFIG.amount // This is 2500 (£25.00 in pence)
     
     // EU countries use EUR
     const euCountries = ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE']
     
     if (euCountries.includes(country)) {
       currency = 'eur'
-      // Convert GBP to EUR (approximate rate, you might want to use a real-time rate)
-      amount = Math.round(amount * 1.17)
+      // Same price for EUR: €25.00 = 2500 cents
+      amount = 2500
     } else if (country === 'US') {
       currency = 'usd'
-      // Convert GBP to USD
-      amount = Math.round(amount * 1.27)
+      // Same price for USD: $25.00 = 2500 cents
+      amount = 2500
     }
 
     // Create a payment intent with proper currency and payment methods

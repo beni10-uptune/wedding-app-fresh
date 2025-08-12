@@ -10,11 +10,11 @@ test.describe('Payment Flow E2E Tests', () => {
     await expect(gbpPrice).toBeVisible();
     
     // Check for USD price
-    const usdPrice = await page.locator('text=/$29/').first();
+    const usdPrice = await page.locator('text=/$25/').first();
     await expect(usdPrice).toBeVisible();
     
     // Check for EUR price  
-    const eurPrice = await page.locator('text=/€29/').first();
+    const eurPrice = await page.locator('text=/€25/').first();
     await expect(eurPrice).toBeVisible();
   });
 
@@ -28,7 +28,7 @@ test.describe('Payment Flow E2E Tests', () => {
       await upgradeButton.click();
       
       // Check modal shows correct price
-      const modalPrice = await page.locator('.fixed text=/£25|€29|\\$29/').first();
+      const modalPrice = await page.locator('.fixed text=/£25|€25|\\$25/').first();
       await expect(modalPrice).toBeVisible();
     }
   });

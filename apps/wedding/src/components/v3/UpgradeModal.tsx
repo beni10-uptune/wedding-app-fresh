@@ -14,8 +14,8 @@ interface UpgradeModalProps {
 
 // Determine currency based on selected country
 const getCurrency = (country?: string) => {
-  if (country === 'United States') return { symbol: '$', amount: 29, code: 'usd' };
-  if (country === 'Ireland') return { symbol: '€', amount: 29, code: 'eur' };
+  if (country === 'United States') return { symbol: '$', amount: 25, code: 'usd' };
+  if (country === 'Ireland') return { symbol: '€', amount: 25, code: 'eur' };
   return { symbol: '£', amount: 25, code: 'gbp' }; // Default to UK
 };
 

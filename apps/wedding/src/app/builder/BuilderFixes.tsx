@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getMusicDatabase } from '@/lib/music-database-service';
-import { getFilteredComprehensiveSongs } from '@/data/comprehensiveMasterPlaylist';
+import { getUnifiedFilteredSongs } from '@/data/unifiedMasterPlaylist';
 import { WeddingMoment } from '@/types/music-ai';
 
 // Realistic song counts for each moment based on duration
@@ -66,17 +66,16 @@ export async function loadMomentSongs(momentId: string, genres?: string[], count
       features: song.audio_features
     }));
 
-    // Fallback: if DB has no songs, use our comprehensive master playlist
+    // Fallback: if DB has no songs, use our unified master playlist (1,156+ songs)
     if (mapped.length === 0) {
       const songCount = MOMENT_SONG_COUNTS[momentId as keyof typeof MOMENT_SONG_COUNTS] || 10;
-      const master = getFilteredComprehensiveSongs(
-        momentId, 
-        country, 
-        normalizedGenres,
-        undefined, // Let the function determine energy level
-        false, // Include explicit songs by default
-        songCount * 2 // Get extra for variety
-      );
+      const master = getUnifiedFilteredSongs({
+        moment: momentId,
+        country: country,
+        genres: normalizedGenres,
+        excludeExplicit: false,
+        limit: songCount * 2 // Get extra for variety
+      });
       
       return master.slice(0, songCount).map(ms => {
         const rawId = ms.id?.startsWith('spotify:track:') ? ms.id.replace('spotify:track:', '') : ms.id;
@@ -97,16 +96,15 @@ export async function loadMomentSongs(momentId: string, genres?: string[], count
     return mapped;
   } catch (error) {
     console.error(`Error loading songs for ${momentId}:`, error);
-    // Hard fallback on error as well
+    // Hard fallback on error - use unified database with 1,156+ songs
     const songCount = MOMENT_SONG_COUNTS[momentId as keyof typeof MOMENT_SONG_COUNTS] || 10;
-    const master = getFilteredComprehensiveSongs(
-      momentId, 
-      country, 
-      normalizedGenres,
-      undefined,
-      false,
-      songCount * 2
-    );
+    const master = getUnifiedFilteredSongs({
+      moment: momentId,
+      country: country,
+      genres: normalizedGenres,
+      excludeExplicit: false,
+      limit: songCount * 2
+    });
     
     return master.slice(0, songCount).map(ms => {
       const rawId = ms.id?.startsWith('spotify:track:') ? ms.id.replace('spotify:track:', '') : ms.id;

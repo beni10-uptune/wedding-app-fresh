@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getMusicDatabase } from '@/lib/music-database-service';
-import { getFilteredSongs as getMasterFilteredSongs } from '@/data/masterWeddingPlaylist';
+import { getFilteredComprehensiveSongs } from '@/data/comprehensiveMasterPlaylist';
 import { WeddingMoment } from '@/types/music-ai';
 
 // Realistic song counts for each moment based on duration
@@ -66,10 +66,19 @@ export async function loadMomentSongs(momentId: string, genres?: string[], count
       features: song.audio_features
     }));
 
-    // Fallback: if DB has no songs, use our curated master playlist
+    // Fallback: if DB has no songs, use our comprehensive master playlist
     if (mapped.length === 0) {
-      const master = getMasterFilteredSongs(momentId, country, normalizedGenres);
-      return master.map(ms => {
+      const songCount = MOMENT_SONG_COUNTS[momentId as keyof typeof MOMENT_SONG_COUNTS] || 10;
+      const master = getFilteredComprehensiveSongs(
+        momentId, 
+        country, 
+        normalizedGenres,
+        undefined, // Let the function determine energy level
+        false, // Include explicit songs by default
+        songCount * 2 // Get extra for variety
+      );
+      
+      return master.slice(0, songCount).map(ms => {
         const rawId = ms.id?.startsWith('spotify:track:') ? ms.id.replace('spotify:track:', '') : ms.id;
         return {
           id: rawId || `${momentId}-${Math.random()}`,
@@ -89,8 +98,17 @@ export async function loadMomentSongs(momentId: string, genres?: string[], count
   } catch (error) {
     console.error(`Error loading songs for ${momentId}:`, error);
     // Hard fallback on error as well
-    const master = getMasterFilteredSongs(momentId, country, normalizedGenres);
-    return master.map(ms => {
+    const songCount = MOMENT_SONG_COUNTS[momentId as keyof typeof MOMENT_SONG_COUNTS] || 10;
+    const master = getFilteredComprehensiveSongs(
+      momentId, 
+      country, 
+      normalizedGenres,
+      undefined,
+      false,
+      songCount * 2
+    );
+    
+    return master.slice(0, songCount).map(ms => {
       const rawId = ms.id?.startsWith('spotify:track:') ? ms.id.replace('spotify:track:', '') : ms.id;
       return {
         id: rawId || `${momentId}-${Math.random()}`,

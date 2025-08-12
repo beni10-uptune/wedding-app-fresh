@@ -170,7 +170,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     albumArt: 'https://i.scdn.co/image/ab67616d0000b273b5d4b4ed17ec86c4b3944af2'
   }),
 
-  createSong('sunday-morning', 'Sunday Morning', 'Maroon 5', 'Songs About Jane', {
+  createSong('0QZ5yyl6B6utIWkxPbWEso', 'Sunday Morning', 'Maroon 5', 'Songs About Jane', {
     duration: 240,
     bpm: 91,
     energyLevel: 2,
@@ -229,7 +229,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     moodTags: ['classic', 'romantic', 'timeless']
   }),
 
-  createSong('make-you-feel', 'Make You Feel My Love', 'Adele', '19', {
+  createSong('480ZDFqpFqwFLLla5gjNs5', 'Make You Feel My Love', 'Adele', '19', {
     duration: 212,
     bpm: 72,
     energyLevel: 2,
@@ -286,7 +286,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     moodTags: ['party', 'dance', 'energetic']
   }),
 
-  createSong('mr-brightside', 'Mr. Brightside', 'The Killers', 'Hot Fuss', {
+  createSong('7oK9VyNzrYvRFo7nQEYkWN', 'Mr. Brightside', 'The Killers', 'Hot Fuss', {
     duration: 222,
     bpm: 148,
     energyLevel: 5,
@@ -297,7 +297,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     moodTags: ['anthem', 'singalong', 'energetic']
   }),
 
-  createSong('sweet-caroline', 'Sweet Caroline', 'Neil Diamond', 'Sweet Caroline', {
+  createSong('1vYnBubODJQYOmryRDI8tA', 'Sweet Caroline', 'Neil Diamond', 'Sweet Caroline', {
     duration: 204,
     bpm: 128,
     energyLevel: 4,
@@ -308,7 +308,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     moodTags: ['singalong', 'classic', 'crowd-pleaser']
   }),
 
-  createSong('dont-stop-believin', "Don't Stop Believin'", 'Journey', 'Escape', {
+  createSong('4bHsxqR3GMrXTxEPLuK5ue', "Don't Stop Believin'", 'Journey', 'Escape', {
     duration: 251,
     bpm: 119,
     energyLevel: 4,
@@ -319,7 +319,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     moodTags: ['anthem', 'singalong', 'classic']
   }),
 
-  createSong('wonderwall', 'Wonderwall', 'Oasis', "(What's the Story) Morning Glory?", {
+  createSong('3MODES4TNtygekLl146Dxd', 'Wonderwall', 'Oasis', "(What's the Story) Morning Glory?", {
     duration: 258,
     bpm: 89,
     energyLevel: 3,
@@ -331,7 +331,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
   }),
 
   // ========== DINNER ==========
-  createSong('fly-me-moon', 'Fly Me to the Moon', 'Frank Sinatra', 'It Might as Well Be Swing', {
+  createSong('5b7OgznPJJr1vHNYGyvxau', 'Fly Me to the Moon', 'Frank Sinatra', 'It Might as Well Be Swing', {
     duration: 148,
     bpm: 116,
     energyLevel: 2,
@@ -342,7 +342,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     moodTags: ['classic', 'elegant', 'sophisticated']
   }),
 
-  createSong('wonderful-tonight', 'Wonderful Tonight', 'Eric Clapton', 'Slowhand', {
+  createSong('1LhOa07Vq9SvLWUIqn2WR5', 'Wonderful Tonight', 'Eric Clapton', 'Slowhand', {
     duration: 219,
     bpm: 96,
     energyLevel: 2,
@@ -354,7 +354,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
   }),
 
   // ========== COCKTAIL HOUR ==========
-  createSong('valerie', 'Valerie', 'Amy Winehouse', 'Back to Black', {
+  createSong('3nFLbXrJp2lUG7dJfnKl5f', 'Valerie', 'Amy Winehouse ft. Mark Ronson', 'Version', {
     duration: 210,
     bpm: 123,
     energyLevel: 3,
@@ -365,7 +365,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     moodTags: ['groovy', 'sophisticated', 'cool']
   }),
 
-  createSong('golden', 'Golden', 'Harry Styles', 'Fine Line', {
+  createSong('0xtIp0lgccN85GfGOekS5L', 'Golden', 'Harry Styles', 'Fine Line', {
     duration: 208,
     bpm: 90,
     energyLevel: 3,
@@ -377,7 +377,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
   }),
 
   // ========== PARENT DANCES ==========
-  createSong('my-girl', 'My Girl', 'The Temptations', 'The Temptations Sing Smokey', {
+  createSong('75m1PmuuFFfcVOD1tINRML', 'My Girl', 'The Temptations', 'The Temptations Sing Smokey', {
     duration: 163,
     bpm: 103,
     energyLevel: 3,
@@ -388,7 +388,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     moodTags: ['classic', 'sweet', 'father-daughter']
   }),
 
-  createSong('isnt-she-lovely', "Isn't She Lovely", 'Stevie Wonder', 'Songs in the Key of Life', {
+  createSong('5TRPicyLGbAF2LGBFbHGvO', "Isn't She Lovely", 'Stevie Wonder', 'Songs in the Key of Life', {
     duration: 392,
     bpm: 116,
     energyLevel: 3,
@@ -400,7 +400,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
   }),
 
   // ========== LAST DANCE ==========
-  createSong('time-of-my-life', 'Time of My Life', 'Bill Medley & Jennifer Warnes', 'Dirty Dancing', {
+  createSong('6DLgpnGBMf8gch6qjMuP1Q', "(I've Had) The Time of My Life", 'Bill Medley & Jennifer Warnes', 'Dirty Dancing', {
     duration: 287,
     bpm: 103,
     energyLevel: 4,
@@ -411,7 +411,7 @@ export const MASTER_WEDDING_SONGS: MasterSong[] = [
     moodTags: ['romantic', 'finale', 'memorable']
   }),
 
-  createSong('closing-time', 'Closing Time', 'Semisonic', 'Feeling Strangely Fine', {
+  createSong('2UDvmYoDRVCT5W9fgYzOmP', 'Closing Time', 'Semisonic', 'Feeling Strangely Fine', {
     duration: 269,
     bpm: 92,
     energyLevel: 3,

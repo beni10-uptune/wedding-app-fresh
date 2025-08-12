@@ -236,23 +236,52 @@ export async function addSongToDatabase(song: any): Promise<void> {
 }
 
 // Check if user has access to a feature
-export function useFeatureAccess(feature: string) {
+export function useFeatureAccess(feature: string, weddingId?: string) {
   const [hasAccess, setHasAccess] = useState(false);
   const [tier, setTier] = useState<string>('free');
+  const [canPerformAction, setCanPerformAction] = useState(true);
+  const [usage, setUsage] = useState<any>(null);
   
   useEffect(() => {
     const checkAccess = async () => {
+      // Map features to API actions
+      const featureToAction: Record<string, string> = {
+        'export': 'export',
+        'share': 'export',
+        'partner': 'add_coowner',
+        'add-coowner': 'add_coowner',
+        'unlimited-songs': 'add_song',
+        'add-song': 'add_song',
+        'invite-guest': 'invite_guest',
+        'ai-suggestions': 'add_song' // AI suggestions count as adding songs
+      };
+      
+      const action = featureToAction[feature] || 'get_stats';
+      
       try {
-        const response = await fetch('/api/check-tier-limits');
-        if (response.ok) {
-          const data = await response.json();
-          setTier(data.tier || 'free');
+        // If we have a weddingId, check specific limits
+        if (weddingId) {
+          const response = await fetch('/api/check-tier-limits', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ weddingId, action })
+          });
           
-          // Define feature access by tier
+          if (response.ok) {
+            const data = await response.json();
+            setCanPerformAction(data.allowed !== false);
+            setTier(data.tier || 'free');
+            setUsage(data.usage || null);
+            setHasAccess(data.allowed !== false);
+          }
+        } else {
+          // Without weddingId, use simple tier-based check
           const paidFeatures = ['share', 'partner', 'export', 'unlimited-songs', 'ai-suggestions'];
           const isPaidFeature = paidFeatures.includes(feature);
           
-          setHasAccess(!isPaidFeature || data.tier !== 'free');
+          // For now, assume free tier if no weddingId
+          setHasAccess(!isPaidFeature);
+          setTier('free');
         }
       } catch (error) {
         console.error('Error checking feature access:', error);
@@ -261,7 +290,7 @@ export function useFeatureAccess(feature: string) {
     };
     
     checkAccess();
-  }, [feature]);
+  }, [feature, weddingId]);
   
-  return { hasAccess, tier };
+  return { hasAccess, tier, canPerformAction, usage };
 }

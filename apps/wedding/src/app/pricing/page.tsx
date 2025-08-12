@@ -18,7 +18,7 @@ const PricingPage = () => {
   
   const pricing = {
     free: selectedCurrency === 'GBP' ? '£0' : selectedCurrency === 'EUR' ? '€0' : '$0',
-    professional: selectedCurrency === 'GBP' ? '£20' : selectedCurrency === 'EUR' ? '€23' : '$25'
+    professional: selectedCurrency === 'GBP' ? '£25' : selectedCurrency === 'EUR' ? '€29' : '$29'
   };
 
   useEffect(() => {
@@ -74,7 +74,7 @@ const PricingPage = () => {
       price: pricing.free,
       description: 'Perfect for getting started',
       features: [
-        { text: 'Up to 20 songs per moment', included: true },
+        { text: 'Up to 50 songs total', included: true },
         { text: 'Basic playlist builder', included: true },
         { text: 'Timeline organizer', included: true },
         { text: 'Export to Spotify', included: false },

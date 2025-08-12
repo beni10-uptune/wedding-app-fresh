@@ -6,7 +6,7 @@ import { adminAuth } from '@/lib/firebase-admin'
 import { logger } from '@/lib/logger'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-11-20.acacia' as any
+  apiVersion: '2025-07-30.basil'
 })
 
 export async function POST(request: NextRequest) {

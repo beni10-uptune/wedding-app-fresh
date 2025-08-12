@@ -92,18 +92,16 @@ export default function UnifiedSongCard({
     setShowMomentMenu(!showMomentMenu)
   }
 
+  // Use canonical moment IDs from WEDDING_MOMENTS_V2
   const moments = [
-    { id: 'prelude', name: 'Prelude', icon: '🎵', description: 'Guest arrival' },
-    { id: 'processional', name: 'Processional', icon: '👰', description: 'Walking down the aisle' },
-    { id: 'ceremony', name: 'Ceremony', icon: '💍', description: 'The main event' },
-    { id: 'recessional', name: 'Recessional', icon: '🎊', description: 'Celebration exit' },
-    { id: 'cocktail', name: 'Cocktail Hour', icon: '🥂', description: 'Mingling time' },
-    { id: 'dinner', name: 'Dinner', icon: '🍽️', description: 'Background music' },
-    { id: 'first-dance', name: 'First Dance', icon: '💃', description: 'Your special moment' },
+    { id: 'getting-ready', name: 'Getting Ready', icon: '💄', description: 'Pre-ceremony preparation' },
+    { id: 'ceremony', name: 'Ceremony', icon: '💒', description: 'Processional, vows, recessional' },
+    { id: 'cocktails', name: 'Cocktails', icon: '🥂', description: 'Sophisticated mingling' },
+    { id: 'dinner', name: 'Dinner', icon: '🍽️', description: 'Elegant background dining' },
+    { id: 'first-dance', name: 'First Dance', icon: '💕', description: 'Your special moment' },
     { id: 'parent-dances', name: 'Parent Dances', icon: '👨‍👩‍👧', description: 'Family dances' },
-    { id: 'cake-cutting', name: 'Cake Cutting', icon: '🎂', description: 'Sweet celebration' },
-    { id: 'party', name: 'Party', icon: '🎉', description: 'Dance floor time' },
-    { id: 'last-dance', name: 'Last Dance', icon: '✨', description: 'Final song' }
+    { id: 'party', name: 'Party Time', icon: '🎉', description: 'Dance floor hits' },
+    { id: 'last-dance', name: 'Last Dance', icon: '🌙', description: 'End on a perfect note' }
   ]
 
   const cardClasses = {

@@ -749,11 +749,8 @@ export default function V3ThreePanePage() {
     const moment = timeline.find(m => m.id === momentId);
     if (!moment) return;
     
-    // Check if user has reached song limit for free tier
-    if (userTier === 'free' && moment.songs.length >= 20) {
-      setShowUpgradeModal(true);
-      return;
-    }
+    // Allow adding songs without tier restrictions
+    // Users should be able to build their playlist freely
     
     // Add song to timeline
     setTimeline(prev => prev.map(moment => {
@@ -840,9 +837,9 @@ export default function V3ThreePanePage() {
     const euCountries = ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE'];
     
     if (userCountry === 'GB' || userLocale.startsWith('en-GB')) {
-      return '£19';
+      return '£25';
     } else if (euCountries.includes(userCountry) || userLocale.includes('de') || userLocale.includes('fr') || userLocale.includes('es') || userLocale.includes('it')) {
-      return '€23';
+      return '€25';
     } else {
       return '$25';
     }

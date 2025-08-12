@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getMusicDatabase } from '@/lib/music-database-service';
+import { getFilteredSongs as getMasterFilteredSongs } from '@/data/masterWeddingPlaylist';
 import { WeddingMoment } from '@/types/music-ai';
 
 // Realistic song counts for each moment based on duration
@@ -19,6 +20,8 @@ export const MOMENT_SONG_COUNTS = {
 // Load songs from database for each moment
 export async function loadMomentSongs(momentId: string, genres?: string[], country?: string): Promise<any[]> {
   const db = getMusicDatabase();
+  // Normalize genre aliases for fallback datasets
+  const normalizedGenres = genres?.map(g => (g.toLowerCase() === 'rnb' ? 'r&b' : g));
   
   // Map moment IDs to WeddingMoment enum values
   const momentMap: { [key: string]: WeddingMoment } = {
@@ -51,7 +54,7 @@ export async function loadMomentSongs(momentId: string, genres?: string[], count
     );
 
     // Convert to the format used by the builder
-    return songs.map(song => ({
+    const mapped = songs.map(song => ({
       id: song.spotify_id || `${momentId}-${Math.random()}`,
       title: song.title,
       artist: song.artist,
@@ -62,9 +65,45 @@ export async function loadMomentSongs(momentId: string, genres?: string[], count
       albumArt: song.album_art_url,
       features: song.audio_features
     }));
+
+    // Fallback: if DB has no songs, use our curated master playlist
+    if (mapped.length === 0) {
+      const master = getMasterFilteredSongs(momentId, country, normalizedGenres);
+      return master.map(ms => {
+        const rawId = ms.id?.startsWith('spotify:track:') ? ms.id.replace('spotify:track:', '') : ms.id;
+        return {
+          id: rawId || `${momentId}-${Math.random()}`,
+          title: ms.title,
+          artist: ms.artist,
+          bpm: ms.bpm,
+          duration: ms.duration,
+          previewUrl: ms.previewUrl || undefined,
+          spotifyId: rawId,
+          albumArt: ms.albumArt,
+          features: ms.audioFeatures
+        };
+      });
+    }
+
+    return mapped;
   } catch (error) {
     console.error(`Error loading songs for ${momentId}:`, error);
-    return [];
+    // Hard fallback on error as well
+    const master = getMasterFilteredSongs(momentId, country, normalizedGenres);
+    return master.map(ms => {
+      const rawId = ms.id?.startsWith('spotify:track:') ? ms.id.replace('spotify:track:', '') : ms.id;
+      return {
+        id: rawId || `${momentId}-${Math.random()}`,
+        title: ms.title,
+        artist: ms.artist,
+        bpm: ms.bpm,
+        duration: ms.duration,
+        previewUrl: ms.previewUrl || undefined,
+        spotifyId: rawId,
+        albumArt: ms.albumArt,
+        features: ms.audioFeatures
+      };
+    });
   }
 }
 

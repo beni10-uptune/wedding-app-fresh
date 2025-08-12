@@ -67,6 +67,7 @@ import { AuthModal } from '@/components/v3/AuthModal';
 import { ShareModal } from '@/components/v3/ShareModal';
 import { SettingsModal } from '@/components/v3/SettingsModal';
 import { UpgradeModal } from '@/components/v3/UpgradeModal';
+import EmailCaptureModal from '@/components/EmailCaptureModal';
 import { 
   useTimelineWithDatabaseSongs, 
   searchDatabaseSongs, 
@@ -242,6 +243,9 @@ export default function V3ThreePanePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Song[]>([]);
   const { hasAccess: canShare } = useFeatureAccess('share');
+  const [showEmailCapture, setShowEmailCapture] = useState(false);
+  const [emailCaptureTrigger, setEmailCaptureTrigger] = useState<'export' | 'save' | 'share'>('save');
+  const [capturedEmail, setCapturedEmail] = useState<string | null>(null);
   const [isLoadingDatabase, setIsLoadingDatabase] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [playingId, setPlayingId] = useState<string | null>(null);
@@ -378,6 +382,12 @@ export default function V3ThreePanePage() {
 
   // Save timeline to database
   const saveTimeline = async () => {
+    if (!user && !capturedEmail) {
+      setEmailCaptureTrigger('save');
+      setShowEmailCapture(true);
+      return;
+    }
+    
     if (!user) {
       setShowAccountModal(true);
       return;
@@ -1489,13 +1499,32 @@ export default function V3ThreePanePage() {
               </h3>
               <div className="space-y-2">
                 <button 
-                  onClick={() => userTier === 'free' ? setShowUpgradeModal(true) : setShowAccountModal(true)}
+                  onClick={() => {
+                    if (!user && !capturedEmail) {
+                      setEmailCaptureTrigger('export');
+                      setShowEmailCapture(true);
+                    } else if (!user) {
+                      setShowAccountModal(true);
+                    } else if (userTier === 'free') {
+                      setShowUpgradeModal(true);
+                    }
+                  }}
                   className="w-full px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 flex items-center justify-center gap-2 text-sm"
                 >
                   <Music className="w-4 h-4" />
                   Export to Spotify
                 </button>
-                <button className="w-full px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 flex items-center justify-center gap-2 text-sm">
+                <button 
+                  onClick={() => {
+                    if (!user && !capturedEmail) {
+                      setEmailCaptureTrigger('export');
+                      setShowEmailCapture(true);
+                    } else {
+                      // Handle PDF download
+                    }
+                  }}
+                  className="w-full px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 flex items-center justify-center gap-2 text-sm"
+                >
                   <Download className="w-4 h-4" />
                   Download PDF
                 </button>
@@ -1932,6 +1961,27 @@ export default function V3ThreePanePage() {
             user={user}
           />
         )}
+
+        {/* Email Capture Modal */}
+        <EmailCaptureModal
+          isOpen={showEmailCapture}
+          onClose={() => setShowEmailCapture(false)}
+          onSuccess={(email) => {
+            setCapturedEmail(email);
+            setShowEmailCapture(false);
+            
+            // Track the action and show the auth modal for full account creation
+            if (emailCaptureTrigger === 'save') {
+              setShowAccountModal(true);
+            } else if (emailCaptureTrigger === 'export') {
+              // For export, show a success message
+              alert(`We'll send your playlist to ${email}. Create an account to access it instantly!`);
+              setShowAccountModal(true);
+            }
+          }}
+          trigger={emailCaptureTrigger}
+          totalSongs={totalSongs}
+        />
       </div>
     </DndContext>
   );

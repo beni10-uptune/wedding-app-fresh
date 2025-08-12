@@ -26,6 +26,8 @@ import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Save, Undo, Redo, Trash2, FileMusic, BookOpen, Music, Sparkles } from 'lucide-react'
 import SpotifyExport from './SpotifyExport'
+import UpgradePrompt from '@/components/UpgradePrompt'
+import { useFeatureAccess } from '@/app/builder/BuilderFixes'
 import EnhancedMobileBuilder from './EnhancedMobileBuilder'
 import WelcomeFlow from './WelcomeFlow'
 import InteractiveTutorial from './InteractiveTutorial'
@@ -94,6 +96,12 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
   const [hasSeenWelcome, setHasSeenWelcome] = useState(false)
   const [showGuideViewer, setShowGuideViewer] = useState(false)
   const [selectedGuideMoment, setSelectedGuideMoment] = useState<string | undefined>()
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState<string | null>(null)
+  
+  // Check feature access
+  const { hasAccess: canExport } = useFeatureAccess('export', wedding.id)
+  const { hasAccess: canAddCoOwner } = useFeatureAccess('add-coowner', wedding.id)
+  const { hasAccess: hasUnlimitedSongs } = useFeatureAccess('unlimited-songs', wedding.id)
   
   // Sync timeline when wedding prop changes
   useEffect(() => {
@@ -579,7 +587,13 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
                 <Redo className="w-4 h-4 text-white" />
               </button>
               <button
-                onClick={() => setShowSpotifyExport(true)}
+                onClick={() => {
+                  if (canExport) {
+                    setShowSpotifyExport(true)
+                  } else {
+                    setShowUpgradePrompt('export')
+                  }
+                }}
                 className="p-2 rounded-lg hover:bg-white/10 text-green-400 hover:text-green-300"
                 title="Export to Spotify"
               >
@@ -684,6 +698,16 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
         momentId={selectedGuideMoment}
         onClose={handleCloseGuide}
         onSelectGuide={() => {}}
+      />
+    )}
+
+    {/* Upgrade Prompt */}
+    {showUpgradePrompt && (
+      <UpgradePrompt
+        trigger={showUpgradePrompt as any}
+        weddingId={wedding.id}
+        onClose={() => setShowUpgradePrompt(null)}
+        onUpgrade={() => setShowUpgradePrompt(null)}
       />
     )}
   </>

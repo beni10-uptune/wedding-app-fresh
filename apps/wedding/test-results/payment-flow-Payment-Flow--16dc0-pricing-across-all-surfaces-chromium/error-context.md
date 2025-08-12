@@ -1,0 +1,71 @@
+# Page snapshot
+
+```yaml
+- navigation:
+  - link "Uptune":
+    - /url: /
+  - combobox:
+    - option "$ USD" [selected]
+    - option "£ GBP"
+    - option "€ EUR"
+  - link "Login":
+    - /url: /auth/login
+  - link "Sign Up":
+    - /url: /auth/signup
+- heading "Choose Your Perfect Plan" [level=1]
+- paragraph: Create the ultimate wedding playlist with our powerful tools and AI recommendations
+- heading "Free" [level=2]
+- paragraph: Perfect for getting started
+- text: $0
+- list:
+  - listitem: Up to 50 songs total
+  - listitem: Basic playlist builder
+  - listitem: Timeline organizer
+  - listitem: Export to Spotify
+  - listitem: Guest song requests
+  - listitem: Partner collaboration
+  - listitem: AI DJ recommendations
+  - listitem: Unlimited songs
+- button "Current Plan" [disabled]
+- text: MOST POPULAR
+- heading "Professional" [level=2]
+- paragraph: Everything you need for your perfect wedding
+- text: $29 one-time
+- list:
+  - listitem: Unlimited songs
+  - listitem: Advanced playlist builder
+  - listitem: Timeline organizer
+  - listitem: Export to Spotify
+  - listitem: Guest song requests
+  - listitem: Partner collaboration
+  - listitem: AI DJ recommendations
+  - listitem: Priority support
+- button "Upgrade Now"
+- heading "Why Choose Uptune?" [level=2]
+- heading "Made for Weddings" [level=3]
+- paragraph: Designed specifically for wedding planning with timeline-based organization
+- heading "Guest Collaboration" [level=3]
+- paragraph: Let your guests request songs and vote on their favorites
+- heading "AI-Powered" [level=3]
+- paragraph: Get intelligent song recommendations based on your preferences
+- heading "Frequently Asked Questions" [level=2]
+- heading "Can I change my plan later?" [level=3]
+- paragraph: You can upgrade from Free to Professional at any time. Your progress and playlists will be saved.
+- heading "Do I need a Spotify account?" [level=3]
+- paragraph: A Spotify account is recommended for full functionality, but you can still build and organize your playlist without one.
+- heading "Is this a subscription?" [level=3]
+- paragraph: No! Professional is a one-time payment that gives you access until your wedding date plus 30 days after.
+- heading "We use cookies to enhance your experience" [level=3]
+- paragraph: We use cookies and similar technologies to analyze site usage, remember your preferences, and improve our services. This includes Google Analytics to understand how you use our site.
+- button "Accept All Cookies"
+- button "Reject Non-Essential"
+- link "Privacy Policy":
+  - /url: /privacy
+- button "Close"
+- alert
+- button "Open Next.js Dev Tools":
+  - img
+- button "Open issues overlay": 1 Issue
+- button "Collapse issues badge":
+  - img
+```

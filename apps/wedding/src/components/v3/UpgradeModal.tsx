@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { X, MessageSquare, TrendingUp, Upload, Music, Users, Save, CreditCard, Check } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 import { useRouter } from 'next/navigation';
+import { auth } from '@/lib/firebase';
 
 interface UpgradeModalProps {
   onClose: () => void;
@@ -13,9 +14,9 @@ interface UpgradeModalProps {
 
 // Determine currency based on selected country
 const getCurrency = (country?: string) => {
-  if (country === 'United States') return { symbol: '$', amount: 25, code: 'usd' };
-  if (country === 'Ireland') return { symbol: '€', amount: 23, code: 'eur' };
-  return { symbol: '£', amount: 20, code: 'gbp' }; // Default to UK
+  if (country === 'United States') return { symbol: '$', amount: 29, code: 'usd' };
+  if (country === 'Ireland') return { symbol: '€', amount: 29, code: 'eur' };
+  return { symbol: '£', amount: 25, code: 'gbp' }; // Default to UK
 };
 
 export function UpgradeModal({ onClose, weddingId, user }: UpgradeModalProps) {
@@ -40,11 +41,18 @@ export function UpgradeModal({ onClose, weddingId, user }: UpgradeModalProps) {
     setError(null);
 
     try {
+      // Get the ID token for authentication
+      const idToken = await auth.currentUser?.getIdToken();
+      if (!idToken) {
+        throw new Error('Authentication required');
+      }
+
       // Create payment intent
       const response = await fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
         },
         body: JSON.stringify({
           weddingId: weddingId || user.uid,
@@ -191,7 +199,7 @@ export function UpgradeModal({ onClose, weddingId, user }: UpgradeModalProps) {
           ) : (
             <>
               <CreditCard className="w-5 h-5" />
-              Upgrade to Pro Now
+              Upgrade to Pro - {currency.symbol}{currency.amount}
             </>
           )}
         </button>

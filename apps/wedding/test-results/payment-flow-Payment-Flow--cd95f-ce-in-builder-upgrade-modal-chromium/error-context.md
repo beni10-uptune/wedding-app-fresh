@@ -1,0 +1,118 @@
+# Page snapshot
+
+```yaml
+- banner:
+  - link:
+    - /url: /
+  - text: 41 songs 2h 32m playtime Unsaved
+  - button "Save Playlist"
+- heading "Customize" [level=2]
+- heading "Location" [level=3]
+- combobox:
+  - option "Select country" [selected]
+  - option "🇬🇧 UK"
+  - option "🇮🇪 Ireland"
+  - option "🇺🇸 US"
+  - option "🇦🇺 Australia"
+  - option "🇨🇦 Canada"
+- heading "Music Taste 2 active" [level=3]
+- button "🎵Pop"
+- button "🎸Rock"
+- button "🎤Indie"
+- button "💜R&B"
+- button "🤠Country"
+- button "🎹Electronic"
+- paragraph: ✓ Playlist customized for pop, rnb
+- heading "Choose Your First Dance" [level=3]
+- button "Add Your First Dance Song"
+- paragraph: This is your special moment - choose the perfect song
+- text: PRO
+- heading "AI Taste Analysis" [level=3]
+- button "Analyze Your Spotify"
+- paragraph: AI learns your music taste to create the perfect wedding flow with BPM matching
+- heading "Quick Add" [level=3]
+- textbox "Search for songs..."
+- paragraph: Search powered by Spotify
+- text: Total songs 41 Duration 2h 32m Customized ✓ 2 genres
+- button "Clear Filters"
+- heading "YOUR WEDDING TIMELINE" [level=2]
+- paragraph: Drag songs between moments • Click to preview • Everything customizable
+- button "💄 Getting Ready 2:00 PM • 30 min • 2 songs":
+  - text: 💄
+  - heading "Getting Ready" [level=3]
+  - paragraph: 2:00 PM • 30 min • 2 songs
+  - button
+- button "💒 Ceremony 3:00 PM • 20 min • 5 songs":
+  - text: 💒
+  - heading "Ceremony" [level=3]
+  - paragraph: 3:00 PM • 20 min • 5 songs
+  - button
+- button "🥂 Cocktails 3:30 PM • 90 min • 3 songs":
+  - text: 🥂
+  - heading "Cocktails" [level=3]
+  - paragraph: 3:30 PM • 90 min • 3 songs
+  - button
+- button "🍽️ Dinner 5:00 PM • 90 min • 10 songs":
+  - text: 🍽️
+  - heading "Dinner" [level=3]
+  - paragraph: 5:00 PM • 90 min • 10 songs
+  - button
+- button "💕 First Dance 7:00 PM • 5 min • 1 songs":
+  - text: 💕
+  - heading "First Dance" [level=3]
+  - paragraph: 7:00 PM • 5 min • 1 songs
+  - button
+- button
+- text: "1"
+- paragraph: Stay
+- paragraph: The Kid LAROI & Justin Bieber• 120 BPM• 2:21
+- button "Preview song"
+- button "Remove song"
+- button "👨‍👩‍👧 Parent Dances 7:05 PM • 10 min • 2 songs":
+  - text: 👨‍👩‍👧
+  - heading "Parent Dances" [level=3]
+  - paragraph: 7:05 PM • 10 min • 2 songs
+  - button
+- button "🎉 Party Time 7:15 PM • 3 hours • 15 songs":
+  - text: 🎉
+  - heading "Party Time" [level=3]
+  - paragraph: 7:15 PM • 3 hours • 15 songs
+  - button
+- button "🌙 Last Dance 10:15 PM • 10 min • 3 songs":
+  - text: 🌙
+  - heading "Last Dance" [level=3]
+  - paragraph: 10:15 PM • 10 min • 3 songs
+  - button
+- heading "Studio" [level=2]
+- heading "AI Analysis" [level=3]
+- button "Analyze Playlist"
+- heading "Export" [level=3]
+- button "Export to Spotify"
+- button "Download PDF"
+- heading "Collaborate" [level=3]
+- button "Invite Partner"
+- button "Guest Requests"
+- paragraph: Pro feature • Upgrade to enable
+- heading "Pro Features" [level=3]
+- list:
+  - listitem: AI Assistant & Chat
+  - listitem: BPM & Energy matching
+  - listitem: Import Spotify playlists
+  - listitem: Unlimited saves
+  - listitem: Guest requests
+- button "Upgrade to Pro • $25"
+- status
+- heading "We use cookies to enhance your experience" [level=3]
+- paragraph: We use cookies and similar technologies to analyze site usage, remember your preferences, and improve our services. This includes Google Analytics to understand how you use our site.
+- button "Accept All Cookies"
+- button "Reject Non-Essential"
+- link "Privacy Policy":
+  - /url: /privacy
+- button "Close"
+- alert
+- button "Open Next.js Dev Tools":
+  - img
+- button "Open issues overlay": 3 Issue
+- button "Collapse issues badge":
+  - img
+```

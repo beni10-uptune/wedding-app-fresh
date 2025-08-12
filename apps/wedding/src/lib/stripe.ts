@@ -3,7 +3,7 @@ import { loadStripe } from '@stripe/stripe-js'
 // Initialize Stripe with validated environment variable
 const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 
-if (!stripePublishableKey || stripePublishableKey.includes('pk_test_') === false && stripePublishableKey.includes('pk_live_') === false) {
+if (!stripePublishableKey || (!stripePublishableKey.includes('pk_test_') && !stripePublishableKey.includes('pk_live_'))) {
   console.warn('Invalid or missing Stripe publishable key')
 }
 

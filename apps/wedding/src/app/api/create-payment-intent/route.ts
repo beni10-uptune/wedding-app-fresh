@@ -6,7 +6,12 @@ import { paymentIntentSchema, validateData } from '@/lib/validations'
 import { rateLimit, createRateLimitResponse } from '@/lib/rate-limit'
 import { logError } from '@/lib/logger'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+// Validate Stripe configuration
+if (!process.env.STRIPE_SECRET_KEY) {
+  console.error('[Payment Intent] Missing STRIPE_SECRET_KEY environment variable')
+}
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   apiVersion: '2025-07-30.basil'
 })
 
@@ -21,7 +26,15 @@ export async function POST(request: NextRequest) {
   const authResult = await authenticateRequest(request)
   
   if (!authResult.authenticated) {
-    return createAuthResponse(authResult.error || 'Unauthorized', 401)
+    console.error('[Payment Intent] Authentication failed:', authResult.error)
+    return NextResponse.json(
+      { 
+        error: 'Authentication failed', 
+        details: authResult.error || 'Please sign in to continue',
+        hint: 'Make sure you are logged in and try again'
+      },
+      { status: 401 }
+    )
   }
 
   try {
@@ -90,9 +103,35 @@ export async function POST(request: NextRequest) {
     logError(error, { context: 'Payment intent creation failed', error })
     
     // More detailed error response for debugging
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    let errorMessage = 'Unknown error'
+    let hint = 'Please try again later'
+    
+    if (error instanceof Error) {
+      errorMessage = error.message
+      
+      // Provide specific hints based on error
+      if (errorMessage.includes('api_key')) {
+        hint = 'Payment system configuration error. Please contact support.'
+      } else if (errorMessage.includes('currency')) {
+        hint = 'Currency configuration error. Please try again.'
+      } else if (errorMessage.includes('amount')) {
+        hint = 'Invalid payment amount. Please refresh and try again.'
+      }
+    }
+    
+    console.error('[Payment Intent] Error details:', {
+      message: errorMessage,
+      stack: error instanceof Error ? error.stack : undefined,
+      stripeKeyPresent: !!process.env.STRIPE_SECRET_KEY,
+      stripeKeyType: process.env.STRIPE_SECRET_KEY?.substring(0, 7)
+    })
+    
     return NextResponse.json(
-      { error: 'Failed to create payment intent', details: errorMessage },
+      { 
+        error: 'Failed to create payment session', 
+        details: errorMessage,
+        hint
+      },
       { status: 500 }
     )
   }

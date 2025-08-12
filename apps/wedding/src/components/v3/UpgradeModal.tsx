@@ -73,6 +73,10 @@ export function UpgradeModal({ onClose, weddingId, user }: UpgradeModalProps) {
           throw new Error('Authentication failed. Please sign in again.');
         } else if (response.status === 429) {
           throw new Error('Too many requests. Please wait a moment and try again.');
+        } else if (errorData.hint) {
+          throw new Error(errorData.hint);
+        } else if (errorData.details) {
+          throw new Error(errorData.details);
         } else if (errorData.error) {
           throw new Error(errorData.error);
         } else {

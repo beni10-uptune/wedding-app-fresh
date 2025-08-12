@@ -444,11 +444,44 @@ export default function V3ThreePanePage() {
     return () => clearTimeout(autoSaveTimer);
   }, [timeline, selectedGenres, selectedCountry, weddingDate, weddingName, totalSongs, totalDuration, user, hasChanges, isSaving, loading]);
 
+  // Save timeline with captured email (for non-authenticated users)
+  const saveTimelineWithEmail = async (email: string) => {
+    try {
+      // Store in localStorage for now - they can create account later
+      const timelineData = {
+        timeline,
+        selectedGenres,
+        selectedCountry,
+        totalSongs,
+        totalDuration,
+        weddingDate,
+        weddingName,
+        email,
+        savedAt: new Date().toISOString()
+      };
+      
+      localStorage.setItem('saved_timeline', JSON.stringify(timelineData));
+      localStorage.setItem('timeline_email', email);
+      
+      // Show success message
+      alert('Your playlist has been saved! Create an account to access it from any device.');
+    } catch (error) {
+      console.error('Error saving timeline:', error);
+      alert('Failed to save your playlist. Please try again.');
+    }
+  };
+
   // Save timeline to database
   const saveTimeline = async () => {
     if (!user && !capturedEmail) {
       setEmailCaptureTrigger('save');
       setShowEmailCapture(true);
+      return;
+    }
+    
+    if (!user && capturedEmail) {
+      // User has given email but no account - save locally
+      saveTimelineWithEmail(capturedEmail);
       return;
     }
     
@@ -1987,6 +2020,7 @@ export default function V3ThreePanePage() {
           onClose={() => setShowAccountModal(false)}
           onSuccess={saveTimeline}
           totalSongs={totalSongs}
+          prefilledEmail={capturedEmail || undefined}
         />
 
         {/* Share Modal */}
@@ -2029,13 +2063,14 @@ export default function V3ThreePanePage() {
             setCapturedEmail(email);
             setShowEmailCapture(false);
             
-            // Track the action and show the auth modal for full account creation
+            // Don't immediately show auth modal - let user continue working
+            // They've given their email, we can save their progress
             if (emailCaptureTrigger === 'save') {
-              setShowAccountModal(true);
+              // Save the timeline with the captured email
+              saveTimelineWithEmail(email);
             } else if (emailCaptureTrigger === 'export') {
               // For export, show a success message
-              alert(`We'll send your playlist to ${email}. Create an account to access it instantly!`);
-              setShowAccountModal(true);
+              alert(`We'll send your playlist to ${email}. You can create an account anytime to access all features!`);
             }
           }}
           trigger={emailCaptureTrigger}

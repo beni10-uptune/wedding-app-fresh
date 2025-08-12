@@ -61,7 +61,23 @@ export function UpgradeModal({ onClose, weddingId, user }: UpgradeModalProps) {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create payment session');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Payment intent creation failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData
+        });
+        
+        // Provide more specific error messages
+        if (response.status === 401) {
+          throw new Error('Authentication failed. Please sign in again.');
+        } else if (response.status === 429) {
+          throw new Error('Too many requests. Please wait a moment and try again.');
+        } else if (errorData.error) {
+          throw new Error(errorData.error);
+        } else {
+          throw new Error('Failed to create payment session. Please try again.');
+        }
       }
 
       const { clientSecret } = await response.json();

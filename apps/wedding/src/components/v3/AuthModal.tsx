@@ -15,14 +15,22 @@ interface AuthModalProps {
   onClose: () => void;
   onSuccess?: () => void;
   totalSongs?: number;
+  prefilledEmail?: string;
 }
 
-export function AuthModal({ isOpen, onClose, onSuccess, totalSongs = 0 }: AuthModalProps) {
+export function AuthModal({ isOpen, onClose, onSuccess, totalSongs = 0, prefilledEmail }: AuthModalProps) {
   const [isSignIn, setIsSignIn] = useState(false);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(prefilledEmail || '');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  
+  // Update email when prefilled email changes
+  React.useEffect(() => {
+    if (prefilledEmail) {
+      setEmail(prefilledEmail);
+    }
+  }, [prefilledEmail]);
 
   const handleGoogleAuth = async () => {
     setLoading(true);

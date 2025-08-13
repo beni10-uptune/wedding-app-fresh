@@ -1592,8 +1592,6 @@ export default function V3ThreePanePage() {
                     if (!user && !capturedEmail) {
                       setEmailCaptureTrigger('export');
                       setShowEmailCapture(true);
-                    } else if (!user) {
-                      setShowAccountModal(true);
                     } else if (userTier === 'free') {
                       setShowUpgradeModal(true);
                     }

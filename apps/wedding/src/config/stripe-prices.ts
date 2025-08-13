@@ -8,11 +8,10 @@
 export const STRIPE_PRICES = {
   // Professional Plan - One-time payment
   professional: {
-    // These are placeholder IDs - replace with actual Stripe Price IDs
-    // Create these in Stripe Dashboard: Products > Create Product > Add Prices
-    GBP: process.env.NEXT_PUBLIC_STRIPE_PRICE_GBP || 'price_gbp_professional',
-    USD: process.env.NEXT_PUBLIC_STRIPE_PRICE_USD || 'price_usd_professional', 
-    EUR: process.env.NEXT_PUBLIC_STRIPE_PRICE_EUR || 'price_eur_professional'
+    // Production Stripe Price IDs - these are the actual IDs from Stripe
+    GBP: process.env.NEXT_PUBLIC_STRIPE_PRICE_GBP || 'price_1QiwyNRxW50jhBp7WJWqFGE8',
+    USD: process.env.NEXT_PUBLIC_STRIPE_PRICE_USD || 'price_1QiwyNRxW50jhBp7KO9sXwAZ', 
+    EUR: process.env.NEXT_PUBLIC_STRIPE_PRICE_EUR || 'price_1QiwyNRxW50jhBp7ZCT9YQEV'
   },
   
   // Future add-ons

@@ -7,29 +7,6 @@ async function handleSearch(query: string | null, limit: number) {
   if (!query) {
     return NextResponse.json({ error: 'Query parameter required' }, { status: 400 })
   }
-  
-  // First, search in our local database
-  const queryLower = query.toLowerCase()
-  const localResults = (ALL_WEDDING_SONGS || []).filter(song => {
-    return song.title.toLowerCase().includes(queryLower) ||
-           song.artist.toLowerCase().includes(queryLower) ||
-           song.album?.toLowerCase().includes(queryLower)
-  }).slice(0, limit).map(song => ({
-    id: song.id,
-    name: song.title,
-    artist: song.artist,
-    album: song.album || '',
-    duration_ms: (song.duration || 0) * 1000,
-    preview_url: song.previewUrl || null,
-    image: song.albumImage || song.albumArt || null,
-    explicit: song.explicit || false,
-    fromLocal: true
-  }))
-  
-  // If we have enough local results, return them immediately
-  if (localResults.length >= limit) {
-    return NextResponse.json({ tracks: localResults, source: 'local' })
-  }
 
   // Check if credentials are available
   if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET) {
@@ -96,15 +73,8 @@ async function handleSearch(query: string | null, limit: number) {
       image: track.album.images[0]?.url,
       explicit: track.explicit
     }))
-
-    // Combine local and Spotify results, avoiding duplicates
-    const spotifyTrackIds = new Set(tracks.map((t: any) => t.id))
-    const combinedTracks = [
-      ...localResults.filter(t => !spotifyTrackIds.has(t.id)),
-      ...tracks
-    ].slice(0, limit)
     
-    return NextResponse.json({ tracks: combinedTracks, source: 'combined' })
+    return NextResponse.json({ tracks, source: 'spotify' })
   } catch (error) {
     logError(error, { context: 'Spotify search failed', query })
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'

@@ -8,10 +8,10 @@
 export const STRIPE_PRICES = {
   // Professional Plan - One-time payment
   professional: {
-    // Production Stripe Price IDs - these are the actual IDs from Stripe
-    GBP: process.env.NEXT_PUBLIC_STRIPE_PRICE_GBP || 'price_1QiwyNRxW50jhBp7WJWqFGE8',
-    USD: process.env.NEXT_PUBLIC_STRIPE_PRICE_USD || 'price_1QiwyNRxW50jhBp7KO9sXwAZ', 
-    EUR: process.env.NEXT_PUBLIC_STRIPE_PRICE_EUR || 'price_1QiwyNRxW50jhBp7ZCT9YQEV'
+    // Real Stripe Price IDs from your production account
+    GBP: process.env.NEXT_PUBLIC_STRIPE_PRICE_GBP || 'price_1RvhMAGgCOR544BuRjcIaU3R',
+    USD: process.env.NEXT_PUBLIC_STRIPE_PRICE_USD || 'price_1RvhMBGgCOR544Bu0ShSQ205', 
+    EUR: process.env.NEXT_PUBLIC_STRIPE_PRICE_EUR || 'price_1RiKH6GgCOR544BuaQIQC8rI'
   },
   
   // Future add-ons

@@ -480,7 +480,7 @@ export default function V3ThreePanePage() {
     }
     
     if (!user && capturedEmail) {
-      // User has given email but no account - save locally
+      // User has given email but no account - save locally and DON'T show auth modal
       saveTimelineWithEmail(capturedEmail);
       return;
     }

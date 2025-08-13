@@ -463,11 +463,11 @@ export default function V3ThreePanePage() {
       localStorage.setItem('saved_timeline', JSON.stringify(timelineData));
       localStorage.setItem('timeline_email', email);
       
-      // Show success message
-      alert('Your playlist has been saved! Create an account to access it from any device.');
+      // Don't show alert - let the UI handle the success state
+      console.log('Timeline saved locally with email:', email);
     } catch (error) {
       console.error('Error saving timeline:', error);
-      alert('Failed to save your playlist. Please try again.');
+      // Don't show alert - handle errors silently or with UI state
     }
   };
 
@@ -2064,8 +2064,9 @@ export default function V3ThreePanePage() {
               // Save the timeline with the captured email
               saveTimelineWithEmail(email);
             } else if (emailCaptureTrigger === 'export') {
-              // For export, show a success message
-              alert(`We'll send your playlist to ${email}. You can create an account anytime to access all features!`);
+              // For export, just log success - don't show alert or modal
+              console.log(`Email captured for export: ${email}`);
+              // User can continue working with their email captured
             }
           }}
           trigger={emailCaptureTrigger}

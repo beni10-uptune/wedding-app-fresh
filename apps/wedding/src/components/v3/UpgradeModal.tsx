@@ -47,22 +47,28 @@ export function UpgradeModal({ onClose, weddingId, user }: UpgradeModalProps) {
         throw new Error('Authentication required');
       }
 
-      // Create payment intent
-      const response = await fetch('/api/create-payment-intent', {
+      // Determine currency based on user's country
+      const currencyCode = currency.code.toUpperCase() as 'GBP' | 'USD' | 'EUR';
+      
+      // Create checkout session
+      const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${idToken}`,
         },
         body: JSON.stringify({
+          product: 'professional',
+          currency: currencyCode,
           weddingId: weddingId || user.uid,
-          email: user.email,
+          successUrl: `${window.location.origin}/payment-success?wedding=${weddingId || user.uid}`,
+          cancelUrl: `${window.location.origin}/builder`,
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.error('Payment intent creation failed:', {
+        console.error('Checkout session creation failed:', {
           status: response.status,
           statusText: response.statusText,
           error: errorData
@@ -73,9 +79,11 @@ export function UpgradeModal({ onClose, weddingId, user }: UpgradeModalProps) {
           throw new Error('Authentication failed. Please sign in again.');
         } else if (response.status === 429) {
           throw new Error('Too many requests. Please wait a moment and try again.');
-        } else if (errorData.hint) {
-          throw new Error(errorData.hint);
         } else if (errorData.details) {
+          // Check if it's a Stripe price ID error
+          if (Array.isArray(errorData.details) && errorData.details.length > 0) {
+            throw new Error('Payment configuration error. Please contact support.');
+          }
           throw new Error(errorData.details);
         } else if (errorData.error) {
           throw new Error(errorData.error);
@@ -84,30 +92,17 @@ export function UpgradeModal({ onClose, weddingId, user }: UpgradeModalProps) {
         }
       }
 
-      const { clientSecret } = await response.json();
+      const { url, sessionId } = await response.json();
 
-      // Load Stripe
-      const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-      if (!stripe) {
-        throw new Error('Failed to load payment system');
+      if (!url) {
+        throw new Error('No checkout URL received');
       }
 
       // Redirect to Stripe Checkout
-      const { error } = await stripe.confirmPayment({
-        clientSecret,
-        confirmParams: {
-          return_url: `${window.location.origin}/payment-success?wedding=${weddingId || user.uid}`,
-          receipt_email: user.email,
-        },
-      });
-
-      if (error) {
-        throw new Error(error.message);
-      }
+      window.location.href = url;
     } catch (err: any) {
       console.error('Payment error:', err);
       setError(err.message || 'Payment failed. Please try again.');
-    } finally {
       setLoading(false);
     }
   };

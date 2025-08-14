@@ -976,7 +976,7 @@ export default function V3ThreePanePage() {
                   </>
                 ) : (
                   <button
-                    onClick={() => setShowAccountModal(true)}
+                    onClick={saveTimeline}
                     className="px-4 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm rounded-lg hover:opacity-90"
                   >
                     Save Playlist
@@ -1199,7 +1199,14 @@ export default function V3ThreePanePage() {
                 AI Taste Analysis
               </h3>
               <button
-                onClick={() => setShowAccountModal(true)}
+                onClick={() => {
+                  if (!user && !capturedEmail) {
+                    setEmailCaptureTrigger('save');
+                    setShowEmailCapture(true);
+                  } else {
+                    setShowAccountModal(true);
+                  }
+                }}
                 className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white/50 hover:bg-white/20 hover:text-white transition-colors flex items-center justify-center gap-2 relative overflow-hidden"
               >
                 <Lock className="w-4 h-4" />
@@ -2058,16 +2065,12 @@ export default function V3ThreePanePage() {
             setCapturedEmail(email);
             setShowEmailCapture(false);
             
-            // Don't immediately show auth modal - let user continue working
-            // They've given their email, we can save their progress
+            // Just save the email and let user continue
+            // NO auth modal here - that's the double popup!
             if (emailCaptureTrigger === 'save') {
-              // Save the timeline with the captured email
               saveTimelineWithEmail(email);
-            } else if (emailCaptureTrigger === 'export') {
-              // For export, just log success - don't show alert or modal
-              console.log(`Email captured for export: ${email}`);
-              // User can continue working with their email captured
             }
+            // For export, just store the email
           }}
           trigger={emailCaptureTrigger}
           totalSongs={totalSongs}

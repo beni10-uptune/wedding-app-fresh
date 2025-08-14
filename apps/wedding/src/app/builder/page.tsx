@@ -7,6 +7,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { detectUserCurrency, formatPrice, PRICE_AMOUNTS } from '@/config/stripe-prices';
 import {
   DndContext,
   DragEndEvent,
@@ -829,20 +830,10 @@ export default function V3ThreePanePage() {
 
   // Get price display based on user's location
   const getPriceDisplay = () => {
-    // Try to detect user's country from browser
-    const userLocale = typeof window !== 'undefined' ? navigator.language : 'en-US';
-    const userCountry = userLocale.split('-')[1] || 'US';
-    
-    // EU countries
-    const euCountries = ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE'];
-    
-    if (userCountry === 'GB' || userLocale.startsWith('en-GB')) {
-      return '£25';
-    } else if (euCountries.includes(userCountry) || userLocale.includes('de') || userLocale.includes('fr') || userLocale.includes('es') || userLocale.includes('it')) {
-      return '€25';
-    } else {
-      return '$25';
-    }
+    // Use the shared currency detection function
+    const currency = detectUserCurrency();
+    const price = PRICE_AMOUNTS.professional[currency];
+    return formatPrice(price, currency);
   };
 
   return (

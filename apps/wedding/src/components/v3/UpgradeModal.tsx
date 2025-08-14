@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, MessageSquare, TrendingUp, Upload, Music, Users, Save, CreditCard, Check } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
+import { detectUserCurrency, formatPrice, PRICE_AMOUNTS } from '@/config/stripe-prices';
 
 interface UpgradeModalProps {
   onClose: () => void;
@@ -12,24 +13,22 @@ interface UpgradeModalProps {
   user?: any;
 }
 
-// Determine currency based on selected country
-const getCurrency = (country?: string) => {
-  if (country === 'United States') return { symbol: '$', amount: 25, code: 'usd' };
-  if (country === 'Ireland') return { symbol: '€', amount: 25, code: 'eur' };
-  return { symbol: '£', amount: 25, code: 'gbp' }; // Default to UK
-};
-
 export function UpgradeModal({ onClose, weddingId, user }: UpgradeModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   
-  // Get user's country from localStorage or default to UK
-  const userCountry = typeof window !== 'undefined' 
-    ? localStorage.getItem('selectedCountry') || 'United Kingdom'
-    : 'United Kingdom';
+  // Detect user's actual currency based on browser locale and timezone
+  const [detectedCurrency, setDetectedCurrency] = useState<'GBP' | 'USD' | 'EUR'>('GBP');
   
-  const currency = getCurrency(userCountry);
+  useEffect(() => {
+    const currency = detectUserCurrency();
+    setDetectedCurrency(currency);
+  }, []);
+  
+  // Get the correct price for the detected currency
+  const price = PRICE_AMOUNTS.professional[detectedCurrency];
+  const currencySymbol = detectedCurrency === 'GBP' ? '£' : detectedCurrency === 'USD' ? '$' : '€';
 
   const handleUpgrade = async () => {
     if (!user) {
@@ -47,8 +46,8 @@ export function UpgradeModal({ onClose, weddingId, user }: UpgradeModalProps) {
         throw new Error('Authentication required');
       }
 
-      // Determine currency based on user's country
-      const currencyCode = currency.code.toUpperCase() as 'GBP' | 'USD' | 'EUR';
+      // Use the detected currency
+      const currencyCode = detectedCurrency;
       
       // Create checkout session
       const response = await fetch('/api/create-checkout-session', {
@@ -184,10 +183,10 @@ export function UpgradeModal({ onClose, weddingId, user }: UpgradeModalProps) {
         <div className="text-center mb-6 p-4 bg-purple-600/20 rounded-lg">
           <div className="flex items-center justify-center gap-2 mb-1">
             <span className="text-4xl font-bold text-white">
-              {currency.symbol}{currency.amount}
+              {currencySymbol}{price}
             </span>
             <span className="text-white/60 line-through">
-              {currency.symbol}{currency.amount * 2}
+              {currencySymbol}{price * 2}
             </span>
           </div>
           <p className="text-sm text-white/60">One-time payment • Lifetime access</p>
@@ -214,7 +213,7 @@ export function UpgradeModal({ onClose, weddingId, user }: UpgradeModalProps) {
           ) : (
             <>
               <CreditCard className="w-5 h-5" />
-              Upgrade to Pro - {currency.symbol}{currency.amount}
+              Upgrade to Pro - {currencySymbol}{price}
             </>
           )}
         </button>

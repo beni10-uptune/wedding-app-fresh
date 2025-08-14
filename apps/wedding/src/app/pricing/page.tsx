@@ -8,31 +8,24 @@ import { auth } from '@/lib/firebase';
 import { Check, X, Sparkles, Users, Music, Download, Heart, Zap } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { detectUserCurrency, formatPrice, PRICE_AMOUNTS } from '@/config/stripe-prices';
 
 const PricingPage = () => {
   const router = useRouter();
-  const [selectedCurrency, setSelectedCurrency] = useState<'USD' | 'GBP' | 'EUR'>('USD');
+  const [selectedCurrency, setSelectedCurrency] = useState<'GBP' | 'USD' | 'EUR'>('GBP');
   const [user, setUser] = useState<any>(null);
   const [currentTier, setCurrentTier] = useState<string>('free');
   const [loading, setLoading] = useState(true);
   
   const pricing = {
-    free: selectedCurrency === 'GBP' ? '£0' : selectedCurrency === 'EUR' ? '€0' : '$0',
-    professional: selectedCurrency === 'GBP' ? '£25' : selectedCurrency === 'EUR' ? '€25' : '$25'
+    free: formatPrice(0, selectedCurrency),
+    professional: formatPrice(PRICE_AMOUNTS.professional[selectedCurrency], selectedCurrency)
   };
 
   useEffect(() => {
-    // Detect user's currency based on locale
-    const userLocale = navigator.language;
-    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    
-    if (userLocale.includes('en-GB') || userTimezone.includes('London')) {
-      setSelectedCurrency('GBP');
-    } else if (userLocale.includes('en-US') || userTimezone.includes('America')) {
-      setSelectedCurrency('USD');
-    } else if (userTimezone.includes('Europe')) {
-      setSelectedCurrency('EUR');
-    }
+    // Use the shared currency detection function
+    const detectedCurrency = detectUserCurrency();
+    setSelectedCurrency(detectedCurrency);
   }, []);
 
   useEffect(() => {

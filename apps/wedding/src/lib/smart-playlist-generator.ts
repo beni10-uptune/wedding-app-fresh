@@ -1,0 +1,416 @@
+/**
+ * Smart Playlist Generator
+ * Intelligently selects songs based on genre, moment, and quotas
+ */
+
+import { Song, Timeline, TimelineSong } from '@/types/wedding-v2';
+import { WeddingMoment } from '@/types/wedding-v2';
+import { WEDDING_MOMENTS_V2, MOMENT_ENERGY_PROFILES } from '@/data/weddingMomentsV2';
+import { Timestamp } from 'firebase/firestore';
+
+// Time allocations (average song is 3.5 minutes)
+export const MOMENT_SONG_QUOTAS: Record<string, { min: number; ideal: number; max: number }> = {
+  'getting-ready': { min: 8, ideal: 10, max: 12 },
+  'ceremony': { min: 5, ideal: 6, max: 8 },
+  'cocktails': { min: 22, ideal: 25, max: 30 },
+  'dinner': { min: 22, ideal: 25, max: 30 },
+  'first-dance': { min: 1, ideal: 2, max: 2 },
+  'parent-dances': { min: 2, ideal: 3, max: 4 },
+  'party': { min: 45, ideal: 50, max: 60 },
+  'last-dance': { min: 2, ideal: 3, max: 4 }
+};
+
+// Genre weights for each moment (how suitable each genre is)
+export const MOMENT_GENRE_WEIGHTS: Record<string, Record<string, number>> = {
+  'getting-ready': {
+    'pop': 0.9,
+    'r&b': 0.8,
+    'indie': 0.7,
+    'rock': 0.5,
+    'country': 0.6,
+    'hip-hop': 0.6,
+    'electronic': 0.7,
+    'jazz': 0.8,
+    'soul': 0.8,
+    'acoustic': 0.9
+  },
+  'ceremony': {
+    'classical': 1.0,
+    'acoustic': 0.9,
+    'indie': 0.6,
+    'jazz': 0.7,
+    'soul': 0.6,
+    'pop': 0.5,
+    'r&b': 0.5,
+    'country': 0.4,
+    'rock': 0.3,
+    'hip-hop': 0.2,
+    'electronic': 0.3
+  },
+  'cocktails': {
+    'jazz': 1.0,
+    'soul': 0.9,
+    'r&b': 0.8,
+    'indie': 0.7,
+    'pop': 0.7,
+    'acoustic': 0.7,
+    'electronic': 0.6,
+    'country': 0.5,
+    'rock': 0.5,
+    'hip-hop': 0.4,
+    'classical': 0.6
+  },
+  'dinner': {
+    'jazz': 1.0,
+    'soul': 0.9,
+    'acoustic': 0.9,
+    'r&b': 0.8,
+    'indie': 0.8,
+    'pop': 0.6,
+    'country': 0.5,
+    'classical': 0.7,
+    'electronic': 0.4,
+    'rock': 0.4,
+    'hip-hop': 0.3
+  },
+  'first-dance': {
+    'r&b': 0.9,
+    'pop': 0.9,
+    'country': 0.8,
+    'soul': 0.9,
+    'indie': 0.7,
+    'acoustic': 0.8,
+    'jazz': 0.6,
+    'rock': 0.5,
+    'hip-hop': 0.4,
+    'electronic': 0.3,
+    'classical': 0.5
+  },
+  'parent-dances': {
+    'pop': 0.8,
+    'country': 0.9,
+    'soul': 0.9,
+    'r&b': 0.7,
+    'acoustic': 0.8,
+    'jazz': 0.7,
+    'indie': 0.5,
+    'rock': 0.5,
+    'classical': 0.6,
+    'hip-hop': 0.3,
+    'electronic': 0.2
+  },
+  'party': {
+    'pop': 1.0,
+    'hip-hop': 0.9,
+    'r&b': 0.9,
+    'rock': 0.8,
+    'electronic': 0.9,
+    'country': 0.7,
+    'soul': 0.7,
+    'indie': 0.6,
+    'jazz': 0.4,
+    'acoustic': 0.3,
+    'classical': 0.1
+  },
+  'last-dance': {
+    'pop': 0.9,
+    'rock': 0.8,
+    'country': 0.7,
+    'r&b': 0.8,
+    'soul': 0.8,
+    'indie': 0.7,
+    'hip-hop': 0.6,
+    'electronic': 0.5,
+    'acoustic': 0.6,
+    'jazz': 0.4,
+    'classical': 0.3
+  }
+};
+
+interface SongWithScore extends Song {
+  score: number;
+  spotifyPopularity?: number;
+}
+
+/**
+ * Generate a smart playlist based on selected genres and moment requirements
+ */
+export function generateSmartPlaylist(
+  availableSongs: Song[],
+  selectedGenres: string[],
+  existingTimeline?: Timeline
+): Timeline {
+  const timeline: Timeline = {};
+  
+  // For each wedding moment
+  WEDDING_MOMENTS_V2.forEach(moment => {
+    const momentId = moment.id;
+    const quota = MOMENT_SONG_QUOTAS[momentId];
+    const energyProfile = MOMENT_ENERGY_PROFILES[momentId];
+    
+    // Score and filter songs for this moment
+    const scoredSongs = availableSongs
+      .map(song => {
+        const songWithScore = song as SongWithScore;
+        songWithScore.score = calculateSongScore(
+          song,
+          momentId,
+          selectedGenres,
+          energyProfile
+        );
+        return songWithScore;
+      })
+      .filter(song => song.score > 0.3) // Minimum threshold
+      .sort((a, b) => b.score - a.score);
+    
+    // Select songs up to the ideal quota
+    const selectedSongs = selectOptimalSongs(
+      scoredSongs,
+      quota.ideal,
+      moment.duration
+    );
+    
+    // Convert to TimelineSong format
+    timeline[momentId] = {
+      id: momentId,
+      name: moment.name,
+      order: moment.order,
+      duration: moment.duration,
+      songs: selectedSongs.map(song => songToTimelineSong(song))
+    };
+  });
+  
+  // If we have an existing timeline, merge intelligently
+  if (existingTimeline) {
+    return mergeTimelines(timeline, existingTimeline);
+  }
+  
+  return timeline;
+}
+
+/**
+ * Calculate a score for how well a song fits a moment and genre selection
+ */
+function calculateSongScore(
+  song: Song,
+  momentId: string,
+  selectedGenres: string[],
+  energyProfile: { min: number; max: number; ideal: number }
+): number {
+  let score = 0;
+  
+  // 1. Genre matching (40% weight)
+  const genreWeights = MOMENT_GENRE_WEIGHTS[momentId] || {};
+  let genreScore = 0;
+  
+  if (selectedGenres.length === 0) {
+    // No genre filter - use default weights
+    genreScore = 0.5; // Neutral score
+  } else {
+    // Calculate genre match
+    const songGenres = song.genres || [];
+    for (const genre of songGenres) {
+      const normalizedGenre = normalizeGenre(genre);
+      if (selectedGenres.includes(normalizedGenre)) {
+        genreScore += genreWeights[normalizedGenre] || 0.5;
+      }
+    }
+    genreScore = genreScore / Math.max(songGenres.length, 1);
+  }
+  score += genreScore * 0.4;
+  
+  // 2. Energy level matching (30% weight)
+  const songEnergy = song.energyLevel || 3;
+  const energyDiff = Math.abs(songEnergy - energyProfile.ideal);
+  const energyScore = Math.max(0, 1 - (energyDiff / 5));
+  score += energyScore * 0.3;
+  
+  // 3. Moment suitability (20% weight)
+  if (song.moments && song.moments.includes(momentId)) {
+    score += 0.2;
+  } else if (song.moments && song.moments.length > 0) {
+    // Check if any of the song's moments are similar
+    const similarMoments = getSimilarMoments(momentId);
+    const hasSimilar = song.moments.some(m => similarMoments.includes(m));
+    if (hasSimilar) {
+      score += 0.1;
+    }
+  }
+  
+  // 4. Popularity boost (10% weight)
+  const popularity = (song as any).spotifyPopularity || 70;
+  score += (popularity / 100) * 0.1;
+  
+  // 5. Explicit content penalty for certain moments
+  if (song.explicit && ['ceremony', 'parent-dances'].includes(momentId)) {
+    score *= 0.5; // Heavy penalty
+  } else if (song.explicit && ['dinner', 'cocktails'].includes(momentId)) {
+    score *= 0.8; // Mild penalty
+  }
+  
+  return score;
+}
+
+/**
+ * Select optimal songs based on scores and duration requirements
+ */
+function selectOptimalSongs(
+  scoredSongs: SongWithScore[],
+  targetCount: number,
+  targetDuration: number
+): Song[] {
+  const selected: Song[] = [];
+  let currentDuration = 0;
+  const targetSeconds = targetDuration * 60;
+  
+  for (const song of scoredSongs) {
+    if (selected.length >= targetCount) break;
+    
+    const songDuration = song.duration || 210; // Default 3.5 minutes
+    if (currentDuration + songDuration <= targetSeconds * 1.2) { // Allow 20% overflow
+      selected.push(song);
+      currentDuration += songDuration;
+    }
+  }
+  
+  // If we don't have enough songs, add more regardless of duration
+  if (selected.length < Math.floor(targetCount * 0.7)) {
+    const remaining = scoredSongs.slice(selected.length, targetCount);
+    selected.push(...remaining);
+  }
+  
+  return selected;
+}
+
+/**
+ * Convert Song to TimelineSong
+ */
+function songToTimelineSong(song: Song): TimelineSong {
+  return {
+    id: song.id,
+    spotifyId: song.id.replace('spotify:track:', ''),
+    title: song.title,
+    artist: song.artist,
+    album: song.album || '',
+    albumArt: song.albumArt || song.albumImage || '',
+    previewUrl: song.previewUrl,
+    duration: song.duration || 210,
+    addedBy: 'couple',
+    addedAt: Timestamp.now(),
+    energy: song.energyLevel || 3,
+    explicit: song.explicit || false
+  };
+}
+
+/**
+ * Merge new timeline with existing one intelligently
+ */
+function mergeTimelines(newTimeline: Timeline, existingTimeline: Timeline): Timeline {
+  const merged: Timeline = {};
+  
+  WEDDING_MOMENTS_V2.forEach(moment => {
+    const momentId = moment.id;
+    const existing = existingTimeline[momentId];
+    const generated = newTimeline[momentId];
+    
+    if (!existing || !existing.songs || existing.songs.length === 0) {
+      // Use generated if no existing songs
+      merged[momentId] = generated;
+    } else if (existing.songs.length < MOMENT_SONG_QUOTAS[momentId].min) {
+      // Supplement existing with generated
+      const existingIds = new Set(existing.songs.map(s => s.id));
+      const additional = generated.songs.filter(s => !existingIds.has(s.id));
+      merged[momentId] = {
+        id: momentId,
+        name: moment.name,
+        order: moment.order,
+        duration: moment.duration,
+        songs: [...existing.songs, ...additional.slice(0, MOMENT_SONG_QUOTAS[momentId].ideal - existing.songs.length)]
+      };
+    } else {
+      // Keep existing
+      merged[momentId] = existing;
+    }
+  });
+  
+  return merged;
+}
+
+/**
+ * Get similar moments for fallback matching
+ */
+function getSimilarMoments(momentId: string): string[] {
+  const similarityMap: Record<string, string[]> = {
+    'getting-ready': ['cocktails', 'dinner'],
+    'ceremony': ['first-dance', 'parent-dances'],
+    'cocktails': ['dinner', 'getting-ready'],
+    'dinner': ['cocktails', 'getting-ready'],
+    'first-dance': ['parent-dances', 'ceremony'],
+    'parent-dances': ['first-dance', 'ceremony'],
+    'party': ['last-dance'],
+    'last-dance': ['party']
+  };
+  
+  return similarityMap[momentId] || [];
+}
+
+/**
+ * Normalize genre strings for consistency
+ */
+function normalizeGenre(genre: string): string {
+  const normalized = genre.toLowerCase().trim();
+  const mappings: Record<string, string> = {
+    'rnb': 'r&b',
+    'r & b': 'r&b',
+    'hiphop': 'hip-hop',
+    'hip hop': 'hip-hop',
+    'electronic dance': 'electronic',
+    'edm': 'electronic',
+    'country pop': 'country',
+    'indie rock': 'indie',
+    'indie pop': 'indie',
+    'classic rock': 'rock'
+  };
+  
+  return mappings[normalized] || normalized;
+}
+
+/**
+ * Get available genres from song collection
+ */
+export function extractAvailableGenres(songs: Song[]): string[] {
+  const genreSet = new Set<string>();
+  
+  songs.forEach(song => {
+    (song.genres || []).forEach(genre => {
+      genreSet.add(normalizeGenre(genre));
+    });
+  });
+  
+  return Array.from(genreSet).sort();
+}
+
+/**
+ * Calculate statistics for a timeline
+ */
+export function calculateTimelineStats(timeline: Timeline) {
+  let totalSongs = 0;
+  let totalDuration = 0;
+  const genreCounts: Record<string, number> = {};
+  
+  Object.values(timeline).forEach(moment => {
+    moment.songs.forEach(song => {
+      totalSongs++;
+      totalDuration += song.duration || 0;
+      
+      // Track genres (if we had them on TimelineSong)
+    });
+  });
+  
+  return {
+    totalSongs,
+    totalDuration,
+    averageSongLength: totalDuration / totalSongs,
+    genreCounts
+  };
+}

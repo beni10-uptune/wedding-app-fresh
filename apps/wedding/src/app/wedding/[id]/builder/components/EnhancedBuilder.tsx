@@ -37,6 +37,8 @@ import { debounce } from 'lodash'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { logError, logger } from '@/lib/logger'
 import { getEffectiveSongLimit, getSongLimitMessage } from '@/lib/grandfathering'
+import { useSmartPlaylist } from '@/hooks/useSmartPlaylist'
+import GenreFilter from './GenreFilter'
 
 interface EnhancedBuilderProps {
   wedding: WeddingV2
@@ -81,7 +83,7 @@ function timelineSongToSong(tlSong: TimelineSong): Song {
 
 export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderProps) {
   const [timeline, setTimeline] = useState<Timeline>(wedding.timeline || {})
-  const [activeTab, setActiveTab] = useState<'search' | 'collections' | 'guests'>('collections')
+  const [activeTab, setActiveTab] = useState<'search' | 'collections' | 'guests' | 'genres'>('collections')
   const [selectedMoment, setSelectedMoment] = useState('first-dance')
   const [draggedSong, setDraggedSong] = useState<Song | null>(null) // Still needed for drag state
   const [playingId, setPlayingId] = useState<string | null>(null)
@@ -97,6 +99,24 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
   const [showGuideViewer, setShowGuideViewer] = useState(false)
   const [selectedGuideMoment, setSelectedGuideMoment] = useState<string | undefined>()
   const [showUpgradePrompt, setShowUpgradePrompt] = useState<string | null>(null)
+  
+  // Smart playlist generation
+  const {
+    selectedGenres,
+    availableGenres,
+    availableSongs,
+    isLoading: isLoadingGenres,
+    timeline: smartTimeline,
+    stats: playlistStats,
+    toggleGenre,
+    clearGenres,
+    regeneratePlaylist,
+    loadSongsFromFirestore,
+    applySmartSelection
+  } = useSmartPlaylist({
+    initialTimeline: timeline,
+    autoLoad: false
+  })
   
   // Check feature access
   const { hasAccess: canExport } = useFeatureAccess('export', wedding.id)
@@ -514,6 +534,22 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
               >
                 Guest Songs
               </button>
+              <button
+                onClick={() => {
+                  setActiveTab('genres')
+                  // Load songs if not already loaded
+                  if (availableGenres.length === 0) {
+                    loadSongsFromFirestore()
+                  }
+                }}
+                className={`flex-1 py-2 px-3 rounded-lg font-medium transition-colors text-sm ${
+                  activeTab === 'genres'
+                    ? 'bg-purple-500/20 text-purple-400'
+                    : 'text-white/60 hover:text-white'
+                }`}
+              >
+                Genres
+              </button>
             </div>
           </div>
 
@@ -553,6 +589,25 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
                 weddingId={wedding.id}
                 onAddSong={handleAddSong}
               />
+            )}
+            {activeTab === 'genres' && (
+              <div className="h-full overflow-y-auto p-4">
+                <GenreFilter
+                  availableGenres={availableGenres}
+                  selectedGenres={selectedGenres}
+                  onToggleGenre={toggleGenre}
+                  onClearGenres={clearGenres}
+                  onApplyFilters={() => {
+                    // Apply smart selection and update timeline
+                    const newTimeline = applySmartSelection()
+                    if (newTimeline) {
+                      updateTimeline(newTimeline)
+                    }
+                  }}
+                  isLoading={isLoadingGenres}
+                  songCount={availableSongs?.length || 0}
+                />
+              </div>
             )}
           </div>
         </div>

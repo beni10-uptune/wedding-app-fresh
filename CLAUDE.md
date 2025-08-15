@@ -48,6 +48,16 @@ uptune-monorepo/
     └── music/        # Shared music/Spotify service
 ```
 
+## ⚠️ CRITICAL: Development Guidelines
+
+### ALWAYS Follow These Rules:
+1. **NO MOCK DATA**: Never use placeholder or mock data. We are production-ready at all times.
+2. **THINK SYSTEMATICALLY**: Always break down tasks into multiple steps and tackle them methodically.
+3. **USE EXISTING DATABASES**: We have established databases with real data - always use them.
+4. **VERIFY BEFORE CREATING**: Check if something exists before creating new versions.
+5. **PRODUCTION-READY CODE**: Every piece of code should be ready for production deployment.
+6. **NO SHORTCUTS**: Do not be lazy. Complete all steps thoroughly.
+
 ## ✅ External Services Status
 
 **ALL SERVICES ARE ALREADY CONFIGURED AND WORKING:**
@@ -108,6 +118,42 @@ firebase use wedding-app-426623
 - **Seed blog posts**: Use `/api/seed-blogs` endpoint
 - **Check Firestore data**: Use Firebase Console or Admin SDK scripts
 - **Deploy rules**: `firebase deploy --only firestore:rules`
+
+## 🎵 Song Database Management
+
+### Primary Song Database
+We use a comprehensive song database with **1,949+ curated wedding songs** stored in:
+- **Primary Collection**: `songs` in Firestore
+- **Local Data Source**: `/src/data/spotify-wedding-songs.ts` (1,949 songs with full metadata)
+- **Genre Collections**: `/src/data/genre-songs/` (Hip-Hop, Country, R&B, Rock, Indie)
+
+### Song Data Structure
+Each song contains:
+- Spotify track ID, title, artist, album
+- Album artwork, release date, duration
+- Energy level (1-5), explicit flag
+- Wedding moments (ceremony, cocktails, dinner, party, etc.)
+- Genres, generation appeal, popularity
+- Preview URL for 30-second playback
+
+### Adding New Songs
+**IMPORTANT**: All new songs MUST be added to the `songs` Firestore collection:
+1. Use the existing song structure/schema
+2. Include all required metadata
+3. Tag with appropriate moments and genres
+4. Run seeding script: `npx tsx src/scripts/seed-smart-songs-database.ts`
+
+### Database Seeding Scripts
+- `seed-smart-songs-database.ts` - Main production seeder (use this)
+- `seed-songs-database.ts` - Legacy seeder for songs_master collection
+- `import-spotify-songs.ts` - Import from Spotify playlists
+
+### Smart Playlist Generation
+The app includes intelligent playlist generation that:
+- Filters by genre (14+ genres available)
+- Matches songs to wedding moments based on energy
+- Maintains time quotas for each section
+- Uses weighted scoring algorithm
 
 ## Important Technical Details
 
@@ -177,6 +223,9 @@ The project uses various environment variables for:
 - Keep components focused and reusable
 - Use Tailwind CSS for styling
 - No unnecessary comments in code
+- **ALWAYS use real data from our databases**
+- **NEVER create mock or placeholder data**
+- **ALWAYS verify existing resources before creating new ones**
 
 ## 📝 Development Log
 

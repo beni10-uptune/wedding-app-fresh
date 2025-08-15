@@ -7,15 +7,39 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm"; -- For fuzzy text search
 CREATE EXTENSION IF NOT EXISTS "vector"; -- For similarity search (if needed later)
 
 -- Users table (extends Supabase auth.users)
-CREATE TABLE IF NOT EXISTS public.users (
+-- This is now a view that combines auth.users with our custom data
+CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  email TEXT UNIQUE NOT NULL,
+  email TEXT UNIQUE,
   name TEXT,
   avatar_url TEXT,
   stripe_customer_id TEXT,
+  spotify_refresh_token TEXT, -- Store Spotify refresh token
+  spotify_user_id TEXT,
+  wedding_count INT DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Create a trigger to create profile on user signup
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, name, avatar_url)
+  VALUES (
+    new.id,
+    new.email,
+    new.raw_user_meta_data->>'name',
+    new.raw_user_meta_data->>'avatar_url'
+  );
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger the function every time a user is created
+CREATE OR REPLACE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- Weddings table
 CREATE TABLE IF NOT EXISTS public.weddings (
@@ -30,8 +54,8 @@ CREATE TABLE IF NOT EXISTS public.weddings (
   guest_count INT,
   
   -- Owner and permissions
-  owner_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
-  co_owner_id UUID REFERENCES public.users(id) ON DELETE SET NULL,
+  owner_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+  co_owner_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   co_owner_code TEXT UNIQUE,
   guest_code TEXT UNIQUE,
   

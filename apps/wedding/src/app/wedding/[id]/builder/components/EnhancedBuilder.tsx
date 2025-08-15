@@ -147,7 +147,7 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Check if user has seen welcome flow and auto-populate for new users
+  // Check if user has seen welcome flow
   useEffect(() => {
     const hasSeenKey = `wedding_${wedding.id}_welcome_seen`
     const hasSeen = localStorage.getItem(hasSeenKey)
@@ -156,46 +156,46 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
     // or if they've already seen the welcome flow
     const hasCompletedWizard = wedding.guestCount !== undefined || wedding.venueType !== undefined
     
-    const autoPopulateForNewUser = async () => {
-      // Load songs if not already loaded
-      if (availableSongs.length === 0) {
-        await loadSongsFromFirestore()
-      }
-      
-      // Wait a bit for songs to load
-      setTimeout(() => {
-        // Auto-select default genres for balanced playlist
-        const defaultGenres = ['pop', 'r&b', 'indie', 'soul']
-        defaultGenres.forEach(genre => {
-          if (!selectedGenres.includes(genre) && availableGenres.includes(genre)) {
-            toggleGenre(genre)
-          }
-        })
-        
-        // Apply smart selection after genres are set
-        setTimeout(() => {
-          const newTimeline = applySmartSelection()
-          if (newTimeline) {
-            updateTimeline(newTimeline)
-          }
-        }, 500)
-      }, 1000)
-    }
-    
     if (hasCompletedWizard || hasSeen || totalSongs > 0) {
       setHasSeenWelcome(true)
       // If they completed wizard but haven't seen tutorial, show it directly
       if (hasCompletedWizard && !hasSeen && totalSongs === 0) {
-        // Auto-populate with default playlist for users who skip welcome flow
-        autoPopulateForNewUser()
         setShowTutorial(true)
         localStorage.setItem(hasSeenKey, 'true')
+        // Set flag to auto-populate
+        setShouldAutoPopulate(true)
       }
     } else if (!hasSeen && totalSongs === 0) {
       // Only show WelcomeFlow for users who didn't complete create-wedding
       setShowWelcomeFlow(true)
     }
   }, [wedding.id, totalSongs, wedding.guestCount, wedding.venueType])
+  
+  // Auto-populate when flag is set and songs are loaded
+  const [shouldAutoPopulate, setShouldAutoPopulate] = useState(false)
+  
+  useEffect(() => {
+    if (shouldAutoPopulate && availableSongs.length > 0 && totalSongs === 0) {
+      console.log('Auto-populating playlist with', availableSongs.length, 'songs');
+      
+      // Generate playlist without genre filtering for better results
+      const newTimeline = applySmartSelection();
+      if (newTimeline) {
+        console.log('Generated timeline with songs:', 
+          Object.entries(newTimeline).map(([k, v]) => `${k}: ${v.songs.length}`));
+        updateTimeline(newTimeline);
+      }
+      
+      setShouldAutoPopulate(false);
+    }
+  }, [shouldAutoPopulate, availableSongs.length, totalSongs])
+  
+  // Load songs on mount if needed
+  useEffect(() => {
+    if (totalSongs === 0 && availableSongs.length === 0) {
+      loadSongsFromFirestore();
+    }
+  }, [])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -364,80 +364,33 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
     localStorage.setItem(`wedding_${wedding.id}_welcome_seen`, 'true')
     setShowWelcomeFlow(false)
     setHasSeenWelcome(true)
+    setShowTutorial(true)
     
     // Auto-populate timeline based on preferences
     if (availableSongs.length === 0) {
       await loadSongsFromFirestore()
     }
     
-    // Map music styles to genres
-    const genreMap: Record<string, string[]> = {
-      'classic': ['classical', 'jazz', 'soul'],
-      'modern': ['pop', 'indie', 'electronic'],
-      'rustic': ['country', 'acoustic', 'indie'],
-      'party': ['pop', 'hip-hop', 'electronic', 'rock'],
-      'romantic': ['r&b', 'soul', 'acoustic'],
-      'cultural': ['latin', 'reggae', 'world']
-    }
+    // Since most songs don't have genre tags, we'll just use energy-based selection
+    // Set flag to auto-populate once songs are loaded
+    setShouldAutoPopulate(true)
     
-    // Select genres based on preferences
-    const selectedGenresList: string[] = []
-    preferences.musicStyle?.forEach((style: string) => {
-      const genres = genreMap[style] || []
-      selectedGenresList.push(...genres)
-    })
-    
-    // Remove avoided genres
-    const filteredGenres = selectedGenresList.filter(
-      g => !preferences.avoidGenres?.map((ag: string) => ag.toLowerCase()).includes(g)
-    )
-    
-    // Set selected genres for the smart playlist
-    filteredGenres.forEach(genre => {
-      if (!selectedGenres.includes(genre) && availableGenres.includes(genre)) {
-        toggleGenre(genre)
-      }
-    })
-    
-    // Generate and apply smart playlist
-    setTimeout(() => {
-      const newTimeline = applySmartSelection()
-      if (newTimeline) {
-        updateTimeline(newTimeline)
-      }
-      setShowTutorial(true)
-    }, 500)
-    
-    logger.info('User preferences saved and playlist generated', { preferences, weddingId: wedding.id })
+    logger.info('User preferences saved, auto-populating playlist', { preferences, weddingId: wedding.id })
   }
 
   const handleWelcomeSkip = async () => {
     localStorage.setItem(`wedding_${wedding.id}_welcome_seen`, 'true')
     setShowWelcomeFlow(false)
     setHasSeenWelcome(true)
+    setShowTutorial(true)
     
     // Auto-populate with default songs when skipping
     if (availableSongs.length === 0) {
       await loadSongsFromFirestore()
     }
     
-    // Wait for songs to load then apply defaults
-    setTimeout(() => {
-      const defaultGenres = ['pop', 'r&b', 'indie', 'soul']
-      defaultGenres.forEach(genre => {
-        if (!selectedGenres.includes(genre) && availableGenres.includes(genre)) {
-          toggleGenre(genre)
-        }
-      })
-      
-      setTimeout(() => {
-        const newTimeline = applySmartSelection()
-        if (newTimeline) {
-          updateTimeline(newTimeline)
-        }
-        setShowTutorial(true)
-      }, 500)
-    }, 1000)
+    // Set flag to auto-populate once songs are loaded
+    setShouldAutoPopulate(true)
   }
 
   const handleTutorialComplete = () => {

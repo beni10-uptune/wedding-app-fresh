@@ -141,6 +141,10 @@ export function generateSmartPlaylist(
   existingTimeline?: Timeline
 ): Timeline {
   const timeline: Timeline = {};
+  const usedSongIds = new Set<string>();
+  
+  // Create a pool of all songs, shuffled for variety
+  const songPool = [...availableSongs].sort(() => Math.random() - 0.5);
   
   // For each wedding moment
   WEDDING_MOMENTS_V2.forEach(moment => {
@@ -149,7 +153,8 @@ export function generateSmartPlaylist(
     const energyProfile = MOMENT_ENERGY_PROFILES[momentId];
     
     // Score and filter songs for this moment
-    const scoredSongs = availableSongs
+    const scoredSongs = songPool
+      .filter(song => !usedSongIds.has(song.id)) // Don't reuse songs
       .map(song => {
         const songWithScore = song as SongWithScore;
         songWithScore.score = calculateSongScore(
@@ -160,15 +165,37 @@ export function generateSmartPlaylist(
         );
         return songWithScore;
       })
-      .filter(song => song.score > 0.3) // Minimum threshold
+      .filter(song => song.score > 0.1) // Lower threshold to get more songs
       .sort((a, b) => b.score - a.score);
+    
+    // If we don't have enough high-scoring songs, add some random ones
+    let songsToSelect = scoredSongs;
+    if (scoredSongs.length < quota.ideal) {
+      // Add more songs based on energy level alone
+      const additionalSongs = songPool
+        .filter(song => !usedSongIds.has(song.id) && !scoredSongs.includes(song as SongWithScore))
+        .filter(song => {
+          const energy = song.energyLevel || 3;
+          return energy >= energyProfile.min && energy <= energyProfile.max;
+        })
+        .map(song => {
+          const songWithScore = song as SongWithScore;
+          songWithScore.score = 0.5; // Give them a moderate score
+          return songWithScore;
+        });
+      
+      songsToSelect = [...scoredSongs, ...additionalSongs];
+    }
     
     // Select songs up to the ideal quota
     const selectedSongs = selectOptimalSongs(
-      scoredSongs,
+      songsToSelect,
       quota.ideal,
       moment.duration
     );
+    
+    // Mark songs as used
+    selectedSongs.forEach(song => usedSongIds.add(song.id));
     
     // Convert to TimelineSong format
     timeline[momentId] = {
@@ -199,13 +226,43 @@ function calculateSongScore(
 ): number {
   let score = 0;
   
-  // 1. Genre matching (40% weight)
+  // 1. Energy level matching (40% weight) - Most important since genres are often empty
+  const songEnergy = song.energyLevel || 3;
+  const energyDiff = Math.abs(songEnergy - energyProfile.ideal);
+  const energyScore = Math.max(0, 1 - (energyDiff / 5));
+  score += energyScore * 0.4;
+  
+  // 2. Moment suitability (30% weight)
+  if (song.moments && song.moments.length > 0) {
+    if (song.moments.includes(momentId)) {
+      score += 0.3;
+    } else {
+      // Check if any of the song's moments are similar
+      const similarMoments = getSimilarMoments(momentId);
+      const hasSimilar = song.moments.some(m => similarMoments.includes(m));
+      if (hasSimilar) {
+        score += 0.15;
+      } else {
+        // Give a small score if the energy level is appropriate
+        if (songEnergy >= energyProfile.min && songEnergy <= energyProfile.max) {
+          score += 0.1;
+        }
+      }
+    }
+  } else {
+    // No moment tags - use energy level as guide
+    if (songEnergy >= energyProfile.min && songEnergy <= energyProfile.max) {
+      score += 0.2;
+    }
+  }
+  
+  // 3. Genre matching (20% weight) - Lower weight since many songs have empty genres
   const genreWeights = MOMENT_GENRE_WEIGHTS[momentId] || {};
   let genreScore = 0;
   
-  if (selectedGenres.length === 0) {
-    // No genre filter - use default weights
-    genreScore = 0.5; // Neutral score
+  if (selectedGenres.length === 0 || !song.genres || song.genres.length === 0) {
+    // No genre data or filter - give neutral score
+    genreScore = 0.5;
   } else {
     // Calculate genre match
     const songGenres = song.genres || [];
@@ -217,35 +274,21 @@ function calculateSongScore(
     }
     genreScore = genreScore / Math.max(songGenres.length, 1);
   }
-  score += genreScore * 0.4;
-  
-  // 2. Energy level matching (30% weight)
-  const songEnergy = song.energyLevel || 3;
-  const energyDiff = Math.abs(songEnergy - energyProfile.ideal);
-  const energyScore = Math.max(0, 1 - (energyDiff / 5));
-  score += energyScore * 0.3;
-  
-  // 3. Moment suitability (20% weight)
-  if (song.moments && song.moments.includes(momentId)) {
-    score += 0.2;
-  } else if (song.moments && song.moments.length > 0) {
-    // Check if any of the song's moments are similar
-    const similarMoments = getSimilarMoments(momentId);
-    const hasSimilar = song.moments.some(m => similarMoments.includes(m));
-    if (hasSimilar) {
-      score += 0.1;
-    }
-  }
+  score += genreScore * 0.2;
   
   // 4. Popularity boost (10% weight)
-  const popularity = (song as any).spotifyPopularity || 70;
+  const popularity = (song as any).popularity || (song as any).spotifyPopularity || 70;
   score += (popularity / 100) * 0.1;
   
   // 5. Explicit content penalty for certain moments
-  if (song.explicit && ['ceremony', 'parent-dances'].includes(momentId)) {
-    score *= 0.5; // Heavy penalty
-  } else if (song.explicit && ['dinner', 'cocktails'].includes(momentId)) {
-    score *= 0.8; // Mild penalty
+  if (song.explicit) {
+    if (['ceremony', 'parent-dances'].includes(momentId)) {
+      score *= 0.3; // Heavy penalty
+    } else if (['dinner', 'cocktails', 'getting-ready'].includes(momentId)) {
+      score *= 0.7; // Moderate penalty
+    } else if (['party', 'last-dance'].includes(momentId)) {
+      score *= 0.9; // Light penalty - more acceptable
+    }
   }
   
   return score;
@@ -263,20 +306,33 @@ function selectOptimalSongs(
   let currentDuration = 0;
   const targetSeconds = targetDuration * 60;
   
+  // First pass: Add songs that fit within duration
   for (const song of scoredSongs) {
     if (selected.length >= targetCount) break;
     
     const songDuration = song.duration || 210; // Default 3.5 minutes
-    if (currentDuration + songDuration <= targetSeconds * 1.2) { // Allow 20% overflow
+    if (currentDuration + songDuration <= targetSeconds * 1.5) { // Allow 50% overflow
       selected.push(song);
       currentDuration += songDuration;
     }
   }
   
-  // If we don't have enough songs, add more regardless of duration
-  if (selected.length < Math.floor(targetCount * 0.7)) {
-    const remaining = scoredSongs.slice(selected.length, targetCount);
+  // Second pass: If we don't have enough songs, add more regardless of duration
+  if (selected.length < targetCount) {
+    const remaining = scoredSongs
+      .filter(s => !selected.includes(s))
+      .slice(0, targetCount - selected.length);
     selected.push(...remaining);
+  }
+  
+  // Ensure we always return at least the minimum quota
+  const minimumCount = Math.max(2, Math.floor(targetCount * 0.5));
+  if (selected.length < minimumCount && scoredSongs.length > selected.length) {
+    const additionalNeeded = minimumCount - selected.length;
+    const additionalSongs = scoredSongs
+      .filter(s => !selected.includes(s))
+      .slice(0, additionalNeeded);
+    selected.push(...additionalSongs);
   }
   
   return selected;

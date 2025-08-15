@@ -85,16 +85,17 @@ export function useSmartPlaylist(options: UseSmartPlaylistOptions = {}): UseSmar
   // Load songs from local data files
   const loadLocalSongs = useCallback(async () => {
     try {
-      // Dynamically import song data
+      // Import the main song database
+      const { ALL_WEDDING_SONGS, SPOTIFY_WEDDING_SONGS } = await import('@/data/spotify-wedding-songs');
+      
+      // Also import genre-specific songs for better tagging
       const [
-        { getUnifiedFilteredSongs },
         { HIP_HOP_WEDDING_SONGS },
         { COUNTRY_WEDDING_SONGS },
         { RNB_WEDDING_SONGS },
         { ROCK_WEDDING_SONGS },
         { INDIE_WEDDING_SONGS }
       ] = await Promise.all([
-        import('@/data/unifiedMasterPlaylist'),
         import('@/data/genre-songs/hip-hop-wedding-songs'),
         import('@/data/genre-songs/country-wedding-songs'),
         import('@/data/genre-songs/rnb-wedding-songs'),
@@ -102,12 +103,9 @@ export function useSmartPlaylist(options: UseSmartPlaylistOptions = {}): UseSmar
         import('@/data/genre-songs/indie-wedding-songs')
       ]);
       
-      // Get all songs from unified database
-      const unifiedSongs = getUnifiedFilteredSongs({});
-      
-      // Combine all songs
+      // Combine all songs - start with the main database
       const allSongs = [
-        ...unifiedSongs,
+        ...ALL_WEDDING_SONGS,
         ...HIP_HOP_WEDDING_SONGS,
         ...COUNTRY_WEDDING_SONGS,
         ...RNB_WEDDING_SONGS,
@@ -120,11 +118,31 @@ export function useSmartPlaylist(options: UseSmartPlaylistOptions = {}): UseSmar
         new Map(allSongs.map(song => [song.id, song])).values()
       );
       
-      setAvailableSongs(uniqueSongs);
-      const genres = extractAvailableGenres(uniqueSongs);
+      // Add inferred genres for songs that don't have them
+      const enrichedSongs = uniqueSongs.map(song => {
+        if (!song.genres || song.genres.length === 0) {
+          // Infer genres based on energy level and moments
+          const inferredGenres: string[] = [];
+          const energy = song.energyLevel || 3;
+          
+          if (energy <= 2) {
+            inferredGenres.push('acoustic', 'soul');
+          } else if (energy === 3) {
+            inferredGenres.push('pop', 'indie');
+          } else if (energy >= 4) {
+            inferredGenres.push('pop', 'rock', 'electronic');
+          }
+          
+          return { ...song, genres: inferredGenres };
+        }
+        return song;
+      });
+      
+      setAvailableSongs(enrichedSongs);
+      const genres = extractAvailableGenres(enrichedSongs);
       setAvailableGenres(genres);
       
-      console.log(`Loaded ${uniqueSongs.length} songs with ${genres.length} genres from local data`);
+      console.log(`Loaded ${enrichedSongs.length} songs with ${genres.length} genres from local data`);
     } catch (err) {
       console.error('Error loading local songs:', err);
       setError('Failed to load song data');
@@ -150,9 +168,12 @@ export function useSmartPlaylist(options: UseSmartPlaylistOptions = {}): UseSmar
   // Apply smart selection to generate/update timeline
   const applySmartSelection = useCallback(() => {
     if (availableSongs.length === 0) {
+      console.error('No songs available. Please load songs first.');
       setError('No songs available. Please load songs first.');
-      return;
+      return undefined;
     }
+    
+    console.log(`Generating playlist with ${availableSongs.length} songs and genres:`, selectedGenres);
     
     const newTimeline = generateSmartPlaylist(
       availableSongs,

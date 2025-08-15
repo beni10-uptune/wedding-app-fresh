@@ -138,8 +138,11 @@ interface SongWithScore extends Song {
 export function generateSmartPlaylist(
   availableSongs: Song[],
   selectedGenres: string[],
-  existingTimeline?: Timeline
+  existingTimeline?: Timeline,
+  forceRegenerate: boolean = false
 ): Timeline {
+  console.log(`[Smart Playlist] Generating with ${availableSongs.length} songs, genres: ${selectedGenres.join(', ')}, force: ${forceRegenerate}`);
+  
   const timeline: Timeline = {};
   const usedSongIds = new Set<string>();
   
@@ -165,26 +168,44 @@ export function generateSmartPlaylist(
         );
         return songWithScore;
       })
-      .filter(song => song.score > 0.1) // Lower threshold to get more songs
+      .filter(song => song.score > 0.05) // Very low threshold to get more songs
       .sort((a, b) => b.score - a.score);
     
-    // If we don't have enough high-scoring songs, add some random ones
+    // Always ensure we have enough songs
     let songsToSelect = scoredSongs;
-    if (scoredSongs.length < quota.ideal) {
-      // Add more songs based on energy level alone
+    
+    // If we don't have enough scored songs, add more based on energy alone
+    if (songsToSelect.length < quota.ideal * 2) {  // Get 2x ideal for better selection
       const additionalSongs = songPool
-        .filter(song => !usedSongIds.has(song.id) && !scoredSongs.includes(song as SongWithScore))
+        .filter(song => !usedSongIds.has(song.id) && !scoredSongs.find(s => s.id === song.id))
         .filter(song => {
           const energy = song.energyLevel || 3;
-          return energy >= energyProfile.min && energy <= energyProfile.max;
+          // More lenient energy matching
+          return energy >= Math.max(1, energyProfile.min - 1) && 
+                 energy <= Math.min(5, energyProfile.max + 1);
         })
         .map(song => {
           const songWithScore = song as SongWithScore;
-          songWithScore.score = 0.5; // Give them a moderate score
+          songWithScore.score = 0.3; // Give them a moderate score
           return songWithScore;
-        });
+        })
+        .slice(0, quota.ideal * 2);  // Limit additional songs
       
       songsToSelect = [...scoredSongs, ...additionalSongs];
+    }
+    
+    // If still not enough, just grab any songs we haven't used
+    if (songsToSelect.length < quota.ideal) {
+      const desperateSongs = songPool
+        .filter(song => !usedSongIds.has(song.id) && !songsToSelect.find(s => s.id === song.id))
+        .map(song => {
+          const songWithScore = song as SongWithScore;
+          songWithScore.score = 0.1;
+          return songWithScore;
+        })
+        .slice(0, quota.ideal - songsToSelect.length);
+      
+      songsToSelect = [...songsToSelect, ...desperateSongs];
     }
     
     // Select songs up to the ideal quota
@@ -193,6 +214,8 @@ export function generateSmartPlaylist(
       quota.ideal,
       moment.duration
     );
+    
+    console.log(`[Smart Playlist] ${momentId}: Selected ${selectedSongs.length} songs (quota: ${quota.ideal})`);
     
     // Mark songs as used
     selectedSongs.forEach(song => usedSongIds.add(song.id));
@@ -207,8 +230,9 @@ export function generateSmartPlaylist(
     };
   });
   
-  // If we have an existing timeline, merge intelligently
-  if (existingTimeline) {
+  // If we have an existing timeline and not forcing regeneration, merge intelligently
+  if (existingTimeline && !forceRegenerate) {
+    console.log('[Smart Playlist] Merging with existing timeline');
     return mergeTimelines(timeline, existingTimeline);
   }
   

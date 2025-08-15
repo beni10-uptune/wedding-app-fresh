@@ -202,20 +202,23 @@ export function useSmartPlaylist(options: UseSmartPlaylistOptions = {}): UseSmar
   }, []);
   
   // Apply smart selection to generate/update timeline
-  const applySmartSelection = useCallback(() => {
+  const applySmartSelection = useCallback((forceRegenerate: boolean = true) => {
     if (availableSongs.length === 0) {
       console.error('No songs available. Please load songs first.');
       setError('No songs available. Please load songs first.');
       return undefined;
     }
     
-    console.log(`Generating playlist with ${availableSongs.length} songs and genres:`, selectedGenres);
+    console.log(`[useSmartPlaylist] Applying smart selection with ${availableSongs.length} songs, genres: ${selectedGenres.join(', ')}, force: ${forceRegenerate}`);
     
     const newTimeline = generateSmartPlaylist(
       availableSongs,
       selectedGenres,
-      timeline || undefined
+      forceRegenerate ? undefined : timeline || undefined,  // Don't pass existing timeline if forcing regeneration
+      forceRegenerate
     );
+    
+    console.log('[useSmartPlaylist] Generated timeline:', Object.entries(newTimeline).map(([k, v]) => `${k}: ${v.songs.length} songs`));
     
     setTimeline(newTimeline);
     return newTimeline;

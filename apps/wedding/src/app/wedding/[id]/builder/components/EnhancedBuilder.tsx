@@ -38,6 +38,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import { logError, logger } from '@/lib/logger'
 import { getEffectiveSongLimit, getSongLimitMessage } from '@/lib/grandfathering'
 import { useSmartPlaylist } from '@/hooks/useSmartPlaylist'
+import { generateSmartPlaylist } from '@/lib/smart-playlist-generator'
 import GenreFilter from './GenreFilter'
 
 interface EnhancedBuilderProps {
@@ -176,14 +177,16 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
   
   useEffect(() => {
     if (shouldAutoPopulate && availableSongs.length > 0 && totalSongs === 0) {
-      console.log('Auto-populating playlist with', availableSongs.length, 'songs');
+      console.log('[Auto-populate] Starting with', availableSongs.length, 'songs');
       
       // Generate playlist without genre filtering for better results
-      const newTimeline = applySmartSelection();
+      const newTimeline = applySmartSelection(true); // Force regeneration
       if (newTimeline) {
-        console.log('Generated timeline with songs:', 
+        console.log('[Auto-populate] Generated timeline:', 
           Object.entries(newTimeline).map(([k, v]) => `${k}: ${v.songs.length}`));
         updateTimeline(newTimeline);
+      } else {
+        console.error('[Auto-populate] Failed to generate timeline');
       }
       
       setShouldAutoPopulate(false);
@@ -644,15 +647,57 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
                   onToggleGenre={toggleGenre}
                   onClearGenres={clearGenres}
                   onApplyFilters={() => {
+                    console.log('[Builder] Applying genre filters...');
+                    console.log('[Builder] Available songs:', availableSongs.length);
+                    console.log('[Builder] Selected genres:', selectedGenres);
+                    
                     // Apply smart selection and update timeline
-                    const newTimeline = applySmartSelection()
+                    const newTimeline = applySmartSelection(true); // Force regeneration
                     if (newTimeline) {
-                      updateTimeline(newTimeline)
+                      console.log('[Builder] New timeline generated:', 
+                        Object.entries(newTimeline).map(([k, v]) => `${k}: ${v.songs.length}`));
+                      updateTimeline(newTimeline);
+                    } else {
+                      console.error('[Builder] Failed to generate timeline');
                     }
                   }}
                   isLoading={isLoadingGenres}
                   songCount={availableSongs?.length || 0}
                 />
+                
+                {/* Debug button for testing */}
+                <div className="mt-4 p-4 border-t border-white/10">
+                  <button
+                    onClick={async () => {
+                      console.log('[DEBUG] Manual regeneration triggered');
+                      console.log('[DEBUG] Songs loaded:', availableSongs.length);
+                      
+                      if (availableSongs.length === 0) {
+                        console.log('[DEBUG] Loading songs first...');
+                        await loadSongsFromFirestore();
+                      }
+                      
+                      // Force a complete regeneration with no genre filter
+                      const newTimeline = generateSmartPlaylist(
+                        availableSongs.length > 0 ? availableSongs : await (async () => {
+                          const { ALL_WEDDING_SONGS_ENRICHED } = await import('@/data/spotify-wedding-songs-enriched');
+                          return ALL_WEDDING_SONGS_ENRICHED || [];
+                        })(),
+                        [],  // No genre filter for testing
+                        undefined,  // No existing timeline
+                        true  // Force regeneration
+                      );
+                      
+                      console.log('[DEBUG] Generated timeline:', 
+                        Object.entries(newTimeline).map(([k, v]) => `${k}: ${v.songs.length}`));
+                      
+                      updateTimeline(newTimeline);
+                    }}
+                    className="w-full btn-primary text-sm"
+                  >
+                    🔧 Debug: Force Regenerate All (No Filters)
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -718,39 +763,45 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
                 <Music className="w-12 h-12 text-purple-400 mx-auto mb-3" />
                 <h3 className="text-lg font-semibold text-white mb-2">Start Your Wedding Playlist</h3>
                 <p className="text-white/60 text-sm mb-4">
-                  Get started with our curated collection of wedding songs
+                  Get started with our AI-curated collection of wedding songs
                 </p>
                 <button
                   onClick={async () => {
-                    // Import and populate with default songs
-                    const { CURATED_SONGS } = await import('@/data/curatedSongs')
-                    const newTimeline = { ...timeline }
+                    console.log('[Builder] Populating with smart playlist...');
                     
-                    WEDDING_MOMENTS.forEach(moment => {
-                      const momentSongs = CURATED_SONGS[moment.id as keyof typeof CURATED_SONGS]
-                      if (!newTimeline[moment.id]) {
-                        newTimeline[moment.id] = {
-                          id: moment.id,
-                          name: moment.name,
-                          order: moment.order,
-                          duration: moment.duration,
-                          songs: []
-                        }
+                    // Load enriched songs if not already loaded
+                    let songsToUse = availableSongs;
+                    if (songsToUse.length === 0) {
+                      try {
+                        const { ALL_WEDDING_SONGS_ENRICHED } = await import('@/data/spotify-wedding-songs-enriched');
+                        songsToUse = ALL_WEDDING_SONGS_ENRICHED || [];
+                        console.log('[Builder] Loaded', songsToUse.length, 'enriched songs');
+                      } catch (err) {
+                        console.error('[Builder] Failed to load enriched songs:', err);
+                        // Fallback to basic songs
+                        const { ALL_WEDDING_SONGS } = await import('@/data/spotify-wedding-songs');
+                        songsToUse = ALL_WEDDING_SONGS || [];
+                        console.log('[Builder] Loaded', songsToUse.length, 'fallback songs');
                       }
-                      
-                      if (momentSongs && momentSongs.length > 0) {
-                        // Add 2-3 default songs
-                        const defaultSongs = momentSongs.slice(0, Math.min(3, momentSongs.length))
-                        newTimeline[moment.id].songs = defaultSongs.map(songToTimelineSong)
-                      }
-                    })
+                    }
                     
-                    updateTimeline(newTimeline)
+                    // Generate smart playlist with all songs
+                    const newTimeline = generateSmartPlaylist(
+                      songsToUse,
+                      [],  // No genre filter for initial population
+                      undefined,  // No existing timeline
+                      true  // Force regeneration
+                    );
+                    
+                    console.log('[Builder] Generated initial playlist:', 
+                      Object.entries(newTimeline).map(([k, v]) => `${k}: ${v.songs.length}`));
+                    
+                    updateTimeline(newTimeline);
                   }}
                   className="btn-primary"
                 >
                   <Sparkles className="w-4 h-4" />
-                  Add Recommended Songs
+                  Generate Smart Playlist
                 </button>
               </div>
             )}

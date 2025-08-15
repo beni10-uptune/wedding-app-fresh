@@ -58,49 +58,25 @@ export function useSmartPlaylist(options: UseSmartPlaylistOptions = {}): UseSmar
     setError(null);
     
     try {
-      // Try to load from Firestore songs collection first
-      const songsRef = collection(db, 'songs');
-      const songsSnapshot = await getDocs(query(songsRef, limit(2000)));
+      // Always load from local data for now - it's more complete
+      // In production, we'd check Firestore first
+      console.log('Loading songs from local data...');
+      await loadLocalSongs();
       
-      if (!songsSnapshot.empty) {
-        const songs: Song[] = [];
-        songsSnapshot.forEach((doc) => {
-          const data = doc.data();
-          songs.push({
-            id: data.spotifyId || doc.id,
-            title: data.title,
-            artist: data.artist,
-            album: data.album,
-            albumArt: data.albumArt,
-            albumImage: data.albumArt,
-            duration: data.duration,
-            energyLevel: data.energyLevel,
-            explicit: data.explicit,
-            genres: data.genres || [],
-            moments: data.moments || [],
-            generationAppeal: data.generationAppeal || [],
-            popularIn: data.popularIn || [],
-            spotifyUri: data.spotifyUri,
-            previewUrl: data.previewUrl,
-            spotifyPopularity: data.spotifyPopularity,
-            moodTags: data.moodTags || []
-          } as Song);
-        });
+      // Optional: Try Firestore as well to see if there are additional songs
+      try {
+        const songsRef = collection(db, 'songs');
+        const songsSnapshot = await getDocs(query(songsRef, limit(100)));
         
-        setAvailableSongs(songs);
-        const genres = extractAvailableGenres(songs);
-        setAvailableGenres(genres);
-        
-        console.log(`Loaded ${songs.length} songs with ${genres.length} genres from Firestore`);
-      } else {
-        // Fallback to local data if Firestore is empty
-        console.log('No songs in Firestore, loading from local data...');
-        await loadLocalSongs();
+        if (!songsSnapshot.empty) {
+          console.log(`Found ${songsSnapshot.size} songs in Firestore (limited query)`);
+        }
+      } catch (firestoreErr) {
+        console.log('Firestore not available, using local data only');
       }
     } catch (err) {
-      console.error('Error loading songs from Firestore:', err);
-      // Fallback to local data
-      await loadLocalSongs();
+      console.error('Error loading songs:', err);
+      setError('Failed to load song data. Please refresh the page.');
     } finally {
       setIsLoading(false);
     }

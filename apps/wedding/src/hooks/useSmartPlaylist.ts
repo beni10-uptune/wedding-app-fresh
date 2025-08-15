@@ -85,7 +85,43 @@ export function useSmartPlaylist(options: UseSmartPlaylistOptions = {}): UseSmar
   // Load songs from local data files
   const loadLocalSongs = useCallback(async () => {
     try {
-      // Import the main song database
+      // First try to load enriched data with genres from Spotify
+      try {
+        const { ALL_WEDDING_SONGS_ENRICHED } = await import('@/data/spotify-wedding-songs-enriched');
+        
+        if (ALL_WEDDING_SONGS_ENRICHED && ALL_WEDDING_SONGS_ENRICHED.length > 0) {
+          // Add inferred genres for songs that still don't have them
+          const enrichedSongs = ALL_WEDDING_SONGS_ENRICHED.map(song => {
+            if (!song.genres || song.genres.length === 0) {
+              // Infer genres based on energy level and moments
+              const inferredGenres: string[] = [];
+              const energy = song.energyLevel || 3;
+              
+              if (energy <= 2) {
+                inferredGenres.push('acoustic', 'soul');
+              } else if (energy === 3) {
+                inferredGenres.push('pop', 'indie');
+              } else if (energy >= 4) {
+                inferredGenres.push('pop', 'rock', 'electronic');
+              }
+              
+              return { ...song, genres: inferredGenres };
+            }
+            return song;
+          });
+          
+          setAvailableSongs(enrichedSongs);
+          const genres = extractAvailableGenres(enrichedSongs);
+          setAvailableGenres(genres);
+          
+          console.log(`Loaded ${enrichedSongs.length} enriched songs with ${genres.length} genres`);
+          return;
+        }
+      } catch (enrichErr) {
+        console.log('Enriched data not available, falling back to original data');
+      }
+      
+      // Fallback to original data if enriched not available
       const { ALL_WEDDING_SONGS, SPOTIFY_WEDDING_SONGS } = await import('@/data/spotify-wedding-songs');
       
       // Also import genre-specific songs for better tagging

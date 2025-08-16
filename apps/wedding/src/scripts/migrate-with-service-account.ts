@@ -8,6 +8,8 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 import * as dotenv from 'dotenv';
 import { ALL_WEDDING_SONGS_ENRICHED } from '../data/spotify-wedding-songs-enriched';
+import * as fs from 'fs';
+import * as path from 'path';
 
 dotenv.config({ path: '.env.local' });
 
@@ -20,7 +22,9 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 let serviceAccount;
 try {
   // Try to load service account from file
-  serviceAccount = require('../../firebase-service-account.json');
+  const serviceAccountPath = path.join(process.cwd(), 'firebase-service-account.json');
+  const serviceAccountFile = fs.readFileSync(serviceAccountPath, 'utf-8');
+  serviceAccount = JSON.parse(serviceAccountFile);
 } catch (error) {
   console.error('❌ Could not find firebase-service-account.json');
   console.error('Please download it from Firebase Console > Project Settings > Service Accounts');
@@ -50,11 +54,11 @@ async function migrateSongs() {
         album: song.album || null,
         album_art: song.albumArt || null,
         preview_url: song.previewUrl || null,
-        spotify_uri: song.spotifyUri || `spotify:track:${song.id}`,
+        spotify_uri: (song as any).spotifyUri || `spotify:track:${song.id}`,
         duration: song.duration || null,
-        energy: song.energy || null,
-        genres: song.genres || song.artistGenres || [],
-        moods: song.moods || [],
+        energy: song.energyLevel || null,
+        genres: song.genres || [],
+        moods: (song as any).moods || [],
         contexts: ['wedding'],
         explicit: song.explicit || false,
         popularity: song.popularity || 50,

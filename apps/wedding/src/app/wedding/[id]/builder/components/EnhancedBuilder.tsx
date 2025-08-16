@@ -180,7 +180,7 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
       console.log('[Auto-populate] Starting with', availableSongs.length, 'songs');
       
       // Generate playlist without genre filtering for better results
-      const newTimeline = applySmartSelection(true); // Force regeneration
+      const newTimeline = applySmartSelection(); // Force regeneration
       if (newTimeline) {
         console.log('[Auto-populate] Generated timeline:', 
           Object.entries(newTimeline).map(([k, v]) => `${k}: ${v.songs.length}`));
@@ -652,7 +652,7 @@ export default function EnhancedBuilder({ wedding, onUpdate }: EnhancedBuilderPr
                     console.log('[Builder] Selected genres:', selectedGenres);
                     
                     // Apply smart selection and update timeline
-                    const newTimeline = applySmartSelection(true); // Force regeneration
+                    const newTimeline = applySmartSelection(); // Force regeneration
                     if (newTimeline) {
                       console.log('[Builder] New timeline generated:', 
                         Object.entries(newTimeline).map(([k, v]) => `${k}: ${v.songs.length}`));

@@ -8,10 +8,10 @@ import { createClient as createServerClient, createAdminClient } from './server'
 import type { Database } from './types'
 
 // Wedding-specific types
-type Wedding = Database['public']['Tables']['wedding_weddings']['Row']
-type GuestSubmission = Database['public']['Tables']['wedding_guest_submissions']['Row']
-type WeddingTimeline = Database['public']['Tables']['wedding_timeline']['Row']
-type WeddingVendor = Database['public']['Tables']['wedding_vendors']['Row']
+type Wedding = Database['public']['Tables']['weddings']['Row']
+type GuestSubmission = Database['public']['Tables']['guest_submissions']['Row']
+type WeddingTimeline = Wedding['timeline']
+type WeddingVendor = any // Vendors table doesn't exist yet
 
 export const weddingHelpers = {
   // ==========================================

@@ -120,7 +120,7 @@ async function migrateSongs() {
   if (genreData) {
     const genreCounts: Record<string, number> = {};
     genreData.forEach(row => {
-      (row.genres || []).forEach(genre => {
+      (row.genres || []).forEach((genre: string) => {
         genreCounts[genre] = (genreCounts[genre] || 0) + 1;
       });
     });

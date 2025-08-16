@@ -6,7 +6,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
-import { getAuth, listUsers } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import * as dotenv from 'dotenv';
 
 dotenv.config({ path: '.env.local' });

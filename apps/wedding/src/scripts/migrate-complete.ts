@@ -17,7 +17,20 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 // Initialize Firebase Admin
-import serviceAccount from '../../firebase-service-account.json' assert { type: 'json' };
+import * as fs from 'fs';
+import * as path from 'path';
+
+let serviceAccount;
+try {
+  const serviceAccountPath = path.join(process.cwd(), 'firebase-service-account.json');
+  const serviceAccountFile = fs.readFileSync(serviceAccountPath, 'utf-8');
+  serviceAccount = JSON.parse(serviceAccountFile);
+} catch (error) {
+  console.error('❌ Could not find firebase-service-account.json');
+  console.error('Please download it from Firebase Console > Project Settings > Service Accounts');
+  process.exit(1);
+}
+
 const firebaseApp = initializeApp({
   credential: cert(serviceAccount as any),
 });
@@ -450,8 +463,8 @@ async function main() {
   console.log('   3. Search through ALL songs');
   console.log('   4. Generate playlists with the complete song library');
   
-  // Clean up Firebase app
-  await firebaseApp.delete();
+  // Clean up - Firebase Admin SDK doesn't need explicit cleanup
+  // Process will exit naturally
 }
 
 main().catch(console.error);

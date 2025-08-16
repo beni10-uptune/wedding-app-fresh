@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { FcGoogle } from 'react-icons/fc'
-import { Mail, Lock, User, AlertCircle, Loader2, CheckCircle, ArrowRight, Sparkles, Check, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, User, AlertCircle, Loader2, ArrowRight, Sparkles, Check, Eye, EyeOff } from 'lucide-react'
 
 function SignupPageContent() {
   const router = useRouter()
@@ -19,7 +19,6 @@ function SignupPageContent() {
   const [loading, setLoading] = useState(false)
   const [loadingProvider, setLoadingProvider] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
 
   const supabase = createClient()
 
@@ -29,25 +28,31 @@ function SignupPageContent() {
     setError(null)
 
     try {
-      // Sign up the user
-      const { data, error } = await supabase.auth.signUp({
+      // Sign up the user without email verification
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             name,
-          },
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=${redirectTo}`
+          }
         }
       })
 
-      if (error) throw error
+      if (signUpError) throw signUpError
 
-      // Show success message
-      setSuccess(true)
+      // Automatically sign in the user after signup
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
+
+      if (signInError) throw signInError
+
+      // Redirect to the intended page or builder
+      router.push(redirectTo)
     } catch (err: any) {
       setError(err.message || 'Failed to sign up')
-    } finally {
       setLoading(false)
     }
   }
@@ -69,37 +74,6 @@ function SignupPageContent() {
       setError(err.message || `Failed to sign up with ${provider}`)
       setLoadingProvider(null)
     }
-  }
-
-  if (success) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-pink-800 flex items-center justify-center px-4">
-        <div className="max-w-md w-full">
-          <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/20 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full mb-4">
-              <CheckCircle className="w-10 h-10 text-green-400" />
-            </div>
-            <h2 className="text-3xl font-bold text-white mb-3">Check Your Email!</h2>
-            <p className="text-white/80 mb-2">
-              We've sent a confirmation email to:
-            </p>
-            <p className="text-white font-semibold text-lg mb-6">
-              {email}
-            </p>
-            <p className="text-white/70 text-sm mb-8">
-              Click the link in the email to verify your account and start building your perfect wedding playlist.
-            </p>
-            <Link 
-              href="/auth/login" 
-              className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200"
-            >
-              Go to Login
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   return (

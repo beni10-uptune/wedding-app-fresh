@@ -173,20 +173,32 @@ export function ProgressiveAuthModal({
         // Save progress locally first
         saveLocalProgress()
         
-        const { data, error } = await supabase.auth.signUp({
+        // Sign up without email verification
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            data: { name },
-            emailRedirectTo: `${window.location.origin}/auth/callback?next=/builder`
+            data: { name }
           }
         })
         
-        if (error) throw error
+        if (signUpError) throw signUpError
         
-        if (data.user) {
-          await mergeProgressWithAccount(data.user.id)
+        // Auto sign in after signup
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        })
+        
+        if (signInError) throw signInError
+        
+        if (signInData.user) {
+          await mergeProgressWithAccount(signInData.user.id)
           setSuccess(true)
+          setTimeout(() => {
+            onSuccess?.()
+            onClose()
+          }, 1000)
         }
       }
     } catch (err: any) {
@@ -236,7 +248,7 @@ export function ProgressiveAuthModal({
 
   if (!isOpen || user) return null
 
-  if (success && mode === 'signup') {
+  if (success) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
@@ -245,19 +257,13 @@ export function ProgressiveAuthModal({
             <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full mb-4">
               <Check className="w-10 h-10 text-green-400" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-3">Check Your Email!</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">Welcome! 🎉</h2>
             <p className="text-white/80 mb-6">
-              We've sent a verification link to <span className="font-semibold">{email}</span>
+              Your account has been created and your playlist is saved!
             </p>
-            <p className="text-white/60 text-sm mb-6">
-              Your playlist has been saved! Click the link in your email to verify your account.
+            <p className="text-white/60 text-sm">
+              Redirecting you now...
             </p>
-            <button
-              onClick={onClose}
-              className="px-6 py-3 bg-white/20 hover:bg-white/30 text-white rounded-xl font-medium transition-all"
-            >
-              Got it
-            </button>
           </div>
         </div>
       </div>

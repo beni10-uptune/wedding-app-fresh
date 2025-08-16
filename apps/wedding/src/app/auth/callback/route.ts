@@ -31,9 +31,8 @@ export async function GET(request: Request) {
         }
       }
       
-      // Redirect to the intended page (default to new builder)
-      const redirectTo = next === '/builder' ? '/builder-new' : next;
-      return NextResponse.redirect(new URL(redirectTo, requestUrl.origin))
+      // Redirect to the intended page
+      return NextResponse.redirect(new URL(next, requestUrl.origin))
     }
   }
 

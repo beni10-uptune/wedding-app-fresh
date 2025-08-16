@@ -173,7 +173,7 @@ export default function BuilderPage() {
                   value={coupleNames}
                   onChange={(e) => setCoupleNames(e.target.value)}
                   placeholder="John & Jane"
-                  className="input-field"
+                  className="w-full px-4 py-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder:text-white/50 focus:bg-white/20 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all duration-200"
                   required
                 />
                 <p className="text-white/60 text-sm mt-1">
@@ -190,7 +190,7 @@ export default function BuilderPage() {
                     value={partner1Name}
                     onChange={(e) => setPartner1Name(e.target.value)}
                     placeholder="John"
-                    className="input-field"
+                    className="w-full px-4 py-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder:text-white/50 focus:bg-white/20 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all duration-200"
                   />
                 </div>
                 <div>
@@ -200,7 +200,7 @@ export default function BuilderPage() {
                     value={partner2Name}
                     onChange={(e) => setPartner2Name(e.target.value)}
                     placeholder="Jane"
-                    className="input-field"
+                    className="w-full px-4 py-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder:text-white/50 focus:bg-white/20 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all duration-200"
                   />
                 </div>
               </div>
@@ -212,7 +212,7 @@ export default function BuilderPage() {
                   type="date"
                   value={weddingDate}
                   onChange={(e) => setWeddingDate(e.target.value)}
-                  className="input-field"
+                  className="w-full px-4 py-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder:text-white/50 focus:bg-white/20 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all duration-200"
                 />
               </div>
 
@@ -222,7 +222,7 @@ export default function BuilderPage() {
                 <select
                   value={venueType}
                   onChange={(e) => setVenueType(e.target.value)}
-                  className="input-field"
+                  className="w-full px-4 py-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder:text-white/50 focus:bg-white/20 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all duration-200"
                 >
                   <option value="">Select venue type</option>
                   <option value="outdoor">Outdoor</option>
@@ -247,7 +247,7 @@ export default function BuilderPage() {
                   onChange={(e) => setGuestCount(parseInt(e.target.value) || 0)}
                   min="1"
                   max="1000"
-                  className="input-field"
+                  className="w-full px-4 py-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder:text-white/50 focus:bg-white/20 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all duration-200"
                 />
               </div>
 

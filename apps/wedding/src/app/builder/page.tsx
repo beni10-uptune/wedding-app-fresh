@@ -4,8 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/providers/SupabaseAuthProvider';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { weddingHelpers } from '@/lib/supabase/wedding-helpers';
 import { detectUserCurrency, formatPrice, PRICE_AMOUNTS } from '@/config/stripe-prices';
 import {
   DndContext,
@@ -214,6 +213,9 @@ export default function V3ThreePanePage() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [weddingData, setWeddingData] = useState<any>(null);
+  const [weddingId, setWeddingId] = useState<string | null>(null);
+  const [venue, setVenue] = useState<string>('');
+  const [guestCount, setGuestCount] = useState<string>('');
   const [hasChanges, setHasChanges] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -266,26 +268,62 @@ export default function V3ThreePanePage() {
   useEffect(() => {
     const loadUserData = async () => {
       if (user) {
-        // TODO: Load user tier from Supabase
         setUserTier('free');
         
-        // TODO: Load wedding data from Supabase
-        // For now, just use local storage for saved progress
-        const localProgress = localStorage.getItem('wedding_playlist_progress');
-        if (localProgress) {
-          try {
-            const data = JSON.parse(localProgress);
-            if (data.timeline) setTimeline(data.timeline);
-            if (data.selectedGenres) setSelectedGenres(data.selectedGenres);
-            if (data.selectedCountry) setSelectedCountry(data.selectedCountry);
-            if (data.weddingDate) setWeddingDate(data.weddingDate);
-            if (data.weddingName) setWeddingName(data.weddingName);
-          } catch (error) {
-            console.error('Error loading local progress:', error);
+        try {
+          // Load existing weddings from Supabase
+          const weddings = await weddingHelpers.getMyWeddings();
+          
+          if (weddings && weddings.length > 0) {
+            // Use the most recent wedding
+            const wedding = weddings[0];
+            setWeddingData(wedding);
+            setWeddingId(wedding.id);
+            setWeddingName(wedding.couple_names || 'Your Wedding');
+            setWeddingDate(wedding.wedding_date || '');
+            setVenue(wedding.venue_name || '');
+            setGuestCount(wedding.guest_count?.toString() || '');
+            
+            // Load timeline if exists
+            if (wedding.timeline) {
+              // Convert Supabase timeline format to our format
+              const convertedTimeline = Object.entries(wedding.timeline).map(([key, value]: [string, any]) => ({
+                id: key,
+                ...value,
+                songs: value.songs || []
+              }));
+              setTimeline(convertedTimeline);
+            }
+            
+            // Load preferences
+            if (wedding.music_preferences?.genres) {
+              setSelectedGenres(wedding.music_preferences.genres);
+            }
+            if (wedding.music_preferences?.location) {
+              setSelectedCountry(wedding.music_preferences.location);
+            }
+          } else {
+            // Check for local progress
+            const localProgress = localStorage.getItem('wedding_playlist_progress');
+            if (localProgress) {
+              try {
+                const data = JSON.parse(localProgress);
+                if (data.timeline) setTimeline(data.timeline);
+                if (data.selectedGenres) setSelectedGenres(data.selectedGenres);
+                if (data.selectedCountry) setSelectedCountry(data.selectedCountry);
+                if (data.weddingDate) setWeddingDate(data.weddingDate);
+                if (data.weddingName) setWeddingName(data.weddingName);
+              } catch (error) {
+                console.error('Error loading local progress:', error);
+              }
+            }
           }
+        } catch (error) {
+          console.error('Error loading wedding data:', error);
         }
       } else {
         setWeddingData(null);
+        setWeddingId(null);
       }
       setLoading(false);
     };
@@ -392,22 +430,22 @@ export default function V3ThreePanePage() {
           };
         });
 
-        await setDoc(doc(db, 'weddings', user.id), {
-          timeline,
-          timelineV2,
-          selectedGenres,
-          selectedCountry,
-          totalSongs,
-          totalDuration,
-          weddingDate,
-          weddingName,
-          coupleNames: weddingName ? weddingName.split(' & ') : ['Partner 1', 'Partner 2'],
-          updatedAt: new Date().toISOString(),
-          userId: user.id,
-          createdAt: new Date(),
-          paymentStatus: 'unpaid',
-          slug: user.id
-        }, { merge: true });
+        // Auto-save to Supabase if we have a wedding
+        if (weddingId) {
+          await weddingHelpers.updateWedding(weddingId, {
+            timeline: timelineV2,
+            music_preferences: {
+              genres: selectedGenres,
+              location: selectedCountry
+            },
+            total_songs: totalSongs,
+            total_duration: totalDuration,
+            couple_names: weddingName,
+            wedding_date: weddingDate || undefined,
+            venue_name: venue || undefined,
+            guest_count: guestCount ? parseInt(guestCount) : undefined
+          });
+        }
         
         setHasChanges(false);
         setLastSaved(new Date());
@@ -419,7 +457,7 @@ export default function V3ThreePanePage() {
     }, 2000); // 2 second debounce
 
     return () => clearTimeout(autoSaveTimer);
-  }, [timeline, selectedGenres, selectedCountry, weddingDate, weddingName, totalSongs, totalDuration, user, hasChanges, isSaving, loading]);
+  }, [timeline, selectedGenres, selectedCountry, weddingDate, weddingName, venue, guestCount, totalSongs, totalDuration, user, weddingId, hasChanges, isSaving, loading]);
 
   // Check if we should show gentle auth prompt (after 10+ songs)
   useEffect(() => {
@@ -465,30 +503,56 @@ export default function V3ThreePanePage() {
         };
       });
 
-      await setDoc(doc(db, 'weddings', user.id), {
-        // Keep old format for backward compatibility
-        timeline,
-        // Add new V2 format
-        timelineV2,
-        selectedGenres,
-        selectedCountry,
-        totalSongs,
-        totalDuration,
-        weddingDate,
-        weddingName,
-        coupleNames: weddingName ? weddingName.split(' & ') : ['Partner 1', 'Partner 2'],
-        updatedAt: new Date().toISOString(),
-        userId: user.id,
-        // Add V2 required fields
-        createdAt: new Date(),
-        paymentStatus: 'unpaid',
-        slug: user.id // Use uid as slug for now
-      }, { merge: true });
+      // If we don't have a wedding yet, create one
+      if (!weddingId) {
+        const wedding = await weddingHelpers.createWedding({
+          couple_names: weddingName || 'Our Wedding',
+          wedding_date: weddingDate || undefined,
+          venue_type: venue || undefined,
+          guest_count: guestCount ? parseInt(guestCount) : undefined
+        });
+        setWeddingId(wedding.id);
+        setWeddingData(wedding);
+        
+        // Update the wedding with timeline and preferences
+        await weddingHelpers.updateWedding(wedding.id, {
+          timeline: timelineV2,
+          music_preferences: {
+            genres: selectedGenres,
+            location: selectedCountry
+          },
+          total_songs: totalSongs,
+          total_duration: totalDuration
+        });
+      } else {
+        // Update existing wedding
+        await weddingHelpers.updateWedding(weddingId, {
+          timeline: timelineV2,
+          music_preferences: {
+            genres: selectedGenres,
+            location: selectedCountry
+          },
+          total_songs: totalSongs,
+          total_duration: totalDuration,
+          couple_names: weddingName,
+          wedding_date: weddingDate || undefined,
+          venue_name: venue || undefined,
+          guest_count: guestCount ? parseInt(guestCount) : undefined
+        });
+      }
       
       setHasChanges(false);
+      setLastSaved(new Date());
+      
+      // Clear local storage after successful save
+      localStorage.removeItem('wedding_playlist_progress');
+      
+      console.log('Wedding timeline saved successfully!');
     } catch (error) {
-      // Error saving timeline
       console.error('Error saving timeline:', error);
+      alert('Failed to save timeline. Please try again.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -1280,6 +1344,19 @@ export default function V3ThreePanePage() {
                     </h3>
                     <div className="space-y-3">
                       <div>
+                        <label className="text-xs text-white/60">Couple Names</label>
+                        <input
+                          type="text"
+                          value={weddingName || ''}
+                          onChange={(e) => {
+                            setWeddingName(e.target.value);
+                            setHasChanges(true);
+                          }}
+                          placeholder="John & Jane"
+                          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm placeholder-white/40"
+                        />
+                      </div>
+                      <div>
                         <label className="text-xs text-white/60">Wedding Date</label>
                         <input
                           type="date"
@@ -1295,6 +1372,11 @@ export default function V3ThreePanePage() {
                         <label className="text-xs text-white/60">Venue</label>
                         <input
                           type="text"
+                          value={venue || ''}
+                          onChange={(e) => {
+                            setVenue(e.target.value);
+                            setHasChanges(true);
+                          }}
                           placeholder="Enter venue name"
                           className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm placeholder-white/40"
                         />
@@ -1303,6 +1385,11 @@ export default function V3ThreePanePage() {
                         <label className="text-xs text-white/60">Guest Count</label>
                         <input
                           type="number"
+                          value={guestCount || ''}
+                          onChange={(e) => {
+                            setGuestCount(e.target.value);
+                            setHasChanges(true);
+                          }}
                           placeholder="Expected guests"
                           className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm placeholder-white/40"
                         />
@@ -1334,6 +1421,46 @@ export default function V3ThreePanePage() {
                       <Share2 className="w-4 h-4" />
                       {canShare ? 'Invite Partner' : 'Upgrade to Share'}
                     </button>
+                    
+                    {weddingData && (
+                      <div className="mt-4 p-3 bg-white/5 rounded-lg">
+                        <p className="text-xs text-white/60 mb-2">Share Codes:</p>
+                        <div className="space-y-2">
+                          {weddingData.co_owner_code && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-white/50">Partner:</span>
+                              <code className="text-xs bg-purple-600/20 text-purple-300 px-2 py-0.5 rounded font-mono">
+                                {weddingData.co_owner_code}
+                              </code>
+                            </div>
+                          )}
+                          {weddingData.guest_code && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-white/50">Guests:</span>
+                              <code className="text-xs bg-green-600/20 text-green-300 px-2 py-0.5 rounded font-mono">
+                                {weddingData.guest_code}
+                              </code>
+                            </div>
+                          )}
+                          {weddingData.vendor_code && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-white/50">Vendors:</span>
+                              <code className="text-xs bg-blue-600/20 text-blue-300 px-2 py-0.5 rounded font-mono">
+                                {weddingData.vendor_code}
+                              </code>
+                            </div>
+                          )}
+                        </div>
+                        {weddingData.slug && (
+                          <div className="mt-3 pt-3 border-t border-white/10">
+                            <p className="text-xs text-white/60 mb-1">Wedding URL:</p>
+                            <code className="text-xs bg-white/10 text-white/80 px-2 py-1 rounded block break-all">
+                              weddings.uptune.xyz/{weddingData.slug}
+                            </code>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                   
                   <div className="glass-card rounded-lg p-4">

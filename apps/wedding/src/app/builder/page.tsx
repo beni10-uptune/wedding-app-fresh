@@ -438,8 +438,6 @@ export default function V3ThreePanePage() {
               genres: selectedGenres,
               location: selectedCountry
             },
-            total_songs: totalSongs,
-            total_duration: totalDuration,
             couple_names: weddingName,
             wedding_date: weddingDate || undefined,
             venue_name: venue || undefined,
@@ -520,9 +518,7 @@ export default function V3ThreePanePage() {
           music_preferences: {
             genres: selectedGenres,
             location: selectedCountry
-          },
-          total_songs: totalSongs,
-          total_duration: totalDuration
+          }
         });
       } else {
         // Update existing wedding
@@ -532,8 +528,6 @@ export default function V3ThreePanePage() {
             genres: selectedGenres,
             location: selectedCountry
           },
-          total_songs: totalSongs,
-          total_duration: totalDuration,
           couple_names: weddingName,
           wedding_date: weddingDate || undefined,
           venue_name: venue || undefined,

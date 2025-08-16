@@ -118,7 +118,6 @@ export async function GET(request: NextRequest) {
             owner_id: userId,
             payment_tier: weddingData.subscriptionTier || 'free',
             payment_status: weddingData.paymentStatus || 'active',
-            total_songs: weddingData.totalSongs || 0,
             music_preferences: {
               genres: weddingData.selectedGenres || [],
               excluded_genres: [],

@@ -2,7 +2,7 @@
 
 import { use, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { getWeddingBySlug } from '@/lib/slug-utils'
+import { getWeddingBySlug } from '@/lib/supabase/slug-utils'
 
 export default function WeddingSlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const router = useRouter()

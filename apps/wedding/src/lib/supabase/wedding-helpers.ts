@@ -6,6 +6,7 @@
 import { createClient } from './client'
 import { createClient as createServerClient, createAdminClient } from './server'
 import type { Database } from './types'
+import { generateUniqueSlug } from './slug-utils'
 
 // Wedding-specific types
 type Wedding = Database['public']['Tables']['weddings']['Row']
@@ -25,6 +26,7 @@ export const weddingHelpers = {
     wedding_date?: string
     venue_type?: string
     guest_count?: number
+    slug?: string
   }) {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -36,10 +38,15 @@ export const weddingHelpers = {
     // Generate unique codes
     const generateCode = () => Math.random().toString(36).substring(2, 8).toUpperCase()
     
-    // Create wedding with unique slug
-    const slug = data.couple_names.toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '') + '-' + Date.now().toString(36)
+    // Use provided slug or generate one
+    let slug = data.slug
+    if (!slug) {
+      // Generate a unique slug if not provided
+      const baseSlug = data.couple_names.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+      slug = await generateUniqueSlug(baseSlug)
+    }
 
     const { data: wedding, error } = await supabase
       .from('wedding_weddings')

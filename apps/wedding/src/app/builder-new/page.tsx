@@ -14,8 +14,19 @@ import {
   Calendar,
   Loader2,
   AlertCircle,
-  ChevronRight
+  ChevronRight,
+  Link2,
+  Check,
+  X,
+  RefreshCw
 } from 'lucide-react';
+import { 
+  generateSlugFromNames, 
+  isValidSlug, 
+  isSlugAvailable, 
+  sanitizeSlug,
+  suggestAlternativeSlugs 
+} from '@/lib/supabase/slug-utils';
 
 export default function BuilderPage() {
   const router = useRouter();
@@ -32,6 +43,13 @@ export default function BuilderPage() {
   const [weddingDate, setWeddingDate] = useState('');
   const [venueType, setVenueType] = useState('');
   const [guestCount, setGuestCount] = useState<number>(100);
+  
+  // Custom URL state
+  const [customSlug, setCustomSlug] = useState('');
+  const [isCheckingSlug, setIsCheckingSlug] = useState(false);
+  const [slugAvailable, setSlugAvailable] = useState<boolean | null>(null);
+  const [slugSuggestions, setSlugSuggestions] = useState<string[]>([]);
+  const [useCustomUrl, setUseCustomUrl] = useState(true);
 
   useEffect(() => {
     if (user) {
@@ -48,6 +66,46 @@ export default function BuilderPage() {
     }
   };
 
+  // Auto-generate slug when couple names change
+  useEffect(() => {
+    if (coupleNames && !customSlug) {
+      const generatedSlug = generateSlugFromNames(coupleNames);
+      setCustomSlug(generatedSlug);
+    }
+  }, [coupleNames]);
+
+  // Check slug availability with debouncing
+  useEffect(() => {
+    if (!customSlug || customSlug.length < 3) {
+      setSlugAvailable(null);
+      return;
+    }
+
+    const checkSlug = async () => {
+      setIsCheckingSlug(true);
+      const sanitized = sanitizeSlug(customSlug);
+      
+      if (!isValidSlug(sanitized)) {
+        setSlugAvailable(false);
+        setIsCheckingSlug(false);
+        return;
+      }
+
+      const available = await isSlugAvailable(sanitized);
+      setSlugAvailable(available);
+      
+      if (!available) {
+        const suggestions = suggestAlternativeSlugs(sanitized);
+        setSlugSuggestions(suggestions);
+      }
+      
+      setIsCheckingSlug(false);
+    };
+
+    const timer = setTimeout(checkSlug, 500);
+    return () => clearTimeout(timer);
+  }, [customSlug]);
+
   const handleCreateWedding = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
@@ -55,10 +113,17 @@ export default function BuilderPage() {
       return;
     }
 
+    if (useCustomUrl && !slugAvailable) {
+      setError('Please choose an available URL');
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
+      const finalSlug = useCustomUrl ? sanitizeSlug(customSlug) : undefined;
+      
       const wedding = await weddingHelpers.createWedding({
         couple_names: coupleNames,
         partner1_name: partner1Name,
@@ -66,6 +131,7 @@ export default function BuilderPage() {
         wedding_date: weddingDate || undefined,
         venue_type: venueType || undefined,
         guest_count: guestCount || undefined,
+        slug: finalSlug
       });
 
       // Redirect to the wedding builder
@@ -179,6 +245,92 @@ export default function BuilderPage() {
                 <p className="text-white/60 text-sm mt-1">
                   This will be displayed on your wedding page
                 </p>
+              </div>
+
+              {/* Custom Wedding URL - Special Touch */}
+              <div className="relative">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="flex items-center gap-2 text-white">
+                    <Link2 className="w-4 h-4 text-purple-400" />
+                    Your Wedding URL
+                    <span className="text-purple-400 text-xs font-medium px-2 py-0.5 bg-purple-500/20 rounded-full">✨ Special Touch</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setUseCustomUrl(!useCustomUrl)}
+                    className="text-xs text-purple-300 hover:text-purple-200 transition-colors"
+                  >
+                    {useCustomUrl ? 'Auto-generate' : 'Customize'}
+                  </button>
+                </div>
+                
+                {useCustomUrl && (
+                  <>
+                    <div className="relative group">
+                      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur-xl group-hover:blur-2xl transition-all duration-300" />
+                      <div className="relative flex items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg overflow-hidden">
+                        <span className="px-4 py-3 bg-white/5 border-r border-white/10 text-white/60 text-sm">
+                          weddings.uptune.xyz/
+                        </span>
+                        <input
+                          type="text"
+                          value={customSlug}
+                          onChange={(e) => setCustomSlug(sanitizeSlug(e.target.value))}
+                          placeholder="your-wedding-url"
+                          className="flex-1 px-4 py-3 bg-transparent text-white placeholder:text-white/40 focus:outline-none"
+                          required={useCustomUrl}
+                        />
+                        <div className="px-3">
+                          {isCheckingSlug ? (
+                            <RefreshCw className="w-5 h-5 text-purple-400 animate-spin" />
+                          ) : slugAvailable === true ? (
+                            <Check className="w-5 h-5 text-green-400" />
+                          ) : slugAvailable === false ? (
+                            <X className="w-5 h-5 text-red-400" />
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Availability Status */}
+                    {slugAvailable === true && customSlug && (
+                      <p className="mt-2 text-sm text-green-400 flex items-center gap-1">
+                        <Check className="w-4 h-4" />
+                        Perfect! This URL is available
+                      </p>
+                    )}
+                    
+                    {slugAvailable === false && (
+                      <div className="mt-2">
+                        <p className="text-sm text-red-400 flex items-center gap-1 mb-2">
+                          <X className="w-4 h-4" />
+                          This URL is already taken
+                        </p>
+                        {slugSuggestions.length > 0 && (
+                          <div className="space-y-1">
+                            <p className="text-xs text-white/60">Try one of these:</p>
+                            <div className="flex flex-wrap gap-2">
+                              {slugSuggestions.map((suggestion) => (
+                                <button
+                                  key={suggestion}
+                                  type="button"
+                                  onClick={() => setCustomSlug(suggestion)}
+                                  className="text-xs px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full hover:bg-purple-500/30 transition-colors"
+                                >
+                                  {suggestion}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    <p className="mt-2 text-xs text-white/50">
+                      Share this link with your guests for easy access to your wedding page
+                    </p>
+                  </>
+                )}
               </div>
 
               {/* Partner Names */}

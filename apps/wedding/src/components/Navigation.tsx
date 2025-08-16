@@ -3,30 +3,18 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Music, Menu, X, Home, BookOpen, LogIn, UserPlus, LogOut } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { useAuth } from '@/contexts/AuthContext'
-import { signOut } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
+import { Music, Menu, X } from 'lucide-react'
+import { AuthButtons } from '@/components/auth/AuthButtons'
 import { cn } from '@/lib/utils'
 
 export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
-  const { user } = useAuth()
 
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false)
   }, [pathname])
-
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth)
-    } catch (error) {
-      // Error is logged in auth context
-    }
-  }
 
   const isActive = (path: string) => pathname === path
 
@@ -65,42 +53,16 @@ export function Navigation() {
             >
               Blog
             </Link>
-            {user ? (
-              <>
-                <Link 
-                  href="/builder" 
-                  className={cn(
-                    "text-white/70 hover:text-white transition-colors",
-                    pathname.startsWith('/builder') || pathname.startsWith('/wedding') && "text-white"
-                  )}
-                >
-                  Builder
-                </Link>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleSignOut}
-                  className="text-white/70 hover:text-white"
-                >
-                  <LogOut className="w-4 h-4" />
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link href="/auth/login">
-                  <Button variant="ghost" size="sm" className="text-white/70 hover:text-white">
-                    <LogIn className="w-4 h-4 mr-2" />
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/auth/signup">
-                  <Button className="btn-primary" size="sm">
-                    <UserPlus className="w-4 h-4 mr-2" />
-                    Sign Up
-                  </Button>
-                </Link>
-              </>
-            )}
+            <Link 
+              href="/builder" 
+              className={cn(
+                "text-white/70 hover:text-white transition-colors",
+                pathname.startsWith('/builder') && "text-white"
+              )}
+            >
+              Builder
+            </Link>
+            <AuthButtons variant="header" />
           </nav>
 
           {/* Mobile Menu Button */}
@@ -128,8 +90,8 @@ export function Navigation() {
                 "flex items-center gap-3 py-2 text-white/70 hover:text-white transition-colors",
                 isActive('/') && "text-white"
               )}
+              onClick={() => setMobileMenuOpen(false)}
             >
-              <Home className="w-5 h-5" />
               Home
             </Link>
             <Link
@@ -138,50 +100,26 @@ export function Navigation() {
                 "flex items-center gap-3 py-2 text-white/70 hover:text-white transition-colors",
                 pathname.startsWith('/blog') && "text-white"
               )}
+              onClick={() => setMobileMenuOpen(false)}
             >
-              <BookOpen className="w-5 h-5" />
               Blog
             </Link>
-            {user ? (
-              <>
-                <Link
-                  href="/builder"
-                  className={cn(
-                    "flex items-center gap-3 py-2 text-white/70 hover:text-white transition-colors",
-                    pathname.startsWith('/builder') || pathname.startsWith('/wedding') && "text-white"
-                  )}
-                >
-                  <Music className="w-5 h-5" />
-                  Builder
-                </Link>
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center gap-3 py-2 text-white/70 hover:text-white transition-colors w-full text-left"
-                >
-                  <LogOut className="w-5 h-5" />
-                  Sign Out
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/auth/login"
-                  className="flex items-center gap-3 py-2 text-white/70 hover:text-white transition-colors"
-                >
-                  <LogIn className="w-5 h-5" />
-                  Login
-                </Link>
-                <Link
-                  href="/auth/signup"
-                  className="block"
-                >
-                  <Button className="btn-primary w-full">
-                    <UserPlus className="w-4 h-4 mr-2" />
-                    Get Started Free
-                  </Button>
-                </Link>
-              </>
-            )}
+            <Link
+              href="/builder"
+              className={cn(
+                "flex items-center gap-3 py-2 text-white/70 hover:text-white transition-colors",
+                pathname.startsWith('/builder') && "text-white"
+              )}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Builder
+            </Link>
+            <div className="pt-4 border-t border-white/10 mt-4">
+              <AuthButtons 
+                variant="mobile" 
+                onClose={() => setMobileMenuOpen(false)}
+              />
+            </div>
           </nav>
         </div>
       )}

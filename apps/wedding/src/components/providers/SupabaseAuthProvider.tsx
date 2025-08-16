@@ -12,7 +12,7 @@ type AuthContextType = {
   signOut: () => Promise<void>
   signInWithEmail: (email: string, password: string) => Promise<void>
   signUpWithEmail: (email: string, password: string, name?: string) => Promise<void>
-  signInWithProvider: (provider: 'google' | 'spotify' | 'apple') => Promise<void>
+  signInWithProvider: (provider: 'google') => Promise<void>
   refreshSession: () => Promise<void>
 }
 
@@ -46,12 +46,8 @@ export function SupabaseAuthProvider({ children }: { children: React.ReactNode }
       // Handle different auth events
       switch (event) {
         case 'SIGNED_IN':
-          // If Spotify provider, save tokens
-          if (session?.provider_token) {
-            await supabase.from('profiles').update({
-              spotify_refresh_token: session.provider_refresh_token
-            }).eq('id', session.user.id)
-          }
+          // Handle successful sign in
+          console.log('User signed in successfully')
           break
           
         case 'SIGNED_OUT':
@@ -90,14 +86,11 @@ export function SupabaseAuthProvider({ children }: { children: React.ReactNode }
     if (error) throw error
   }
 
-  const signInWithProvider = async (provider: 'google' | 'spotify' | 'apple') => {
+  const signInWithProvider = async (provider: 'google') => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-        ...(provider === 'spotify' && {
-          scopes: 'user-read-email playlist-modify-public playlist-modify-private user-read-private'
-        })
+        redirectTo: `${window.location.origin}/auth/callback`
       }
     })
     if (error) throw error

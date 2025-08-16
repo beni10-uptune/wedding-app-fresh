@@ -3,8 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { useAuth } from '@/components/providers/SupabaseAuthProvider';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { detectUserCurrency, formatPrice, PRICE_AMOUNTS } from '@/config/stripe-prices';
@@ -63,11 +62,10 @@ import {
 import { DraggableSong } from '@/components/v3/DraggableSong';
 import { DroppableMoment } from '@/components/v3/DroppableMoment';
 import { AddSongModal } from '@/components/v3/AddSongModal';
-import { AuthModal } from '@/components/v3/AuthModal';
+import { ProgressiveAuthModal } from '@/components/auth/ProgressiveAuthModal';
 import { ShareModal } from '@/components/v3/ShareModal';
 import { SettingsModal } from '@/components/v3/SettingsModal';
 import { UpgradeModal } from '@/components/v3/UpgradeModal';
-import EmailCaptureModal from '@/components/EmailCaptureModal';
 import { 
   useTimelineWithDatabaseSongs, 
   searchDatabaseSongs, 
@@ -213,7 +211,7 @@ interface TimelineMoment {
 
 export default function V3ThreePanePage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [weddingData, setWeddingData] = useState<any>(null);
   const [hasChanges, setHasChanges] = useState(false);
@@ -236,7 +234,8 @@ export default function V3ThreePanePage() {
   const [isDragging, setIsDragging] = useState(false);
   const [draggedSong, setDraggedSong] = useState<Song | null>(null);
   const [isDraggingToTrash, setIsDraggingToTrash] = useState(false);
-  const [showAccountModal, setShowAccountModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authTrigger, setAuthTrigger] = useState<'save' | 'share' | 'spotify' | 'premium' | 'export'>('save');
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showAddSongModal, setShowAddSongModal] = useState(false);
   const [addSongMomentId, setAddSongMomentId] = useState<string | null>(null);
@@ -245,9 +244,6 @@ export default function V3ThreePanePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Song[]>([]);
   const { hasAccess: canShare } = useFeatureAccess('share');
-  const [showEmailCapture, setShowEmailCapture] = useState(false);
-  const [emailCaptureTrigger, setEmailCaptureTrigger] = useState<'export' | 'save' | 'share'>('save');
-  const [capturedEmail, setCapturedEmail] = useState<string | null>(null);
   const [isLoadingDatabase, setIsLoadingDatabase] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [playingId, setPlayingId] = useState<string | null>(null);
@@ -266,55 +262,35 @@ export default function V3ThreePanePage() {
     })
   );
   
-  // Auth listener
+  // Load user data when authenticated
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const loadUserData = async () => {
       if (user) {
-        setUser(user);
-        // Load user tier
-        try {
-          const userDoc = await getDoc(doc(db, 'users', user.uid));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            setUserTier(userData.tier || 'free');
+        // TODO: Load user tier from Supabase
+        setUserTier('free');
+        
+        // TODO: Load wedding data from Supabase
+        // For now, just use local storage for saved progress
+        const localProgress = localStorage.getItem('wedding_playlist_progress');
+        if (localProgress) {
+          try {
+            const data = JSON.parse(localProgress);
+            if (data.timeline) setTimeline(data.timeline);
+            if (data.selectedGenres) setSelectedGenres(data.selectedGenres);
+            if (data.selectedCountry) setSelectedCountry(data.selectedCountry);
+            if (data.weddingDate) setWeddingDate(data.weddingDate);
+            if (data.weddingName) setWeddingName(data.weddingName);
+          } catch (error) {
+            console.error('Error loading local progress:', error);
           }
-        } catch (error) {
-          // Error loading user tier
-        }
-        // Load wedding data if exists
-        try {
-          const weddingDoc = await getDoc(doc(db, 'weddings', user.uid));
-          if (weddingDoc.exists()) {
-            const data = weddingDoc.data();
-            setWeddingData(data);
-            // Load saved timeline if exists
-            if (data.timeline) {
-              setTimeline(data.timeline);
-            }
-            if (data.selectedGenres) {
-              setSelectedGenres(data.selectedGenres);
-            }
-            if (data.selectedCountry) {
-              setSelectedCountry(data.selectedCountry);
-            }
-            if (data.weddingDate) {
-              setWeddingDate(data.weddingDate);
-            }
-            if (data.partner1Name && data.partner2Name) {
-              setWeddingName(`${data.partner1Name} & ${data.partner2Name}`);
-            }
-          }
-        } catch (error) {
-          // Error loading wedding data
         }
       } else {
-        setUser(null);
         setWeddingData(null);
       }
       setLoading(false);
-    });
-
-    return () => unsubscribe();
+    };
+    
+    loadUserData();
   }, []);
 
   // Initialize timeline with database songs
@@ -416,7 +392,7 @@ export default function V3ThreePanePage() {
           };
         });
 
-        await setDoc(doc(db, 'weddings', user.uid), {
+        await setDoc(doc(db, 'weddings', user.id), {
           timeline,
           timelineV2,
           selectedGenres,
@@ -427,10 +403,10 @@ export default function V3ThreePanePage() {
           weddingName,
           coupleNames: weddingName ? weddingName.split(' & ') : ['Partner 1', 'Partner 2'],
           updatedAt: new Date().toISOString(),
-          userId: user.uid,
+          userId: user.id,
           createdAt: new Date(),
           paymentStatus: 'unpaid',
-          slug: user.uid
+          slug: user.id
         }, { merge: true });
         
         setHasChanges(false);
@@ -445,49 +421,19 @@ export default function V3ThreePanePage() {
     return () => clearTimeout(autoSaveTimer);
   }, [timeline, selectedGenres, selectedCountry, weddingDate, weddingName, totalSongs, totalDuration, user, hasChanges, isSaving, loading]);
 
-  // Save timeline with captured email (for non-authenticated users)
-  const saveTimelineWithEmail = async (email: string) => {
-    try {
-      // Store in localStorage for now - they can create account later
-      const timelineData = {
-        timeline,
-        selectedGenres,
-        selectedCountry,
-        totalSongs,
-        totalDuration,
-        weddingDate,
-        weddingName,
-        email,
-        savedAt: new Date().toISOString()
-      };
-      
-      localStorage.setItem('saved_timeline', JSON.stringify(timelineData));
-      localStorage.setItem('timeline_email', email);
-      
-      // Don't show alert - let the UI handle the success state
-      console.log('Timeline saved locally with email:', email);
-    } catch (error) {
-      console.error('Error saving timeline:', error);
-      // Don't show alert - handle errors silently or with UI state
+  // Check if we should show gentle auth prompt (after 10+ songs)
+  useEffect(() => {
+    if (!user && totalSongs >= 10 && !localStorage.getItem('auth_prompt_shown')) {
+      // We'll add a gentle prompt UI later
+      localStorage.setItem('auth_prompt_shown', 'true');
     }
-  };
+  }, [totalSongs, user]);
 
   // Save timeline to database
   const saveTimeline = async () => {
-    if (!user && !capturedEmail) {
-      setEmailCaptureTrigger('save');
-      setShowEmailCapture(true);
-      return;
-    }
-    
-    if (!user && capturedEmail) {
-      // User has given email but no account - save locally and DON'T show auth modal
-      saveTimelineWithEmail(capturedEmail);
-      return;
-    }
-    
     if (!user) {
-      setShowAccountModal(true);
+      setAuthTrigger('save');
+      setShowAuthModal(true);
       return;
     }
 
@@ -519,7 +465,7 @@ export default function V3ThreePanePage() {
         };
       });
 
-      await setDoc(doc(db, 'weddings', user.uid), {
+      await setDoc(doc(db, 'weddings', user.id), {
         // Keep old format for backward compatibility
         timeline,
         // Add new V2 format
@@ -532,11 +478,11 @@ export default function V3ThreePanePage() {
         weddingName,
         coupleNames: weddingName ? weddingName.split(' & ') : ['Partner 1', 'Partner 2'],
         updatedAt: new Date().toISOString(),
-        userId: user.uid,
+        userId: user.id,
         // Add V2 required fields
         createdAt: new Date(),
         paymentStatus: 'unpaid',
-        slug: user.uid // Use uid as slug for now
+        slug: user.id // Use uid as slug for now
       }, { merge: true });
       
       setHasChanges(false);
@@ -933,7 +879,7 @@ export default function V3ThreePanePage() {
                 {user ? (
                   <>
                     {weddingData && (
-                      <Link href={`/wedding/${user.uid}/builder`}>
+                      <Link href={`/wedding/${user.id}/builder`}>
                         <button className="px-3 py-1.5 bg-purple-600/20 text-purple-400 text-sm rounded-lg hover:bg-purple-600/30 transition-colors flex items-center gap-2">
                           <Sparkles className="w-4 h-4" />
                           Enhanced
@@ -942,7 +888,10 @@ export default function V3ThreePanePage() {
                     )}
                     <button
                       onClick={() => {
-                        if (canShare) {
+                        if (!user) {
+                          setAuthTrigger('share');
+                          setShowAuthModal(true);
+                        } else if (canShare) {
                           setShowShareModal(true);
                         } else {
                           setShowUpgradeModal(true);
@@ -1191,11 +1140,9 @@ export default function V3ThreePanePage() {
               </h3>
               <button
                 onClick={() => {
-                  if (!user && !capturedEmail) {
-                    setEmailCaptureTrigger('save');
-                    setShowEmailCapture(true);
-                  } else {
-                    setShowAccountModal(true);
+                  if (!user) {
+                    setAuthTrigger('premium');
+                    setShowAuthModal(true);
                   }
                 }}
                 className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white/50 hover:bg-white/20 hover:text-white transition-colors flex items-center justify-center gap-2 relative overflow-hidden"
@@ -1373,7 +1320,10 @@ export default function V3ThreePanePage() {
                     </p>
                     <button
                       onClick={() => {
-                        if (canShare) {
+                        if (!user) {
+                          setAuthTrigger('share');
+                          setShowAuthModal(true);
+                        } else if (canShare) {
                           setShowShareModal(true);
                         } else {
                           setShowUpgradeModal(true);
@@ -1425,7 +1375,10 @@ export default function V3ThreePanePage() {
                     </div>
                     <button
                       onClick={() => {
-                        if (canShare) {
+                        if (!user) {
+                          setAuthTrigger('share');
+                          setShowAuthModal(true);
+                        } else if (canShare) {
                           setShowShareModal(true);
                         } else {
                           setShowUpgradeModal(true);
@@ -1587,9 +1540,9 @@ export default function V3ThreePanePage() {
               <div className="space-y-2">
                 <button 
                   onClick={() => {
-                    if (!user && !capturedEmail) {
-                      setEmailCaptureTrigger('export');
-                      setShowEmailCapture(true);
+                    if (!user) {
+                      setAuthTrigger('spotify');
+                      setShowAuthModal(true);
                     } else if (userTier === 'free') {
                       setShowUpgradeModal(true);
                     }
@@ -1601,9 +1554,9 @@ export default function V3ThreePanePage() {
                 </button>
                 <button 
                   onClick={() => {
-                    if (!user && !capturedEmail) {
-                      setEmailCaptureTrigger('export');
-                      setShowEmailCapture(true);
+                    if (!user) {
+                      setAuthTrigger('export');
+                      setShowAuthModal(true);
                     } else {
                       // Handle PDF download
                     }
@@ -1624,14 +1577,32 @@ export default function V3ThreePanePage() {
               </h3>
               <div className="space-y-2">
                 <button 
-                  onClick={() => userTier === 'free' ? setShowUpgradeModal(true) : setShowShareModal(true)}
+                  onClick={() => {
+                    if (!user) {
+                      setAuthTrigger('share');
+                      setShowAuthModal(true);
+                    } else if (userTier === 'free') {
+                      setShowUpgradeModal(true);
+                    } else {
+                      setShowShareModal(true);
+                    }
+                  }}
                   className="w-full px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 flex items-center justify-center gap-2 text-sm"
                 >
                   <UserPlus className="w-4 h-4" />
                   Invite Partner
                 </button>
                 <button 
-                  onClick={() => userTier === 'free' ? setShowUpgradeModal(true) : setShowShareModal(true)}
+                  onClick={() => {
+                    if (!user) {
+                      setAuthTrigger('share');
+                      setShowAuthModal(true);
+                    } else if (userTier === 'free') {
+                      setShowUpgradeModal(true);
+                    } else {
+                      setShowShareModal(true);
+                    }
+                  }}
                   className="w-full px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 flex items-center justify-center gap-2 text-sm"
                 >
                   <Share2 className="w-4 h-4" />
@@ -2007,20 +1978,32 @@ export default function V3ThreePanePage() {
           </div>
         )}
 
-        {/* Auth Modal */}
-        <AuthModal
-          isOpen={showAccountModal}
-          onClose={() => setShowAccountModal(false)}
+        {/* Progressive Auth Modal */}
+        <ProgressiveAuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
           onSuccess={saveTimeline}
-          totalSongs={totalSongs}
-          prefilledEmail={capturedEmail || undefined}
+          trigger={authTrigger}
+          metadata={{
+            totalSongs,
+            playlistName: weddingName,
+            localData: {
+              timeline,
+              selectedGenres,
+              selectedCountry,
+              totalSongs,
+              totalDuration,
+              weddingDate,
+              weddingName
+            }
+          }}
         />
 
         {/* Share Modal */}
         {showShareModal && (
           <ShareModal
             onClose={() => setShowShareModal(false)}
-            weddingId={user?.uid}
+            weddingId={user?.id}
             weddingData={weddingData}
           />
         )}
@@ -2043,29 +2026,11 @@ export default function V3ThreePanePage() {
         {showUpgradeModal && (
           <UpgradeModal
             onClose={() => setShowUpgradeModal(false)}
-            weddingId={user?.uid}
+            weddingId={user?.id}
             user={user}
           />
         )}
 
-        {/* Email Capture Modal */}
-        <EmailCaptureModal
-          isOpen={showEmailCapture}
-          onClose={() => setShowEmailCapture(false)}
-          onSuccess={(email) => {
-            setCapturedEmail(email);
-            setShowEmailCapture(false);
-            
-            // Just save the email and let user continue
-            // NO auth modal here - that's the double popup!
-            if (emailCaptureTrigger === 'save') {
-              saveTimelineWithEmail(email);
-            }
-            // For export, just store the email
-          }}
-          trigger={emailCaptureTrigger}
-          totalSongs={totalSongs}
-        />
       </div>
     </DndContext>
   );

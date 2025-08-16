@@ -17,35 +17,23 @@ export async function GET(request: Request) {
       const { data: { user } } = await supabase.auth.getUser()
       
       if (user) {
-        // Check if profile exists
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single()
-        
-        // If no profile, this is a new user - create profile
-        if (!profile) {
-          await supabase.from('profiles').insert({
-            id: user.id,
-            email: user.email,
-            name: user.user_metadata?.name || user.email?.split('@')[0],
-            avatar_url: user.user_metadata?.avatar_url
-          })
-        }
+        // Track wedding app usage for multi-app platform
+        await supabase.rpc('track_app_usage', { p_app_name: 'wedding' })
         
         // If logged in with Spotify, store the provider token
         const { data: { session } } = await supabase.auth.getSession()
-        if (session?.provider_token) {
+        if (session?.provider_token && session.provider_token.startsWith('spotify')) {
           // Store Spotify access token for playlist creation
           await supabase.from('profiles').update({
+            spotify_connected: true,
             spotify_refresh_token: session.provider_refresh_token
           }).eq('id', user.id)
         }
       }
       
-      // Redirect to the intended page
-      return NextResponse.redirect(new URL(next, requestUrl.origin))
+      // Redirect to the intended page (default to new builder)
+      const redirectTo = next === '/builder' ? '/builder-new' : next;
+      return NextResponse.redirect(new URL(redirectTo, requestUrl.origin))
     }
   }
 

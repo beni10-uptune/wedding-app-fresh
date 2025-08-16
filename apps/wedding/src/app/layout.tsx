@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display, Dancing_Script } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/contexts/AuthContext";
+// import { AuthProvider } from "@/contexts/AuthContext"; // OLD Firebase auth
+import { SupabaseAuthProvider } from "@/components/providers/SupabaseAuthProvider";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -96,12 +97,12 @@ export default function RootLayout({
         <GoogleTagManagerWrapper gtmId={gtmId} />
         <GoogleAdsScript />
         <ErrorBoundary>
-          <AuthProvider>
+          <SupabaseAuthProvider>
             {children}
             <CookieConsent />
             <Analytics />
             <SpeedInsights />
-          </AuthProvider>
+          </SupabaseAuthProvider>
         </ErrorBoundary>
       </body>
     </html>

@@ -2,22 +2,34 @@
 
 import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/components/providers/SupabaseAuthProvider'
-import { weddingHelpers } from '@/lib/supabase/wedding-helpers'
-import { createClient } from '@/lib/supabase/client'
+import { useAuth } from '@/contexts/AuthContext'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
+import { db, auth } from '@/lib/firebase'
+
+// Extended interface to support old wedding data structure
+interface ExtendedWedding {
+  id: string
+  coupleName1?: string
+  coupleName2?: string
+  weddingDate: any // Can be Timestamp or string
+  coupleNames?: string[]
+  owners: string[]
+  paymentStatus?: 'pending' | 'paid' | 'refunded'
+  venue?: string
+  title?: string
+}
 import PaymentForm from '@/components/PaymentForm'
 import { Heart, Music, Check, ArrowLeft, Lock } from 'lucide-react'
 import Link from 'next/link'
 
 export default function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: weddingId } = use(params)
-  const [wedding, setWedding] = useState<any | null>(null)
+  const [wedding, setWedding] = useState<ExtendedWedding | null>(null)
   const [clientSecret, setClientSecret] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const { user } = useAuth()
   const router = useRouter()
-  const supabase = createClient()
 
   useEffect(() => {
     if (!user) {
@@ -30,32 +42,31 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
 
   const loadWedding = async () => {
     try {
-      // Get wedding from Supabase
-      const wedding = await weddingHelpers.getWedding(weddingId)
-      
-      if (!wedding) {
+      const weddingDoc = await getDoc(doc(db, 'weddings', weddingId))
+      if (!weddingDoc.exists()) {
         setError('Wedding not found')
         setLoading(false)
         return
       }
+
+      const weddingData = { id: weddingDoc.id, ...weddingDoc.data() } as ExtendedWedding
       
       // Check if user is owner
-      if (wedding.owner_id !== user?.id && wedding.co_owner_id !== user?.id) {
+      if (!weddingData.owners.includes(user?.uid || '')) {
         router.push('/')
         return
       }
 
-      // Check if already paid (professional tier or higher)
-      if (wedding.payment_tier && wedding.payment_tier !== 'free') {
+      // Check if already paid
+      if (weddingData.paymentStatus === 'paid') {
         router.push('/builder')
         return
       }
 
-      setWedding(wedding)
+      setWedding(weddingData)
       
-      // Get Supabase session token
-      const { data: { session } } = await supabase.auth.getSession()
-      const token = session?.access_token
+      // Get auth token
+      const token = await auth.currentUser?.getIdToken()
       
       // Create payment intent
       const response = await fetch('/api/create-payment-intent', {
@@ -71,13 +82,6 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
       })
 
       const data = await response.json()
-      
-      if (!response.ok) {
-        console.error('Payment intent error:', data)
-        setError(data.error || 'Failed to initialize payment')
-        return
-      }
-      
       if (data.clientSecret) {
         setClientSecret(data.clientSecret)
       } else {
@@ -92,17 +96,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
   }
 
   const handlePaymentSuccess = async () => {
-    // Update wedding payment status in Supabase
-    try {
-      await weddingHelpers.updateWedding(weddingId, {
-        payment_tier: 'professional',
-        payment_status: 'active'
-      })
-    } catch (err) {
-      console.error('Error updating payment status:', err)
-    }
-    
-    // Navigate to success page
+    // Let Stripe webhook update payment status; just navigate to success
     router.push(`/wedding/${weddingId}/payment-success`)
   }
 
@@ -123,8 +117,8 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
         <div className="text-center">
           <h2 className="text-2xl font-bold text-white mb-4">Oops!</h2>
           <p className="text-white/60 mb-8">{error}</p>
-          <Link href="/builder" className="btn-primary">
-            Go to Builder
+          <Link href="/" className="btn-primary">
+            Go Home
           </Link>
         </div>
       </div>
@@ -173,22 +167,22 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-400 mt-0.5" />
-                  <span className="text-white/80">Up to 50 songs</span>
+                  <span className="text-white/80">Up to 10 songs</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-green-400 mt-0.5" />
+                  <span className="text-white/80">Up to 5 guest invites</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-400 mt-0.5" />
                   <span className="text-white/80">Basic playlist creation</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-green-400 mt-0.5" />
-                  <span className="text-white/80">Guest song requests</span>
                 </li>
               </ul>
             </div>
             
             {/* Premium Plan */}
             <div className="glass-darker rounded-xl p-6 border-2 border-purple-500/30">
-              <h3 className="text-lg font-semibold text-white mb-4">Professional Plan</h3>
+              <h3 className="text-lg font-semibold text-white mb-4">Premium Plan</h3>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-purple-400 mt-0.5" />
@@ -196,15 +190,15 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-purple-400 mt-0.5" />
-                  <span className="text-white/80">Spotify export</span>
+                  <span className="text-white/80">Unlimited guest invites</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-purple-400 mt-0.5" />
+                  <span className="text-white/80">Spotify integration</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-purple-400 mt-0.5" />
                   <span className="text-white/80">Professional DJ export</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-purple-400 mt-0.5" />
-                  <span className="text-white/80">AI playlist generation</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-purple-400 mt-0.5" />
@@ -219,13 +213,17 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
             <div className="text-center mb-8">
               <p className="text-white/60 mb-2">Payment for:</p>
               <h2 className="text-xl font-semibold gradient-text">
-                {wedding.couple_names}'s Wedding
+                {wedding.coupleNames?.length 
+                  ? wedding.coupleNames.join(' & ') 
+                  : `${wedding.coupleName1 || 'Partner 1'} & ${wedding.coupleName2 || 'Partner 2'}`
+                }&apos;s Wedding
               </h2>
-              {wedding.wedding_date && (
-                <p className="text-white/60 text-sm">
-                  {new Date(wedding.wedding_date).toLocaleDateString()}
-                </p>
-              )}
+              <p className="text-white/60 text-sm">
+                {wedding.weddingDate?.toDate 
+                  ? new Date(wedding.weddingDate.toDate()).toLocaleDateString()
+                  : new Date(wedding.weddingDate).toLocaleDateString()
+                }
+              </p>
             </div>
           )}
 

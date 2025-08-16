@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { X, MessageSquare, TrendingUp, Upload, Music, Users, Save, CreditCard, Check } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 import { useRouter } from 'next/navigation';
-import { auth } from '@/lib/firebase';
+import { createClient } from '@/lib/supabase/client';
 import { detectUserCurrency, formatPrice, PRICE_AMOUNTS } from '@/config/stripe-prices';
 
 interface UpgradeModalProps {
@@ -40,9 +40,11 @@ export function UpgradeModal({ onClose, weddingId, user }: UpgradeModalProps) {
     setError(null);
 
     try {
-      // Get the ID token for authentication
-      const idToken = await auth.currentUser?.getIdToken();
-      if (!idToken) {
+      // Get Supabase session token for authentication
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session?.access_token) {
         throw new Error('Authentication required');
       }
 
@@ -54,13 +56,13 @@ export function UpgradeModal({ onClose, weddingId, user }: UpgradeModalProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${idToken}`,
+          'Authorization': `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
           product: 'professional',
           currency: currencyCode,
-          weddingId: weddingId || user.uid,
-          successUrl: `${window.location.origin}/payment-success?wedding=${weddingId || user.uid}`,
+          weddingId: weddingId || user.id,
+          successUrl: `${window.location.origin}/payment-success?wedding=${weddingId || user.id}`,
           cancelUrl: `${window.location.origin}/builder`,
         }),
       });

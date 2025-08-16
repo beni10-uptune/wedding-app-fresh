@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import { authenticateRequest } from '@/lib/auth-middleware'
+import { authenticateSupabaseRequest } from '@/lib/supabase-auth-middleware'
 import { getStripePriceId } from '@/config/stripe-prices'
 import { z } from 'zod'
 
@@ -16,8 +16,8 @@ const checkoutSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    // Authenticate request
-    const authResult = await authenticateRequest(request)
+    // Authenticate request with Supabase
+    const authResult = await authenticateSupabaseRequest(request)
     if (!authResult.authenticated || !authResult.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { STRIPE_CONFIG } from '@/lib/stripe'
-import { authenticateRequest, createAuthResponse } from '@/lib/auth-middleware'
+import { authenticateSupabaseRequest, createAuthResponse } from '@/lib/supabase-auth-middleware'
 import { paymentIntentSchema, validateData } from '@/lib/validations'
 import { rateLimit, createRateLimitResponse } from '@/lib/rate-limit'
 import { logError } from '@/lib/logger'
@@ -20,8 +20,8 @@ export async function POST(request: NextRequest) {
     return createRateLimitResponse(rateLimitResult.reset || Date.now() + 60000)
   }
 
-  // Authenticate the request
-  const authResult = await authenticateRequest(request)
+  // Authenticate the request with Supabase
+  const authResult = await authenticateSupabaseRequest(request)
   
   if (!authResult.authenticated) {
     console.error('[Payment Intent] Authentication failed:', authResult.error)

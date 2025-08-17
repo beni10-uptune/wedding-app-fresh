@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { X, Search, Loader2, Music, Plus } from 'lucide-react';
+import { searchDatabaseSongs } from '@/app/builder/BuilderFixes';
 
 interface Song {
   id: string;
@@ -47,28 +48,24 @@ export function AddSongModal({ isOpen, onClose, onAddSong, momentId }: AddSongMo
     
     setIsSearching(true);
     try {
-      const response = await fetch(`/api/spotify/search?q=${encodeURIComponent(searchQuery)}&limit=10`);
-      if (!response.ok) {
-        throw new Error('Search failed');
-      }
+      // Use the database search function that falls back to Spotify
+      const songs = await searchDatabaseSongs(searchQuery);
       
-      const data = await response.json();
-      
-      // API returns 'tracks' not 'songs'
-      const tracks = data.tracks || [];
-      const formattedSongs = tracks.map((track: any) => ({
-        id: track.id || `song-${Date.now()}-${Math.random()}`,
-        title: track.name || track.title,
-        artist: track.artist,
-        album: track.album,
-        albumArt: track.image,
-        previewUrl: track.preview_url,
-        duration: track.duration_ms,
-        spotifyId: track.id
+      // Format the results consistently
+      const formattedSongs = songs.map((song: any) => ({
+        id: song.id || song.spotifyId || `song-${Date.now()}-${Math.random()}`,
+        title: song.title || song.name,
+        artist: song.artist,
+        album: song.album,
+        albumArt: song.albumArt || song.album_art_url || song.image,
+        previewUrl: song.previewUrl || song.preview_url,
+        duration: song.duration || song.duration_ms,
+        spotifyId: song.spotifyId || song.spotify_id || song.id
       }));
       
       setSearchResults(formattedSongs);
     } catch (error) {
+      console.error('Search error:', error);
       setSearchResults([]);
     } finally {
       setIsSearching(false);

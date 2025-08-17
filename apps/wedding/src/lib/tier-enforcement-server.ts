@@ -224,16 +224,7 @@ export async function canAddCoOwner(weddingId: string): Promise<TierCheckResult>
       return { allowed: false, reason: 'Wedding not found' }
     }
     
-    const paymentStatus = weddingData?.paymentStatus || 'pending'
-    const tier = getUserTier(paymentStatus)
-    
-    if (!tier.features.coOwner) {
-      return {
-        allowed: false,
-        reason: 'Co-owner feature requires premium plan'
-      }
-    }
-    
+    // Partner collaboration is now FREE for all users
     return { allowed: true }
   } catch (error) {
     console.error('Error checking co-owner permission:', error)

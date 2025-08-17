@@ -188,7 +188,28 @@ export async function searchDatabaseSongs(query: string, genres?: string[], coun
     if (!response.ok) throw new Error('Search failed');
     
     const data = await response.json();
-    return data.songs || [];
+    
+    // Map the response to the expected format
+    if (data.songs && data.songs.length > 0) {
+      return data.songs.map((song: any) => ({
+        id: song.id || song.spotifyId,
+        spotifyId: song.id || song.spotifyId,
+        title: song.title,
+        artist: song.artist,
+        album: song.album,
+        albumArt: song.albumArt,
+        previewUrl: song.previewUrl,
+        duration: song.duration,
+        durationMs: song.duration ? song.duration * 1000 : undefined,
+        features: {
+          tempo: song.bpm
+        }
+      }));
+    }
+    
+    // If no results from database, fallback to Spotify
+    console.log('No database results, falling back to Spotify for:', query);
+    return searchSpotifySongs(query);
   } catch (error) {
     console.error('Error searching database:', error);
     // Fallback to Spotify search if database fails
@@ -203,7 +224,20 @@ async function searchSpotifySongs(query: string): Promise<any[]> {
     if (!response.ok) throw new Error('Spotify search failed');
     
     const data = await response.json();
-    return data.tracks || [];
+    const tracks = data.tracks || [];
+    
+    // Map Spotify response to our format
+    return tracks.map((track: any) => ({
+      id: track.id,
+      spotifyId: track.id,
+      title: track.name || track.title,
+      artist: track.artist,
+      album: track.album,
+      albumArt: track.image,
+      previewUrl: track.preview_url,
+      duration: track.duration_ms ? Math.floor(track.duration_ms / 1000) : undefined,
+      durationMs: track.duration_ms
+    }));
   } catch (error) {
     console.error('Error searching Spotify:', error);
     return [];

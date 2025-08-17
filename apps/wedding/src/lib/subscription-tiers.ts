@@ -10,7 +10,7 @@ export const SUBSCRIPTION_TIERS = {
       timeline: true,
       basicBuilder: true,
       guestSuggestions: true,
-      coOwner: false,
+      coOwner: true, // Now FREE - partner collaboration is free
       export: false,
       curatedLibrary: false,
       unlimitedSongs: false,
@@ -53,11 +53,7 @@ export const UPGRADE_TRIGGERS = {
     message: 'Ready to share with your DJ? Upgrade to export to Spotify and download PDFs.',
     cta: 'Upgrade to Export'
   },
-  CO_OWNER_BLOCKED: {
-    title: 'Add Your Partner',
-    message: 'Want to plan together? Upgrade to add your partner as a co-owner.',
-    cta: 'Upgrade to Collaborate'
-  },
+  // CO_OWNER_BLOCKED removed - partner collaboration is now free
   LIBRARY_BLOCKED: {
     title: 'Access Curated Songs',
     message: 'Get instant access to 500+ wedding-tested songs organized by moment.',

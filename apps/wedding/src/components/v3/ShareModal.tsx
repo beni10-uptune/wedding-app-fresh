@@ -145,6 +145,7 @@ export function ShareModal({ onClose, weddingId, weddingData }: ShareModalProps)
           >
             <UserPlus className="w-4 h-4 inline mr-2" />
             Partner Access
+            <span className="ml-2 text-xs bg-green-500 text-white px-1.5 py-0.5 rounded">FREE</span>
           </button>
         </div>
 

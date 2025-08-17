@@ -17,11 +17,7 @@ import {
   closestCenter,
   DragOverlay,
 } from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+import { arrayMove } from '@dnd-kit/sortable';
 import { 
   Music, 
   MapPin,
@@ -32,49 +28,41 @@ import {
   Check,
   ChevronDown,
   ChevronRight,
-  Zap,
   Heart,
   Users,
-  Volume2,
   Loader2,
   Search,
   X,
   Lock,
-  TrendingUp,
-  AlertTriangle,
-  Download,
-  Share2,
-  UserPlus,
-  BarChart3,
-  Shuffle,
-  Clock,
-  GripVertical,
-  Trash2,
-  MessageSquare,
-  Upload,
-  Headphones,
   Calendar,
   Settings,
-  Edit2,
-  LogOut
+  ChevronUp,
+  Trash2,
+  Share2,
+  Download,
+  LogOut,
+  User,
+  Save,
+  Zap,
+  TrendingUp,
+  AlertCircle,
+  Info
 } from 'lucide-react';
-import { DraggableSong } from '@/components/v3/DraggableSong';
 import { DroppableMoment } from '@/components/v3/DroppableMoment';
 import { AddSongModal } from '@/components/v3/AddSongModal';
 import { ProgressiveAuthModal } from '@/components/auth/ProgressiveAuthModal';
 import { ShareModal } from '@/components/v3/ShareModal';
 import { SettingsModal } from '@/components/v3/SettingsModal';
 import { UpgradeModal } from '@/components/v3/UpgradeModal';
+import DJHarmonyChat from '@/components/dj-harmony/DJHarmonyChat';
 import { 
-  useTimelineWithDatabaseSongs, 
   searchDatabaseSongs, 
   addSongToDatabase,
-  useFeatureAccess,
   loadMomentSongs,
   MOMENT_SONG_COUNTS
-} from './BuilderFixes';
+} from '../builder/BuilderFixes';
 
-// Song type with BPM for flow analysis
+// Song type
 interface Song {
   id: string;
   title: string;
@@ -85,102 +73,28 @@ interface Song {
   spotifyId?: string;
   duration?: number;
   albumArt?: string;
+  album?: string;
 }
 
-// Complete song database
-const COMPLETE_PLAYLIST: Record<string, Song[]> = {
-  'getting-ready': [
-    { id: 'gr1', title: 'Sunday Morning', artist: 'Maroon 5', bpm: 90, duration: 239 },
-    { id: 'gr2', title: 'Here Comes the Sun', artist: 'The Beatles', bpm: 129, duration: 185 },
-    { id: 'gr3', title: 'Lovely Day', artist: 'Bill Withers', bpm: 98, duration: 255 },
-    { id: 'gr4', title: 'Good Day Sunshine', artist: 'The Beatles', bpm: 126, duration: 129 },
-    { id: 'gr5', title: 'Walking on Sunshine', artist: 'Katrina & The Waves', bpm: 109, duration: 238 },
-    { id: 'gr6', title: 'Happy', artist: 'Pharrell Williams', bpm: 160, duration: 233 },
-    { id: 'gr7', title: 'Beautiful Day', artist: 'U2', bpm: 136, duration: 246 },
-  ],
-  'ceremony': [
-    { id: 'c1', title: 'Canon in D', artist: 'Pachelbel', label: 'Processional', bpm: 64, duration: 300 },
-    { id: 'c2', title: 'A Thousand Years', artist: 'Christina Perri', label: 'Bride Entrance', bpm: 139, duration: 285 },
-    { id: 'c3', title: 'Make You Feel My Love', artist: 'Adele', label: 'Signing', bpm: 72, duration: 212 },
-    { id: 'c4', title: 'Signed, Sealed, Delivered', artist: 'Stevie Wonder', label: 'Recessional', bpm: 113, duration: 180 },
-  ],
-  'cocktails': [
-    { id: 'ct1', title: 'Fly Me to the Moon', artist: 'Frank Sinatra', bpm: 116, duration: 148 },
-    { id: 'ct2', title: 'Valerie', artist: 'Amy Winehouse', bpm: 123, duration: 210 },
-    { id: 'ct3', title: 'Golden', artist: 'Harry Styles', bpm: 90, duration: 208 },
-    { id: 'ct4', title: 'Dreams', artist: 'Fleetwood Mac', bpm: 120, duration: 253 },
-    { id: 'ct5', title: 'Three Little Birds', artist: 'Bob Marley', bpm: 76, duration: 180 },
-    { id: 'ct6', title: 'La Vie En Rose', artist: 'Édith Piaf', bpm: 72, duration: 197 },
-    { id: 'ct7', title: 'Feeling Good', artist: 'Michael Bublé', bpm: 60, duration: 236 },
-    { id: 'ct8', title: 'Somewhere Over the Rainbow', artist: 'Israel Kamakawiwoʻole', bpm: 90, duration: 318 },
-    { id: 'ct9', title: 'Stand By Me', artist: 'Ben E. King', bpm: 120, duration: 179 },
-    { id: 'ct10', title: "Let's Stay Together", artist: 'Al Green', bpm: 100, duration: 198 },
-  ],
-  'dinner': [
-    { id: 'd1', title: 'At Last', artist: 'Etta James', bpm: 95, duration: 180 },
-    { id: 'd2', title: 'Wonderful Tonight', artist: 'Eric Clapton', bpm: 96, duration: 219 },
-    { id: 'd3', title: 'Your Song', artist: 'Elton John', bpm: 70, duration: 241 },
-    { id: 'd4', title: 'The Way You Look Tonight', artist: 'Tony Bennett', bpm: 116, duration: 217 },
-    { id: 'd5', title: 'Thinking Out Loud', artist: 'Ed Sheeran', bpm: 80, duration: 281 },
-    { id: 'd6', title: 'All of Me', artist: 'John Legend', bpm: 63, duration: 269 },
-    { id: 'd7', title: 'Better Days', artist: 'OneRepublic', bpm: 73, duration: 252 },
-    { id: 'd8', title: 'Sunday Morning', artist: 'The Velvet Underground', bpm: 96, duration: 176 },
-  ],
-  'first-dance': [
-    { id: 'fd1', title: 'Perfect', artist: 'Ed Sheeran', bpm: 80, duration: 263 },
-  ],
-  'parent-dances': [
-    { id: 'pd1', title: 'My Girl', artist: 'The Temptations', label: 'Father-Daughter', bpm: 132, duration: 165 },
-    { id: 'pd2', title: "Isn't She Lovely", artist: 'Stevie Wonder', label: 'Father-Daughter Alt', bpm: 125, duration: 397 },
-    { id: 'pd3', title: 'A Song for Mama', artist: 'Boyz II Men', label: 'Mother-Son', bpm: 79, duration: 321 },
-    { id: 'pd4', title: 'Simple Man', artist: 'Lynyrd Skynyrd', label: 'Mother-Son Alt', bpm: 60, duration: 357 },
-  ],
-  'party': [
-    { id: 'p1', title: 'September', artist: 'Earth, Wind & Fire', bpm: 122, duration: 215 },
-    { id: 'p2', title: 'Uptown Funk', artist: 'Bruno Mars', bpm: 128, duration: 270 },
-    { id: 'p3', title: 'Mr. Brightside', artist: 'The Killers', bpm: 148, duration: 222 },
-    { id: 'p4', title: 'Shut Up and Dance', artist: 'Walk the Moon', bpm: 135, duration: 197 },
-    { id: 'p5', title: "Can't Stop the Feeling", artist: 'Justin Timberlake', bpm: 113, duration: 236 },
-    { id: 'p6', title: 'I Wanna Dance with Somebody', artist: 'Whitney Houston', bpm: 118, duration: 289 },
-    { id: 'p7', title: 'Dancing Queen', artist: 'ABBA', bpm: 101, duration: 230 },
-    { id: 'p8', title: 'Sweet Caroline', artist: 'Neil Diamond', bpm: 128, duration: 204 },
-    { id: 'p9', title: "Don't Stop Believin'", artist: 'Journey', bpm: 119, duration: 251 },
-    { id: 'p10', title: 'Wonderwall', artist: 'Oasis', bpm: 89, duration: 258 },
-    { id: 'p11', title: 'Hey Ya!', artist: 'OutKast', bpm: 80, duration: 235 },
-    { id: 'p12', title: 'Crazy in Love', artist: 'Beyoncé', bpm: 99, duration: 235 },
-  ],
-  'last-dance': [
-    { id: 'ld1', title: 'Time of Your Life', artist: 'Green Day', bpm: 95, duration: 158 },
-    { id: 'ld2', title: 'Closing Time', artist: 'Semisonic', bpm: 92, duration: 274 },
-    { id: 'ld3', title: 'New York, New York', artist: 'Frank Sinatra', bpm: 100, duration: 207 },
-  ]
-};
+interface TimelineMoment {
+  id: string;
+  time: string;
+  duration: string;
+  title: string;
+  emoji: string;
+  songs: Song[];
+  isSpecial?: boolean;
+}
 
-// Countries & regions - Updated with correct UK regions and added Ireland
+// Countries & Genres data
 const COUNTRIES = {
-  'UK': { 
-    flag: '🇬🇧', 
-    regions: ['London', 'North West', 'North East', 'South East', 'South West', 'Scotland', 'Wales'] 
-  },
-  'Ireland': { 
-    flag: '🇮🇪', 
-    regions: ['Dublin', 'Cork', 'Galway', 'Limerick', 'Belfast', 'Waterford'] 
-  },
-  'US': { 
-    flag: '🇺🇸', 
-    regions: ['Northeast', 'South', 'West Coast', 'Midwest'] 
-  },
-  'Australia': { 
-    flag: '🇦🇺', 
-    regions: ['Sydney', 'Melbourne', 'Brisbane', 'Perth'] 
-  },
-  'Canada': { 
-    flag: '🇨🇦', 
-    regions: ['Toronto', 'Vancouver', 'Montreal', 'Calgary'] 
-  },
+  'UK': { flag: '🇬🇧' },
+  'Ireland': { flag: '🇮🇪' },
+  'US': { flag: '🇺🇸' },
+  'Australia': { flag: '🇦🇺' },
+  'Canada': { flag: '🇨🇦' },
 };
 
-// Genres
 const GENRES = [
   { id: 'pop', label: 'Pop', emoji: '🎵' },
   { id: 'rock', label: 'Rock', emoji: '🎸' },
@@ -190,70 +104,50 @@ const GENRES = [
   { id: 'electronic', label: 'Electronic', emoji: '🎹' },
 ];
 
-// Popular first dance songs
-const FIRST_DANCE_SUGGESTIONS = [
-  { id: 'fd-sug-1', title: 'Perfect', artist: 'Ed Sheeran', duration: 263 },
-  { id: 'fd-sug-2', title: 'At Last', artist: 'Etta James', duration: 180 },
-  { id: 'fd-sug-3', title: 'All of Me', artist: 'John Legend', duration: 269 },
-  { id: 'fd-sug-4', title: 'Thinking Out Loud', artist: 'Ed Sheeran', duration: 281 },
-  { id: 'fd-sug-5', title: 'Make You Feel My Love', artist: 'Adele', duration: 212 },
-];
-
-interface TimelineMoment {
-  id: string;
-  time: string;
-  duration: string;
-  title: string;
-  emoji: string;
-  songs: Song[];
-}
-
-export default function V3ThreePanePage() {
+export default function SimplifiedBuilderPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [weddingData, setWeddingData] = useState<any>(null);
   const [weddingId, setWeddingId] = useState<string | null>(null);
+  
+  // Core state
+  const [timeline, setTimeline] = useState<TimelineMoment[]>([]);
+  const [expandedMoments, setExpandedMoments] = useState<string[]>(['first-dance']);
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedGenres, setSelectedGenres] = useState<string[]>(['pop', 'rnb']);
+  const [weddingDate, setWeddingDate] = useState<string>('');
+  const [weddingName, setWeddingName] = useState<string>('Your Wedding');
   const [venue, setVenue] = useState<string>('');
   const [guestCount, setGuestCount] = useState<string>('');
+  
+  // UI state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<Song[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [draggedSong, setDraggedSong] = useState<Song | null>(null);
+  const [playingId, setPlayingId] = useState<string | null>(null);
+  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showQuickActions, setShowQuickActions] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
-  const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [weddingDate, setWeddingDate] = useState<string | null>(null);
-  const [weddingName, setWeddingName] = useState<string>('Your Wedding');
-  const [isEditingName, setIsEditingName] = useState(false);
-  const [mobileTab, setMobileTab] = useState<'customize' | 'timeline' | 'studio'>('timeline');
   
-  // State
-  const [userTier, setUserTier] = useState<string>('free');
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
-  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-  const [selectedGenres, setSelectedGenres] = useState<string[]>(['pop', 'rnb']);
-  const [timeline, setTimeline] = useState<TimelineMoment[]>([]);
-  const [expandedMoments, setExpandedMoments] = useState<string[]>(['first-dance']);
-  const [isDragging, setIsDragging] = useState(false);
-  const [draggedSong, setDraggedSong] = useState<Song | null>(null);
-  const [isDraggingToTrash, setIsDraggingToTrash] = useState(false);
+  // Modals
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authTrigger, setAuthTrigger] = useState<'save' | 'share' | 'spotify' | 'premium' | 'export'>('save');
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showAddSongModal, setShowAddSongModal] = useState(false);
   const [addSongMomentId, setAddSongMomentId] = useState<string | null>(null);
-  const [analysisResults, setAnalysisResults] = useState<any>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<Song[]>([]);
-  const { hasAccess: canShare } = useFeatureAccess('share');
-  const [isLoadingDatabase, setIsLoadingDatabase] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
-  const [playingId, setPlayingId] = useState<string | null>(null);
-  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
   const [quickAddSong, setQuickAddSong] = useState<Song | null>(null);
   const [showQuickAddModal, setShowQuickAddModal] = useState(false);
-  const [leftPaneTab, setLeftPaneTab] = useState<'build' | 'manage' | 'guests'>('build');
-  const [guestList, setGuestList] = useState<any[]>([]);
+  
+  // Mobile state
+  const [mobilePane, setMobilePane] = useState<'timeline' | 'assistant'>('timeline');
   
   // Drag and drop sensors
   const sensors = useSensors(
@@ -264,18 +158,65 @@ export default function V3ThreePanePage() {
     })
   );
   
-  // Load user data when authenticated
+  // Calculate stats
+  const totalSongs = timeline.reduce((sum, moment) => sum + (moment.songs?.length || 0), 0);
+  const totalDuration = timeline.reduce((sum, moment) => {
+    const momentDuration = moment.songs?.reduce((s, song) => s + (song.duration || 0), 0) || 0;
+    return sum + momentDuration;
+  }, 0);
+  const totalHours = Math.floor(totalDuration / 3600);
+  const totalMinutes = Math.floor((totalDuration % 3600) / 60);
+  const daysUntilWedding = weddingDate 
+    ? Math.ceil((new Date(weddingDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+    : null;
+  
+  // Get smart suggestions based on current state
+  const getSmartSuggestions = () => {
+    const suggestions = [];
+    
+    // Check for first dance
+    const firstDance = timeline.find(m => m.id === 'first-dance');
+    if (!firstDance?.songs?.length) {
+      suggestions.push({
+        type: 'missing',
+        icon: '💕',
+        text: 'Add your first dance song',
+        action: () => openAddSongModal('first-dance')
+      });
+    }
+    
+    // Check for energy flow issues
+    const partyMoment = timeline.find(m => m.id === 'party');
+    if (partyMoment?.songs?.length && partyMoment.songs.length < 10) {
+      suggestions.push({
+        type: 'tip',
+        icon: '🎉',
+        text: 'Add more party songs for dancing',
+        action: () => openAddSongModal('party')
+      });
+    }
+    
+    // Check for customization
+    if (!selectedCountry && !selectedGenres.length) {
+      suggestions.push({
+        type: 'customize',
+        icon: '📍',
+        text: 'Set your location for local favorites',
+        action: () => setShowQuickActions(true)
+      });
+    }
+    
+    return suggestions.slice(0, 3); // Max 3 suggestions
+  };
+  
+  // Load user data
   useEffect(() => {
     const loadUserData = async () => {
       if (user) {
-        setUserTier('free');
-        
         try {
-          // Load existing weddings from Supabase
           const weddings = await weddingHelpers.getMyWeddings();
           
           if (weddings && weddings.length > 0) {
-            // Use the most recent wedding
             const wedding = weddings[0];
             setWeddingData(wedding);
             setWeddingId(wedding.id);
@@ -284,9 +225,7 @@ export default function V3ThreePanePage() {
             setVenue(wedding.venue_name || '');
             setGuestCount(wedding.guest_count?.toString() || '');
             
-            // Load timeline if exists
             if (wedding.timeline) {
-              // Convert Supabase timeline format to our format
               const convertedTimeline = Object.entries(wedding.timeline).map(([key, value]: [string, any]) => ({
                 id: key,
                 ...value,
@@ -295,61 +234,39 @@ export default function V3ThreePanePage() {
               setTimeline(convertedTimeline);
             }
             
-            // Load preferences
             if (wedding.music_preferences?.genres) {
               setSelectedGenres(wedding.music_preferences.genres);
             }
             if (wedding.music_preferences?.location) {
               setSelectedCountry(wedding.music_preferences.location);
             }
-          } else {
-            // Check for local progress
-            const localProgress = localStorage.getItem('wedding_playlist_progress');
-            if (localProgress) {
-              try {
-                const data = JSON.parse(localProgress);
-                if (data.timeline) setTimeline(data.timeline);
-                if (data.selectedGenres) setSelectedGenres(data.selectedGenres);
-                if (data.selectedCountry) setSelectedCountry(data.selectedCountry);
-                if (data.weddingDate) setWeddingDate(data.weddingDate);
-                if (data.weddingName) setWeddingName(data.weddingName);
-              } catch (error) {
-                console.error('Error loading local progress:', error);
-              }
-            }
           }
         } catch (error) {
           console.error('Error loading wedding data:', error);
         }
-      } else {
-        setWeddingData(null);
-        setWeddingId(null);
       }
       setLoading(false);
     };
     
     loadUserData();
-  }, []);
-
-  // Initialize timeline with database songs
+  }, [user]);
+  
+  // Initialize timeline
   useEffect(() => {
-    if (weddingData?.timeline) return; // Don't initialize if we have saved data
+    if (weddingData?.timeline) return;
     
     const loadInitialTimeline = async () => {
-      setIsLoadingDatabase(true);
-      
       const moments = [
         { id: 'getting-ready', time: '2:00 PM', duration: '30 min', title: 'Getting Ready', emoji: '💄' },
         { id: 'ceremony', time: '3:00 PM', duration: '20 min', title: 'Ceremony', emoji: '💒' },
         { id: 'cocktails', time: '3:30 PM', duration: '90 min', title: 'Cocktails', emoji: '🥂' },
         { id: 'dinner', time: '5:00 PM', duration: '90 min', title: 'Dinner', emoji: '🍽️' },
-        { id: 'first-dance', time: '7:00 PM', duration: '5 min', title: 'First Dance', emoji: '💕' },
+        { id: 'first-dance', time: '7:00 PM', duration: '5 min', title: 'First Dance', emoji: '💕', isSpecial: true },
         { id: 'parent-dances', time: '7:05 PM', duration: '10 min', title: 'Parent Dances', emoji: '👨‍👩‍👧' },
         { id: 'party', time: '7:15 PM', duration: '3 hours', title: 'Party Time', emoji: '🎉' },
         { id: 'last-dance', time: '10:15 PM', duration: '10 min', title: 'Last Dance', emoji: '🌙' }
       ];
       
-      // Load songs from database for each moment
       const timelineWithSongs = await Promise.all(
         moments.map(async (moment) => {
           const songs = await loadMomentSongs(
@@ -358,7 +275,6 @@ export default function V3ThreePanePage() {
             selectedCountry || undefined
           );
           
-          // Use appropriate song count for each moment
           const songCount = MOMENT_SONG_COUNTS[moment.id as keyof typeof MOMENT_SONG_COUNTS] || 10;
           
           return {
@@ -369,41 +285,61 @@ export default function V3ThreePanePage() {
       );
       
       setTimeline(timelineWithSongs);
-      setIsLoadingDatabase(false);
     };
     
     loadInitialTimeline();
   }, [weddingData, selectedGenres, selectedCountry]);
-
-  // Calculate stats
-  const totalSongs = timeline.reduce((sum, moment) => sum + (moment.songs?.length || 0), 0);
-  const totalDuration = timeline.reduce((sum, moment) => {
-    const momentDuration = moment.songs?.reduce((s, song) => s + (song.duration || 0), 0) || 0;
-    return sum + momentDuration;
-  }, 0);
-  const totalHours = Math.floor(totalDuration / 3600);
-  const totalMinutes = Math.floor((totalDuration % 3600) / 60);
   
-  // Calculate days until wedding
-  const daysUntilWedding = weddingDate 
-    ? Math.ceil((new Date(weddingDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-    : null;
-  
-  // Track changes and auto-save for authenticated users
-  useEffect(() => {
-    if (timeline.length > 0 && !loading) {
-      setHasChanges(true);
+  // Search functionality
+  const handleSearch = useCallback(async (query: string) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
     }
-  }, [timeline, selectedGenres, selectedCountry, loading]);
-
-  // Auto-save functionality with debouncing
+    
+    setIsSearching(true);
+    try {
+      const songs = await searchDatabaseSongs(query, selectedGenres, selectedCountry || undefined);
+      const mappedSongs = songs.map(song => ({
+        id: song.id || song.spotifyId || `song-${Date.now()}-${Math.random()}`,
+        title: song.title,
+        artist: song.artist,
+        album: song.album,
+        spotifyId: song.spotifyId,
+        previewUrl: song.previewUrl,
+        duration: song.durationMs ? Math.floor(song.durationMs / 1000) : undefined,
+        bpm: song.features?.tempo ? Math.round(song.features.tempo) : undefined,
+        albumArt: song.albumArt
+      }));
+      
+      setSearchResults(mappedSongs);
+    } catch (error) {
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  }, [selectedGenres, selectedCountry]);
+  
+  // Debounced search
   useEffect(() => {
-    if (!user || !hasChanges || isSaving || loading) return;
+    const timer = setTimeout(() => {
+      if (searchQuery) {
+        handleSearch(searchQuery);
+      } else {
+        setSearchResults([]);
+      }
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [searchQuery, handleSearch]);
+  
+  // Auto-save functionality
+  useEffect(() => {
+    if (!user || !hasChanges || isSaving || loading || !weddingId) return;
 
     const autoSaveTimer = setTimeout(async () => {
       setIsSaving(true);
       try {
-        // Convert array timeline to WeddingV2 timeline object format
         const timelineV2: any = {};
         timeline.forEach((moment, index) => {
           const timelineSongs = (moment.songs || []).map((song: any, songIndex: number) => ({
@@ -430,98 +366,6 @@ export default function V3ThreePanePage() {
           };
         });
 
-        // Auto-save to Supabase if we have a wedding
-        if (weddingId) {
-          await weddingHelpers.updateWedding(weddingId, {
-            timeline: timelineV2,
-            music_preferences: {
-              genres: selectedGenres,
-              location: selectedCountry
-            },
-            couple_names: weddingName,
-            wedding_date: weddingDate || undefined,
-            venue_name: venue || undefined,
-            guest_count: guestCount ? parseInt(guestCount) : undefined
-          });
-        }
-        
-        setHasChanges(false);
-        setLastSaved(new Date());
-      } catch (error) {
-        console.error('Auto-save failed:', error);
-      } finally {
-        setIsSaving(false);
-      }
-    }, 2000); // 2 second debounce
-
-    return () => clearTimeout(autoSaveTimer);
-  }, [timeline, selectedGenres, selectedCountry, weddingDate, weddingName, venue, guestCount, totalSongs, totalDuration, user, weddingId, hasChanges, isSaving, loading]);
-
-  // Check if we should show gentle auth prompt (after 10+ songs)
-  useEffect(() => {
-    if (!user && totalSongs >= 10 && !localStorage.getItem('auth_prompt_shown')) {
-      // We'll add a gentle prompt UI later
-      localStorage.setItem('auth_prompt_shown', 'true');
-    }
-  }, [totalSongs, user]);
-
-  // Save timeline to database
-  const saveTimeline = async () => {
-    if (!user) {
-      setAuthTrigger('save');
-      setShowAuthModal(true);
-      return;
-    }
-
-    try {
-      // Convert array timeline to WeddingV2 timeline object format
-      const timelineV2: any = {};
-      timeline.forEach((moment, index) => {
-        const timelineSongs = (moment.songs || []).map((song: any, songIndex: number) => ({
-          id: `${moment.id}_${song.id}_${songIndex}`,
-          spotifyId: song.spotifyId || song.id,
-          title: song.title,
-          artist: song.artist,
-          album: song.album || '',
-          albumArt: song.albumArt || '',
-          previewUrl: song.previewUrl || null,
-          duration: song.duration || 0,
-          addedBy: 'couple',
-          addedAt: new Date(),
-          energy: song.bpm ? Math.min(5, Math.max(1, Math.round((song.bpm - 60) / 40))) : 3,
-          explicit: false
-        }));
-
-        timelineV2[moment.id] = {
-          id: moment.id,
-          name: moment.title,
-          order: index,
-          duration: parseInt(moment.duration) || 30,
-          songs: timelineSongs
-        };
-      });
-
-      // If we don't have a wedding yet, create one
-      if (!weddingId) {
-        const wedding = await weddingHelpers.createWedding({
-          couple_names: weddingName || 'Our Wedding',
-          wedding_date: weddingDate || undefined,
-          venue_type: venue || undefined,
-          guest_count: guestCount ? parseInt(guestCount) : undefined
-        });
-        setWeddingId(wedding.id);
-        setWeddingData(wedding);
-        
-        // Update the wedding with timeline and preferences
-        await weddingHelpers.updateWedding(wedding.id, {
-          timeline: timelineV2,
-          music_preferences: {
-            genres: selectedGenres,
-            location: selectedCountry
-          }
-        });
-      } else {
-        // Update existing wedding
         await weddingHelpers.updateWedding(weddingId, {
           timeline: timelineV2,
           music_preferences: {
@@ -533,69 +377,103 @@ export default function V3ThreePanePage() {
           venue_name: venue || undefined,
           guest_count: guestCount ? parseInt(guestCount) : undefined
         });
+        
+        setHasChanges(false);
+        setLastSaved(new Date());
+      } catch (error) {
+        console.error('Auto-save failed:', error);
+      } finally {
+        setIsSaving(false);
       }
-      
-      setHasChanges(false);
-      setLastSaved(new Date());
-      
-      // Clear local storage after successful save
-      localStorage.removeItem('wedding_playlist_progress');
-      
-      console.log('Wedding timeline saved successfully!');
-    } catch (error) {
-      console.error('Error saving timeline:', error);
-      alert('Failed to save timeline. Please try again.');
-    } finally {
-      setIsSaving(false);
+    }, 2000);
+
+    return () => clearTimeout(autoSaveTimer);
+  }, [timeline, selectedGenres, selectedCountry, weddingDate, weddingName, venue, guestCount, user, weddingId, hasChanges, isSaving, loading]);
+  
+  // Track changes
+  useEffect(() => {
+    if (timeline.length > 0 && !loading) {
+      setHasChanges(true);
+    }
+  }, [timeline, selectedGenres, selectedCountry, loading]);
+  
+  // Drag and drop handlers
+  const handleDragStart = (event: DragStartEvent) => {
+    const { active } = event;
+    const [momentId, songIndex] = active.id.toString().split('-song-');
+    const moment = timeline.find(m => m.id === momentId);
+    if (moment && songIndex !== undefined) {
+      setDraggedSong(moment.songs[parseInt(songIndex)]);
+      setIsDragging(true);
     }
   };
-
-  // Search database for songs (includes Spotify data)
-  const handleSearch = useCallback(async (query: string) => {
-    if (!query.trim()) {
-      setSearchResults([]);
+  
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    setIsDragging(false);
+    setDraggedSong(null);
+    
+    if (!over) return;
+    
+    if (over.id === 'trash-zone') {
+      const [sourceMomentId, songIndex] = active.id.toString().split('-song-');
+      setTimeline(prev => prev.map(moment => {
+        if (moment.id === sourceMomentId) {
+          const newSongs = [...moment.songs];
+          newSongs.splice(parseInt(songIndex), 1);
+          return { ...moment, songs: newSongs };
+        }
+        return moment;
+      }));
       return;
     }
     
-    setIsSearching(true);
-    try {
-      // Search database first (has enriched songs with Spotify data)
-      const songs = await searchDatabaseSongs(query, selectedGenres, selectedCountry || undefined);
-      
-      // Map to the format used by the builder
-      const mappedSongs = songs.map(song => ({
-        id: song.id || song.spotifyId || `song-${Date.now()}-${Math.random()}`,
-        title: song.title,
-        artist: song.artist,
-        album: song.album,
-        spotifyId: song.spotifyId,
-        previewUrl: song.previewUrl,
-        duration: song.durationMs ? Math.floor(song.durationMs / 1000) : undefined,
-        bpm: song.features?.tempo ? Math.round(song.features.tempo) : undefined,
-        albumArt: song.albumArt
-      }));
-      
-      setSearchResults(mappedSongs);
-    } catch (error) {
-      // Search error
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  }, [selectedGenres, selectedCountry]);
+    // Handle reordering logic here...
+  };
   
-  // Debounced search
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchQuery) {
-        handleSearch(searchQuery);
-      } else {
-        setSearchResults([]);
+  // Song management
+  const openAddSongModal = (momentId: string) => {
+    setAddSongMomentId(momentId);
+    setShowAddSongModal(true);
+  };
+  
+  const handleAddSongToMoment = async (song: Song, momentId: string) => {
+    setTimeline(prev => prev.map(moment => {
+      if (moment.id === momentId) {
+        return { ...moment, songs: [...moment.songs, song] };
       }
-    }, 500);
+      return moment;
+    }));
     
-    return () => clearTimeout(timer);
-  }, [searchQuery, handleSearch, selectedGenres, selectedCountry]);
+    setShowAddSongModal(false);
+    setAddSongMomentId(null);
+  };
+  
+  const handleRemoveSong = (momentId: string, songIndex: number) => {
+    setTimeline(prev => prev.map(moment => {
+      if (moment.id === momentId) {
+        const newSongs = [...moment.songs];
+        newSongs.splice(songIndex, 1);
+        return { ...moment, songs: newSongs };
+      }
+      return moment;
+    }));
+  };
+  
+  const handleQuickAddSong = (song: Song) => {
+    setQuickAddSong(song);
+    setShowQuickAddModal(true);
+  };
+  
+  const handleQuickAddToMoment = (momentId: string) => {
+    if (quickAddSong) {
+      handleAddSongToMoment(quickAddSong, momentId);
+      setQuickAddSong(null);
+      setShowQuickAddModal(false);
+      setSearchQuery('');
+      setSearchResults([]);
+    }
+  };
   
   // Play/Pause functionality
   const handlePlaySong = (song: Song, songId: string) => {
@@ -621,231 +499,34 @@ export default function V3ThreePanePage() {
     }
   };
   
-  // AI Analysis
-  const runAIAnalysis = () => {
-    setIsAnalyzing(true);
-    setTimeout(() => {
-      const results = {
-        bpmJumps: 12,
-        energyDrops: 3,
-        genreClashes: 5,
-        suggestions: [
-          'Add transition song between Ceremony and Cocktails',
-          'BPM jump from 64 to 139 in Ceremony needs smoothing',
-          'Energy drop after Mr. Brightside might clear dance floor'
-        ]
-      };
-      setAnalysisResults(results);
-      setIsAnalyzing(false);
-    }, 2000);
-  };
-  
-  // Toggle moment expansion
-  const toggleMoment = (momentId: string) => {
-    setExpandedMoments(prev =>
-      prev.includes(momentId)
-        ? prev.filter(id => id !== momentId)
-        : [...prev, momentId]
-    );
-  };
-  
-  // Drag and Drop handlers
-  const handleDragStart = (event: DragStartEvent) => {
-    const { active } = event;
-    const [momentId, songIndex] = active.id.toString().split('-song-');
-    const moment = timeline.find(m => m.id === momentId);
-    if (moment && songIndex !== undefined) {
-      setDraggedSong(moment.songs[parseInt(songIndex)]);
-      setIsDragging(true);
-    }
-  };
-  
-  const handleDragOver = (event: DragOverEvent) => {
-    const { over } = event;
-    setIsDraggingToTrash(over?.id === 'trash-zone');
-  };
-  
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    setIsDragging(false);
-    setDraggedSong(null);
-    setIsDraggingToTrash(false);
-    
-    if (!over) return;
-    
-    // Handle trash
-    if (over.id === 'trash-zone') {
-      const [sourceMomentId, songIndex] = active.id.toString().split('-song-');
-      setTimeline(prev => prev.map(moment => {
-        if (moment.id === sourceMomentId) {
-          const newSongs = [...moment.songs];
-          newSongs.splice(parseInt(songIndex), 1);
-          return { ...moment, songs: newSongs };
-        }
-        return moment;
-      }));
+  const saveTimeline = async () => {
+    if (!user) {
+      setAuthTrigger('save');
+      setShowAuthModal(true);
       return;
     }
-    
-    // Parse drag IDs
-    const [sourceMomentId, sourceSongIndex] = active.id.toString().split('-song-');
-    const sourceIndex = parseInt(sourceSongIndex);
-    
-    // Handle drop on moment header (add to end)
-    if (over.id.toString().startsWith('moment-')) {
-      const targetMomentId = over.id.toString().replace('moment-', '');
-      
-      if (sourceMomentId === targetMomentId) return; // Same moment, no move
-      
-      setTimeline(prev => {
-        const newTimeline = [...prev];
-        const sourceMoment = newTimeline.find(m => m.id === sourceMomentId);
-        const targetMoment = newTimeline.find(m => m.id === targetMomentId);
-        
-        if (sourceMoment && targetMoment) {
-          const [movedSong] = sourceMoment.songs.splice(sourceIndex, 1);
-          targetMoment.songs.push(movedSong);
-        }
-        
-        return newTimeline;
-      });
-      return;
-    }
-    
-    // Handle reorder within or between moments
-    if (over.id.toString().includes('-song-')) {
-      const [targetMomentId, targetSongIndex] = over.id.toString().split('-song-');
-      const targetIndex = parseInt(targetSongIndex);
-      
-      setTimeline(prev => {
-        const newTimeline = [...prev];
-        const sourceMomentIndex = newTimeline.findIndex(m => m.id === sourceMomentId);
-        const targetMomentIndex = newTimeline.findIndex(m => m.id === targetMomentId);
-        
-        if (sourceMomentIndex !== -1 && targetMomentIndex !== -1) {
-          if (sourceMomentId === targetMomentId) {
-            // Same moment - reorder using arrayMove
-            const newSongs = arrayMove(
-              newTimeline[sourceMomentIndex].songs,
-              sourceIndex,
-              targetIndex
-            );
-            newTimeline[sourceMomentIndex] = {
-              ...newTimeline[sourceMomentIndex],
-              songs: newSongs
-            };
-          } else {
-            // Different moments - move between
-            const sourceMoment = newTimeline[sourceMomentIndex];
-            const targetMoment = newTimeline[targetMomentIndex];
-            const [movedSong] = sourceMoment.songs.splice(sourceIndex, 1);
-            targetMoment.songs.splice(targetIndex, 0, movedSong);
-          }
-        }
-        
-        return newTimeline;
-      });
-    }
+    // Save logic implemented in auto-save
   };
   
-  // Add song from search/modal
-  const handleAddSongToMoment = async (song: Song, momentId: string) => {
-    // Check tier limits for song addition
-    const moment = timeline.find(m => m.id === momentId);
-    if (!moment) return;
-    
-    // Allow adding songs without tier restrictions
-    // Users should be able to build their playlist freely
-    
-    // Add song to timeline
-    setTimeline(prev => prev.map(moment => {
-      if (moment.id === momentId) {
-        return { ...moment, songs: [...moment.songs, song] };
-      }
-      return moment;
-    }));
-    
-    // Save song to database if it has a Spotify ID
-    if (song.spotifyId) {
-      try {
-        await addSongToDatabase({
-          id: song.id,
-          title: song.title,
-          artist: song.artist,
-          spotifyId: song.spotifyId,
-          previewUrl: song.previewUrl,
-          durationMs: song.duration ? song.duration * 1000 : undefined,
-          albumArt: song.albumArt,
-          features: song.bpm ? { tempo: song.bpm } : undefined
-        } as any);
-      } catch (error) {
-        // Error adding song to database
-      }
-    }
-    
-    setShowAddSongModal(false);
-    setAddSongMomentId(null);
-  };
-  
-  // Remove song from moment
-  const handleRemoveSong = (momentId: string, songIndex: number) => {
-    setTimeline(prev => prev.map(moment => {
-      if (moment.id === momentId) {
-        const newSongs = [...moment.songs];
-        newSongs.splice(songIndex, 1);
-        return { ...moment, songs: newSongs };
-      }
-      return moment;
-    }));
-  };
-  
-  // Quick add song from search - show moment selector
-  const handleQuickAddSong = (song: Song) => {
-    setQuickAddSong(song);
-    setShowQuickAddModal(true);
-  };
-  
-  // Add song to selected moment from quick add
-  const handleQuickAddToMoment = (momentId: string) => {
-    if (quickAddSong) {
-      handleAddSongToMoment(quickAddSong, momentId);
-      setQuickAddSong(null);
-      setShowQuickAddModal(false);
-      setSearchQuery('');
-      setSearchResults([]);
-    }
-  };
-  
-  // Set first dance
-  const handleSetFirstDance = (song: Song) => {
-    setTimeline(prev => prev.map(moment => {
-      if (moment.id === 'first-dance') {
-        return { ...moment, songs: [song] };
-      }
-      return moment;
-    }));
-  };
-  
-  // Open add song modal
-  const openAddSongModal = (momentId: string) => {
-    setAddSongMomentId(momentId);
-    setShowAddSongModal(true);
-  };
-
-  // Get price display based on user's location
   const getPriceDisplay = () => {
-    // Use the shared currency detection function
     const currency = detectUserCurrency();
     const price = PRICE_AMOUNTS.professional[currency];
     return formatPrice(price, currency);
   };
-
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen dark-gradient flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-white animate-spin" />
+      </div>
+    );
+  }
+  
   return (
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
       <div className="min-h-screen dark-gradient relative overflow-hidden">
@@ -855,10 +536,10 @@ export default function V3ThreePanePage() {
           <div className="orb orb-blue w-96 h-96 -bottom-48 -left-48"></div>
         </div>
 
-        {/* Enhanced Header */}
+        {/* Simplified Header */}
         <header className="sticky top-0 z-50 glass-darker backdrop-blur-md border-b border-white/10">
           <div className="container-fluid px-4">
-            <div className="flex items-center justify-between h-16 gap-4">
+            <div className="flex items-center justify-between h-14">
               {/* Left: Logo & Wedding Name */}
               <div className="flex items-center gap-4">
                 <Link href="/" className="flex items-center gap-2">
@@ -866,112 +547,88 @@ export default function V3ThreePanePage() {
                     <Music className="w-5 h-5 text-white" />
                   </div>
                 </Link>
-                
-                {user && (
-                  <div className="hidden sm:flex items-center gap-2">
-                    {isEditingName ? (
-                      <input
-                        type="text"
-                        value={weddingName}
-                        onChange={(e) => setWeddingName(e.target.value)}
-                        onBlur={() => {
-                          setIsEditingName(false);
-                          setHasChanges(true);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            setIsEditingName(false);
-                            setHasChanges(true);
-                          }
-                        }}
-                        className="px-2 py-1 bg-white/10 border border-white/20 rounded text-white text-sm"
-                        autoFocus
-                      />
-                    ) : (
-                      <button
-                        onClick={() => setIsEditingName(true)}
-                        className="flex items-center gap-1 hover:bg-white/10 px-2 py-1 rounded transition-colors"
-                      >
-                        <span className="text-white font-medium">{weddingName}</span>
-                        <Edit2 className="w-3 h-3 text-white/40" />
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
-              
-              {/* Center: Stats - Hide on mobile */}
-              <div className="hidden md:flex items-center gap-6">
-                {daysUntilWedding !== null && daysUntilWedding > 0 && (
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-purple-400" />
-                    <span className="text-white font-medium">{daysUntilWedding}</span>
-                    <span className="text-white/60 text-sm">days to go</span>
-                  </div>
-                )}
-                <div className="flex items-center gap-2">
-                  <Music className="w-4 h-4 text-purple-400" />
-                  <span className="text-white font-medium">{totalSongs}</span>
-                  <span className="text-white/60 text-sm">songs</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-purple-400" />
-                  <span className="text-white font-medium">{totalHours}h {totalMinutes}m</span>
-                  <span className="text-white/60 text-sm">playtime</span>
+                <div className="flex items-center gap-3">
+                  <h1 className="text-white font-medium">{weddingName}</h1>
+                  {daysUntilWedding !== null && daysUntilWedding > 0 && (
+                    <span className="text-xs text-white/60 bg-white/10 px-2 py-1 rounded-full">
+                      {daysUntilWedding} days
+                    </span>
+                  )}
                 </div>
               </div>
               
-              {/* Right: Actions */}
-              <div className="flex items-center gap-2">
+              {/* Right: Save Status & Profile */}
+              <div className="flex items-center gap-3">
                 {user && isSaving && (
-                  <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full flex items-center gap-1">
+                  <span className="text-xs text-green-400 flex items-center gap-1">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                    Saving...
+                    Saving
                   </span>
                 )}
                 {user && !isSaving && lastSaved && (
-                  <span className="px-2 py-0.5 text-white/40 text-xs">
-                    Saved
-                  </span>
+                  <span className="text-xs text-white/40">Saved</span>
                 )}
+                
+                {/* Profile Menu */}
                 {user ? (
-                  <>
-                    {weddingData && (
-                      <Link href={`/wedding/${user.id}/builder`}>
-                        <button className="px-3 py-1.5 bg-purple-600/20 text-purple-400 text-sm rounded-lg hover:bg-purple-600/30 transition-colors flex items-center gap-2">
-                          <Sparkles className="w-4 h-4" />
-                          Enhanced
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowProfileMenu(!showProfileMenu)}
+                      className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+                    >
+                      <User className="w-4 h-4 text-white" />
+                      <span className="text-sm text-white hidden sm:inline">
+                        {user.email?.split('@')[0]}
+                      </span>
+                      <ChevronDown className="w-3 h-3 text-white/60" />
+                    </button>
+                    
+                    {showProfileMenu && (
+                      <div className="absolute right-0 mt-2 w-48 glass-darker rounded-lg shadow-xl border border-white/10 overflow-hidden">
+                        <button
+                          onClick={() => {
+                            setShowSettingsModal(true);
+                            setShowProfileMenu(false);
+                          }}
+                          className="w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10 flex items-center gap-2"
+                        >
+                          <Settings className="w-4 h-4" />
+                          Settings
                         </button>
-                      </Link>
+                        <button
+                          onClick={() => {
+                            setShowShareModal(true);
+                            setShowProfileMenu(false);
+                          }}
+                          className="w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10 flex items-center gap-2"
+                        >
+                          <Share2 className="w-4 h-4" />
+                          Share & Invite
+                        </button>
+                        <button
+                          onClick={() => {
+                            // Handle export
+                            setShowProfileMenu(false);
+                          }}
+                          className="w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10 flex items-center gap-2"
+                        >
+                          <Download className="w-4 h-4" />
+                          Export
+                        </button>
+                        <hr className="border-white/10" />
+                        <button
+                          onClick={() => {
+                            // Handle logout
+                            setShowProfileMenu(false);
+                          }}
+                          className="w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10 flex items-center gap-2"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Sign Out
+                        </button>
+                      </div>
                     )}
-                    <button
-                      onClick={() => {
-                        if (!user) {
-                          setAuthTrigger('share');
-                          setShowAuthModal(true);
-                        } else if (canShare) {
-                          setShowShareModal(true);
-                        } else {
-                          setShowUpgradeModal(true);
-                        }
-                      }}
-                      className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
-                      title="Share & Invite"
-                    >
-                      <Share2 className="w-4 h-4 text-white" />
-                    </button>
-                    <button
-                      onClick={() => setShowSettingsModal(true)}
-                      className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
-                      title="Settings"
-                    >
-                      <Settings className="w-4 h-4 text-white" />
-                    </button>
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
-                      <div className="w-6 h-6 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full"></div>
-                      <span className="text-sm text-white hidden sm:inline">{user.email?.split('@')[0]}</span>
-                    </div>
-                  </>
+                  </div>
                 ) : (
                   <button
                     onClick={saveTimeline}
@@ -985,961 +642,345 @@ export default function V3ThreePanePage() {
           </div>
         </header>
 
-        {/* Mobile Bottom Tabs - Visible on small screens */}
-        <div className="fixed bottom-0 left-0 right-0 glass-darker border-t border-white/10 md:hidden z-50">
-          <div className="flex">
-            <button
-              onClick={() => setMobileTab('customize')}
-              className={`flex-1 py-3 text-xs font-medium transition-colors ${
-                mobileTab === 'customize'
-                  ? 'text-white border-t-2 border-purple-400'
-                  : 'text-white/60'
-              }`}
-            >
-              <div className="flex flex-col items-center gap-1">
-                <Heart className="w-5 h-5" />
-                Customize
-              </div>
-            </button>
-            <button
-              onClick={() => setMobileTab('timeline')}
-              className={`flex-1 py-3 text-xs font-medium transition-colors ${
-                mobileTab === 'timeline'
-                  ? 'text-white border-t-2 border-purple-400'
-                  : 'text-white/60'
-              }`}
-            >
-              <div className="flex flex-col items-center gap-1">
-                <Music className="w-5 h-5" />
-                Timeline
-              </div>
-            </button>
-            <button
-              onClick={() => setMobileTab('studio')}
-              className={`flex-1 py-3 text-xs font-medium transition-colors ${
-                mobileTab === 'studio'
-                  ? 'text-white border-t-2 border-purple-400'
-                  : 'text-white/60'
-              }`}
-            >
-              <div className="flex flex-col items-center gap-1">
-                <Sparkles className="w-5 h-5" />
-                Studio
-              </div>
-            </button>
-          </div>
-        </div>
-
-        {/* Three-Pane Layout - Desktop */}
+        {/* Two-Pane Layout - Desktop */}
         <div className="hidden md:flex h-[calc(100vh-3.5rem)] relative z-10">
           
-          {/* LEFT PANE: Customization (Desktop) */}
-          <div className="w-80 glass-darker border-r border-white/10 flex flex-col">
-            {/* Tab Navigation for Authenticated Users */}
-            {user && (
-              <div className="border-b border-white/10">
-                <div className="flex">
-                  <button
-                    onClick={() => setLeftPaneTab('build')}
-                    className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
-                      leftPaneTab === 'build'
-                        ? 'text-white border-b-2 border-purple-400'
-                        : 'text-white/60 hover:text-white'
-                    }`}
-                  >
-                    <div className="flex items-center justify-center gap-2">
-                      <Music className="w-4 h-4" />
-                      Build
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => setLeftPaneTab('manage')}
-                    className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
-                      leftPaneTab === 'manage'
-                        ? 'text-white border-b-2 border-purple-400'
-                        : 'text-white/60 hover:text-white'
-                    }`}
-                  >
-                    <div className="flex items-center justify-center gap-2">
-                      <Settings className="w-4 h-4" />
-                      Manage
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => setLeftPaneTab('guests')}
-                    className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
-                      leftPaneTab === 'guests'
-                        ? 'text-white border-b-2 border-purple-400'
-                        : 'text-white/60 hover:text-white'
-                    }`}
-                  >
-                    <div className="flex items-center justify-center gap-2">
-                      <Users className="w-4 h-4" />
-                      Guests
-                    </div>
-                  </button>
-                </div>
-              </div>
-            )}
-            
-            {/* Tab Content */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {(!user || leftPaneTab === 'build') && (
-                <>
-                  <div>
-                    <h2 className="text-sm font-semibold text-white/50 uppercase mb-3">Customize</h2>
-                  </div>
-            
-            {/* Location */}
-            <div className="glass-card rounded-lg p-4">
-              <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-purple-400" />
-                Location
-                {selectedCountry && (
-                  <span className="ml-auto text-xs bg-purple-600/20 text-purple-400 px-2 py-0.5 rounded-full">
-                    Active
-                  </span>
-                )}
-              </h3>
-              <select 
-                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm mb-2"
-                value={selectedCountry || ''}
-                onChange={(e) => {
-                  setSelectedCountry(e.target.value);
-                  if (typeof window !== 'undefined') {
-                    localStorage.setItem('selectedCountry', e.target.value);
-                  }
-                }}
-                disabled={isLoadingDatabase}
-              >
-                <option value="">Select country</option>
-                {Object.entries(COUNTRIES).map(([country, data]) => (
-                  <option key={country} value={country}>
-                    {data.flag} {country}
-                  </option>
-                ))}
-              </select>
-              {selectedCountry && (
-                <p className="text-xs text-purple-400 mt-2">
-                  ✓ Songs filtered for {selectedCountry}
-                </p>
-              )}
-            </div>
-            
-            {/* Genres */}
-            <div className="glass-card rounded-lg p-4">
-              <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                <Heart className="w-4 h-4 text-purple-400" />
-                Music Taste
-                {selectedGenres.length > 0 && (
-                  <span className="ml-auto text-xs bg-purple-600/20 text-purple-400 px-2 py-0.5 rounded-full">
-                    {selectedGenres.length} active
-                  </span>
-                )}
-              </h3>
-              <div className="grid grid-cols-2 gap-2">
-                {GENRES.map(genre => (
-                  <button
-                    key={genre.id}
-                    onClick={() => {
-                      setSelectedGenres(prev => 
-                        prev.includes(genre.id)
-                          ? prev.filter(g => g !== genre.id)
-                          : [...prev, genre.id]
-                      );
-                    }}
-                    disabled={isLoadingDatabase}
-                    className={`px-3 py-2 rounded-lg text-sm transition-all ${
-                      selectedGenres.includes(genre.id)
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-white/10 text-white/70 hover:bg-white/20'
-                    } ${
-                      isLoadingDatabase ? 'opacity-50 cursor-not-allowed' : ''
-                    }`}
-                  >
-                    <span className="mr-1">{genre.emoji}</span>
-                    {genre.label}
-                  </button>
-                ))}
-              </div>
-              {selectedGenres.length > 0 && (
-                <p className="text-xs text-purple-400 mt-2">
-                  ✓ Playlist customized for {selectedGenres.join(', ')}
-                </p>
-              )}
-            </div>
-            
-            {/* Choose Your First Dance */}
-            <div className="glass-card rounded-lg p-4 bg-gradient-to-r from-pink-600/10 to-purple-600/10">
-              <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                <Headphones className="w-4 h-4 text-pink-400" />
-                Choose Your First Dance
-              </h3>
-              <button
-                onClick={() => openAddSongModal('first-dance')}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white hover:bg-white/20 transition-colors flex items-center justify-center gap-2"
-              >
-                <Plus className="w-4 h-4" />
-                <span className="text-sm">Add Your First Dance Song</span>
-              </button>
-              <p className="text-xs text-white/40 mt-2 text-center">
-                This is your special moment - choose the perfect song
-              </p>
-            </div>
-            
-            {/* Analyze Spotify Taste - Pro Feature */}
-            <div className="glass-card rounded-lg p-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 relative">
-              <div className="absolute top-2 right-2">
-                <span className="px-2 py-0.5 bg-purple-600 text-white text-xs rounded-full">PRO</span>
-              </div>
-              <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-purple-400" />
-                AI Taste Analysis
-              </h3>
-              <button
-                onClick={() => {
-                  if (!user) {
-                    setAuthTrigger('premium');
-                    setShowAuthModal(true);
-                  }
-                }}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white/50 hover:bg-white/20 hover:text-white transition-colors flex items-center justify-center gap-2 relative overflow-hidden"
-              >
-                <Lock className="w-4 h-4" />
-                <span className="text-sm">Analyze Your Spotify</span>
-              </button>
-              <p className="text-xs text-white/40 mt-2 text-center">
-                AI learns your music taste to create the perfect wedding flow with BPM matching
-              </p>
-            </div>
-            
-            {/* Quick Add Songs */}
-            <div className="glass-card rounded-lg p-4">
-              <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                <Plus className="w-4 h-4 text-purple-400" />
-                Quick Add
-              </h3>
+          {/* LEFT PANE: Timeline Builder */}
+          <div className="flex-1 flex flex-col bg-black/20">
+            {/* Quick Add Search - Now at the top! */}
+            <div className="p-4 glass-darker border-b border-white/10">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                 <input
                   type="text"
-                  placeholder="Search for songs..."
+                  placeholder="Quick add: Search for any song..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm placeholder-white/40"
+                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:bg-white/20 focus:border-purple-400 focus:outline-none transition-all"
                 />
+                {searchQuery && (
+                  <button
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSearchResults([]);
+                    }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
               </div>
               
-              {/* Search Results */}
+              {/* Search Results Dropdown */}
               {searchQuery && (
-                <div className="mt-2 max-h-48 overflow-y-auto">
+                <div className="absolute left-4 right-4 mt-2 max-h-64 overflow-y-auto glass-darker rounded-lg border border-white/10 z-20">
                   {isSearching ? (
                     <div className="flex items-center justify-center py-4">
-                      <Loader2 className="w-4 h-4 animate-spin text-white/60" />
+                      <Loader2 className="w-5 h-5 animate-spin text-white/60" />
                     </div>
                   ) : searchResults.length > 0 ? (
-                    <div className="space-y-1">
+                    <div className="py-2">
                       {searchResults.map((song) => (
                         <button
                           key={song.id}
                           onClick={() => handleQuickAddSong(song)}
-                          className="w-full p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors text-left group"
+                          className="w-full px-4 py-2 hover:bg-white/10 transition-colors text-left group"
                         >
                           <div className="flex items-center justify-between">
-                            <div className="flex-1">
+                            <div>
                               <p className="text-sm text-white font-medium">{song.title}</p>
                               <p className="text-xs text-white/60">{song.artist}</p>
                             </div>
-                            <Plus className="w-4 h-4 text-white/40 group-hover:text-white/60" />
+                            <Plus className="w-4 h-4 text-white/40 group-hover:text-white" />
                           </div>
                         </button>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-white/40 text-center py-2">
-                      {searchQuery.length < 2 ? 'Keep typing...' : 'No results found'}
+                    <p className="text-sm text-white/40 text-center py-4">
+                      No results found
                     </p>
                   )}
                 </div>
               )}
-              
-              <p className="text-xs text-white/40 mt-2">
-                Search powered by Spotify
-              </p>
             </div>
             
-            {/* Stats */}
-            <div className="glass-card rounded-lg p-4 bg-gradient-to-r from-purple-600/10 to-pink-600/10">
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-white/60">Total songs</span>
-                  <span className="text-white font-medium">{totalSongs}</span>
+            {/* Timeline Header */}
+            <div className="px-4 py-3 border-b border-white/10">
+              <h2 className="text-lg font-bold text-white">WEDDING TIMELINE</h2>
+              <p className="text-xs text-white/60">{totalSongs} songs • {totalHours}h {totalMinutes}m</p>
+            </div>
+            
+            {/* Timeline Moments */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+              {timeline.map((moment) => (
+                <div key={moment.id} className="relative">
+                  {moment.isSpecial && (
+                    <div className="absolute -left-2 top-3">
+                      <span className="text-yellow-400">⭐</span>
+                    </div>
+                  )}
+                  <DroppableMoment
+                    moment={moment}
+                    isExpanded={expandedMoments.includes(moment.id)}
+                    onToggle={() => {
+                      setExpandedMoments(prev =>
+                        prev.includes(moment.id)
+                          ? prev.filter(id => id !== moment.id)
+                          : [...prev, moment.id]
+                      );
+                    }}
+                    onAddSong={() => openAddSongModal(moment.id)}
+                    onRemoveSong={(momentId, songIndex) => handleRemoveSong(momentId, songIndex)}
+                    onPlaySong={handlePlaySong}
+                    onPauseSong={handlePauseSong}
+                    playingId={playingId}
+                  />
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-white/60">Duration</span>
-                  <span className="text-white font-medium">{totalHours}h {totalMinutes}m</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-white/60">Customized</span>
-                  <span className="text-white font-medium">
-                    {selectedGenres.length > 0 || selectedCountry ? 
-                      `✓ ${[selectedGenres.length > 0 && `${selectedGenres.length} genres`, selectedCountry].filter(Boolean).join(', ')}` 
-                      : 'Not yet'}
-                  </span>
-                </div>
-              </div>
-              {(selectedGenres.length > 0 || selectedCountry) && (
-                <button
-                  onClick={() => {
-                    setSelectedGenres([]);
-                    setSelectedCountry(null);
-                    if (typeof window !== 'undefined') {
-                      localStorage.removeItem('selectedCountry');
-                    }
-                  }}
-                  className="w-full mt-3 px-3 py-1.5 bg-white/10 text-white/70 text-xs rounded-lg hover:bg-white/20 transition-colors flex items-center justify-center gap-1"
+              ))}
+              
+              {/* Add Custom Moment */}
+              <button className="w-full py-3 border-2 border-dashed border-white/20 rounded-lg text-white/40 hover:text-white hover:border-white/40 transition-colors flex items-center justify-center gap-2">
+                <Plus className="w-4 h-4" />
+                Add Custom Moment
+              </button>
+              
+              {/* Trash Zone (only visible when dragging) */}
+              {isDragging && (
+                <div 
+                  id="trash-zone"
+                  className="mt-4 p-4 border-2 border-dashed border-red-500/50 rounded-lg bg-red-500/10 flex items-center justify-center gap-2"
                 >
-                  <X className="w-3 h-3" />
-                  Clear Filters
-                </button>
-              )}
-            </div>
-            
-                  {/* Trash Zone */}
-                  {isDragging && (
-                    <div 
-                      id="trash-zone"
-                      className={`glass-card rounded-lg p-4 border-2 border-dashed ${
-                        isDraggingToTrash ? 'border-red-500 bg-red-500/20' : 'border-white/20'
-                      } transition-all`}
-                    >
-                      <div className="flex items-center justify-center gap-2">
-                        <Trash2 className={`w-5 h-5 ${isDraggingToTrash ? 'text-red-400' : 'text-white/40'}`} />
-                        <span className={`text-sm ${isDraggingToTrash ? 'text-red-400' : 'text-white/40'}`}>
-                          Drop here to remove
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
-              
-              {/* MANAGE TAB */}
-              {user && leftPaneTab === 'manage' && (
-                <>
-                  <div>
-                    <h2 className="text-sm font-semibold text-white/50 uppercase mb-3">Wedding Settings</h2>
-                  </div>
-                  
-                  <div className="glass-card rounded-lg p-4">
-                    <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-purple-400" />
-                      Wedding Details
-                    </h3>
-                    <div className="space-y-3">
-                      <div>
-                        <label className="text-xs text-white/60">Couple Names</label>
-                        <input
-                          type="text"
-                          value={weddingName || ''}
-                          onChange={(e) => {
-                            setWeddingName(e.target.value);
-                            setHasChanges(true);
-                          }}
-                          placeholder="John & Jane"
-                          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm placeholder-white/40"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs text-white/60">Wedding Date</label>
-                        <input
-                          type="date"
-                          value={weddingDate || ''}
-                          onChange={(e) => {
-                            setWeddingDate(e.target.value);
-                            setHasChanges(true);
-                          }}
-                          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs text-white/60">Venue</label>
-                        <input
-                          type="text"
-                          value={venue || ''}
-                          onChange={(e) => {
-                            setVenue(e.target.value);
-                            setHasChanges(true);
-                          }}
-                          placeholder="Enter venue name"
-                          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm placeholder-white/40"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs text-white/60">Guest Count</label>
-                        <input
-                          type="number"
-                          value={guestCount || ''}
-                          onChange={(e) => {
-                            setGuestCount(e.target.value);
-                            setHasChanges(true);
-                          }}
-                          placeholder="Expected guests"
-                          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm placeholder-white/40"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="glass-card rounded-lg p-4">
-                    <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                      <UserPlus className="w-4 h-4 text-purple-400" />
-                      Partner Access
-                    </h3>
-                    <p className="text-xs text-white/60 mb-3">
-                      Share access with your partner to build together
-                    </p>
-                    <button
-                      onClick={() => {
-                        if (!user) {
-                          setAuthTrigger('share');
-                          setShowAuthModal(true);
-                        } else if (canShare) {
-                          setShowShareModal(true);
-                        } else {
-                          setShowUpgradeModal(true);
-                        }
-                      }}
-                      className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
-                    >
-                      <Share2 className="w-4 h-4" />
-                      {canShare ? 'Invite Partner' : 'Upgrade to Share'}
-                    </button>
-                    
-                    {weddingData && (
-                      <div className="mt-4 p-3 bg-white/5 rounded-lg">
-                        <p className="text-xs text-white/60 mb-2">Share Codes:</p>
-                        <div className="space-y-2">
-                          {weddingData.co_owner_code && (
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs text-white/50">Partner:</span>
-                              <code className="text-xs bg-purple-600/20 text-purple-300 px-2 py-0.5 rounded font-mono">
-                                {weddingData.co_owner_code}
-                              </code>
-                            </div>
-                          )}
-                          {weddingData.guest_code && (
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs text-white/50">Guests:</span>
-                              <code className="text-xs bg-green-600/20 text-green-300 px-2 py-0.5 rounded font-mono">
-                                {weddingData.guest_code}
-                              </code>
-                            </div>
-                          )}
-                          {weddingData.vendor_code && (
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs text-white/50">Vendors:</span>
-                              <code className="text-xs bg-blue-600/20 text-blue-300 px-2 py-0.5 rounded font-mono">
-                                {weddingData.vendor_code}
-                              </code>
-                            </div>
-                          )}
-                        </div>
-                        {weddingData.slug && (
-                          <div className="mt-3 pt-3 border-t border-white/10">
-                            <p className="text-xs text-white/60 mb-1">Wedding URL:</p>
-                            <code className="text-xs bg-white/10 text-white/80 px-2 py-1 rounded block break-all">
-                              weddings.uptune.xyz/{weddingData.slug}
-                            </code>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="glass-card rounded-lg p-4">
-                    <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                      <Download className="w-4 h-4 text-purple-400" />
-                      Export Options
-                    </h3>
-                    <div className="space-y-2">
-                      <button className="w-full px-3 py-2 bg-white/10 rounded-lg text-white text-sm hover:bg-white/20 transition-colors text-left">
-                        Export to Spotify
-                      </button>
-                      <button className="w-full px-3 py-2 bg-white/10 rounded-lg text-white text-sm hover:bg-white/20 transition-colors text-left">
-                        Download for DJ
-                      </button>
-                      <button className="w-full px-3 py-2 bg-white/10 rounded-lg text-white text-sm hover:bg-white/20 transition-colors text-left">
-                        Print Timeline
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-              
-              {/* GUESTS TAB */}
-              {user && leftPaneTab === 'guests' && (
-                <>
-                  <div>
-                    <h2 className="text-sm font-semibold text-white/50 uppercase mb-3">Guest Management</h2>
-                  </div>
-                  
-                  <div className="glass-card rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-medium text-white flex items-center gap-2">
-                        <Users className="w-4 h-4 text-purple-400" />
-                        Guest List
-                      </h3>
-                      <span className="text-xs bg-purple-600/20 text-purple-400 px-2 py-1 rounded-full">
-                        {guestList.length} guests
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => {
-                        if (!user) {
-                          setAuthTrigger('share');
-                          setShowAuthModal(true);
-                        } else if (canShare) {
-                          setShowShareModal(true);
-                        } else {
-                          setShowUpgradeModal(true);
-                        }
-                      }}
-                      className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
-                    >
-                      <Share2 className="w-4 h-4" />
-                      {canShare ? 'Share Invite Link' : 'Upgrade to Share'}
-                    </button>
-                  </div>
-                  
-                  {guestList.length > 0 ? (
-                    <div className="glass-card rounded-lg p-4">
-                      <h4 className="text-sm font-medium text-white mb-3">Recent Submissions</h4>
-                      <div className="space-y-2 max-h-64 overflow-y-auto">
-                        {guestList.slice(0, 5).map((guest: any, idx: number) => (
-                          <div key={idx} className="p-2 bg-white/5 rounded-lg">
-                            <p className="text-sm text-white font-medium">{guest.name}</p>
-                            <p className="text-xs text-white/60">{guest.songCount || 0} songs suggested</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="glass-card rounded-lg p-4">
-                      <div className="text-center py-4">
-                        <Users className="w-12 h-12 text-white/20 mx-auto mb-2" />
-                        <p className="text-sm text-white/60">No guests yet</p>
-                        <p className="text-xs text-white/40 mt-1">
-                          Share your wedding link to collect song suggestions
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div className="glass-card rounded-lg p-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20">
-                    <h3 className="font-medium text-white mb-2 flex items-center gap-2">
-                      <MessageSquare className="w-4 h-4 text-purple-400" />
-                      Guest Features
-                    </h3>
-                    <ul className="space-y-1 text-xs text-white/60">
-                      <li>• Guests can suggest up to 5 songs</li>
-                      <li>• Vote on other suggestions</li>
-                      <li>• Leave special dedications</li>
-                      <li>• RSVP through the link</li>
-                    </ul>
-                  </div>
-                </>
+                  <Trash2 className="w-5 h-5 text-red-400" />
+                  <span className="text-red-400">Drop here to remove</span>
+                </div>
               )}
             </div>
           </div>
-
-          {/* MIDDLE PANE: Timeline (The Hero) */}
-          <div className="flex-1 overflow-y-auto bg-black/20">
-            {/* Timeline Header */}
-            <div className="sticky top-0 glass-darker backdrop-blur-md border-b border-white/10 px-6 py-4 z-10">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold text-white">YOUR WEDDING TIMELINE</h2>
-                  <p className="text-sm text-white/60">Drag songs between moments • Click to preview • Everything customizable</p>
-                </div>
-                {isLoadingDatabase && (
-                  <div className="flex items-center gap-2 text-purple-400">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span className="text-sm">Loading songs...</span>
+          
+          {/* RIGHT PANE: Smart Assistant */}
+          <div className="w-80 glass-darker border-l border-white/10 flex flex-col">
+            <div className="p-4 space-y-4 overflow-y-auto">
+              
+              {/* Quick Actions */}
+              <div className="glass-card rounded-lg overflow-hidden">
+                <button
+                  onClick={() => setShowQuickActions(!showQuickActions)}
+                  className="w-full p-3 flex items-center justify-between hover:bg-white/5 transition-colors"
+                >
+                  <h3 className="font-medium text-white flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-purple-400" />
+                    Quick Actions
+                  </h3>
+                  {showQuickActions ? (
+                    <ChevronUp className="w-4 h-4 text-white/40" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-white/40" />
+                  )}
+                </button>
+                
+                {showQuickActions && (
+                  <div className="p-3 pt-0 space-y-2">
+                    <button className="w-full px-3 py-2 bg-white/10 rounded-lg text-sm text-white hover:bg-white/20 transition-colors flex items-center gap-2">
+                      <MapPin className="w-4 h-4" />
+                      {selectedCountry ? `${COUNTRIES[selectedCountry as keyof typeof COUNTRIES]?.flag} ${selectedCountry}` : 'Set Location'}
+                    </button>
+                    <button className="w-full px-3 py-2 bg-white/10 rounded-lg text-sm text-white hover:bg-white/20 transition-colors flex items-center gap-2">
+                      <Heart className="w-4 h-4" />
+                      {selectedGenres.length > 0 ? `${selectedGenres.length} Genres` : 'Music Taste'}
+                    </button>
+                    <button className="w-full px-3 py-2 bg-white/10 rounded-lg text-sm text-white hover:bg-white/20 transition-colors flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      Wedding Details
+                    </button>
                   </div>
                 )}
               </div>
-            </div>
-            
-            {/* Timeline Content */}
-            <div className="p-6 space-y-6">
-              {timeline.map((moment) => (
-                <DroppableMoment
-                  key={moment.id}
-                  moment={moment}
-                  isExpanded={expandedMoments.includes(moment.id)}
-                  onToggle={() => toggleMoment(moment.id)}
-                  onAddSong={() => openAddSongModal(moment.id)}
-                  onPlaySong={handlePlaySong}
-                  onPauseSong={handlePauseSong}
-                  onRemoveSong={handleRemoveSong}
-                  playingId={playingId}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* RIGHT PANE: Studio */}
-          <div className="w-80 glass-darker border-l border-white/10 overflow-y-auto p-4 space-y-4">
-            <div>
-              <h2 className="text-sm font-semibold text-white/50 uppercase mb-3">Studio</h2>
-            </div>
-            
-            {/* AI Analysis */}
-            <div className="glass-card rounded-lg p-4">
-              <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-purple-400" />
-                AI Analysis
-              </h3>
               
-              {!analysisResults ? (
-                <button
-                  onClick={runAIAnalysis}
-                  disabled={isAnalyzing}
-                  className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  {isAnalyzing ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Analyzing...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      Analyze Playlist
-                    </>
+              {/* Smart Suggestions */}
+              <div className="glass-card rounded-lg p-4">
+                <h3 className="font-medium text-white mb-3 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-purple-400" />
+                  Smart Suggestions
+                </h3>
+                <div className="space-y-2">
+                  {getSmartSuggestions().map((suggestion, idx) => (
+                    <button
+                      key={idx}
+                      onClick={suggestion.action}
+                      className="w-full text-left p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
+                    >
+                      <div className="flex items-start gap-2">
+                        <span className="text-lg">{suggestion.icon}</span>
+                        <p className="text-xs text-white/80">{suggestion.text}</p>
+                      </div>
+                    </button>
+                  ))}
+                  {getSmartSuggestions().length === 0 && (
+                    <p className="text-xs text-white/40">Your playlist is looking great! 🎉</p>
                   )}
+                </div>
+              </div>
+              
+              {/* PRO Features - All in one place! */}
+              <div className="glass-card rounded-lg p-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-medium text-white flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-purple-400" />
+                    Pro Features
+                  </h3>
+                  <span className="text-xs bg-purple-600 text-white px-2 py-0.5 rounded-full">
+                    PRO
+                  </span>
+                </div>
+                
+                <ul className="space-y-2 mb-4">
+                  <li className="flex items-center gap-2 text-xs text-white/80">
+                    <Check className="w-3 h-3 text-purple-400" />
+                    AI Chat Assistant
+                  </li>
+                  <li className="flex items-center gap-2 text-xs text-white/80">
+                    <Check className="w-3 h-3 text-purple-400" />
+                    Import from Spotify
+                  </li>
+                  <li className="flex items-center gap-2 text-xs text-white/80">
+                    <Check className="w-3 h-3 text-purple-400" />
+                    Guest Request Portal
+                  </li>
+                  <li className="flex items-center gap-2 text-xs text-white/80">
+                    <Check className="w-3 h-3 text-purple-400" />
+                    BPM & Energy Analysis
+                  </li>
+                  <li className="flex items-center gap-2 text-xs text-white/80">
+                    <Check className="w-3 h-3 text-purple-400" />
+                    Professional DJ Export
+                  </li>
+                </ul>
+                
+                <button
+                  onClick={() => setShowUpgradeModal(true)}
+                  className="w-full py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+                >
+                  Upgrade for {getPriceDisplay()}
                 </button>
-              ) : (
-                <div className="space-y-3">
-                  <div className="p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
-                    <div className="flex items-center gap-2 mb-1">
-                      <AlertTriangle className="w-4 h-4 text-orange-400" />
-                      <span className="text-sm font-medium text-white">Issues Found</span>
-                    </div>
-                    <ul className="text-xs text-white/70 space-y-1">
-                      <li>• {analysisResults.bpmJumps} BPM jumps</li>
-                      <li>• {analysisResults.energyDrops} energy drops</li>
-                      <li>• {analysisResults.genreClashes} genre clashes</li>
-                    </ul>
-                  </div>
-                  <button 
-                    onClick={() => setShowUpgradeModal(true)}
-                    className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg text-sm font-medium"
+              </div>
+              
+              {/* Ready to Share */}
+              <div className="glass-card rounded-lg p-4">
+                <h3 className="font-medium text-white mb-3 flex items-center gap-2">
+                  <Users className="w-4 h-4 text-purple-400" />
+                  Ready to Share?
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => {
+                      if (!user) {
+                        setAuthTrigger('export');
+                        setShowAuthModal(true);
+                      }
+                    }}
+                    className="px-3 py-2 bg-white/10 rounded-lg text-xs text-white hover:bg-white/20 transition-colors flex items-center justify-center gap-1"
                   >
-                    Fix with AI ($25)
+                    <Download className="w-3 h-3" />
+                    Export
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!user) {
+                        setAuthTrigger('share');
+                        setShowAuthModal(true);
+                      } else {
+                        setShowShareModal(true);
+                      }
+                    }}
+                    className="px-3 py-2 bg-white/10 rounded-lg text-xs text-white hover:bg-white/20 transition-colors flex items-center justify-center gap-1"
+                  >
+                    <Share2 className="w-3 h-3" />
+                    Invite
                   </button>
                 </div>
-              )}
+                {!user && (
+                  <button
+                    onClick={saveTimeline}
+                    className="w-full mt-2 py-2 bg-purple-600 text-white rounded-lg text-xs hover:bg-purple-700 transition-colors"
+                  >
+                    Save Your Playlist
+                  </button>
+                )}
+              </div>
               
-              {analysisResults && (
-                <button
-                  onClick={() => setAnalysisResults(null)}
-                  className="w-full mt-2 text-xs text-white/50 hover:text-white/70"
-                >
-                  Run new analysis
-                </button>
-              )}
-            </div>
-            
-            {/* Export Options */}
-            <div className="glass-card rounded-lg p-4">
-              <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                <Download className="w-4 h-4 text-purple-400" />
-                Export
-              </h3>
-              <div className="space-y-2">
-                <button 
-                  onClick={() => {
-                    if (!user) {
-                      setAuthTrigger('spotify');
-                      setShowAuthModal(true);
-                    } else if (userTier === 'free') {
-                      setShowUpgradeModal(true);
-                    }
-                  }}
-                  className="w-full px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 flex items-center justify-center gap-2 text-sm"
-                >
-                  <Music className="w-4 h-4" />
-                  Export to Spotify
-                </button>
-                <button 
-                  onClick={() => {
-                    if (!user) {
-                      setAuthTrigger('export');
-                      setShowAuthModal(true);
-                    } else {
-                      // Handle PDF download
-                    }
-                  }}
-                  className="w-full px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 flex items-center justify-center gap-2 text-sm"
-                >
-                  <Download className="w-4 h-4" />
-                  Download PDF
-                </button>
+              {/* Playlist Stats */}
+              <div className="glass-card rounded-lg p-3 bg-gradient-to-r from-purple-600/10 to-pink-600/10">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <p className="text-white/60">Total Songs</p>
+                    <p className="text-white font-semibold">{totalSongs}</p>
+                  </div>
+                  <div>
+                    <p className="text-white/60">Duration</p>
+                    <p className="text-white font-semibold">{totalHours}h {totalMinutes}m</p>
+                  </div>
+                  <div>
+                    <p className="text-white/60">Customized</p>
+                    <p className="text-white font-semibold">
+                      {selectedGenres.length > 0 || selectedCountry ? 'Yes ✓' : 'Not yet'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-white/60">Status</p>
+                    <p className="text-white font-semibold">
+                      {user ? 'Saved' : 'Draft'}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-            
-            {/* Collaborate */}
-            <div className="glass-card rounded-lg p-4">
-              <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                <Users className="w-4 h-4 text-purple-400" />
-                Collaborate
-              </h3>
-              <div className="space-y-2">
-                <button 
-                  onClick={() => {
-                    if (!user) {
-                      setAuthTrigger('share');
-                      setShowAuthModal(true);
-                    } else if (userTier === 'free') {
-                      setShowUpgradeModal(true);
-                    } else {
-                      setShowShareModal(true);
-                    }
-                  }}
-                  className="w-full px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 flex items-center justify-center gap-2 text-sm"
-                >
-                  <UserPlus className="w-4 h-4" />
-                  Invite Partner
-                </button>
-                <button 
-                  onClick={() => {
-                    if (!user) {
-                      setAuthTrigger('share');
-                      setShowAuthModal(true);
-                    } else if (userTier === 'free') {
-                      setShowUpgradeModal(true);
-                    } else {
-                      setShowShareModal(true);
-                    }
-                  }}
-                  className="w-full px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 flex items-center justify-center gap-2 text-sm"
-                >
-                  <Share2 className="w-4 h-4" />
-                  Guest Requests
-                </button>
-              </div>
-              <p className="text-xs text-white/40 mt-2">
-                Pro feature • Upgrade to enable
-              </p>
-            </div>
-            
-            {/* Pro Features */}
-            <div className="glass-card rounded-lg p-4 bg-gradient-to-r from-purple-600/10 to-pink-600/10">
-              <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-purple-400" />
-                Pro Features
-              </h3>
-              <ul className="text-sm text-white/70 space-y-2">
-                <li className="flex items-center gap-2">
-                  <MessageSquare className="w-3 h-3 text-white/40" />
-                  AI Assistant & Chat
-                </li>
-                <li className="flex items-center gap-2">
-                  <TrendingUp className="w-3 h-3 text-white/40" />
-                  BPM & Energy matching
-                </li>
-                <li className="flex items-center gap-2">
-                  <Upload className="w-3 h-3 text-white/40" />
-                  Import Spotify playlists
-                </li>
-                <li className="flex items-center gap-2">
-                  <Lock className="w-3 h-3 text-white/40" />
-                  Unlimited saves
-                </li>
-                <li className="flex items-center gap-2">
-                  <Users className="w-3 h-3 text-white/40" />
-                  Guest requests
-                </li>
-              </ul>
-              <button 
-                onClick={() => setShowUpgradeModal(true)}
-                className="w-full mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700"
-              >
-                Upgrade to Pro • {getPriceDisplay()}
-              </button>
             </div>
           </div>
         </div>
-
-        {/* Mobile Layout - Single pane view with bottom tabs */}
-        <div className="md:hidden h-[calc(100vh-3.5rem-3.5rem)] relative z-10 overflow-y-auto">
-          {mobileTab === 'customize' && (
-            <div className="p-4 space-y-4 pb-20">
-              {/* Mobile tabs for authenticated users */}
-              {user && (
-                <div className="flex gap-2 mb-4">
-                  <button
-                    onClick={() => setLeftPaneTab('build')}
-                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      leftPaneTab === 'build'
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-white/10 text-white/70'
-                    }`}
-                  >
-                    Build
-                  </button>
-                  <button
-                    onClick={() => setLeftPaneTab('manage')}
-                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      leftPaneTab === 'manage'
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-white/10 text-white/70'
-                    }`}
-                  >
-                    Manage
-                  </button>
-                  <button
-                    onClick={() => setLeftPaneTab('guests')}
-                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      leftPaneTab === 'guests'
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-white/10 text-white/70'
-                    }`}
-                  >
-                    Guests
-                  </button>
+        
+        {/* Mobile Layout - Single pane view */}
+        <div className="md:hidden h-[calc(100vh-3.5rem-3.5rem)] relative z-10">
+          {mobilePane === 'timeline' ? (
+            /* Mobile Timeline */
+            <div className="flex flex-col h-full bg-black/20">
+              {/* Quick Add Search */}
+              <div className="p-4 glass-darker border-b border-white/10">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                  <input
+                    type="text"
+                    placeholder="Quick add: Search for any song..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:bg-white/20 focus:border-purple-400 focus:outline-none transition-all"
+                  />
                 </div>
-              )}
-              
-              {/* Customize content - same as left pane */}
-              {(!user || leftPaneTab === 'build') && (
-                <>
-                  <div>
-                    <h2 className="text-sm font-semibold text-white/50 uppercase mb-3">Customize</h2>
+                
+                {/* Mobile Search Results */}
+                {searchQuery && searchResults.length > 0 && (
+                  <div className="absolute left-4 right-4 mt-2 max-h-48 overflow-y-auto glass-darker rounded-lg border border-white/10 z-20">
+                    {searchResults.map((song) => (
+                      <button
+                        key={song.id}
+                        onClick={() => handleQuickAddSong(song)}
+                        className="w-full px-4 py-2 hover:bg-white/10 transition-colors text-left"
+                      >
+                        <p className="text-sm text-white font-medium">{song.title}</p>
+                        <p className="text-xs text-white/60">{song.artist}</p>
+                      </button>
+                    ))}
                   </div>
-                  
-                  {/* Location */}
-                  <div className="glass-card rounded-lg p-4">
-                    <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-purple-400" />
-                      Location
-                    </h3>
-                    <select 
-                      className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm mb-2"
-                      value={selectedCountry || ''}
-                      onChange={(e) => {
-                        setSelectedCountry(e.target.value);
-                        if (typeof window !== 'undefined') {
-                          localStorage.setItem('selectedCountry', e.target.value);
-                        }
-                      }}
-                    >
-                      <option value="">Select country</option>
-                      {Object.entries(COUNTRIES).map(([country, data]) => (
-                        <option key={country} value={country}>
-                          {data.flag} {country}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  {/* Genres */}
-                  <div className="glass-card rounded-lg p-4">
-                    <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                      <Heart className="w-4 h-4 text-purple-400" />
-                      Music Taste
-                    </h3>
-                    <div className="grid grid-cols-2 gap-2">
-                      {GENRES.map(genre => (
-                        <button
-                          key={genre.id}
-                          onClick={() => {
-                            setSelectedGenres(prev => 
-                              prev.includes(genre.id)
-                                ? prev.filter(g => g !== genre.id)
-                                : [...prev, genre.id]
-                            );
-                          }}
-                          className={`px-3 py-2 rounded-lg text-sm transition-all ${
-                            selectedGenres.includes(genre.id)
-                              ? 'bg-purple-600 text-white'
-                              : 'bg-white/10 text-white/70 hover:bg-white/20'
-                          }`}
-                        >
-                          <span className="mr-1">{genre.emoji}</span>
-                          {genre.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {/* Quick Add */}
-                  <div className="glass-card rounded-lg p-4">
-                    <h3 className="font-medium text-white mb-3 flex items-center gap-2">
-                      <Plus className="w-4 h-4 text-purple-400" />
-                      Quick Add
-                    </h3>
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                      <input
-                        type="text"
-                        placeholder="Search for songs..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm placeholder-white/40"
-                      />
-                    </div>
-                    {searchQuery && searchResults.length > 0 && (
-                      <div className="mt-2 max-h-48 overflow-y-auto space-y-1">
-                        {searchResults.map((song) => (
-                          <button
-                            key={song.id}
-                            onClick={() => handleQuickAddSong(song)}
-                            className="w-full p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors text-left"
-                          >
-                            <p className="text-sm text-white font-medium">{song.title}</p>
-                            <p className="text-xs text-white/60">{song.artist}</p>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-              
-              {/* Manage/Guests tabs for mobile authenticated users */}
-              {user && leftPaneTab === 'manage' && (
-                <>
-                  <div>
-                    <h2 className="text-sm font-semibold text-white/50 uppercase mb-3">Wedding Settings</h2>
-                  </div>
-                  {/* Same manage content as desktop */}
-                </>
-              )}
-              
-              {user && leftPaneTab === 'guests' && (
-                <>
-                  <div>
-                    <h2 className="text-sm font-semibold text-white/50 uppercase mb-3">Guest Management</h2>
-                  </div>
-                  {/* Same guests content as desktop */}
-                </>
-              )}
-            </div>
-          )}
-          
-          {mobileTab === 'timeline' && (
-            <div className="overflow-y-auto bg-black/20">
-              {/* Timeline Header */}
-              <div className="sticky top-0 glass-darker backdrop-blur-md border-b border-white/10 px-4 py-3 z-10">
-                <h2 className="text-xl font-bold text-white">YOUR WEDDING TIMELINE</h2>
-                <p className="text-xs text-white/60">Tap to expand • Drag to reorder</p>
+                )}
               </div>
               
-              {/* Timeline Content */}
-              <div className="p-4 space-y-4 pb-20">
+              {/* Timeline Header */}
+              <div className="px-4 py-3 border-b border-white/10">
+                <h2 className="text-lg font-bold text-white">WEDDING TIMELINE</h2>
+                <p className="text-xs text-white/60">{totalSongs} songs • {totalHours}h {totalMinutes}m</p>
+              </div>
+              
+              {/* Timeline Moments */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3 pb-4">
                 {timeline.map((moment) => (
                   <DroppableMoment
                     key={moment.id}
@@ -1961,69 +1002,159 @@ export default function V3ThreePanePage() {
                 ))}
               </div>
             </div>
-          )}
-          
-          {mobileTab === 'studio' && (
-            <div className="p-4 space-y-4 pb-20">
-              {/* AI Assistant */}
-              <div className="glass-gradient rounded-xl p-4">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                    <Sparkles className="w-6 h-6 text-white" />
+          ) : (
+            /* Mobile Assistant */
+            <div className="h-full glass-darker overflow-y-auto p-4 space-y-4 pb-4">
+              {/* Same assistant content as desktop */}
+              <div className="glass-card rounded-lg overflow-hidden">
+                <button
+                  onClick={() => setShowQuickActions(!showQuickActions)}
+                  className="w-full p-3 flex items-center justify-between hover:bg-white/5 transition-colors"
+                >
+                  <h3 className="font-medium text-white flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-purple-400" />
+                    Quick Actions
+                  </h3>
+                  {showQuickActions ? (
+                    <ChevronUp className="w-4 h-4 text-white/40" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-white/40" />
+                  )}
+                </button>
+                
+                {showQuickActions && (
+                  <div className="p-3 pt-0 space-y-2">
+                    <button className="w-full px-3 py-2 bg-white/10 rounded-lg text-sm text-white hover:bg-white/20 transition-colors flex items-center gap-2">
+                      <MapPin className="w-4 h-4" />
+                      {selectedCountry ? `${COUNTRIES[selectedCountry as keyof typeof COUNTRIES]?.flag} ${selectedCountry}` : 'Set Location'}
+                    </button>
+                    <button className="w-full px-3 py-2 bg-white/10 rounded-lg text-sm text-white hover:bg-white/20 transition-colors flex items-center gap-2">
+                      <Heart className="w-4 h-4" />
+                      {selectedGenres.length > 0 ? `${selectedGenres.length} Genres` : 'Music Taste'}
+                    </button>
+                    <button className="w-full px-3 py-2 bg-white/10 rounded-lg text-sm text-white hover:bg-white/20 transition-colors flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      Wedding Details
+                    </button>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-white">AI Assistant</h4>
-                    <p className="text-xs text-white/60">Get smart suggestions</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <button className="glass-darker rounded-lg p-2 text-xs text-white">
-                    Generate Mix
-                  </button>
-                  <button className="glass-darker rounded-lg p-2 text-xs text-white">
-                    Fix Energy Flow
-                  </button>
-                </div>
+                )}
               </div>
               
-              {/* BPM Analysis */}
-              <div className="glass-gradient rounded-xl p-4">
-                <h4 className="font-semibold text-white mb-3">Energy Flow</h4>
-                <div className="h-32 flex items-end justify-between gap-1">
-                  {timeline.map((moment, idx) => (
-                    <div key={moment.id} className="flex-1 flex flex-col items-center gap-1">
-                      <div 
-                        className="w-full bg-gradient-to-t from-purple-600 to-pink-600 rounded-t"
-                        style={{ height: `${(idx + 1) * 15}%` }}
-                      />
-                      <span className="text-xs text-white/40 rotate-45 origin-left">
-                        {moment.emoji}
-                      </span>
-                    </div>
+              {/* Smart Suggestions */}
+              <div className="glass-card rounded-lg p-4">
+                <h3 className="font-medium text-white mb-3 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-purple-400" />
+                  Smart Suggestions
+                </h3>
+                <div className="space-y-2">
+                  {getSmartSuggestions().map((suggestion, idx) => (
+                    <button
+                      key={idx}
+                      onClick={suggestion.action}
+                      className="w-full text-left p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
+                    >
+                      <div className="flex items-start gap-2">
+                        <span className="text-lg">{suggestion.icon}</span>
+                        <p className="text-xs text-white/80">{suggestion.text}</p>
+                      </div>
+                    </button>
                   ))}
                 </div>
               </div>
               
-              {/* Pro Features */}
-              <div className="glass-gradient rounded-xl p-4 border border-purple-500/30">
-                <h4 className="font-semibold text-white mb-2">
-                  <Lock className="w-4 h-4 inline mr-2" />
-                  Pro Features
-                </h4>
-                <ul className="text-xs text-white/60 space-y-1">
-                  <li>• AI Chat Assistant</li>
-                  <li>• Spotify Import</li>
-                  <li>• Unlimited saves</li>
+              {/* PRO Features */}
+              <div className="glass-card rounded-lg p-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-medium text-white flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-purple-400" />
+                    Pro Features
+                  </h3>
+                  <span className="text-xs bg-purple-600 text-white px-2 py-0.5 rounded-full">
+                    PRO
+                  </span>
+                </div>
+                
+                <ul className="space-y-2 mb-4">
+                  <li className="flex items-center gap-2 text-xs text-white/80">
+                    <Check className="w-3 h-3 text-purple-400" />
+                    AI Chat Assistant
+                  </li>
+                  <li className="flex items-center gap-2 text-xs text-white/80">
+                    <Check className="w-3 h-3 text-purple-400" />
+                    Import from Spotify
+                  </li>
+                  <li className="flex items-center gap-2 text-xs text-white/80">
+                    <Check className="w-3 h-3 text-purple-400" />
+                    Guest Request Portal
+                  </li>
+                  <li className="flex items-center gap-2 text-xs text-white/80">
+                    <Check className="w-3 h-3 text-purple-400" />
+                    BPM & Energy Analysis
+                  </li>
                 </ul>
-                <button 
+                
+                <button
                   onClick={() => setShowUpgradeModal(true)}
-                  className="w-full mt-3 px-3 py-2 bg-purple-600 text-white rounded-lg text-xs"
+                  className="w-full py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg text-sm font-medium"
                 >
-                  Upgrade • $25
+                  Upgrade for {getPriceDisplay()}
                 </button>
+              </div>
+              
+              {/* Ready to Share */}
+              <div className="glass-card rounded-lg p-4">
+                <h3 className="font-medium text-white mb-3 flex items-center gap-2">
+                  <Users className="w-4 h-4 text-purple-400" />
+                  Ready to Share?
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  <button className="px-3 py-2 bg-white/10 rounded-lg text-xs text-white hover:bg-white/20 transition-colors">
+                    <Download className="w-3 h-3 inline mr-1" />
+                    Export
+                  </button>
+                  <button
+                    onClick={() => setShowShareModal(true)}
+                    className="px-3 py-2 bg-white/10 rounded-lg text-xs text-white hover:bg-white/20 transition-colors"
+                  >
+                    <Share2 className="w-3 h-3 inline mr-1" />
+                    Invite
+                  </button>
+                </div>
               </div>
             </div>
           )}
+        </div>
+        
+        {/* Mobile Bottom Navigation */}
+        <div className="fixed bottom-0 left-0 right-0 glass-darker border-t border-white/10 md:hidden z-50">
+          <div className="flex">
+            <button
+              onClick={() => setMobilePane('timeline')}
+              className={`flex-1 py-3 text-xs font-medium transition-colors ${
+                mobilePane === 'timeline'
+                  ? 'text-white border-t-2 border-purple-400'
+                  : 'text-white/60'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-1">
+                <Music className="w-5 h-5" />
+                Timeline
+              </div>
+            </button>
+            <button
+              onClick={() => setMobilePane('assistant')}
+              className={`flex-1 py-3 text-xs font-medium transition-colors ${
+                mobilePane === 'assistant'
+                  ? 'text-white border-t-2 border-purple-400'
+                  : 'text-white/60'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-1">
+                <Sparkles className="w-5 h-5" />
+                Assistant
+              </div>
+            </button>
+          </div>
         </div>
 
         {/* Drag Overlay */}
@@ -2036,7 +1167,7 @@ export default function V3ThreePanePage() {
           )}
         </DragOverlay>
 
-        {/* Add Song Modal */}
+        {/* Modals */}
         <AddSongModal
           isOpen={showAddSongModal}
           onClose={() => {
@@ -2050,8 +1181,8 @@ export default function V3ThreePanePage() {
           }}
           momentId={addSongMomentId}
         />
-
-        {/* Quick Add Moment Selector Modal */}
+        
+        {/* Quick Add Moment Selector */}
         {showQuickAddModal && quickAddSong && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="fixed inset-0 bg-black/60" onClick={() => {
@@ -2098,60 +1229,56 @@ export default function V3ThreePanePage() {
             </div>
           </div>
         )}
-
-        {/* Progressive Auth Modal */}
+        
+        {/* Auth Modal */}
         <ProgressiveAuthModal
           isOpen={showAuthModal}
           onClose={() => setShowAuthModal(false)}
-          onSuccess={saveTimeline}
           trigger={authTrigger}
-          metadata={{
-            totalSongs,
-            playlistName: weddingName,
-            localData: {
-              timeline,
-              selectedGenres,
-              selectedCountry,
-              totalSongs,
-              totalDuration,
-              weddingDate,
-              weddingName
-            }
-          }}
+          metadata={{ totalSongs }}
         />
-
+        
         {/* Share Modal */}
         {showShareModal && (
           <ShareModal
             onClose={() => setShowShareModal(false)}
-            weddingId={user?.id}
+            weddingId={weddingId || undefined}
             weddingData={weddingData}
           />
         )}
-
+        
         {/* Settings Modal */}
         {showSettingsModal && (
           <SettingsModal
             onClose={() => setShowSettingsModal(false)}
             weddingData={weddingData}
             onUpdate={(data) => {
-              setWeddingData({ ...weddingData, ...data });
-              setWeddingName(data.weddingName || weddingName);
-              setWeddingDate(data.weddingDate || weddingDate);
+              setWeddingName(data.couple_names || weddingName);
+              setWeddingDate(data.wedding_date || weddingDate);
+              setVenue(data.venue_name || venue);
+              setGuestCount(data.guest_count?.toString() || guestCount);
               setHasChanges(true);
             }}
           />
         )}
-
+        
         {/* Upgrade Modal */}
         {showUpgradeModal && (
           <UpgradeModal
             onClose={() => setShowUpgradeModal(false)}
-            weddingId={user?.id}
+            weddingId={weddingId || undefined}
             user={user}
           />
         )}
-
+        
+        {/* DJ Harmony Chat Assistant */}
+        <DJHarmonyChat
+          weddingId={weddingId || undefined}
+          onSongSuggestion={(songs) => {
+            // Handle song suggestions from DJ Harmony
+            console.log('DJ Harmony suggested songs:', songs);
+          }}
+        />
       </div>
     </DndContext>
   );

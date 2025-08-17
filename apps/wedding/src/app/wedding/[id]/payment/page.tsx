@@ -45,11 +45,8 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
         return
       }
 
-      // Check if already paid (professional tier or higher)
-      if (wedding.payment_tier && wedding.payment_tier !== 'free') {
-        router.push('/builder')
-        return
-      }
+      // For now, skip payment tier check since field doesn't exist in schema
+      // TODO: Add payment_tier field to wedding_weddings table in Supabase
 
       setWedding(wedding)
       
@@ -92,17 +89,8 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
   }
 
   const handlePaymentSuccess = async () => {
-    // Update wedding payment status in Supabase
-    try {
-      await weddingHelpers.updateWedding(weddingId, {
-        payment_tier: 'professional',
-        payment_status: 'active'
-      })
-    } catch (err) {
-      console.error('Error updating payment status:', err)
-    }
-    
-    // Navigate to success page
+    // TODO: Update payment status once payment_tier field is added to schema
+    // For now, just navigate to success page
     router.push(`/wedding/${weddingId}/payment-success`)
   }
 

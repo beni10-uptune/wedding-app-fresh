@@ -11,8 +11,7 @@ import {
   UserPlus, Shield, AlertCircle, Crown,
   Globe, Copy, Edit2
 } from 'lucide-react'
-import UpgradeModal from '@/components/UpgradeModal'
-import { getUserTier } from '@/lib/subscription-tiers'
+// Partner collaboration is now FREE - no need for upgrade modal
 import { isValidSlug, isSlugAvailable, sanitizeSlug } from '@/lib/slug-utils'
 import { config } from '@/lib/config'
 
@@ -41,7 +40,6 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
   const [coOwnerEmail, setCoOwnerEmail] = useState('')
   const [coOwners, setCoOwners] = useState<string[]>([])
   const [showAddCoOwner, setShowAddCoOwner] = useState(false)
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
 
   // Slug management
   const [isEditingSlug, setIsEditingSlug] = useState(false)
@@ -258,12 +256,8 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
               </div>
               <button
                 onClick={() => {
-                  const tier = getUserTier(wedding?.paymentStatus)
-                  if (!tier.features.coOwner) {
-                    setShowUpgradeModal(true)
-                  } else {
-                    setShowAddCoOwner(true)
-                  }
+                  // Partner collaboration is now FREE for all users
+                  setShowAddCoOwner(true)
                 }}
                 className="btn-primary text-sm"
               >
@@ -508,13 +502,6 @@ export default function WeddingSettingsPage({ params }: { params: Promise<{ id: 
         </div>
       )}
 
-      {/* Upgrade Modal */}
-      <UpgradeModal
-        isOpen={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        trigger="CO_OWNER_BLOCKED"
-        weddingId={weddingId}
-      />
     </div>
   )
 }

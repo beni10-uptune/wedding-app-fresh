@@ -20,7 +20,7 @@ async function generateAIResponse(message: string, context?: any) {
     timeline: /(timeline|schedule|when|timing|order)/i
   };
 
-  let response = {
+  const response = {
     message: '',
     suggestions: [] as string[],
     songs: [] as any[]

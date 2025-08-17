@@ -1241,7 +1241,7 @@ export default function SimplifiedBuilderPage() {
         {showShareModal && (
           <ShareModal
             onClose={() => setShowShareModal(false)}
-            weddingId={weddingId}
+            weddingId={weddingId || undefined}
             weddingData={weddingData}
           />
         )}

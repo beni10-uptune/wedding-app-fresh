@@ -1,9 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getMusicDatabase } from '@/lib/music-database-service';
 import { WeddingMoment } from '@/types/music-ai';
+import { aiService } from '@/lib/ai-providers';
 
-// Simple AI response generation (will be replaced with OpenAI/Claude)
+// Enhanced AI response generation
 async function generateAIResponse(message: string, context?: any) {
+  // First try to use AI provider
+  try {
+    const aiResponse = await aiService.generateResponse(message, context);
+    
+    // If AI provided song recommendations, enrich them with our database
+    if (aiResponse.songs && aiResponse.songs.length > 0) {
+      const db = getMusicDatabase();
+      const enrichedSongs = [];
+      
+      for (const songRec of aiResponse.songs) {
+        // Search our database for matching songs
+        const dbSongs = await db.searchSongs(
+          { genres: context?.genres },
+          5
+        );
+        
+        // Find best match or use AI recommendation
+        const matchingSong = dbSongs.find(s => 
+          s.title.toLowerCase().includes(songRec.title?.toLowerCase() || '') ||
+          s.artist.toLowerCase().includes(songRec.artist?.toLowerCase() || '')
+        );
+        
+        if (matchingSong) {
+          enrichedSongs.push({
+            id: matchingSong.spotify_id,
+            title: matchingSong.title,
+            artist: matchingSong.artist,
+            previewUrl: matchingSong.preview_url,
+            albumArt: matchingSong.album_art_url
+          });
+        }
+      }
+      
+      aiResponse.songs = enrichedSongs;
+    }
+    
+    return aiResponse;
+  } catch (error) {
+    console.log('AI provider failed, using pattern matching:', error);
+    // Fall through to pattern matching
+  }
+
+  // Pattern-based fallback (existing code)
+  async function generateAIResponseFallback(message: string, context?: any) {
   const lowerMessage = message.toLowerCase();
   
   // Pattern matching for common queries
@@ -172,6 +217,10 @@ async function generateAIResponse(message: string, context?: any) {
   }
 
   return response;
+  }
+  
+  // Use the fallback function
+  return generateAIResponseFallback(message, context);
 }
 
 export async function POST(request: NextRequest) {

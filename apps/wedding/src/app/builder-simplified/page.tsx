@@ -54,6 +54,7 @@ import { ProgressiveAuthModal } from '@/components/auth/ProgressiveAuthModal';
 import { ShareModal } from '@/components/v3/ShareModal';
 import { SettingsModal } from '@/components/v3/SettingsModal';
 import { UpgradeModal } from '@/components/v3/UpgradeModal';
+import DJHarmonyChat from '@/components/dj-harmony/DJHarmonyChat';
 import { 
   searchDatabaseSongs, 
   addSongToDatabase,
@@ -1269,6 +1270,15 @@ export default function SimplifiedBuilderPage() {
             user={user}
           />
         )}
+        
+        {/* DJ Harmony Chat Assistant */}
+        <DJHarmonyChat
+          weddingId={weddingId || undefined}
+          onSongSuggestion={(songs) => {
+            // Handle song suggestions from DJ Harmony
+            console.log('DJ Harmony suggested songs:', songs);
+          }}
+        />
       </div>
     </DndContext>
   );

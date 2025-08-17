@@ -37,6 +37,14 @@ export default function LandingPage() {
         <div className="orb orb-pink w-64 h-64 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20"></div>
       </div>
 
+      {/* Announcement Banner */}
+      <div className="relative z-30 bg-gradient-to-r from-purple-600 to-pink-600 py-2 px-4 text-center">
+        <p className="text-white text-sm font-medium">
+          🎉 NEW: Partner collaboration is now FREE + DJ Harmony AI assistant is here!
+          <Link href="/builder" className="underline ml-2 font-semibold">Try it now →</Link>
+        </p>
+      </div>
+
       {/* Simple Header */}
       <header className="relative z-20 px-6 py-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -199,15 +207,20 @@ export default function LandingPage() {
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-400" />
-                  <span className="text-white">Build complete timeline</span>
+                  <span className="text-white">10 songs to start</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-400" />
-                  <span className="text-white">50+ curated songs</span>
+                  <span className="text-white">Timeline builder</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-400" />
-                  <span className="text-white">Basic customization</span>
+                  <span className="text-white">3 guest invitations</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-400" />
+                  <span className="text-white">Partner collaboration</span>
+                  <span className="text-xs text-green-400 ml-1">NEW</span>
                 </li>
               </ul>
               <Link 
@@ -225,24 +238,21 @@ export default function LandingPage() {
                   MOST POPULAR
                 </span>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">Pro</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">Premium</h3>
               <p className="text-white/60 mb-6">Everything you need</p>
               <p className="text-4xl font-bold text-white mb-6">
-                $25
+                £25
                 <span className="text-lg text-white/60 font-normal"> one-time</span>
               </p>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-400" />
-                  <span className="text-white">Everything in Free</span>
+                  <span className="text-white">Unlimited songs</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-400" />
-                  <span className="text-white">AI Assistant & Chat</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-400" />
-                  <span className="text-white">Spotify taste analysis</span>
+                  <span className="text-white">DJ Harmony AI Assistant</span>
+                  <span className="text-xs text-purple-400 ml-1">BETA</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-400" />
@@ -250,18 +260,22 @@ export default function LandingPage() {
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-400" />
-                  <span className="text-white">Guest requests</span>
+                  <span className="text-white">Unlimited guest requests</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-400" />
-                  <span className="text-white">Unlimited customization</span>
+                  <span className="text-white">Professional DJ handoff</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-400" />
+                  <span className="text-white">Priority support</span>
                 </li>
               </ul>
               <Link 
                 href="/builder"
                 className="block w-full text-center px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity"
               >
-                Start with Pro
+                Upgrade to Premium
               </Link>
             </div>
           </div>

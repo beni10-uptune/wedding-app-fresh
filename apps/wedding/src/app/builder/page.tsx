@@ -648,7 +648,7 @@ export default function SimplifiedBuilderPage() {
           {/* LEFT PANE: Timeline Builder */}
           <div className="flex-1 flex flex-col bg-black/20">
             {/* Quick Add Search - Now at the top! */}
-            <div className="p-4 glass-darker border-b border-white/10">
+            <div className="p-4 glass-darker border-b border-white/10 relative z-30">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                 <input
@@ -671,35 +671,53 @@ export default function SimplifiedBuilderPage() {
                 )}
               </div>
               
-              {/* Search Results Dropdown */}
+              {/* Search Results Dropdown - Enhanced visibility */}
               {searchQuery && (
-                <div className="absolute left-4 right-4 mt-2 max-h-64 overflow-y-auto glass-darker rounded-lg border border-white/10 z-20">
+                <div className="absolute left-0 right-0 top-full mt-2 max-h-80 overflow-y-auto glass-darker rounded-lg border border-white/10 shadow-2xl animate-slide-down" style={{ zIndex: 100 }}>
                   {isSearching ? (
-                    <div className="flex items-center justify-center py-4">
-                      <Loader2 className="w-5 h-5 animate-spin text-white/60" />
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="w-6 h-6 animate-spin text-purple-400" />
                     </div>
                   ) : searchResults.length > 0 ? (
                     <div className="py-2">
+                      <div className="px-4 py-2 border-b border-white/10">
+                        <p className="text-xs text-white/60 uppercase tracking-wider">
+                          {searchResults.length} {searchResults.length === 1 ? 'Song' : 'Songs'} Found
+                        </p>
+                      </div>
                       {searchResults.map((song) => (
                         <button
                           key={song.id}
                           onClick={() => handleQuickAddSong(song)}
-                          className="w-full px-4 py-2 hover:bg-white/10 transition-colors text-left group"
+                          className="w-full px-4 py-3 hover:bg-purple-600/20 transition-all text-left group border-b border-white/5 last:border-0"
                         >
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-sm text-white font-medium">{song.title}</p>
-                              <p className="text-xs text-white/60">{song.artist}</p>
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm text-white font-medium truncate">{song.title}</p>
+                              <p className="text-xs text-white/60 truncate">{song.artist}</p>
+                              {song.album && (
+                                <p className="text-xs text-white/40 truncate mt-0.5">{song.album}</p>
+                              )}
                             </div>
-                            <Plus className="w-4 h-4 text-white/40 group-hover:text-white" />
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              {song.duration && (
+                                <span className="text-xs text-white/40">
+                                  {Math.floor(song.duration / 60)}:{(song.duration % 60).toString().padStart(2, '0')}
+                                </span>
+                              )}
+                              <div className="w-8 h-8 bg-purple-600/20 rounded-lg flex items-center justify-center group-hover:bg-purple-600/40 transition-colors">
+                                <Plus className="w-4 h-4 text-purple-400 group-hover:text-white" />
+                              </div>
+                            </div>
                           </div>
                         </button>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-white/40 text-center py-4">
-                      No results found
-                    </p>
+                    <div className="py-8 px-4 text-center">
+                      <p className="text-sm text-white/40 mb-2">No results found</p>
+                      <p className="text-xs text-white/30">Try searching for a different song or artist</p>
+                    </div>
                   )}
                 </div>
               )}
@@ -944,7 +962,7 @@ export default function SimplifiedBuilderPage() {
             /* Mobile Timeline */
             <div className="flex flex-col h-full bg-black/20">
               {/* Quick Add Search */}
-              <div className="p-4 glass-darker border-b border-white/10">
+              <div className="p-4 glass-darker border-b border-white/10 relative z-30">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                   <input
@@ -954,21 +972,54 @@ export default function SimplifiedBuilderPage() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:bg-white/20 focus:border-purple-400 focus:outline-none transition-all"
                   />
+                  {searchQuery && (
+                    <button
+                      onClick={() => {
+                        setSearchQuery('');
+                        setSearchResults([]);
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
                 
-                {/* Mobile Search Results */}
-                {searchQuery && searchResults.length > 0 && (
-                  <div className="absolute left-4 right-4 mt-2 max-h-48 overflow-y-auto glass-darker rounded-lg border border-white/10 z-20">
-                    {searchResults.map((song) => (
-                      <button
-                        key={song.id}
-                        onClick={() => handleQuickAddSong(song)}
-                        className="w-full px-4 py-2 hover:bg-white/10 transition-colors text-left"
-                      >
-                        <p className="text-sm text-white font-medium">{song.title}</p>
-                        <p className="text-xs text-white/60">{song.artist}</p>
-                      </button>
-                    ))}
+                {/* Mobile Search Results - Enhanced */}
+                {searchQuery && (
+                  <div className="absolute left-0 right-0 top-full mt-2 max-h-64 overflow-y-auto glass-darker rounded-lg border border-white/10 shadow-2xl animate-slide-down" style={{ zIndex: 100 }}>
+                    {isSearching ? (
+                      <div className="flex items-center justify-center py-6">
+                        <Loader2 className="w-5 h-5 animate-spin text-purple-400" />
+                      </div>
+                    ) : searchResults.length > 0 ? (
+                      <div className="py-2">
+                        <div className="px-4 py-2 border-b border-white/10">
+                          <p className="text-xs text-white/60 uppercase tracking-wider">
+                            {searchResults.length} Songs Found
+                          </p>
+                        </div>
+                        {searchResults.map((song) => (
+                          <button
+                            key={song.id}
+                            onClick={() => handleQuickAddSong(song)}
+                            className="w-full px-4 py-3 hover:bg-purple-600/20 transition-colors text-left border-b border-white/5 last:border-0"
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-white font-medium truncate">{song.title}</p>
+                                <p className="text-xs text-white/60 truncate">{song.artist}</p>
+                              </div>
+                              <Plus className="w-4 h-4 text-purple-400" />
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-6 px-4 text-center">
+                        <p className="text-sm text-white/40">No results found</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

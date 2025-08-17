@@ -34,7 +34,7 @@ import { mapCountryToCulture } from '@/lib/country-culture-mapping';
 
 // Collection names
 const COLLECTIONS = {
-  SONGS_MASTER: 'songs_master',
+  SONGS_MASTER: 'songs', // Changed from 'songs_master' to match seeding script
   AI_PLAYLISTS: 'ai_playlists',
   USER_PREFERENCES: 'user_preferences',
   SONG_ANALYTICS: 'song_analytics',

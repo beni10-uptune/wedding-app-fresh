@@ -19,7 +19,7 @@ import {
 } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { 
-  Music, 
+  Music,
   MapPin,
   Sparkles,
   Play,
@@ -125,6 +125,7 @@ export default function SimplifiedBuilderPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Song[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [showSearchModal, setShowSearchModal] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [draggedSong, setDraggedSong] = useState<Song | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
@@ -647,80 +648,22 @@ export default function SimplifiedBuilderPage() {
           
           {/* LEFT PANE: Timeline Builder */}
           <div className="flex-1 flex flex-col bg-black/20">
-            {/* Quick Add Search - Now at the top! */}
-            <div className="p-4 glass-darker border-b border-white/10 relative z-30">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input
-                  type="text"
-                  placeholder="Quick add: Search for any song..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:bg-white/20 focus:border-purple-400 focus:outline-none transition-all"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => {
-                      setSearchQuery('');
-                      setSearchResults([]);
-                    }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-              
-              {/* Search Results Dropdown - Enhanced visibility */}
-              {searchQuery && (
-                <div className="absolute left-0 right-0 top-full mt-2 max-h-80 overflow-y-auto glass-darker rounded-lg border border-white/10 shadow-2xl animate-slide-down" style={{ zIndex: 100 }}>
-                  {isSearching ? (
-                    <div className="flex items-center justify-center py-8">
-                      <Loader2 className="w-6 h-6 animate-spin text-purple-400" />
-                    </div>
-                  ) : searchResults.length > 0 ? (
-                    <div className="py-2">
-                      <div className="px-4 py-2 border-b border-white/10">
-                        <p className="text-xs text-white/60 uppercase tracking-wider">
-                          {searchResults.length} {searchResults.length === 1 ? 'Song' : 'Songs'} Found
-                        </p>
-                      </div>
-                      {searchResults.map((song) => (
-                        <button
-                          key={song.id}
-                          onClick={() => handleQuickAddSong(song)}
-                          className="w-full px-4 py-3 hover:bg-purple-600/20 transition-all text-left group border-b border-white/5 last:border-0"
-                        >
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm text-white font-medium truncate">{song.title}</p>
-                              <p className="text-xs text-white/60 truncate">{song.artist}</p>
-                              {song.album && (
-                                <p className="text-xs text-white/40 truncate mt-0.5">{song.album}</p>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2 flex-shrink-0">
-                              {song.duration && (
-                                <span className="text-xs text-white/40">
-                                  {Math.floor(song.duration / 60)}:{(song.duration % 60).toString().padStart(2, '0')}
-                                </span>
-                              )}
-                              <div className="w-8 h-8 bg-purple-600/20 rounded-lg flex items-center justify-center group-hover:bg-purple-600/40 transition-colors">
-                                <Plus className="w-4 h-4 text-purple-400 group-hover:text-white" />
-                              </div>
-                            </div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="py-8 px-4 text-center">
-                      <p className="text-sm text-white/40 mb-2">No results found</p>
-                      <p className="text-xs text-white/30">Try searching for a different song or artist</p>
-                    </div>
-                  )}
+            {/* Quick Add Search Bar */}
+            <div className="p-4 glass-darker border-b border-white/10">
+              <button
+                onClick={() => {
+                  setShowSearchModal(true);
+                  setSearchQuery('');
+                  setSearchResults([]);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white/50 hover:bg-white/20 hover:border-purple-400 hover:text-white transition-all group"
+              >
+                <Search className="w-5 h-5 text-white/40 group-hover:text-purple-400" />
+                <span className="text-left flex-1">Quick add: Search for any song...</span>
+                <div className="px-2 py-1 bg-purple-600/20 rounded text-xs text-purple-400">
+                  Click to search
                 </div>
-              )}
+              </button>
             </div>
             
             {/* Timeline Header */}
@@ -961,67 +904,20 @@ export default function SimplifiedBuilderPage() {
           {mobilePane === 'timeline' ? (
             /* Mobile Timeline */
             <div className="flex flex-col h-full bg-black/20">
-              {/* Quick Add Search */}
-              <div className="p-4 glass-darker border-b border-white/10 relative z-30">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                  <input
-                    type="text"
-                    placeholder="Quick add: Search for any song..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:bg-white/20 focus:border-purple-400 focus:outline-none transition-all"
-                  />
-                  {searchQuery && (
-                    <button
-                      onClick={() => {
-                        setSearchQuery('');
-                        setSearchResults([]);
-                      }}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-                
-                {/* Mobile Search Results - Enhanced */}
-                {searchQuery && (
-                  <div className="absolute left-0 right-0 top-full mt-2 max-h-64 overflow-y-auto glass-darker rounded-lg border border-white/10 shadow-2xl animate-slide-down" style={{ zIndex: 100 }}>
-                    {isSearching ? (
-                      <div className="flex items-center justify-center py-6">
-                        <Loader2 className="w-5 h-5 animate-spin text-purple-400" />
-                      </div>
-                    ) : searchResults.length > 0 ? (
-                      <div className="py-2">
-                        <div className="px-4 py-2 border-b border-white/10">
-                          <p className="text-xs text-white/60 uppercase tracking-wider">
-                            {searchResults.length} Songs Found
-                          </p>
-                        </div>
-                        {searchResults.map((song) => (
-                          <button
-                            key={song.id}
-                            onClick={() => handleQuickAddSong(song)}
-                            className="w-full px-4 py-3 hover:bg-purple-600/20 transition-colors text-left border-b border-white/5 last:border-0"
-                          >
-                            <div className="flex items-center justify-between gap-2">
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm text-white font-medium truncate">{song.title}</p>
-                                <p className="text-xs text-white/60 truncate">{song.artist}</p>
-                              </div>
-                              <Plus className="w-4 h-4 text-purple-400" />
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="py-6 px-4 text-center">
-                        <p className="text-sm text-white/40">No results found</p>
-                      </div>
-                    )}
-                  </div>
-                )}
+              {/* Quick Add Search Bar */}
+              <div className="p-4 glass-darker border-b border-white/10">
+                <button
+                  onClick={() => {
+                    setShowSearchModal(true);
+                    setSearchQuery('');
+                    setSearchResults([]);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white/50 hover:bg-white/20 hover:border-purple-400 hover:text-white transition-all"
+                >
+                  <Search className="w-5 h-5 text-white/40" />
+                  <span className="text-left flex-1 text-sm">Quick add songs...</span>
+                  <Plus className="w-4 h-4 text-purple-400" />
+                </button>
               </div>
               
               {/* Timeline Header */}
@@ -1233,6 +1129,161 @@ export default function SimplifiedBuilderPage() {
           momentId={addSongMomentId}
         />
         
+        {/* Quick Add Search Modal - Full screen modal for search */}
+        {showSearchModal && (
+          <div className="fixed inset-0 z-[60] flex items-start justify-center p-4 pt-20">
+            <div 
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm" 
+              onClick={() => {
+                setShowSearchModal(false);
+                setSearchQuery('');
+                setSearchResults([]);
+              }} 
+            />
+            <div className="relative w-full max-w-2xl glass-darker rounded-2xl shadow-2xl animate-scale-in">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-4 border-b border-white/10">
+                <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                  <Search className="w-5 h-5 text-purple-400" />
+                  Quick Add Songs
+                </h2>
+                <button
+                  onClick={() => {
+                    setShowSearchModal(false);
+                    setSearchQuery('');
+                    setSearchResults([]);
+                  }}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  <X className="w-5 h-5 text-white/50" />
+                </button>
+              </div>
+              
+              {/* Search Input */}
+              <div className="p-4 border-b border-white/10">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                  <input
+                    type="text"
+                    placeholder="Search for songs, artists, or albums..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    autoFocus
+                    className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:bg-white/20 focus:border-purple-400 focus:outline-none transition-all"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => {
+                        setSearchQuery('');
+                        setSearchResults([]);
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+              
+              {/* Search Results */}
+              <div className="max-h-[400px] overflow-y-auto">
+                {isSearching ? (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <Loader2 className="w-8 h-8 animate-spin text-purple-400 mb-3" />
+                    <p className="text-white/60 text-sm">Searching songs...</p>
+                  </div>
+                ) : searchResults.length > 0 ? (
+                  <div>
+                    <div className="px-4 py-2 bg-purple-600/10 border-b border-white/10">
+                      <p className="text-xs text-purple-400 uppercase tracking-wider">
+                        {searchResults.length} {searchResults.length === 1 ? 'Song' : 'Songs'} Found
+                      </p>
+                    </div>
+                    <div className="p-2">
+                      {searchResults.map((song) => (
+                        <button
+                          key={song.id}
+                          onClick={() => {
+                            setShowSearchModal(false);
+                            handleQuickAddSong(song);
+                          }}
+                          className="w-full px-4 py-3 hover:bg-purple-600/20 rounded-lg transition-all text-left group"
+                        >
+                          <div className="flex items-center gap-4">
+                            {/* Album Art Placeholder */}
+                            <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                              {song.albumArt ? (
+                                <img src={song.albumArt} alt="" className="w-full h-full rounded-lg object-cover" />
+                              ) : (
+                                <Music className="w-6 h-6 text-white/40" />
+                              )}
+                            </div>
+                            
+                            {/* Song Info */}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-white font-medium truncate">{song.title}</p>
+                              <p className="text-sm text-white/60 truncate">{song.artist}</p>
+                              {song.album && (
+                                <p className="text-xs text-white/40 truncate">{song.album}</p>
+                              )}
+                            </div>
+                            
+                            {/* Action */}
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              {song.duration && (
+                                <span className="text-xs text-white/40">
+                                  {Math.floor(song.duration / 60)}:{(song.duration % 60).toString().padStart(2, '0')}
+                                </span>
+                              )}
+                              <div className="w-10 h-10 bg-purple-600/20 rounded-lg flex items-center justify-center group-hover:bg-purple-600/40 transition-all">
+                                <Plus className="w-5 h-5 text-purple-400 group-hover:text-white" />
+                              </div>
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : searchQuery ? (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4">
+                      <Search className="w-8 h-8 text-white/40" />
+                    </div>
+                    <p className="text-white/60 mb-2">No results found</p>
+                    <p className="text-sm text-white/40">Try searching for a different song or artist</p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <div className="w-16 h-16 bg-purple-600/20 rounded-full flex items-center justify-center mb-4">
+                      <Music className="w-8 h-8 text-purple-400" />
+                    </div>
+                    <p className="text-white/60 mb-2">Start typing to search</p>
+                    <p className="text-sm text-white/40">Find the perfect songs for your wedding</p>
+                  </div>
+                )}
+              </div>
+              
+              {/* Popular Searches (when no query) */}
+              {!searchQuery && !isSearching && (
+                <div className="p-4 border-t border-white/10">
+                  <p className="text-xs text-white/60 uppercase tracking-wider mb-3">Popular Searches</p>
+                  <div className="flex flex-wrap gap-2">
+                    {['Ed Sheeran', 'First Dance', 'Classic Love Songs', 'Party Hits', 'Whitney Houston'].map((term) => (
+                      <button
+                        key={term}
+                        onClick={() => setSearchQuery(term)}
+                        className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full text-sm text-white/80 transition-colors"
+                      >
+                        {term}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Quick Add Moment Selector */}
         {showQuickAddModal && quickAddSong && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function authenticateSupabaseRequest(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     
     // Get the session from Supabase
     const { data: { user }, error } = await supabase.auth.getUser()

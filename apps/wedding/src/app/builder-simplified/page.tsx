@@ -1265,7 +1265,7 @@ export default function SimplifiedBuilderPage() {
         {showUpgradeModal && (
           <UpgradeModal
             onClose={() => setShowUpgradeModal(false)}
-            weddingId={weddingId}
+            weddingId={weddingId || undefined}
             user={user}
           />
         )}

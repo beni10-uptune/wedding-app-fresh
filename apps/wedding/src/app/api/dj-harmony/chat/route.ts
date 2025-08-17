@@ -3,52 +3,106 @@ import { getMusicDatabase } from '@/lib/music-database-service';
 import { WeddingMoment } from '@/types/music-ai';
 import { aiService } from '@/lib/ai-providers';
 
-// Enhanced AI response generation
+// Enhanced AI response generation with better fallback
 async function generateAIResponse(message: string, context?: any) {
-  // First try to use AI provider
-  try {
-    const aiResponse = await aiService.generateResponse(message, context);
+  const db = getMusicDatabase();
+  const lowerMessage = message.toLowerCase();
+  
+  // Create a comprehensive response based on patterns
+  const response = {
+    message: '',
+    suggestions: [] as string[],
+    songs: [] as any[]
+  };
+
+  // Check for specific song queries
+  if (lowerMessage.includes('song') || lowerMessage.includes('music') || lowerMessage.includes('play')) {
+    // Search for relevant songs based on keywords
+    const searchTerms = extractSearchTerms(lowerMessage);
     
-    // If AI provided song recommendations, enrich them with our database
-    if (aiResponse.songs && aiResponse.songs.length > 0) {
-      const db = getMusicDatabase();
-      const enrichedSongs = [];
-      
-      for (const songRec of aiResponse.songs) {
-        // Search our database for matching songs
-        const dbSongs = await db.searchSongs(
-          { genres: context?.genres },
-          5
-        );
-        
-        // Find best match or use AI recommendation
-        const matchingSong = dbSongs.find(s => 
-          s.title.toLowerCase().includes(songRec.title?.toLowerCase() || '') ||
-          s.artist.toLowerCase().includes(songRec.artist?.toLowerCase() || '')
-        );
-        
-        if (matchingSong) {
-          enrichedSongs.push({
-            id: matchingSong.spotify_id,
-            title: matchingSong.title,
-            artist: matchingSong.artist,
-            previewUrl: matchingSong.preview_url,
-            albumArt: matchingSong.album_art_url
-          });
-        }
-      }
-      
-      aiResponse.songs = enrichedSongs;
+    if (searchTerms.moment) {
+      // Get songs for specific moment
+      const momentSongs = await getMomentSongs(searchTerms.moment);
+      response.songs = momentSongs.slice(0, 5);
+      response.message = `Here are some perfect ${searchTerms.moment} songs for your wedding! Each one has been carefully selected based on energy, mood, and popularity.`;
+    } else if (searchTerms.genre) {
+      // Get songs by genre
+      const genreSongs = await db.searchSongs({ genres: [searchTerms.genre] }, 5);
+      response.songs = genreSongs.map(formatSong);
+      response.message = `Great choice! Here are some amazing ${searchTerms.genre} songs that work perfectly for weddings.`;
+    } else {
+      // Get popular wedding songs
+      const popularSongs = await db.getPopularSongs({ limit: 5 });
+      response.songs = popularSongs.map(formatSong);
+      response.message = "Here are some of the most popular wedding songs right now! These are guaranteed crowd-pleasers.";
     }
     
-    return aiResponse;
-  } catch (error) {
-    console.log('AI provider failed, using pattern matching:', error);
-    // Fall through to pattern matching
+    response.suggestions = [
+      "Show me first dance songs",
+      "I need party music",
+      "Suggest dinner music",
+      "More like these"
+    ];
+  } else {
+    // Use pattern-based responses for general queries
+    return generatePatternResponse(message, context);
   }
+  
+  return response;
+}
 
-  // Pattern-based fallback (existing code)
-  async function generateAIResponseFallback(message: string, context?: any) {
+// Helper function to extract search terms
+function extractSearchTerms(message: string) {
+  const terms: any = {};
+  
+  // Check for moments
+  if (message.includes('first dance')) terms.moment = 'first-dance';
+  else if (message.includes('ceremony')) terms.moment = 'ceremony';
+  else if (message.includes('party') || message.includes('dance')) terms.moment = 'party';
+  else if (message.includes('dinner')) terms.moment = 'dinner';
+  else if (message.includes('cocktail')) terms.moment = 'cocktails';
+  
+  // Check for genres
+  if (message.includes('pop')) terms.genre = 'pop';
+  else if (message.includes('rock')) terms.genre = 'rock';
+  else if (message.includes('r&b') || message.includes('rnb')) terms.genre = 'r&b';
+  else if (message.includes('country')) terms.genre = 'country';
+  else if (message.includes('indie')) terms.genre = 'indie';
+  
+  return terms;
+}
+
+// Helper to get songs for specific moments
+async function getMomentSongs(momentId: string) {
+  const db = getMusicDatabase();
+  const momentMap: { [key: string]: WeddingMoment } = {
+    'first-dance': WeddingMoment.FIRST_DANCE,
+    'ceremony': WeddingMoment.PROCESSIONAL,
+    'party': WeddingMoment.PARTY_PEAK,
+    'dinner': WeddingMoment.DINNER,
+    'cocktails': WeddingMoment.COCKTAIL
+  };
+  
+  const moment = momentMap[momentId] || WeddingMoment.PARTY_PEAK;
+  const songs = await db.getSongsForMoment(moment, { limit: 5 });
+  return songs.map(formatSong);
+}
+
+// Helper to format songs consistently
+function formatSong(song: any) {
+  return {
+    id: song.spotify_id || song.id,
+    title: song.title,
+    artist: song.artist,
+    album: song.album,
+    previewUrl: song.preview_url,
+    albumArt: song.album_art_url || song.albumArt,
+    duration: song.duration_ms ? Math.round(song.duration_ms / 1000) : undefined
+  };
+}
+
+// Pattern-based response generation
+async function generatePatternResponse(message: string, context?: any) {
   const lowerMessage = message.toLowerCase();
   
   // Pattern matching for common queries
@@ -217,10 +271,6 @@ async function generateAIResponse(message: string, context?: any) {
   }
 
   return response;
-  }
-  
-  // Use the fallback function
-  return generateAIResponseFallback(message, context);
 }
 
 export async function POST(request: NextRequest) {

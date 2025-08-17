@@ -585,15 +585,15 @@ export default function SimplifiedBuilderPage() {
                     </button>
                     
                     {showProfileMenu && (
-                      <div className="absolute right-0 mt-2 w-48 glass-darker rounded-lg shadow-xl border border-white/10 overflow-hidden">
+                      <div className="absolute right-0 mt-2 w-48 bg-slate-900 rounded-lg shadow-2xl border border-white/20 overflow-hidden z-50">
                         <button
                           onClick={() => {
                             setShowSettingsModal(true);
                             setShowProfileMenu(false);
                           }}
-                          className="w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10 flex items-center gap-2"
+                          className="w-full px-4 py-3 text-left text-sm text-white hover:bg-purple-600/20 flex items-center gap-2 transition-colors"
                         >
-                          <Settings className="w-4 h-4" />
+                          <Settings className="w-4 h-4 text-white/70" />
                           Settings
                         </button>
                         <button
@@ -601,9 +601,9 @@ export default function SimplifiedBuilderPage() {
                             setShowShareModal(true);
                             setShowProfileMenu(false);
                           }}
-                          className="w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10 flex items-center gap-2"
+                          className="w-full px-4 py-3 text-left text-sm text-white hover:bg-purple-600/20 flex items-center gap-2 transition-colors"
                         >
-                          <Share2 className="w-4 h-4" />
+                          <Share2 className="w-4 h-4 text-white/70" />
                           Share & Invite
                         </button>
                         <button
@@ -611,20 +611,20 @@ export default function SimplifiedBuilderPage() {
                             // Handle export
                             setShowProfileMenu(false);
                           }}
-                          className="w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10 flex items-center gap-2"
+                          className="w-full px-4 py-3 text-left text-sm text-white hover:bg-purple-600/20 flex items-center gap-2 transition-colors"
                         >
-                          <Download className="w-4 h-4" />
+                          <Download className="w-4 h-4 text-white/70" />
                           Export
                         </button>
-                        <hr className="border-white/10" />
+                        <div className="border-t border-white/20 my-1" />
                         <button
                           onClick={() => {
                             // Handle logout
                             setShowProfileMenu(false);
                           }}
-                          className="w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10 flex items-center gap-2"
+                          className="w-full px-4 py-3 text-left text-sm text-white hover:bg-red-600/20 flex items-center gap-2 transition-colors"
                         >
-                          <LogOut className="w-4 h-4" />
+                          <LogOut className="w-4 h-4 text-white/70" />
                           Sign Out
                         </button>
                       </div>

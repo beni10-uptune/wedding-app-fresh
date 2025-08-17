@@ -82,7 +82,7 @@ export default function DJHarmonyChat({
     setIsTyping(true);
 
     try {
-      const response = await fetch('/api/dj-harmony/chat', {
+      const response = await fetch('/api/dj-harmony/chat-enhanced', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
